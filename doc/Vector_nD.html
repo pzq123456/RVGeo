@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>RVGeo: Class: Vector_nD</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: Vector_nD</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>Vector_nD<span class="signature">(ndarr)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>n维向量 代表 一个数据样本 或者是数据列表中的一行
+封装了一些求距离的方法（n维情形下）</p>
+<ul>
+<li><code>functionname_()</code> 表示对某对象的运算</li>
+</ul></div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="Vector_nD"><span class="type-signature"></span>new Vector_nD<span class="signature">(ndarr)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>实例化一个n维向量 需要传入一个n维数组</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ndarr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>传入的数组</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="learn.js.html">learn.js</a>, <a href="learn.js.html#line12">line 12</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getCDistance_"><span class="type-signature"></span>getCDistance_<span class="signature">(Invec)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>切比雪夫距离(Chebyshev distance) : max(|a-b|...)</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>Invec</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Vector_nD.html">Vector_nD</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>输入</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="learn.js.html">learn.js</a>, <a href="learn.js.html#line65">line 65</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>返回两点间的切比雪夫距离</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getEDistance_"><span class="type-signature"></span>getEDistance_<span class="signature">(Invec)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>计算 <strong>n维</strong> 欧氏距离(Euclidean Distance)</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>Invec</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Vector_nD.html">Vector_nD</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>输入的另一个n维向量</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="learn.js.html">learn.js</a>, <a href="learn.js.html#line27">line 27</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>返回欧氏距离</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getMDistance_"><span class="type-signature"></span>getMDistance_<span class="signature">(Invec)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>曼哈顿距离(Manhattan Distance) Chebyshev distance</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>Invec</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Vector_nD.html">Vector_nD</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>输入</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="learn.js.html">learn.js</a>, <a href="learn.js.html#line45">line 45</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>返回曼哈顿距离</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getMKDistance_"><span class="type-signature"></span>getMKDistance_<span class="signature">(Invec, p)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>闵氏距离(Minkowski Distance) : (｜a-b｜^p+...)^(1/p)</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>Invec</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Vector_nD.html">Vector_nD</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>输入</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>p</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>闵氏距离的维度</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="learn.js.html">learn.js</a>, <a href="learn.js.html#line85">line 85</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>返回两点间的闵氏距离</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CellValueRenderer.html">CellValueRenderer</a></li><li><a href="Circle.html">Circle</a></li><li><a href="ColorRamp.html">ColorRamp</a></li><li><a href="grid_grid.html">grid</a></li><li><a href="GridView.html">GridView</a></li><li><a href="Line.html">Line</a></li><li><a href="LineView.html">LineView</a></li><li><a href="pan.html">pan</a></li><li><a href="Point.html">Point</a></li><li><a href="PointSet.html">PointSet</a></li><li><a href="PointSetView.html">PointSetView</a></li><li><a href="Polygon.html">Polygon</a></li><li><a href="SimpleLine.html">SimpleLine</a></li><li><a href="Stastic.html">Stastic</a></li><li><a href="StasticView.html">StasticView</a></li><li><a href="Tensor_2D.html">Tensor_2D</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="TriangleView.html">TriangleView</a></li><li><a href="Vector_nD.html">Vector_nD</a></li></ul><h3>Global</h3><ul><li><a href="global.html#dedupPointList_">dedupPointList_</a></li><li><a href="global.html#dedupSimpleLineList_">dedupSimpleLineList_</a></li><li><a href="global.html#del_getSuperTriangle">del_getSuperTriangle</a></li><li><a href="global.html#Delaunay_triangulation">Delaunay_triangulation</a></li><li><a href="global.html#Douglas_Peuker">Douglas_Peuker</a></li><li><a href="global.html#Douglas_Peuker_kernel">Douglas_Peuker_kernel</a></li><li><a href="global.html#getbidirectionalHausdorffDistance">getbidirectionalHausdorffDistance</a></li><li><a href="global.html#getClockwiseFea">getClockwiseFea</a></li><li><a href="global.html#getconvex_hull">getconvex_hull</a></li><li><a href="global.html#getExtentOfPointSet">getExtentOfPointSet</a></li><li><a href="global.html#getPoint2LineDistence">getPoint2LineDistence</a></li><li><a href="global.html#getTwoLineFromeOne">getTwoLineFromeOne</a></li><li><a href="global.html#getunidirectionalHausdorffDistance">getunidirectionalHausdorffDistance</a></li><li><a href="global.html#IsPointonLine">IsPointonLine</a></li><li><a href="global.html#kernel_1">kernel_1</a></li><li><a href="global.html#kernel_2">kernel_2</a></li><li><a href="global.html#kernel_2Dmatrix_1">kernel_2Dmatrix_1</a></li><li><a href="global.html#kernel_2Dmatrix_2">kernel_2Dmatrix_2</a></li><li><a href="global.html#kernel_2Dmatrix_3">kernel_2Dmatrix_3</a></li><li><a href="global.html#kernel_2Dmatrix_cal">kernel_2Dmatrix_cal</a></li><li><a href="global.html#kernel_3">kernel_3</a></li><li><a href="global.html#kernel_4">kernel_4</a></li><li><a href="global.html#kernel_5">kernel_5</a></li><li><a href="global.html#kernel_6">kernel_6</a></li><li><a href="global.html#kernel_7">kernel_7</a></li><li><a href="global.html#kernel_8">kernel_8</a></li><li><a href="global.html#kernel_arr_1">kernel_arr_1</a></li><li><a href="global.html#kernel_arr_2">kernel_arr_2</a></li><li><a href="global.html#kernel_arr_3">kernel_arr_3</a></li><li><a href="global.html#kernel_arr_4">kernel_arr_4</a></li><li><a href="global.html#kernel_arr_5">kernel_arr_5</a></li><li><a href="global.html#kernel_arr_6">kernel_arr_6</a></li><li><a href="global.html#kernel_arr_7">kernel_arr_7</a></li><li><a href="global.html#kernel_arr_8">kernel_arr_8</a></li><li><a href="global.html#kernel_arr_9">kernel_arr_9</a></li><li><a href="global.html#kernel_arr_10">kernel_arr_10</a></li><li><a href="global.html#kernel_arr_11">kernel_arr_11</a></li><li><a href="global.html#parser_1">parser_1</a></li><li><a href="global.html#SolveLineForm">SolveLineForm</a></li><li><a href="global.html#Tesson_polygon_adj_Matrix">Tesson_polygon_adj_Matrix</a></li><li><a href="global.html#test_1">test_1</a></li><li><a href="global.html#test_2">test_2</a></li><li><a href="global.html#test_3">test_3</a></li><li><a href="global.html#test_4">test_4</a></li><li><a href="global.html#test_5">test_5</a></li><li><a href="global.html#test_6">test_6</a></li><li><a href="global.html#test_7">test_7</a></li><li><a href="global.html#test_8">test_8</a></li><li><a href="global.html#test_9">test_9</a></li><li><a href="global.html#test_10">test_10</a></li><li><a href="global.html#x_sort">x_sort</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Sun Oct 23 2022 21:29:57 GMT+0800 (中国标准时间)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

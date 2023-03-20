@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>RVGeo:Class: GridView</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: GridView</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>GridView<span class="signature">(ctx, grid, x1, y1, x2, y2)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>栅格视图 用于显示栅格数据</p></div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="GridView"><span class="type-signature"></span>new GridView<span class="signature">(ctx, grid, x1, y1, x2, y2)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>实例化栅格显示对象</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ctx</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">CanvasRenderingContext2D</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>二维上下文对象</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>grid</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="grid.html">grid</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>栅格对象</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>x1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>外包络矩形左上角</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>x2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>外包络矩形右下角</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="display.js.html">display.js</a>, <a href="display.js.html#line282">line 282</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="GridView.html">GridView</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="draw"><span class="type-signature"></span>draw<span class="signature">(colorramp, name, canvas_height, canvas_width, ISDrawRamp)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>根据不同的颜色条带（ColorRamp)绘制栅格数据</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>colorramp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ColorRamp.html">ColorRamp</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>颜色坡道渲染函数</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>标题</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>canvas_height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>canvas画板的高</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>canvas_width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>canvas画板的宽</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ISDrawRamp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>是否绘制色带</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="display.js.html">display.js</a>, <a href="display.js.html#line313">line 313</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="draw_cell_set"><span class="type-signature"></span>draw_cell_set<span class="signature">(celllist, color)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>绘制一列栅格</p>
+<ul>
+<li>输入格式：</li>
+<li>[ [row1,column1],</li>
+<li>[row2,column2],...]</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>celllist</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>栅格列表</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>标识颜色建议使用rgba</p>
+<ul>
+<li><strong>注意：若想要看到绘制的栅格，请在底图栅格绘制好后调用该方法！</strong></li>
+</ul></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="display.js.html">display.js</a>, <a href="display.js.html#line505">line 505</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="draw_custom"><span class="type-signature"></span>draw_custom<span class="signature">(canvas_height, ISDrawRamp, ISDrawmain, ISReversed, stastic, render_function, name, alpha)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>用户自定义的栅格渲染方式 绘制连续值 需要统计数据</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>canvas_height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>二维canvas上下文的高度</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ISDrawRamp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>是否要绘制示意颜色条带（位于栅格的右上角）</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ISDrawmain</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>是否只绘制主体区域（即只绘制箱线图“箱”中的数据）</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ISReversed</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>是否需要反转颜色条带</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stastic</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Stastic.html">Stastic</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>需要输入一个包装了本栅格值的统计对象</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>render_function</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>颜色渲染函数</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>栅格名</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>alpha</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>栅格渲染的不透明度</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="display.js.html">display.js</a>, <a href="display.js.html#line522">line 522</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="draw_selected_cell"><span class="type-signature"></span>draw_selected_cell<span class="signature">(row, column, color)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>绘制选中的某一个栅格</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>row</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>该栅格的行号</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>column</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>该栅格的列号</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>标记颜色（建议用rgba定义）</p>
+<ul>
+<li><strong>注意：若想要看到绘制的栅格，请在底图栅格绘制好后调用该方法！</strong></li>
+</ul></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="display.js.html">display.js</a>, <a href="display.js.html#line478">line 478</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CellValueRenderer.html">CellValueRenderer</a></li><li><a href="Circle.html">Circle</a></li><li><a href="ColorRamp.html">ColorRamp</a></li><li><a href="grid_grid.html">grid</a></li><li><a href="GridView.html">GridView</a></li><li><a href="Line.html">Line</a></li><li><a href="LineView.html">LineView</a></li><li><a href="pan.html">pan</a></li><li><a href="Point.html">Point</a></li><li><a href="PointSet.html">PointSet</a></li><li><a href="PointSetView.html">PointSetView</a></li><li><a href="Polygon.html">Polygon</a></li><li><a href="SimpleLine.html">SimpleLine</a></li><li><a href="Stastic.html">Stastic</a></li><li><a href="StasticView.html">StasticView</a></li><li><a href="Tensor_2D.html">Tensor_2D</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="TriangleView.html">TriangleView</a></li><li><a href="Vector_nD.html">Vector_nD</a></li></ul><h3>Global</h3><ul><li><a href="global.html#dedupPointList_">dedupPointList_</a></li><li><a href="global.html#dedupSimpleLineList_">dedupSimpleLineList_</a></li><li><a href="global.html#del_getSuperTriangle">del_getSuperTriangle</a></li><li><a href="global.html#Delaunay_triangulation">Delaunay_triangulation</a></li><li><a href="global.html#Douglas_Peuker">Douglas_Peuker</a></li><li><a href="global.html#Douglas_Peuker_kernel">Douglas_Peuker_kernel</a></li><li><a href="global.html#getbidirectionalHausdorffDistance">getbidirectionalHausdorffDistance</a></li><li><a href="global.html#getClockwiseFea">getClockwiseFea</a></li><li><a href="global.html#getconvex_hull">getconvex_hull</a></li><li><a href="global.html#getExtentOfPointSet">getExtentOfPointSet</a></li><li><a href="global.html#getPoint2LineDistence">getPoint2LineDistence</a></li><li><a href="global.html#getTwoLineFromeOne">getTwoLineFromeOne</a></li><li><a href="global.html#getunidirectionalHausdorffDistance">getunidirectionalHausdorffDistance</a></li><li><a href="global.html#IsPointonLine">IsPointonLine</a></li><li><a href="global.html#kernel_1">kernel_1</a></li><li><a href="global.html#kernel_2">kernel_2</a></li><li><a href="global.html#kernel_2Dmatrix_1">kernel_2Dmatrix_1</a></li><li><a href="global.html#kernel_2Dmatrix_2">kernel_2Dmatrix_2</a></li><li><a href="global.html#kernel_2Dmatrix_3">kernel_2Dmatrix_3</a></li><li><a href="global.html#kernel_2Dmatrix_cal">kernel_2Dmatrix_cal</a></li><li><a href="global.html#kernel_3">kernel_3</a></li><li><a href="global.html#kernel_4">kernel_4</a></li><li><a href="global.html#kernel_5">kernel_5</a></li><li><a href="global.html#kernel_6">kernel_6</a></li><li><a href="global.html#kernel_7">kernel_7</a></li><li><a href="global.html#kernel_8">kernel_8</a></li><li><a href="global.html#kernel_arr_1">kernel_arr_1</a></li><li><a href="global.html#kernel_arr_2">kernel_arr_2</a></li><li><a href="global.html#kernel_arr_3">kernel_arr_3</a></li><li><a href="global.html#kernel_arr_4">kernel_arr_4</a></li><li><a href="global.html#kernel_arr_5">kernel_arr_5</a></li><li><a href="global.html#kernel_arr_6">kernel_arr_6</a></li><li><a href="global.html#kernel_arr_7">kernel_arr_7</a></li><li><a href="global.html#kernel_arr_8">kernel_arr_8</a></li><li><a href="global.html#kernel_arr_9">kernel_arr_9</a></li><li><a href="global.html#kernel_arr_10">kernel_arr_10</a></li><li><a href="global.html#kernel_arr_11">kernel_arr_11</a></li><li><a href="global.html#parser_1">parser_1</a></li><li><a href="global.html#SolveLineForm">SolveLineForm</a></li><li><a href="global.html#Tesson_polygon_adj_Matrix">Tesson_polygon_adj_Matrix</a></li><li><a href="global.html#test_1">test_1</a></li><li><a href="global.html#test_2">test_2</a></li><li><a href="global.html#test_3">test_3</a></li><li><a href="global.html#test_4">test_4</a></li><li><a href="global.html#test_5">test_5</a></li><li><a href="global.html#test_6">test_6</a></li><li><a href="global.html#test_7">test_7</a></li><li><a href="global.html#test_8">test_8</a></li><li><a href="global.html#test_9">test_9</a></li><li><a href="global.html#test_10">test_10</a></li><li><a href="global.html#x_sort">x_sort</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Sun Oct 23 2022 21:29:57 GMT+0800 (中国标准时间)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
