@@ -1,0 +1,32 @@
+{
+  "name": "rvgeo",
+  "version": "1.0.24",
+  "description": "RVGeo is a JavaScript library for rendering geographic data in raster format. It is based on WebGL and can be used in browsers and node.js.",
+  "main": "./index.js",
+  "type": "module",
+  "keywords": [
+    "Raster",
+    "Graphics",
+    "Geographic"
+  ],
+  "author": "PQ",
+  "license": "MIT",
+  "homepage": "https://github.com/pzq123456/RVGeo",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4.3.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pzq123456/RVGeo"
+  },
+  "files": [
+    "index.js",
+    "src",
+    "dist"
+  ]
+}

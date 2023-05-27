@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- 由 Microsoft Visio, SVG Export 生成 绘图1.svg 页-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		width="60px" height="60px" viewBox="0 0 220 220" xml:space="preserve" color-interpolation-filters="sRGB"
+		class="st10">
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#b5c6e7;stroke:#c7c8c8;stroke-width:0.26309}
+		.st2 {fill:#90aadb;stroke:#c7c8c8;stroke-width:0.26309}
+		.st3 {fill:#feffff;stroke:#c7c8c8;stroke-width:0.26309}
+		.st4 {fill:#305497;stroke:#c7c8c8;stroke-width:0.26309}
+		.st5 {fill:#ed7d31;stroke:#c7c8c8;stroke-width:0.26309}
+		.st6 {fill:#ffffff;stroke:#c7c8c8;stroke-width:0.26309}
+		.st7 {fill:#c5e0b3;stroke:#c7c8c8;stroke-width:0.26309}
+		.st8 {fill:none;stroke:none;stroke-width:0.26309}
+		.st9 {fill:#4672c4;font-family:Calibri;font-size:5.26179em}
+		.st10 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g>
+		<title>页-1</title>
+		<g id="shape1-1" transform="translate(16.8638,-542.848)">
+			<title>正方形</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st1"/>
+		</g>
+		<g id="shape2-3" transform="translate(50.2544,-542.848)">
+			<title>正方形.3</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st2"/>
+		</g>
+		<g id="shape3-5" transform="translate(83.6466,-542.848)">
+			<title>正方形.4</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st2"/>
+		</g>
+		<g id="shape4-7" transform="translate(16.8638,-510.439)">
+			<title>正方形.5</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st2"/>
+		</g>
+		<g id="shape5-9" transform="translate(50.2544,-510.439)">
+			<title>正方形.6</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st3"/>
+		</g>
+		<g id="shape6-11" transform="translate(83.6466,-510.439)">
+			<title>正方形.7</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st2"/>
+		</g>
+		<g id="shape7-13" transform="translate(16.8638,-478.03)">
+			<title>正方形.8</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st4"/>
+		</g>
+		<g id="shape8-15" transform="translate(50.2544,-478.03)">
+			<title>正方形.9</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st5"/>
+		</g>
+		<g id="shape9-17" transform="translate(83.6466,-478.03)">
+			<title>正方形.10</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st3"/>
+		</g>
+		<g id="shape10-19" transform="translate(16.8638,-444.835)">
+			<title>正方形.29</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st4"/>
+		</g>
+		<g id="shape11-21" transform="translate(50.2544,-444.835)">
+			<title>正方形.30</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st6"/>
+		</g>
+		<g id="shape12-23" transform="translate(83.6466,-444.835)">
+			<title>正方形.31</title>
+			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st4"/>
+		</g>
+		<g id="shape13-25" transform="translate(712.305,19.2345) rotate(90)">
+			<title>V 形</title>
+			<path d="M0 595.28 L65.6 595.28 L131.21 544.66 L65.6 494.05 L0 494.05 L65.6 544.66 L0 595.28 Z" class="st7"/>
+		</g>
+		<g id="shape14-27" transform="translate(14.1732,-311.811)">
+			<title>工作表.64</title>
+			<desc>Geo</desc>
+			<rect x="0" y="529.297" width="197.007" height="65.979" class="st8"/>
+			<text x="46.23" y="525.69" class="st9">Geo</text>		</g>
+		<g id="shape15-30" transform="translate(16.8638,-439.768)">
+			<title>矩形</title>
+			<rect x="0" y="592.982" width="201.404" height="2.29347" class="st2"/>
+		</g>
+	</g>
+</svg>

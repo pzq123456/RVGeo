@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Base Examples of RVGeo</title>
+    <style>
+      canvas {
+        border: 1px solid ;
+        border-color: rgb(0, 0, 0);
+        margin-top: 10px;
+      }
+
+      #tools {
+        text-align: center;
+        margin-top: 10px;
+        border-top: 1px solid;
+      }
+
+      button {
+        margin: 10px;
+        padding: 5px;
+        border: 1px solid;
+        border-radius: 5px;
+        background-color: rgb(255, 255, 255);
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: rgb(8, 20, 65);
+        color: rgb(255, 255, 255);
+      }
+
+      button:active {
+        background-color: rgb(8, 20, 65);
+        color: rgb(255, 255, 255);
+      }
+
+      button:focus {
+        outline: none;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+      }
+
+      #logo {
+        /* arrange the items in row */
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+      }
+    </style>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js">
+    </script>
+    <script type="module" src="main.js"></script>
+  </head>
+  <body>
+    <div id="logo">   
+      <img src="logo.svg" class="logo" alt="Vite logo" />
+      <h2>Base Examples</h2> 
+    </div>
+
+    <div id="tools">
+      <button class="pointset" title="Point set convex shell algorithm">点集凸壳算法</button></button>
+      <button class="complexline" title="Douglas Poker dilution algorithm">道格拉斯扑克法抽稀算法</button>
+      <button class = "cs1" title="Triangles and their inner and outer circles">三角形及其内外接圆</button>
+      <button class = "cs2" title="A random set of points generates a Dilonian triangle network">随机点集生成狄洛尼三角网</button>
+      <button class = "cs4" title="Thiessen polygon">泰森多边形</button>
+      <button class = "cs3" title="Raster and The boxplot of its values">绘制栅格及栅格值的箱线图</button>
+      <button class = "cs5" title="null">待定</button>
+      <button class = "cs6" title="null">待定</button>
+    </div>
+
+  </body>
+</html>
