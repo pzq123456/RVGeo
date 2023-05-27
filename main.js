@@ -22,11 +22,30 @@ let myCanvas = new RV.Creator.Canvas('myCanvas', document.body, 1900, 1200);
 myCanvas.create();
 myCanvas.createReportList();
 
+
+
+// creater footer 
+let footer = document.createElement('footer');
+footer.innerHTML = '© 2022-2023 Powered by RVGeo.js';
+document.body.appendChild(footer);
+// center the footer
+
+footer.style.flex = '0 0 auto';
+footer.style.textAlign = 'center';
+footer.style.backgroundColor = '#f5f5f5';
+
+
+
+
+
+
 // draw a pointset and its convex_hull
 pointsetBtn.addEventListener('click', () => {
     let pl = RV.Test.test_2(80,700,100,100); //生成随机点集
     let ps = new RV.Vector.PointSet(pl);
     let pointset1 = new RV.Renderer.PointSetView(myCanvas.ctx,'green',ps)
+    // clear the canvas before drawing
+    myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
     pointset1.draw();
     pointset1.draw_convex_hull();
     pointset1.draw_extent();
@@ -36,7 +55,9 @@ pointsetBtn.addEventListener('click', () => {
 // draw a complexline and its DPline
 lineBtn.addEventListener('click', () => {
   let pl = RV.Test.test_4(1000,500,20);
-  let pointset1 = new RV.Renderer.LineView(myCanvas.ctx,'yellow',pl)
+  let pointset1 = new RV.Renderer.LineView(myCanvas.ctx,'yellow',pl);
+  // clear the canvas before drawing
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   pointset1.draw();
   pointset1.draw_DPsmmoth();
   pointset1.draw_extent();
@@ -47,8 +68,11 @@ let cs1Btn = document.querySelector('.cs1');
 cs1Btn.addEventListener('click', () => {
   let tr = RV.Test.test_5(800);
   let tri = new RV.Renderer.TriangleView(myCanvas.ctx,'green',tr);
+  // clear the canvas before drawing
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   tri.draw_EXCircle();
   let pen1 = new RV.pan.pan(myCanvas.ctx,'blue');
+
   tri.draw();
  
   tri.draw_INCircle();
@@ -62,7 +86,8 @@ cs1Btn.addEventListener('click', () => {
 
 let cs2Btn = document.querySelector('.cs2');
 cs2Btn.addEventListener('click', () => {
-  
+  // clear the canvas before drawing
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   let trilist = RV.Vector.Delaunay_triangulation(pl);
   let data = RV.Vector.Tesson_polygon_adj_Matrix(pl);
 
@@ -84,8 +109,9 @@ let cs3Btn = document.querySelector('.cs3');
 cs3Btn.addEventListener('click', () => {
   //http://124.221.217.153:5003/data/dem.csv
   //服务器数据地址
-  $.get("http://127.0.0.1:5500/dem.csv",function(data1,status){
-
+  $.get("/dem.csv",function(data1,status){
+    // clear the canvas before drawing
+    myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
     let data = RV.Raster.parser1(255,256,data1);
     
 
@@ -148,6 +174,8 @@ cs3Btn.addEventListener('click', () => {
 
 let cs4Btn = document.querySelector('.cs4');
 cs4Btn.addEventListener('click', () => {
+  // clear the canvas before drawing
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   let trilist = RV.Vector.Delaunay_triangulation(pl);
   let data =  RV.Vector.Tesson_polygon_adj_Matrix(pl);
 
@@ -195,7 +223,8 @@ cs4Btn.addEventListener('click', () => {
 
 let cs5Btn = document.querySelector('.cs5');
 cs5Btn.addEventListener('click', () => {
-
+    // clear the canvas before drawing
+    myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
     let pl = RV.Test.test_10(200,3,1000);
     let ten = new RV.Learn.Tensor_2D(pl);
     let res = ten.K_means(3,0.0001,100);
@@ -222,7 +251,7 @@ cs5Btn.addEventListener('click', () => {
 
 let cs6Btn = document.querySelector('.cs6');
 cs6Btn.addEventListener('click', () => {
-  $.get("http://127.0.0.1:5500/dem.csv",function(data1,status){
+  $.get("/dem.csv",function(data1,status){
     let data = RV.Raster.parser1(255,256,data1);
     let grid1= RV.Raster.fromMatrix(data);
     let arr = grid1.get1DArray();

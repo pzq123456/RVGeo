@@ -14,8 +14,7 @@
 
       #tools {
         text-align: center;
-        margin-top: 10px;
-        border-top: 1px solid;
+        border-top: 2px solid rgba(117, 115, 115, 0.456);
       }
 
       button {
@@ -28,8 +27,10 @@
       }
 
       button:hover {
-        background-color: rgb(8, 20, 65);
-        color: rgb(255, 255, 255);
+        background-color: rgb(69, 84, 139);
+        color: rgb(254, 254, 254);
+        /* shaows */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       }
 
       button:active {
@@ -52,6 +53,15 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
+        /* space between items */
+        gap: 10px;
+        /* linear change background color */
+        background: linear-gradient(
+          to right,
+          rgb(167, 166, 235),
+          rgb(255, 255, 255),
+          rgb(157, 194, 240)
+        );
 
       }
     </style>
@@ -63,6 +73,7 @@
     <div id="logo">   
       <img src="logo.svg" class="logo" alt="Vite logo" />
       <h2>Base Examples</h2> 
+      <p>Created by <a href="https://github.com/pzq123456">PZQ</a></p>
     </div>
 
     <div id="tools">
@@ -72,7 +83,7 @@
       <button class = "cs2" title="A random set of points generates a Dilonian triangle network">随机点集生成狄洛尼三角网</button>
       <button class = "cs4" title="Thiessen polygon">泰森多边形</button>
       <button class = "cs3" title="Raster and The boxplot of its values">绘制栅格及栅格值的箱线图</button>
-      <button class = "cs5" title="null">待定</button>
+      <button class = "cs5" title="null">三维 K 均值聚类</button>
       <button class = "cs6" title="null">待定</button>
     </div>
 

@@ -26,6 +26,12 @@ class Canvas {
       canvasElem.width = this.width;
       canvasElem.height = this.height;
 
+      // center the canvas
+      divWrapper.style.display = 'flex';
+      divWrapper.style.justifyContent = 'center';
+      divWrapper.style.alignItems = 'center';
+      divWrapper.style.backgroundColor = '#f5f5f5';
+
       this.ctx = canvasElem.getContext('2d');
     }
   }
