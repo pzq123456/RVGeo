@@ -107,9 +107,9 @@ cs2Btn.addEventListener('click', () => {
 
 let cs3Btn = document.querySelector('.cs3');
 cs3Btn.addEventListener('click', () => {
-  //http://124.221.217.153:5003/data/dem.csv
+  //http://124.221.217.153:5003/datapublic/dem.csv
   //服务器数据地址
-  $.get("/dem.csv",function(data1,status){
+  $.get("public/dem.csv",function(data1,status){
     // clear the canvas before drawing
     myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
     let data = RV.Raster.parser1(255,256,data1);
@@ -251,7 +251,7 @@ cs5Btn.addEventListener('click', () => {
 
 let cs6Btn = document.querySelector('.cs6');
 cs6Btn.addEventListener('click', () => {
-  $.get("/dem.csv",function(data1,status){
+  $.get("public/dem.csv",function(data1,status){
     let data = RV.Raster.parser1(255,256,data1);
     let grid1= RV.Raster.fromMatrix(data);
     let arr = grid1.get1DArray();
