@@ -1,86 +1,136 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- 由 Microsoft Visio, SVG Export 生成 绘图1.svg 页-1 -->
+<!-- 由 Microsoft Visio, SVG Export 生成 logo.svg logo -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
-		width="60px" height="60px" viewBox="0 0 220 220" xml:space="preserve" color-interpolation-filters="sRGB"
-		class="st10">
+		width="0.625in" height="0.625in" viewBox="0 0 45 45" xml:space="preserve" color-interpolation-filters="sRGB" class="st11">
 	<style type="text/css">
 	<![CDATA[
-		.st1 {fill:#b5c6e7;stroke:#c7c8c8;stroke-width:0.26309}
-		.st2 {fill:#90aadb;stroke:#c7c8c8;stroke-width:0.26309}
-		.st3 {fill:#feffff;stroke:#c7c8c8;stroke-width:0.26309}
-		.st4 {fill:#305497;stroke:#c7c8c8;stroke-width:0.26309}
-		.st5 {fill:#ed7d31;stroke:#c7c8c8;stroke-width:0.26309}
-		.st6 {fill:#ffffff;stroke:#c7c8c8;stroke-width:0.26309}
-		.st7 {fill:#c5e0b3;stroke:#c7c8c8;stroke-width:0.26309}
-		.st8 {fill:none;stroke:none;stroke-width:0.26309}
-		.st9 {fill:#4672c4;font-family:Calibri;font-size:5.26179em}
-		.st10 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+		.st1 {fill:#b5c6e7;stroke:#c7c8c8;stroke-width:0.0538139}
+		.st2 {fill:#90aadb;stroke:#c7c8c8;stroke-width:0.0538139}
+		.st3 {fill:#feffff;stroke:#c7c8c8;stroke-width:0.0538139}
+		.st4 {fill:#305497;stroke:#c7c8c8;stroke-width:0.0538139}
+		.st5 {fill:#ed7d31;stroke:#c7c8c8;stroke-width:0.0538139}
+		.st6 {fill:#ffffff;stroke:#c7c8c8;stroke-width:0.0538139}
+		.st7 {fill:none;stroke:none;stroke-width:0.0538139}
+		.st8 {fill:none;stroke:none;stroke-linecap:butt;stroke-width:0.75}
+		.st9 {fill:#4672c4;font-family:Calibri;font-size:1.07627em}
+		.st10 {fill:#81da27;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st11 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
 	]]>
 	</style>
 
 	<g>
-		<title>页-1</title>
-		<g id="shape1-1" transform="translate(16.8638,-542.848)">
-			<title>正方形</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st1"/>
+		<title>logo</title>
+		<g id="group1-1" transform="translate(2.89906,13.7096)">
+			<title>页-1</title>
+			<g id="group2-2" transform="translate(0.557759,-47.8938)">
+				<title>正方形</title>
+				<g id="shape3-3">
+					<title>工作表.3</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st1"/>
+				</g>
+			</g>
+			<g id="group4-5" transform="translate(7.4796,-47.8938)">
+				<title>正方形.3</title>
+				<g id="shape5-6">
+					<title>工作表.5</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st2"/>
+				</g>
+			</g>
+			<g id="group6-8" transform="translate(14.4018,-47.8938)">
+				<title>正方形.4</title>
+				<g id="shape7-9">
+					<title>工作表.7</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st2"/>
+				</g>
+			</g>
+			<g id="group8-11" transform="translate(0.557759,-41.1754)">
+				<title>正方形.5</title>
+				<g id="shape9-12">
+					<title>工作表.9</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st2"/>
+				</g>
+			</g>
+			<g id="group10-14" transform="translate(7.4796,-41.1754)">
+				<title>正方形.6</title>
+				<g id="shape11-15">
+					<title>工作表.11</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st3"/>
+				</g>
+			</g>
+			<g id="group12-17" transform="translate(14.4018,-41.1754)">
+				<title>正方形.7</title>
+				<g id="shape13-18">
+					<title>工作表.13</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st2"/>
+				</g>
+			</g>
+			<g id="group14-20" transform="translate(0.557759,-34.4571)">
+				<title>正方形.8</title>
+				<g id="shape15-21">
+					<title>工作表.15</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st4"/>
+				</g>
+			</g>
+			<g id="group16-23" transform="translate(7.4796,-34.4571)">
+				<title>正方形.9</title>
+				<g id="shape17-24">
+					<title>工作表.17</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st5"/>
+				</g>
+			</g>
+			<g id="group18-26" transform="translate(14.4018,-34.4571)">
+				<title>正方形.10</title>
+				<g id="shape19-27">
+					<title>工作表.19</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st3"/>
+				</g>
+			</g>
+			<g id="group20-29" transform="translate(0.557759,-27.5758)">
+				<title>正方形.29</title>
+				<g id="shape21-30">
+					<title>工作表.21</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st4"/>
+				</g>
+			</g>
+			<g id="group22-32" transform="translate(7.4796,-27.5758)">
+				<title>正方形.30</title>
+				<g id="shape23-33">
+					<title>工作表.23</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st6"/>
+				</g>
+			</g>
+			<g id="group24-35" transform="translate(14.4018,-27.5758)">
+				<title>正方形.31</title>
+				<g id="shape25-36">
+					<title>工作表.25</title>
+					<rect x="0" y="38.0781" width="6.9219" height="6.9219" class="st4"/>
+				</g>
+			</g>
+			<g id="group28-38">
+				<title>工作表.64</title>
+				<desc>Geo</desc>
+				<g id="shape29-39">
+					<title>工作表.29</title>
+					<rect x="0" y="31.3226" width="40.8394" height="13.6774" class="st7"/>
+				</g>
+				<g id="shape30-41" transform="translate(9.58343,-10.4984)">
+					<title>工作表.30</title>
+					<desc>Geo</desc>
+					<rect x="0" y="29.293" width="39.2675" height="15.707" class="st8"/>
+					<text x="-0" y="41.02" class="st9">Geo</text>				</g>
+			</g>
+			<g id="group31-44" transform="translate(0.557759,-26.5255)">
+				<title>矩形</title>
+				<g id="shape32-45">
+					<title>工作表.32</title>
+					<rect x="0" y="44.5246" width="41.7509" height="0.475434" class="st2"/>
+				</g>
+			</g>
 		</g>
-		<g id="shape2-3" transform="translate(50.2544,-542.848)">
-			<title>正方形.3</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st2"/>
-		</g>
-		<g id="shape3-5" transform="translate(83.6466,-542.848)">
-			<title>正方形.4</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st2"/>
-		</g>
-		<g id="shape4-7" transform="translate(16.8638,-510.439)">
-			<title>正方形.5</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st2"/>
-		</g>
-		<g id="shape5-9" transform="translate(50.2544,-510.439)">
-			<title>正方形.6</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st3"/>
-		</g>
-		<g id="shape6-11" transform="translate(83.6466,-510.439)">
-			<title>正方形.7</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st2"/>
-		</g>
-		<g id="shape7-13" transform="translate(16.8638,-478.03)">
-			<title>正方形.8</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st4"/>
-		</g>
-		<g id="shape8-15" transform="translate(50.2544,-478.03)">
-			<title>正方形.9</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st5"/>
-		</g>
-		<g id="shape9-17" transform="translate(83.6466,-478.03)">
-			<title>正方形.10</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st3"/>
-		</g>
-		<g id="shape10-19" transform="translate(16.8638,-444.835)">
-			<title>正方形.29</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st4"/>
-		</g>
-		<g id="shape11-21" transform="translate(50.2544,-444.835)">
-			<title>正方形.30</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st6"/>
-		</g>
-		<g id="shape12-23" transform="translate(83.6466,-444.835)">
-			<title>正方形.31</title>
-			<rect x="0" y="561.885" width="33.3909" height="33.3909" class="st4"/>
-		</g>
-		<g id="shape13-25" transform="translate(712.305,19.2345) rotate(90)">
+		<g id="shape45-47" transform="translate(69.1805,4.5) rotate(90)">
 			<title>V 形</title>
-			<path d="M0 595.28 L65.6 595.28 L131.21 544.66 L65.6 494.05 L0 494.05 L65.6 544.66 L0 595.28 Z" class="st7"/>
-		</g>
-		<g id="shape14-27" transform="translate(14.1732,-311.811)">
-			<title>工作表.64</title>
-			<desc>Geo</desc>
-			<rect x="0" y="529.297" width="197.007" height="65.979" class="st8"/>
-			<text x="46.23" y="525.69" class="st9">Geo</text>		</g>
-		<g id="shape15-30" transform="translate(16.8638,-439.768)">
-			<title>矩形</title>
-			<rect x="0" y="592.982" width="201.404" height="2.29347" class="st2"/>
+			<path d="M0 45 L13.5 45 L27 35.85 L13.5 26.7 L0 26.7 L13.5 35.85 L0 45 Z" class="st10"/>
 		</g>
 	</g>
 </svg>
