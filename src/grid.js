@@ -4,26 +4,24 @@ export class grid {
     /**
      * 栅格类 默认生成的栅格是 0 填充栅格
      * @param {number} row 栅格行数
-     * @param {number} column  栅格列数
+     * @param {number} column 栅格列数
+     * @param {number} filler 填充值（默认为 0 ）
      */
-    constructor(row,column){
+    constructor(row,column, filler = 0){
         this.row = row;
         this.column = column;
-        this.gridset = this.#creataGridSet();
+        this.gridset = this.#creataGridSet(filler);
     }
 
     /**
-     * 创建空白栅格
+     * 创建空白二维栅格(默认填充值为 0)
+     * @param {Number} filler 
+     * @returns 
      */
-    #creataGridSet(){
-
-        let matrix = [];
-        for(let i = 0; i < this.row ;i++){
-            let tm = [];
-            tm.length = this.column ;
-            tm.fill(0);
-            matrix.push(tm);
-        }
+    #creataGridSet(filler){       
+        const matrix = Array(this.row)
+            .fill()
+            .map( () =>  Array(this.column).fill(filler));
     return matrix;
     }
 
@@ -84,57 +82,25 @@ export class grid {
      * 抵消padding操作的效果
      * 在padding之后调用以抵消padding的效果 只可使用一次！
      */
-  depadding_(){
-    let row = this.row - 2*this.paddingsize;
-    let column = this.column - 2*this.paddingsize;
+    depadding_(){
+        let row = this.row - 2*this.paddingsize;
+        let column = this.column - 2*this.paddingsize;
 
-    for(let itm of this.gridset){
-        for(let i =0;i<this.paddingsize;i++){
-            itm.pop();
-            itm.shift();
+        for(let itm of this.gridset){
+            for(let i =0;i<this.paddingsize;i++){
+                itm.pop();
+                itm.shift();
+            }
         }
+
+        for(let i =0;i<this.paddingsize;i++){
+            this.gridset.pop(); // 尾部插入
+            this.gridset.shift(); // 头部插入
+        }
+        this.row = row;
+        this.column =column;
     }
-    
-    for(let i =0;i<this.paddingsize;i++){
-        this.gridset.pop(); // 尾部插入
-        this.gridset.shift(); // 头部插入
-    }
-    this.row = row;
-    this.column =column;
-}
    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * **需要先根据算子的大小进行padding操作 否则会有NaN错误**
      * 基于拉普拉斯算子的二维边缘提取 
@@ -165,7 +131,7 @@ export class grid {
     }
 
     /**
-     * **需要先根据算子的大小进行padding操作 否则会有NaN错误**
+     * ** 需要先根据算子的大小进行padding操作 否则会有NaN错误 **
      * 计算栅格坡度
      * @returns {array} 返回卷积结果（二维矩阵）
      */
@@ -222,7 +188,7 @@ export class grid {
     }
 
     /**
-     * 获取栅格采样直线
+     * 获取栅格采样直线，自动获取对应直线上的栅格采样值
      * @param {number} x1 - 采样直线起始像元行号
      * @param {number} y1 - 采样直线起始像元列号
      * @param {number} x2 - 采样直线终止像元行号
@@ -259,8 +225,9 @@ export class grid {
         }
         return res;
     }
+
     /**
-     * 
+     * 获取对应行列号的栅格值
      * @param {number} row - 所选栅格的行号
      * @param {number} column - 所选栅格的列号
      * @param {number} scale - **（可选）** 栅格值等比率缩放
@@ -291,11 +258,42 @@ export class grid {
         }
         return res;
     }
+
+    // 以下代码为 空间分析实习（一周）的功能更新。2023.6.20 
     
+    /**
+     * （单起点）累积表面生成算法
+     * - 该算法默认自身包含的栅格为障碍物栅格（目前未实现）
+     * @param {*} row 起点行号
+     * @param {*} col 起点列号
+     * @param {*} value 起点值（一般为0，代表该表面的最低值）
+     * @returns {Array} 返回一个二维矩阵
+     */
+    splash_AccmulationSerface(row,col,value = 0){
+        // 首先创建空白累积表面 默认填充值为 -1
+        const accSerface = this.#creataGridSet(this.row,this.column,-1);
+        let queue = []; // shift
+        if(value === -1) return accSerface; // 该值会导致后续算法错误 故排除之
+        let dx = [1, 0, 0, -1] ; // 记录四个方向的偏离量
+        let dy = [0, 1, -1, 0] ;
+
+        const n = this.row;
+        const m = this.column;
+
+        queue.push([row,col]);
+        accSerface[row][col] = value;
+
+        
+    }
+
+
+
+
+
     //静态方法区域
     
     /**
-     * 由二维array生成栅格类
+     * 读取 JS 的二维数组，由该二维 Array 生成栅格类
      * @param {array} matrix 
      */
     static fromMatrix(matrix){
@@ -324,7 +322,7 @@ export class grid {
     }
 
      /**
-     * 生成0-360之间的渐变栅格(用于绘制颜色条带预览)
+     * 生成0-360之间的渐变栅格(用于绘制颜色条带预览，坡向颜色渲染)
      * @param {number} level 
      * @returns 
      */
@@ -381,6 +379,7 @@ export class grid {
   }
 
 }
+
 
 /**
  * 统计类 获取诸如最大最小值、均值方差等的统计信息 便于后期处理

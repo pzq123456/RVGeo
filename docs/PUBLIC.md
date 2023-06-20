@@ -1,7 +1,9 @@
-# A Brief Tutorial for Experiment of Spatial Analysis
+# A Brief Tutorial for Experiment of Spatial Analysis (for Raster Part)
 > - Pan 6.19 `14:00`
 > - 本文主要介绍一下个人对空间分析实习的一些想法，**水平有限**。若有错误，欢迎批评指正。
 > - 在 `GitHub`上修改 [本文档](https://github.com/pzq123456/RVGeo/tree/main/docs) 。拉取、提交 `Pull Request` 即可。本教程不定期更新，若要获取最新版本也请读者访问上述链接。
+> - 以下 JavaScript 简称 JS ， 该语言易于理解，可以很容易地转换成其他语言的代码。若读者对 JS 不了解可以参考 MDN 的 [这篇教程](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript)
+> - 若觉得本教程有用，欢迎为这个仓库点赞。
 
 个人精力有限，本教程不会涉及 **矢量相关算法、分型、正态云** 部分的算法。另外，本教程内的算法思路仅代表个人观点，会给出一些与解题相关的链接，烦请读者自行阅读理解。
 
@@ -104,8 +106,44 @@ for(let i = 0; i < 3; i++){
   - 八个方向，每一步的距离都是相等的。因此，累积表面揭示了每一个栅格位置的优化方向。
 
 - 思路
-  - 现在我们只考虑单一点的累积表面生成问题。这是典型的广度优先遍历，可以使用递归方法，也可以选择借助于栈来实现（本质上一样）。
+  - 现在我们只考虑单一点的累积表面生成问题。这是典型的广度优先遍历，可以使用递归方法，也可以选择借助于队列来实现（本质上一样）。
   - 具体实现可以参考力扣上的这道题：[733. 图像渲染](https://leetcode.cn/problems/flood-fill/) 只不过它是四个方向。
+  - 借助于队列的广度优先遍历的思路：
+    ```
+        我们设置一个队列，先把初始点添加进去
+        规定每次从队列取出一个坐标
+        对这个坐标染色，并且把这个坐标的邻居（符合要求且不重复的好邻居），放到队列中
+        当这个队列为空的时候，说明染色完成
+    ```
+    因为队列每次取出的是最后的，而每次添加的是放在最前面，所以可以想象到，每次先处理的都是层级最少的，最接近初始点的，然后慢慢扩大，这样就实现了 广度优先搜索
+
+> - 在 JS 中实现栈及队列的方式：JS 中的这两种数据结构都可以使用 Array 来实现。
+> ```js
+> 
+> var stack = []; // 栈
+> stack.push(2); // stack is now [2]
+> stack.push(5); // stack is now [2, 5]
+> var i = stack.pop(); // stack is now [2]
+> alert(i); // displays 5
+> 
+> var queue = []; // 队列
+> queue.push(2); // queue is now [2]
+> queue.push(5); // queue is now [2, 5]
+> var i = queue.shift(); // queue is now [5]
+> alert(i); // displays 2
+> 
+> ```
+> - JS 中的无穷大 [Infinity](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Infinity) ， 这是一个全局变量，是 JS 中允许的最大整数，它的倒数就是 0 。
+> ```js
+> const maxNumber = Math.pow(10, 1000); // Max positive number
+> if (maxNumber === Infinity) {
+>   console.log('Let\'s call it Infinity!');
+>   // Expected output: "Let's call it Infinity!"
+> }
+> console.log(1 / maxNumber);
+> // Expected output: 0
+> ```
+
 
 #### 累积表面的应用
 > https://www.youtube.com/watch?v=_KlRRowXv7k

@@ -1,4 +1,5 @@
 //kernel区域 算子区域 所有两步以上的数学运算放在此区域 防止过多重复
+// 既包括数值运算也包括矩阵运算
 const ori_x=[1,0] // x 正半轴方向
 
 /**
@@ -60,8 +61,6 @@ export function kernel_6(a){
     return a*(Math.PI/180);
 }
 
-
-
 /**
  * 弧度转角度
  * @param {number} a - 弧度 
@@ -77,7 +76,7 @@ export function kernel_7(a){
  */
  export function kernel_8(max) {
     return Math.round(Math.random() * max + 0.5);       
-  }
+}
 
 
 /**
@@ -94,7 +93,6 @@ export function kernel_7(a){
     } 
     return m;
 }
-
 
 /**
  * kernel_arr_2 : [result]=[a1-b1,a2-b2,...]
@@ -401,7 +399,7 @@ export function kernel_2Dmatrix_1(input_cell){
     return  cell;
 }
 
-    /**
+/**
  * simpleline列表去重算法
  * @param {array} list 
  */
