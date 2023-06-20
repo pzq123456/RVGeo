@@ -271,11 +271,12 @@ export class grid {
      */
     splash_AccmulationSerface(row,col,value = 0){
         // 首先创建空白累积表面 默认填充值为 -1
-        const accSerface = this.#creataGridSet(this.row,this.column,-1);
+        const accSerface = this.#creataGridSet(-1);
         let queue = []; // shift
         if(value === -1) return accSerface; // 该值会导致后续算法错误 故排除之
-        let dx = [1, 0, 0, -1] ; // 记录四个方向的偏离量
-        let dy = [0, 1, -1, 0] ;
+        // 计算dx dy 使得其成为若干同心圆
+        const dx = [0,0,1,-1,1,1,-1,-1,2,-2,2,-2,1,-1,0,0];
+        const dy = [1,-1,0,0,1,-1,1,-1,0,0,1,-1,2,-2,1,-1];
 
         const n = this.row;
         const m = this.column;
@@ -283,7 +284,19 @@ export class grid {
         queue.push([row,col]);
         accSerface[row][col] = value;
 
-        
+        while(queue.length > 0){
+            let [x,y] = queue.shift();
+            for(let i = 0 ; i < 16 ; i++){
+                let nx = x + dx[i];
+                let ny = y + dy[i];
+                if(nx >= 0 && nx < n && ny >= 0 && ny < m && accSerface[nx][ny] === -1){
+                    accSerface[nx][ny] = accSerface[x][y] + 1;
+                    queue.push([nx,ny]);
+                }
+            }
+        }
+        console.log(accSerface);
+        return accSerface;
     }
 
 

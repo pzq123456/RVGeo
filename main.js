@@ -253,11 +253,11 @@ let cs6Btn = document.querySelector('.cs6');
 cs6Btn.addEventListener('click', () => {
   // clear the canvas before drawing
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-  let grid1= new RV.Raster(30,30,0)
+  let grid = new RV.Raster(500,500,0);
+  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(50,50,0));
 
   let stt =new RV.Stastic(grid1.get1DArray());
   let colorramp = new RV.Renderer.ColorRamp(stt);
   let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1,30,512+600,512+30,600);
   gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积表面测试视图");
-
 })
