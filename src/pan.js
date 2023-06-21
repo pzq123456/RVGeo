@@ -209,9 +209,12 @@ export class pan {
      */
     draw_text(color="black",text,x,y){
 
+        let color1 = this.ctx.fillStyle;
         this.ctx.fillStyle = color;
         this.ctx.font = 'oblique 20px Arial';
         this.ctx.fillText(text,x,y);
+        this.ctx.fillStyle = color1;
+
     }
 }
 

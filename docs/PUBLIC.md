@@ -88,6 +88,10 @@ for(let i = 0; i < 3; i++){
 
 相较于矢量方向，栅格方向的算法实现起来会稍微复杂一些。并且，这一块的资料非常稀少，老师提供的课件也是英文的，我想这一块是值得仔细探究的。我在这里列出一些我个人的想法，希望能够给大家一些启发。
 
+### 栅格数据的等高线生成
+> 
+
+
 ### 累积表面 (Accumulation Surfaces)
 > 参考链接： 
 > - [GeoWorld, December 1997, pg. 28](http://www.innovativegis.com/basis/MapAnalysis/Topic5/Topic5.htm)

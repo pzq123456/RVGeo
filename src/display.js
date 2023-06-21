@@ -49,15 +49,16 @@ class Contour_CurveView {
   }
 
   draw(IsReaterMode = false, smooth=false) {
+    let pan1 = new pan(this.ctx,this.color);
+    // pan1.draw_text("balck","等值线",10,10);
     if(!IsReaterMode){
-      let pan1 = new pan(this.ctx,this.color);
       pan1.draw_complexline(this.contour_curve_list,true);
     }else{
       this.ctx.save();
       this.ctx.scale(1,-1);
       this.ctx.translate(0,-this.canvas_height);
 
-      let pan1 = new pan(this.ctx,this.color);
+
 
       for(let i=0;i<this.contour_curve_list.length;i++){
 
@@ -65,17 +66,27 @@ class Contour_CurveView {
           let pointset = this.contour_curve_list[i];
           let line = new Line(pointset);
           // this.line.getSubSetByDP(threashold)
-          let new_pointset = line.getSubSetByDP(30);
+          let new_pointset = line.getSubSetByDP(25);
           pan1.draw_complexline(new_pointset,true);
-
+          this.ctx.restore();
+          // 取中间点 标注
+          let mid = Math.floor(this.contour_curve_list[i].length/2);
+          pan1.draw_text("white",this.contour_curve_value_list[i],this.contour_curve_list[i][mid].x,this.canvas_height - this.contour_curve_list[i][mid].y);
+          this.ctx.save();
+          this.ctx.scale(1,-1);
+          this.ctx.translate(0,-this.canvas_height);
         }else{
         pan1.draw_complexline(this.contour_curve_list[i],true);
-        // pan1.draw_text(this.contour_curve_value_list[i],this.contour_curve_list[i][0].get_X(),this.contour_curve_list[i][0].get_Y());
-
+        this.ctx.restore();
+        pan1.draw_text("white",this.contour_curve_value_list[i],this.contour_curve_list[i][0].x,this.contour_curve_list[i][0].y);
+        this.ctx.save();
+        this.ctx.scale(1,-1);
+        this.ctx.translate(0,-this.canvas_height);
+          
         }
       }
-      }
-      this.ctx.restore();
+    }
+    this.ctx.restore();
   }
 }
 

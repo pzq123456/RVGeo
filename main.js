@@ -140,19 +140,6 @@ cs3Btn.addEventListener('click', () => {
     let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1,30,512+30,512+30,30);
     gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"栅格1-1 原始DEM渲染");
 
-    // 绘制等高线
-
-    let MBR = [30,512+30,512+30,30];
-    let curobj = grid1.V_get_Contour(MBR,100,stt);
-    console.log(curobj);
-    let contours = curobj["contour"];
-    let values = curobj["values"];
-
-    let CintourView = new RV.Renderer.Contour_CurveView(myCanvas.ctx,myCanvas.height,"red",contours,values);
-
-    CintourView.draw(true);
-
-
     // let curobj = grid1.V_get_Contour(MBR,10,stt);
     // console.log(curobj);
     // let contours = curobj["contour"];
@@ -282,13 +269,14 @@ cs6Btn.addEventListener('click', () => {
 
   // clear the canvas before drawing
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-  let grid = new RV.Raster(50,50,0);
-  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(25,24,0));
+  let grid = new RV.Raster(100,100,0);
+  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(70,20,10));
   let stt =new RV.Stastic(grid1.get1DArray());
-  let curobj = grid1.V_get_Contour(MBR,10,stt);
+  let curobj = grid1.V_get_Contour(MBR,5,stt);
   console.log(curobj);
   let contours = curobj["contour"];
-  let values = curobj["values"];
+  let values = curobj["value"];
+
 
   let CintourView = new RV.Renderer.Contour_CurveView(myCanvas.ctx,myCanvas.height,"red",contours,values);
 
@@ -300,24 +288,29 @@ cs6Btn.addEventListener('click', () => {
 
 
   let point =  grid1.get_CellPoint_in_MBR(MBR,0,0,0.1);
-  console.log(point);
 
 
   // render point 
   let pointview = new RV.Renderer.PointView(myCanvas.ctx,'red',point);
-
-
-
-
-  // grid1.get_Contour(5);
-
-
   console.log(stt.get_statistics_info());
   let colorramp = new RV.Renderer.ColorRamp(stt);
   let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1,30,1024,1024+30,0);
-  gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积表面测试视图");
+  gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积表面及等高线测试视图");
 
   pointview.draw(myCanvas.height,true);
   CintourView.draw(true,true);
+
+
+
+})
+let cs7Btn = document.querySelector('.cs7');
+cs7Btn.addEventListener('click', () => {
+ // clear the canvas before drawing
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+  let grid = new RV.Raster(10,10,0);
+  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(0,0,10));
+
+  alert(grid1.getSerfaceArea());
+  alert(grid1.getVolume());
 
 })

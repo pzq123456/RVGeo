@@ -334,6 +334,7 @@ export class grid {
      * 根据栅格值生成等值线(V_ 代表与矢量图形有关的函数)
      * - 这是一个与矢量图形相耦合的函数，需要传入一个矩形框用于标定等值线的范围
      * - 该函数返回一个二维数组，数组中的每个元素都是一个等值线的点集
+     * - #### 这部分代码存在问题，无法完美绘制等值线，在较为复杂的地形上会失效。并且，该部分代码需要和线抽稀算法配合，阈值调试也极为重要。 
      * @param {Array} MBR - 矩形框，格式为 [x1,y1,x2,y2]
      * @param {number} level - 等值线数量
      * @param {Stastic} stastic - 统计类，用于统计栅格值的最大最小值
@@ -377,26 +378,27 @@ export class grid {
                     // 如果该值落在值级别区间中，则认为该栅格为等值线上的点
                     // 为保证区间的完整性，在数组第一个值前加入一个无穷小在数组最后一个值后加入一个无穷大
                     // 无穷大为 Infinity 无穷小为 -Infinity
-                    let expLevels = [-Infinity,...levels,Infinity];
-                    for(let k = 0 ; k < expLevels.length - 1 ; k++){
-                        if(value >= expLevels[k] && value < expLevels[k+1]){
-                            flag = true;
+                    let expLevels = [...levels,Infinity];
+                    // for(let k = 0 ; k < expLevels.length - 1 ; k++){
+                    //     if(value >= expLevels[k] && value < expLevels[k+1]){
+                    //         flag = true;
 
-                            // 将该栅格的值放到 ValueList 中
-                            ValueList.push(value);
-                            break;
-                        }
-                    }
+                    //         // 将该栅格的值放到 ValueList 中
+                    //         ValueList.push(value);
+                    //         break;
+                    //     }
+                    // }
                     
 
 
-                // for(let k = 0 ; k < levels.length ; k++){
-                //     // if(value === levels[k]){
-                //     //     flag = true;
-                //     //     break;
-                //     // }
-                // }
+                for(let k = 0 ; k < levels.length ; k++){
+                    if( value <= expLevels[k+1] && value > expLevels[k]){
+                        flag = true;
+                        break;
+                    }
+                }
                 if(!flag) continue;
+
                 // 然后对该栅格进行广度优先搜索，将与其相连的栅格放到一个集合中
                 let queue = [];
                 let set = [];
@@ -440,7 +442,7 @@ export class grid {
         }
         // 对于可以闭合的等值线，将其闭合
         // 所谓可以闭合，指的是起点和终点之间的距离小于一个阈值
-        // 首先计算出阈值，我们假设阈值为所有曲线起点和终点之间距离 的平均值的 1/2
+        // 首先计算出阈值，我们假设阈值为所有曲线起点和终点之间距离的平均值 
         let threshold = 0;
         for(let i = 0 ; i < contour.length ; i++){
             let set = contour[i];
@@ -450,7 +452,8 @@ export class grid {
             threshold += dis;
         }
         threshold /= contour.length;
-        threshold /= 2;
+
+
     
         // 然后对每个集合进行判断
         for(let i = 0 ; i < contour.length ; i++){
@@ -526,8 +529,47 @@ export class grid {
         return point;
     }    
 
+    /**
+     * 计算内部二维矩阵所代表的栅格的表面积
+     * - 该方法将对应栅格位置的值取整，视为一个小立方体，计算所有小立方体的表面积之和
+     * - 这是一种简化的方法，相较于计算三角形的表面积，该方法的结果会有一定的误差，但是速度会快很多。
+     */
+    getSerfaceArea(){
+        const dr = [0, 1, 0, -1];
+        const dc = [1, 0, -1, 0];
+        let sum = 0;
+        // 首先获取整数化栅格
+        let IntGrid = this.toIntGrid();
+        for(let i = 0 ; i < IntGrid.length ; i++){
+            for(let j = 0 ; j < IntGrid[i].length ; j++){
+                let value = IntGrid[i][j];
+                if(value > 0){
+                    sum += 2;
+                    for(let k = 0 ; k < 4 ; k++){
+                        let nr = i + dr[k];
+                        let nc = j + dc[k];
+                        let nv = 0;
+                        if(nr >= 0 && nr < IntGrid.length && nc >= 0 && nc < IntGrid[i].length){
+                            nv = IntGrid[nr][nc];
+                        }
+                        sum += Math.max(value - nv,0);
+                    }
+                }
+            }
+        }
+        return sum;
+    }
 
-    // getSerfaceArea(){
+    // 计算栅格体积
+    getVolume(){
+        let sum = 0;
+        for(let i = 0 ; i < this.row ; i++){
+            for(let j = 0 ; j < this.column ; j++){
+                sum += this.gridset[i][j];
+            }
+        }
+        return sum;
+    }
 
 
 
