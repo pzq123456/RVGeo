@@ -1290,11 +1290,74 @@ export function Tesson_polygon_adj_Matrix(verlist1){
 }
 
 
+// 外包络矩形类，用于标定图形的边界
+/**
+ * 为了方便起见，现在将外包络矩形单独定义为一个类
+ * - 可以输入左上角坐标及边长构建矩形
+ * - 可以输入左上角坐标及长宽构建矩形
+ */
+class MBRect{
+    /**
+     * 构造函数 
+     * @param {number} x 左上角x坐标
+     * @param {number} y 左上角y坐标
+     * @param {number} w 宽度
+     * @param {number} h 高度
+     * 
+     */
+    constructor(x,y,w,h){
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+    }
+
+    // 判断点是否在矩形内
+    isPointInRect(x,y){
+        if(x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    // 判断矩形是否在矩形内
+    isRectInRect(rect){
+        if(rect.x >= this.x && rect.x + rect.w <= this.x + this.w && rect.y >= this.y && rect.y + rect.h <= this.y + this.h){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    // 判断矩形是否与矩形相交
+    isRectCrossRect(rect){
+        if(rect.x >= this.x + this.w || rect.x + rect.w <= this.x || rect.y >= this.y + this.h || rect.y + rect.h <= this.y){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    // 获取两矩形相交的矩形
+    getCrossRect(rect){
+        let x = Math.max(this.x,rect.x);
+        let y = Math.max(this.y,rect.y);
+        let w = Math.min(this.x + this.w,rect.x + rect.w) - x;
+        let h = Math.min(this.y + this.h,rect.y + rect.h) - y;
+        return new MBRect(x,y,w,h);
+    }
+}
+
+
+
 
  
 
 
-export{ Point,Line,SimpleLine,PointSet,Polygon,Circle,Triangle }
+export{ Point,Line,SimpleLine,PointSet,Polygon,Circle,Triangle,MBRect }
 
 
 

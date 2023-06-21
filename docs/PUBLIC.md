@@ -7,8 +7,12 @@
 
 个人精力有限，本教程不会涉及 **矢量相关算法、分型、正态云** 部分的算法。另外，本教程内的算法思路仅代表个人观点，会给出一些与解题相关的链接，烦请读者自行阅读理解。
 
+> `Joke` : 当你正真开始写代码的时候，你会发现困扰你的其实只有两个问题：
+> - 这个变量该叫什么？
+> - 这段功能该放在哪个文件夹下？
+
 - 本教程的主要内容及更新计划：（同时也是 RVGeo 的更新计划）
-  - 第一阶段（栅格 DEM 部分算法）：累积表面的生成、基于累积表面的简单应用、栅格水流模拟部分算法、DEM 地形分析部分算法。
+  - 第一阶段（栅格 DEM 部分算法）：累积表面的生成、栅格等值线生成、基于累积表面的简单应用、栅格水流模拟部分算法、DEM 地形分析部分算法。
   - 第二阶段（图论及最短路径部分算法）：略
   - 第三阶段（聚类算法及地图统计分析部分算法）：略
 
@@ -99,6 +103,7 @@ for(let i = 0; i < 3; i++){
 > - c. 假设人在冰上走得慢 5 倍。绕湖一周，它仍然距离对面的角落6900米。然而，如果你小心翼翼地跋涉到湖心，就相当于在开阔的土地上跋涉8300米。
 
 #### 累积表面生成 (“splash” algorithm)
+> 代码实现参考： [splash_AccmulationSerface](https://github.com/pzq123456/RVGeo/blob/f3e97611b77540aa5cbe282eb7c947f3f5d0e6cb/src/grid.js#LL272C50-L272C50)
 - 要点
     > 注： 参考资料中没有给出累积表面生成的具体算法，只是阐述累积表面的本质及性质。以下内容为原始资料的简略翻译。
   - 累积表面是一种类似于 DEM 的模型，某一处栅格内存储的值是到（系列）起始点的（最短）直线距离。参考资料中提到，我们可以模仿涟漪的扩散去生成累积表面。具体到栅格 GIS 中，我们假定波的宽度是一个栅格，而与圆形涟漪的等价物就是同时向八个方向传播。
@@ -106,6 +111,26 @@ for(let i = 0; i < 3; i++){
   - 八个方向，每一步的距离都是相等的。因此，累积表面揭示了每一个栅格位置的优化方向。
 
 - 思路
+    ```mermaid
+    graph TD
+    A[起始点] --> B[将起始点放入队列]
+    B --> C[当队列不为空时]
+    C --> D[取出队列中的一个点]
+    D --> E[对这个点的八个方向进行判断]
+    E --> F{是否越界}
+    F --> |是| G[跳过]
+    F --> |否| H{是否已经访问过}
+    H --> |是| I[跳过]
+    H --> |否| J[标记为已访问]
+    J --> K[计算距离]
+    K --> L{是否是障碍物}
+    L --> |是| M[跳过]
+    L --> |否| N[更新距离]
+    N --> O[将这个点放入队列]
+    O --> C
+    C --> P[返回累积表面]
+    ```
+
   - 现在我们只考虑单一点的累积表面生成问题。这是典型的广度优先遍历，可以使用递归方法，也可以选择借助于队列来实现（本质上一样）。
   - 具体实现可以参考力扣上的这道题：[733. 图像渲染](https://leetcode.cn/problems/flood-fill/) 只不过它是四个方向。
   - 借助于队列的广度优先遍历的思路：
@@ -117,36 +142,41 @@ for(let i = 0; i < 3; i++){
     ```
     因为队列每次取出的是最后的，而每次添加的是放在最前面，所以可以想象到，每次先处理的都是层级最少的，最接近初始点的，然后慢慢扩大，这样就实现了 广度优先搜索
 
+- 一些说明：
+  - 原始资料中认为仅仅使用八连通域就可以生成累积表面（其实这只能生成同心正方形），但是实际想要实现类似涟漪的扩散效果需要进行圆的光栅化过程，我们这里简化了，仅使用一个八边形连通域来加速计算。
+  - 并且多点累积表面及连续起点的累积表面生成需要进一步设计（暂未实现）
+
 > - 在 JS 中实现栈及队列的方式：JS 中的这两种数据结构都可以使用 Array 来实现。
-> ```js
-> 
-> var stack = []; // 栈
-> stack.push(2); // stack is now [2]
-> stack.push(5); // stack is now [2, 5]
-> var i = stack.pop(); // stack is now [2]
-> alert(i); // displays 5
-> 
-> var queue = []; // 队列
-> queue.push(2); // queue is now [2]
-> queue.push(5); // queue is now [2, 5]
-> var i = queue.shift(); // queue is now [5]
-> alert(i); // displays 2
-> 
-> ```
+>   ```js
+>   
+>   var stack = []; // 栈
+>   stack.push(2); // stack is now [2]
+>   stack.push(5); // stack is now [2, 5]
+>   var i = stack.pop(); // stack is now [2]
+>   alert(i); // displays 5
+>   
+>   var queue = []; // 队列
+>   queue.push(2); // queue is now [2]
+>   queue.push(5); // queue is now [2, 5]
+>   var i = queue.shift(); // queue is now [5]
+>   alert(i); // displays 2
+>   
+>   ```
 > - JS 中的无穷大 [Infinity](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Infinity) ， 这是一个全局变量，是 JS 中允许的最大整数，它的倒数就是 0 。
-> ```js
-> const maxNumber = Math.pow(10, 1000); // Max positive number
-> if (maxNumber === Infinity) {
->   console.log('Let\'s call it Infinity!');
->   // Expected output: "Let's call it Infinity!"
-> }
-> console.log(1 / maxNumber);
-> // Expected output: 0
-> ```
+>   ```js
+>   const maxNumber = Math.pow(10, 1000); // Max positive number
+>   if (maxNumber === Infinity) {
+>     console.log('Let\'s call it Infinity!');
+>     // Expected output: "Let's call it Infinity!"
+>   }
+>   console.log(1 / maxNumber);
+>   // Expected output: 0
+>   ```
 
 
 #### 累积表面的应用
 > https://www.youtube.com/watch?v=_KlRRowXv7k
 
 ### DEM 表面积
+
 > https://leetcode.cn/problems/surface-area-of-3d-shapes/

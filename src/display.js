@@ -54,7 +54,7 @@ class PointSetView {
 
 class LineView{
   /**
-     * 
+     * 包装一个 Line
      * @param {CanvasRenderingContext2D} ctx 
      * @param {number} number 
      * @param {string} color 
@@ -65,18 +65,26 @@ class LineView{
     this.color = color;
     this.line = new Line(pointset);
   }
-  draw(){
-    let pan1 = new pan(this.ctx,"rgba(255, 157, 0, 0.846)");
-    pan1.draw_complexline(this.line.getLine());
+  /**
+   * 绘制自身
+   * @param {string} color - 线的颜色
+   * @param {number} linewidth - 线的宽度
+   * @param {boolean} smooth - 是否平滑
+   * 
+   */
+  draw(color=this.color,linewidth=1,smooth=false) {
+    let pan1 = new pan(this.ctx,color);
+    pan1.draw_complexline(this.line.getLine(),smooth);
   }
 
   /**
    * 调用道格拉斯扑克算法抽稀线
    * @param {number} threashold - 算法阈值
+   * @param {boolean} smooth - 是否平滑
    */
-  draw_DPsmmoth(threashold=290){
+  draw_DPsmmoth(threashold=290,smooth=false){
     let pan2 = new pan(this.ctx,"rgb(0, 136, 255)");
-    pan2.draw_complexline(this.line.getSubSetByDP(threashold)); //在此处设置阈值
+    pan2.draw_complexline(this.line.getSubSetByDP(threashold),smooth); //在此处设置阈值
   }
 
   draw_extent(){
@@ -387,6 +395,7 @@ export class GridView{
     this.ctx.font = 'oblique bold 20px Arial';
     this.ctx.fillText(name, this.MBR[0],canvas_height-(this.MBR[1]+10));
   }
+
   draw_main(colorramp,canvas_height,canvas_width,ISDrawRamp,name){
     let pan1 = new pan(this.ctx,"#00ffff5a"); // 小问题 初始化pan对象必须要给一个颜色 但是栅格用不上
     let xn = this.grid.column;//获取x轴栅格数
@@ -441,6 +450,7 @@ export class GridView{
     this.ctx.fillText(name, this.MBR[0],canvas_height-(this.MBR[1]+10));
 
   }
+  
   draw_aspect(colorramp,canvas_height,canvas_width,ISDrawRamp,name){
     let pan1 = new pan(this.ctx,"#00ffff5a"); // 小问题 初始化pan对象必须要给一个颜色 但是栅格用不上
     let xn = this.grid.column;//获取x轴栅格数

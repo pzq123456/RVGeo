@@ -1,4 +1,5 @@
 import {kernel_2Dmatrix_1,kernel_2Dmatrix_2,kernel_2Dmatrix_3} from './kernel.js'
+import { Point } from './base.js'; 
 
 export class grid {
     /**
@@ -273,20 +274,34 @@ export class grid {
         // 首先创建空白累积表面 默认填充值为 -1
         const accSerface = this.#creataGridSet(-1);
         let queue = []; // shift
-        if(value === -1) return accSerface; // 该值会导致后续算法错误 故排除之
-        // 计算dx dy 使得其成为若干同心圆
-        const dx = [0,0,1,-1,1,1,-1,-1,2,-2,2,-2,1,-1,0,0];
-        const dy = [1,-1,0,0,1,-1,1,-1,0,0,1,-1,2,-2,1,-1];
+
+        // 判断起点是否合法
+        if(value === -1) {
+            console.log("splash_AccmulationSerface: 起点值为-1,返回空白累积表面");
+            return accSerface;
+        } 
+        if(row < 0 || row >= this.row || col < 0 || col >= this.column) {
+            console.log("splash_AccmulationSerface: 起点不在栅格范围内");
+            return null;
+        } // 起点不在栅格范围内
+        if(this.row < 3 || this.column < 3) {
+            console.log("splash_AccmulationSerface: 栅格太小，无法生成累积表面");
+            return null;
+        } // 栅格太小
+        
+        // 计算dx dy 使得其成为若干八边形
+        const dx = [0,0,1,-1,1,1,-1,-1,2,-2,2,-2,1,-1,0,0,1,-1,1,-1];
+        const dy = [1,-1,0,0,1,-1,1,-1,0,0,1,-1,2,-2,1,-1,1,-1,0,0];
 
         const n = this.row;
         const m = this.column;
 
         queue.push([row,col]);
         accSerface[row][col] = value;
-
+        // 广度优先搜索
         while(queue.length > 0){
             let [x,y] = queue.shift();
-            for(let i = 0 ; i < 16 ; i++){
+            for(let i = 0 ; i < dx.length ; i++){
                 let nx = x + dx[i];
                 let ny = y + dy[i];
                 if(nx >= 0 && nx < n && ny >= 0 && ny < m && accSerface[nx][ny] === -1){
@@ -295,10 +310,51 @@ export class grid {
                 }
             }
         }
-        console.log(accSerface);
+
         return accSerface;
     }
 
+    /**
+     * 将内部栅格转化为整数栅格
+     * @returns {Array} 返回一个二维矩阵,该矩阵为整数栅格
+     */
+    toIntGrid(){
+        let res = this.#creataGridSet(0);
+        for(let i=0;i<this.row;i++){
+            for(let j=0;j<this.column;j++){
+                res[i][j] = Math.round(this.gridset[i][j]);
+            }
+        }
+        console.log("转化为整数栅格成功");
+        console.log(res);
+        return res;
+    }
+
+    /**
+     * 根据栅格值生成等值线(V_ 代表与矢量图形有关的函数)
+     * - 这是一个与矢量图形相耦合的函数，需要传入一个矩形框用于标定等值线的范围
+     * @param {number} level - 等值线数量
+     * @returns {Array} 返回一个二维数组，每个元素为一个等值线的点集
+    */
+    V_get_Contour(level){
+        let res = [];
+        let dx = 1/level;
+        for(let i=0;i<level;i++){
+            let ttp = [];
+            for(let j = 0;j<this.row;j++){
+                for(let k = 0;k<this.column;k++){
+                    if(this.gridset[j][k] >= i*dx && this.gridset[j][k] < (i+1)*dx){
+                        ttp.push([j,k]);
+                    }
+                }
+            }
+            res.push(ttp);
+        }
+        console.log("等值线生成成功");
+        console.log(res);
+        return res;
+    }
+    // getSerfaceArea(){
 
 
 
@@ -313,6 +369,8 @@ export class grid {
         let row = matrix[0];
         let res = new grid(matrix.length,row.length);
         res.gridset = matrix;
+        console.log("读取矩阵成功");
+        console.log(matrix);
         return res;
     }
 
