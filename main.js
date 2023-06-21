@@ -307,11 +307,29 @@ let cs7Btn = document.querySelector('.cs7');
 cs7Btn.addEventListener('click', () => {
  // clear the canvas before drawing
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-  let grid = new RV.Raster(100,100,0);
-  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(0,0,10));
+function slice(index){
+  let grid = new RV.Raster(50,50,0);
+  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(35,15,1000));
+  let stt0 = new RV.Stastic(grid1.get1DArray());
+  let grid2 = RV.Raster.fromMatrix(grid1.get_DEM_Slice(10,index,stt0));
+  let stt =new RV.Stastic(grid2.get1DArray());
+  let colorramp = new RV.Renderer.ColorRamp(stt);
+  let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid2,30,1024,1024+30,0);
+  gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积表面及等高线测试视图");
 
-  alert("表面积："+grid1.getSerfaceArea());
-  // 体积
-  alert("体积："+grid1.getVolume());
+}
+
+// animation the slice 
+let index = 0;
+let timer = setInterval(function(){
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+  slice(index);
+  index++;
+  if(index>50){
+    clearInterval(timer);
+  }
+},1000)
+
+
 
 })

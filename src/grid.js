@@ -498,7 +498,33 @@ export class grid {
 
     }
 
+    // 根据输入的分级数，及指定的层次数，获取 DEM 切面栅格 
+    get_DEM_Slice(levels,index,stastic){
+        // 首先 获取栅格值的最大最小值并计算间隔
+        let max = stastic.max;
+        let min = stastic.min;
+        let interval = (max - min) / levels;
+        // 然后计算出每个等级的值
+        let expLevels = [];
+        for(let i = 0 ; i <= levels ; i++){
+            expLevels.push(min + i * interval);
+        }
 
+        // 根据索引获取对应的等级，该等级以下的实体设为1， 空白设为0
+        let level = expLevels[index];
+        // 新建空白栅格作为结果
+        let result = this.#creataGridSet(0);
+        // 遍历栅格集合，将符合条件的栅格设为1
+        for(let i = 0 ; i < this.row ; i++){
+            for(let j = 0 ; j < this.column ; j++){
+                if(this.gridset[i][j] <= level){
+                    result[i][j] = 1;
+                }
+            }
+        }
+        return result;
+
+    }
     /**
      * 根据给定的MBR及给定栅格的行列号，计算该栅格的中心点在MBR中的位置（坐标）
      * @param {Array} MBR - 矩形框，格式为 [x1,y1,x2,y2]
