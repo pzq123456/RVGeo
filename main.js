@@ -269,8 +269,8 @@ cs6Btn.addEventListener('click', () => {
 
   // clear the canvas before drawing
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-  let grid = new RV.Raster(100,100,0);
-  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(70,20,10));
+  let grid = new RV.Raster(50,50,0);
+  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(35,15,1000));
   let stt =new RV.Stastic(grid1.get1DArray());
   let curobj = grid1.V_get_Contour(MBR,5,stt);
   console.log(curobj);
@@ -307,10 +307,11 @@ let cs7Btn = document.querySelector('.cs7');
 cs7Btn.addEventListener('click', () => {
  // clear the canvas before drawing
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-  let grid = new RV.Raster(10,10,0);
+  let grid = new RV.Raster(100,100,0);
   let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(0,0,10));
 
-  alert(grid1.getSerfaceArea());
-  alert(grid1.getVolume());
+  alert("表面积："+grid1.getSerfaceArea());
+  // 体积
+  alert("体积："+grid1.getVolume());
 
 })

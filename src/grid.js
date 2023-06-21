@@ -344,15 +344,19 @@ export class grid {
         // 首先 获取栅格值的最大最小值并计算等值线间隔
         let max = stastic.max;
         let min = stastic.min;
-        console.log("max:",max,"min:",min);
+
+
         let interval = (max - min) / level;
         // 然后根据等值线间隔，计算出每个等值线的值 并放到一个数组中
         let levels = [];
 
 
         for(let i = 0 ; i < level ; i++){
-            levels.push(min + i * interval);
+            // 取整
+            levels.push(Math.round (min + i * interval));
         }
+        console.log("等值线值数组");
+        console.log(levels);
         // 然后开始遍历栅格，根据栅格值和等值线值的关系，计算出等值线的点集
         const queue = [];
         // 首先对对栅格进行分类，将连续的栅格放到一个集合中
@@ -405,6 +409,7 @@ export class grid {
                 queue.push([i,j]);
                 vis[i][j] = 1;
                 set.push([i,j]);
+                // 该集合的值为 value
                 while(queue.length > 0){
                     let [x,y] = queue.shift();
                     for(let k = 0 ; k < dx.length ; k++){
@@ -423,7 +428,7 @@ export class grid {
             }
         }
 
-        //  下面需要对 contour 中每个集合进行顺时针排序
+        //  下面需要对 contour 中每个集合中的点进行顺时针排序
         for(let i = 0 ; i < contour.length ; i++){
             let set = contour[i];
             let center = [0,0];
@@ -440,6 +445,7 @@ export class grid {
                 return angle1 - angle2;
             });
         }
+        // 然后对 contour 中的每个集合进行闭合
         // 对于可以闭合的等值线，将其闭合
         // 所谓可以闭合，指的是起点和终点之间的距离小于一个阈值
         // 首先计算出阈值，我们假设阈值为所有曲线起点和终点之间距离的平均值 
@@ -452,9 +458,7 @@ export class grid {
             threshold += dis;
         }
         threshold /= contour.length;
-
-
-    
+        threshold *= 0.09;
         // 然后对每个集合进行判断
         for(let i = 0 ; i < contour.length ; i++){
             let set = contour[i];
@@ -463,7 +467,7 @@ export class grid {
             let [x2,y2] = set[set.length - 1];
             let dis = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 
-            if(dis < threshold){
+             if(dis <= threshold){
                 // 说明该集合可以闭合
                 set.push(set[0]);
             }
@@ -557,6 +561,9 @@ export class grid {
                 }
             }
         }
+
+        // 扣除底面积
+        sum -= this.row * this.column;
         return sum;
     }
 
