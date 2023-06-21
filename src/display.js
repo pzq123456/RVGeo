@@ -4,9 +4,82 @@
  * 若想要获得更加丰富的可视化效果，建议搭配其他可视化库使用。
  * 该模块的作用：在开发阶段用以检验各个模块的功能、为node模块洁癖者提供更多的选择、由作者亲自编写所以学习成本更低。
  */
-import { PointSet,Line, Triangle, Point }  from './base.js';
+import { PointSet,Line, Triangle, Point, MBRect }  from './base.js';
 import { pan,CellValueRenderer} from './pan.js' ;
-import {Stastic , grid} from './grid.js'
+import {Stastic , grid} from './grid.js';
+
+/**
+ * 点的显示
+ */
+class PointView {
+    /**
+     * 包装一个 Point
+     * @param {CanvasRenderingContext2D} ctx 
+     * @param {string} color 
+     * @param {Point} point 
+     */
+    constructor(ctx,color,point) {
+      this.ctx = ctx;
+      this.color = color;
+      this.point = point;
+    }
+
+    draw(canvas_height,IsReaterMode = false) {
+      if(!IsReaterMode){
+        let pan1 = new pan(this.ctx,this.color);
+        pan1.draw_point(this.point.x,this.point.y);
+      }else{
+        this.ctx.save();
+        this.ctx.scale(1,-1);
+        this.ctx.translate(0,-canvas_height);
+        let pan1 = new pan(this.ctx,this.color);
+        pan1.draw_point(this.point.x,this.point.y);
+        }
+        this.ctx.restore();
+    }
+}
+
+class Contour_CurveView {
+  constructor(ctx,canvas_height,color,contour_curve_list,contour_curve_value_list) {
+    this.ctx = ctx;
+    this.canvas_height = canvas_height;
+    this.color = color;
+    this.contour_curve_list = contour_curve_list;
+    this.contour_curve_value_list = contour_curve_value_list;
+  }
+
+  draw(IsReaterMode = false, smooth=false) {
+    if(!IsReaterMode){
+      let pan1 = new pan(this.ctx,this.color);
+      pan1.draw_complexline(this.contour_curve_list,true);
+    }else{
+      this.ctx.save();
+      this.ctx.scale(1,-1);
+      this.ctx.translate(0,-this.canvas_height);
+
+      let pan1 = new pan(this.ctx,this.color);
+
+      for(let i=0;i<this.contour_curve_list.length;i++){
+
+        if(smooth){
+          let pointset = this.contour_curve_list[i];
+          let line = new Line(pointset);
+          // this.line.getSubSetByDP(threashold)
+          let new_pointset = line.getSubSetByDP(30);
+          pan1.draw_complexline(new_pointset,true);
+
+        }else{
+        pan1.draw_complexline(this.contour_curve_list[i],true);
+        // pan1.draw_text(this.contour_curve_value_list[i],this.contour_curve_list[i][0].get_X(),this.contour_curve_list[i][0].get_Y());
+
+        }
+      }
+      }
+      this.ctx.restore();
+  }
+}
+
+
 
 /**
  * 点集的显示库
@@ -343,16 +416,23 @@ export class GridView{
    * @param {number} canvas_height - canvas画板的高
    * @param {number} canvas_width - canvas画板的宽
    * @param {boolean} ISDrawRamp - 是否绘制色带
+   * @param {number} resolution - 栅格渲染精度控 (0,1] 0.1为默认值
    */
 
-  draw(colorramp,canvas_height,canvas_width,ISDrawRamp,name){
+  draw(colorramp,canvas_height,canvas_width,ISDrawRamp,name,resolution = 0.1){
     let pan1 = new pan(this.ctx,"#00ffff5a"); // 小问题 初始化pan对象必须要给一个颜色 但是栅格用不上
+
     let xn = this.grid.column;//获取x轴栅格数
     let yn = this.grid.row;//获取y轴栅格数
+
     let width = Math.abs(this.MBR[0]-this.MBR[2]);
     let height = Math.abs(this.MBR[1]-this.MBR[3]);
-    let dx = Math.round(width/xn);
-    let dy = Math.round(height/yn);
+    // make the error more small
+    // 栅格渲染精度控制在0.1
+    let dx = Math.round(width/xn/resolution)*resolution;
+    let dy = Math.round(height/yn/resolution)*resolution;
+    // let dx = Math.round(width/xn);
+    // let dy = Math.round(height/yn);
 
     this.ctx.save();
     this.ctx.scale(1,-1);
@@ -361,8 +441,10 @@ export class GridView{
     
     pan1.draw_rect(this.MBR);
 
+
     for(let i =0;i<this.grid.row;i++){
       for(let j = 0 ;j<this.grid.column;j++){
+        // 绘制的矩形是以左下角为原点的
         pan1.draw_GridCell(
           this.MBR[0]+j*dx,
           this.MBR[1]-i*dy-dy,
@@ -681,6 +763,17 @@ export class GridView{
 
   }
 
+  // 获取外包络矩形 MBR
+  /**
+   * 直接获取外包络矩形，一维数组，[x_min,y_min,x_max,y_max]
+   * - 若想要更丰富的外包络矩形方法，可使用 MBRect 类包装
+   * @returns {Array} [x_min,y_min,x_max,y_max]
+   */
+  getMBR(){
+    return this.MBR;
+  }
+
+
 }
 
 /**
@@ -854,13 +947,13 @@ export class ColorRamp{
    */
   Colorband_2(value){
     /*
-    赤色 【RGB】255, 0, 0 
-    橙色 【RGB】255, 165, 0  
-    黄色 【RGB】255, 255, 0 
-    绿色 【RGB】0, 255, 0 
-    青色 【RGB】0, 255, 255  
-    蓝色 【RGB】0, 0, 255 
-    紫色 【RGB】139, 0, 255 
+    赤色 [RGB] 255, 0, 0 
+    橙色 [RGB] 255, 165, 0  
+    黄色 [RGB] 255, 255, 0 
+    绿色 [RGB] 0, 255, 0 
+    青色 [RGB] 0, 255, 255  
+    蓝色 [RGB] 0, 0, 255 
+    紫色 [RGB] 139, 0, 255 
     */
 
     if(value<22.5){
@@ -965,5 +1058,5 @@ export class ColorRamp{
   }
 }
 
-  export {PointSetView,LineView,TriangleView};
+  export {PointSetView,LineView,TriangleView,PointView,Contour_CurveView};
   

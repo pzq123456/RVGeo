@@ -1292,9 +1292,9 @@ export function Tesson_polygon_adj_Matrix(verlist1){
 
 // 外包络矩形类，用于标定图形的边界
 /**
- * 为了方便起见，现在将外包络矩形单独定义为一个类
- * - 可以输入左上角坐标及边长构建矩形
- * - 可以输入左上角坐标及长宽构建矩形
+ * ### `MBRect`: 为外包络矩形提供更丰富的功能
+ * - 当你需要外包络矩形的时候，你可以使用`MBRect`类来创建一个外包络矩形对象
+ * - 该对象除了标定矩形位置外，还提供了更多的功能，比如判断点是否在矩形内，判断矩形是否在矩形内等
  */
 class MBRect{
     /**
@@ -1306,15 +1306,15 @@ class MBRect{
      * 
      */
     constructor(x,y,w,h){
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+        this.x1 = x;
+        this.y1 = y;
+        this.x2 = x + w;
+        this.y2 = y + h;
     }
 
     // 判断点是否在矩形内
     isPointInRect(x,y){
-        if(x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h){
+        if(x >= this.x1 && x <= this.x2 && y >= this.y1 && y <= this.y2){
             return true;
         }
         else{
@@ -1322,33 +1322,86 @@ class MBRect{
         }
     }
     // 判断矩形是否在矩形内
-    isRectInRect(rect){
-        if(rect.x >= this.x && rect.x + rect.w <= this.x + this.w && rect.y >= this.y && rect.y + rect.h <= this.y + this.h){
+    isRectInRect(x1,y1,x2,y2){
+        if(this.isPointInRect(x1,y1) && this.isPointInRect(x2,y2)){
             return true;
         }
         else{
             return false;
         }
     }
-
     // 判断矩形是否与矩形相交
-    isRectCrossRect(rect){
-        if(rect.x >= this.x + this.w || rect.x + rect.w <= this.x || rect.y >= this.y + this.h || rect.y + rect.h <= this.y){
-            return false;
+    isRectCrossRect(x1,y1,x2,y2){
+        if(this.isPointInRect(x1,y1) || this.isPointInRect(x2,y2)){
+            return true;
         }
         else{
-            return true;
+            return false;
         }
     }
 
-    // 获取两矩形相交的矩形
-    getCrossRect(rect){
-        let x = Math.max(this.x,rect.x);
-        let y = Math.max(this.y,rect.y);
-        let w = Math.min(this.x + this.w,rect.x + rect.w) - x;
-        let h = Math.min(this.y + this.h,rect.y + rect.h) - y;
-        return new MBRect(x,y,w,h);
+    /**
+     * 获取与输入两矩形相交的矩形，如果不相交则返回null
+     * @param {MBRect} MBR 输入矩形 
+     * @returns {MBRect} 相交的矩形
+     */
+    getCrossRect(MBR_in){
+        if(this.isRectCrossRect(MBR_in.x1,MBR_in.y1,MBR_in.x2,MBR_in.y2)){
+            let x1 = Math.max(this.x1,MBR_in.x1);
+            let y1 = Math.max(this.y1,MBR_in.y1);
+            let x2 = Math.min(this.x2,MBR_in.x2);
+            let y2 = Math.min(this.y2,MBR_in.y2);
+            return new MBRect(x1,y1,x2-x1,y2-y1);
+        }
+        else{
+            return null;
+        }
     }
+
+    // 获取矩形左上角和右下角的坐标二维数组
+    get_2DMBR(){
+        return [[this.x1,this.y1],[this.x2,this.y2]];
+    }
+
+    get_1DMBR(){
+        return [this.x1,this.y1,this.x2,this.y2];
+    }
+
+    // 获取矩形的中心点坐标
+    getCenter(){
+        return [(this.x1 + this.x2)/2,(this.y1 + this.y2)/2];
+    }
+
+    // 静态方法
+
+    // 从二维坐标数组创建MBR
+    /**
+     * 从二维坐标数组创建MBR
+     * @param {number[][]} array 二维坐标数组 [[x1,y1],[x2,y2]]
+     * @returns {MBRect} MBR
+     */
+    static createMBRFrom2DArray(array){
+        let x1 = array[0][0];
+        let y1 = array[0][1];
+        let x2 = array[1][0];
+        let y2 = array[1][1];
+        return new MBRect(x1,y1,x2-x1,y2-y1);
+    }
+
+    
+    /**
+     * 从一维坐标数组创建MBR 
+     * @param {number[]} array 一维坐标数组 [x1,y1,x2,y2]
+     * @returns {MBRect} MBR 
+     */
+    static createMBRFrom1DArray(array){
+        let x1 = array[0];
+        let y1 = array[1];
+        let x2 = array[2];
+        let y2 = array[3];
+        return new MBRect(x1,y1,x2-x1,y2-y1);
+    }
+
 }
 
 

@@ -23,12 +23,14 @@ export class pan {
      * 直接在上下文中绘制
      */
     draw_point(x,y){
+        const color = this.ctx.fillStyle;
         this.ctx.fillStyle = this.color;
         // this.ctx.fillRect(x, y, 10, 10);
         // draw a point with radius 10
         this.ctx.beginPath();
         this.ctx.arc(x, y, 3, 0, 2 * Math.PI);
         this.ctx.fill();
+        this.ctx.fillStyle = color;
     }
 
     /**
@@ -205,7 +207,9 @@ export class pan {
      * @param {number} x 
      * @param {number} y 
      */
-    draw_text(text,x,y){
+    draw_text(color="black",text,x,y){
+
+        this.ctx.fillStyle = color;
         this.ctx.font = 'oblique 20px Arial';
         this.ctx.fillText(text,x,y);
     }

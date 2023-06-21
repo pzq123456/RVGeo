@@ -1,5 +1,5 @@
 import {kernel_2Dmatrix_1,kernel_2Dmatrix_2,kernel_2Dmatrix_3} from './kernel.js'
-import { Point } from './base.js'; 
+import { MBRect, Point } from './base.js'; 
 
 export class grid {
     /**
@@ -333,27 +333,200 @@ export class grid {
     /**
      * 根据栅格值生成等值线(V_ 代表与矢量图形有关的函数)
      * - 这是一个与矢量图形相耦合的函数，需要传入一个矩形框用于标定等值线的范围
+     * - 该函数返回一个二维数组，数组中的每个元素都是一个等值线的点集
+     * @param {Array} MBR - 矩形框，格式为 [x1,y1,x2,y2]
      * @param {number} level - 等值线数量
-     * @returns {Array} 返回一个二维数组，每个元素为一个等值线的点集
-    */
-    V_get_Contour(level){
-        let res = [];
-        let dx = 1/level;
-        for(let i=0;i<level;i++){
-            let ttp = [];
-            for(let j = 0;j<this.row;j++){
-                for(let k = 0;k<this.column;k++){
-                    if(this.gridset[j][k] >= i*dx && this.gridset[j][k] < (i+1)*dx){
-                        ttp.push([j,k]);
+     * @param {Stastic} stastic - 统计类，用于统计栅格值的最大最小值
+     * @returns {Array} 返回一个二维数组，数组中的每个元素都是一个等值线的点集
+     */
+    V_get_Contour(MBR, level ,stastic){
+        // 首先 获取栅格值的最大最小值并计算等值线间隔
+        let max = stastic.max;
+        let min = stastic.min;
+        console.log("max:",max,"min:",min);
+        let interval = (max - min) / level;
+        // 然后根据等值线间隔，计算出每个等值线的值 并放到一个数组中
+        let levels = [];
+
+
+        for(let i = 0 ; i < level ; i++){
+            levels.push(min + i * interval);
+        }
+        // 然后开始遍历栅格，根据栅格值和等值线值的关系，计算出等值线的点集
+        const queue = [];
+        // 首先对对栅格进行分类，将连续的栅格放到一个集合中
+        // 然后对每个集合进行等值线计算，获取边界点集
+        // 最后将边界点集转换为点集
+        // 1. 首先对栅格进行分类
+        const gridset = this.toIntGrid();
+        const row = gridset.length;
+        const column = gridset[0].length;
+        const dx = [0,0,1,-1,1,1,-1,-1];
+        const dy = [1,-1,0,0,1,-1,1,-1];
+        const vis = this.#creataGridSet(0);
+        const contour = [];
+        const ValueList = []; // 用于存储每个等值线的值    
+        // 根据 栅格值与 value 的关系，将栅格进行分类
+        for(let i = 0 ; i < row ; i++){
+            for(let j = 0 ; j < column ; j++){
+                // 首先判断该栅格是否已经被访问过
+                if(vis[i][j] === 1) continue;
+                // 然后判断该栅格是否为等值线上的点
+                let value = gridset[i][j];
+                let flag = false;
+                    // 如果该值落在值级别区间中，则认为该栅格为等值线上的点
+                    // 为保证区间的完整性，在数组第一个值前加入一个无穷小在数组最后一个值后加入一个无穷大
+                    // 无穷大为 Infinity 无穷小为 -Infinity
+                    let expLevels = [-Infinity,...levels,Infinity];
+                    for(let k = 0 ; k < expLevels.length - 1 ; k++){
+                        if(value >= expLevels[k] && value < expLevels[k+1]){
+                            flag = true;
+
+                            // 将该栅格的值放到 ValueList 中
+                            ValueList.push(value);
+                            break;
+                        }
+                    }
+                    
+
+
+                // for(let k = 0 ; k < levels.length ; k++){
+                //     // if(value === levels[k]){
+                //     //     flag = true;
+                //     //     break;
+                //     // }
+                // }
+                if(!flag) continue;
+                // 然后对该栅格进行广度优先搜索，将与其相连的栅格放到一个集合中
+                let queue = [];
+                let set = [];
+                queue.push([i,j]);
+                vis[i][j] = 1;
+                set.push([i,j]);
+                while(queue.length > 0){
+                    let [x,y] = queue.shift();
+                    for(let k = 0 ; k < dx.length ; k++){
+                        let nx = x + dx[k];
+                        let ny = y + dy[k];
+                        if(nx >= 0 && nx < row && ny >= 0 && ny < column && vis[nx][ny] === 0 && gridset[nx][ny] === value){
+                            vis[nx][ny] = 1;
+                            queue.push([nx,ny]);
+                            set.push([nx,ny]);
+                        }
                     }
                 }
+                // 最后将该集合放到 contour 中
+                contour.push(set);
+                ValueList.push(value);
             }
-            res.push(ttp);
         }
-        console.log("等值线生成成功");
-        console.log(res);
-        return res;
+
+        //  下面需要对 contour 中每个集合进行顺时针排序
+        for(let i = 0 ; i < contour.length ; i++){
+            let set = contour[i];
+            let center = [0,0];
+            for(let j = 0 ; j < set.length ; j++){
+                center[0] += set[j][0];
+                center[1] += set[j][1];
+            }
+            center[0] /= set.length;
+            center[1] /= set.length;
+            
+            set.sort((a,b)=>{
+                let angle1 = Math.atan2(a[0] - center[0],a[1] - center[1]);
+                let angle2 = Math.atan2(b[0] - center[0],b[1] - center[1]);
+                return angle1 - angle2;
+            });
+        }
+        // 对于可以闭合的等值线，将其闭合
+        // 所谓可以闭合，指的是起点和终点之间的距离小于一个阈值
+        // 首先计算出阈值，我们假设阈值为所有曲线起点和终点之间距离 的平均值的 1/2
+        let threshold = 0;
+        for(let i = 0 ; i < contour.length ; i++){
+            let set = contour[i];
+            let [x1,y1] = set[0];
+            let [x2,y2] = set[set.length - 1];
+            let dis = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+            threshold += dis;
+        }
+        threshold /= contour.length;
+        threshold /= 2;
+    
+        // 然后对每个集合进行判断
+        for(let i = 0 ; i < contour.length ; i++){
+            let set = contour[i];
+
+            let [x1,y1] = set[0];
+            let [x2,y2] = set[set.length - 1];
+            let dis = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+
+            if(dis < threshold){
+                // 说明该集合可以闭合
+                set.push(set[0]);
+            }
+
+        }
+
+
+        // 最后将 contour 中的每个集合转换为点集
+
+
+        let contourList = [];
+
+        // 将栅格行列转换为点集
+        for(let i = 0 ; i < contour.length ; i++){
+            let points = [];
+            for(let j = 0 ; j < contour[i].length ; j++){
+               let poi = this.get_CellPoint_in_MBR(MBR,contour[i][j][0],contour[i][j][1]);
+                points.push(poi);
+            }
+            contourList.push(points);
+        }
+
+        return {
+            "value":ValueList,
+            "contour":contourList
+        }
+                
+
     }
+
+
+    /**
+     * 根据给定的MBR及给定栅格的行列号，计算该栅格的中心点在MBR中的位置（坐标）
+     * @param {Array} MBR - 矩形框，格式为 [x1,y1,x2,y2]
+     * @param {number} row - 栅格行号
+     * @param {number} col - 栅格列号
+     * @param {number} resolution - 栅格分辨率
+     * @returns {Point} 返回一个点
+     */
+    get_CellPoint_in_MBR(MBR,row,col,resolution=0.1){
+        // 首先使用总的行列切割MBR
+        let [x1,y1,x2,y2] = MBR;
+        let xn = this.column;//获取x轴栅格数
+        let yn = this.row;//获取y轴栅格数
+
+        let width = Math.abs(x1-x2);
+        let height = Math.abs(y1-y2);
+
+        // make the error more small
+        // 栅格渲染精度控制在0.1 dx dy 为栅格的宽高
+        let dx = Math.round(width/xn/resolution)*resolution;
+        let dy = Math.round(height/yn/resolution)*resolution;
+
+        // 计算栅格的中心点 一半的栅格宽度
+        let x = x1 + dx/2 + col*dx;
+        let y = y1 - dy/2 - row*dy;
+
+        // this.MBR[0]+j*dx,
+        // this.MBR[1]-i*dy-dy,
+        // dx,dy,
+
+        let point = new Point(x,y);
+        return point;
+    }    
+
+
     // getSerfaceArea(){
 
 
@@ -741,6 +914,30 @@ export class Stastic{
         return res;
     }
 
-   
+   // 获取统计数据
+   /**
+    * 获取统计数据
+    * "max" : "最大值", "min" : "最小值", "avg" : "平均值", "std" : "标准差", "volum" : "样本数量
+    * @returns {JSON} 返回一个json对象
+    */
+    get_statistics_info(){
+
+
+        let max = this.max;// 最大值
+        let min =  this.min; //最小值
+        let avg = this.mean; //均值
+        let std = this.Standard_Deviation ; // 求标准差
+        let volum = this.n ; // 样本数量
+
+        let res = {
+            "max" : max, 
+            "min" : min, 
+            "avg" : avg, 
+            "std" : std, 
+            "volum" : volum
+        }
+
+        return res;
+    }
 
 }
