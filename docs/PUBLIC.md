@@ -90,6 +90,7 @@ for(let i = 0; i < 3; i++){
 
 ### 栅格数据的等高线生成
 > 参考代码： [V_get_Contour](https://github.com/pzq123456/RVGeo/blob/2dc5aa33817d74bfcd4be5683550d4caa5cbd8d5/src/grid.js#L343)
+> - 参考定义：https://en.wikipedia.org/wiki/Marching_squares 
 > - 该部分代码仍存在一定的问题（无法应用到复杂栅格，等高线开闭异常）
 - 要点
   - 这是一个结合了
@@ -104,13 +105,36 @@ for(let i = 0; i < 3; i++){
   - 将这些边界点按照时针方向排序
   - 并根据起止点之间的距离判断是否闭合该段等高线
   - 最后将边界点集转换为点集
-- 思路2（目前采用该方法实现，也叫切片法，但是对于正负地形的处理仍存在问题）
+- 思路2（目前采用该方法实现，但是对于正负地形的处理仍存在问题，无法处理复杂情况）
+  - > 注： 
+  - > - 该方法虽然效果不好，但是思路比较直接，对于编程联系还是有一定的帮助的
+  - > - 该算法与 marching squares 的第一步极其相似，可以说本质上还是相通的。
+  - 
   - 也可以采用淹没模拟的方法
   - 从最小的值开始，逐层提取被淹没区域的边界线
 
-> - 本算法无法处理复杂栅格的等高线，即使是简单栅格（单峰平滑栅格）也会有一些问题。
-> - 故本算法仅做演示只用，无法投入实际生产。
+#### 正解 (marching squares) 方法:
+> - In computer graphics, [marching squares](https://en.wikipedia.org/wiki/Marching_squares) is an algorithm that generates contours for a two-dimensional scalar field (rectangular array of individual numerical values). A similar method can be used to contour 2D triangle meshes.
 
+
+
+- 算法步骤
+  - 对栅格数据进行阈值处理，将其转换为二值图像（也就是“淹没”操作）：
+    - 1 代表高于阈值的区域
+    - 0 代表低于阈值的区域
+
+每一个 2x2 的像素块组成一个等高线单元，所以整个图像由这些单元格组成（如下图中绿色部分所示）。注意，这个等高线网格在每个方向上都比原始的 2D 场小一个单元格。
+
+- 对于每个等高线单元格：
+
+  - 在每个单元格的角落组成 4 位二进制索引：按顺时针方向绕单元格走，将位附加到索引上，使用按位或和左移，从最左边的最高有效位到最左边的最低有效位。
+  - 生成的 4 位索引可以在 0-15 范围内有 16 个可能的值。
+
+![marching squares](./imgs/contour.png) Marching squares algorithm 算法简图
+
+> - 该算法使用了两个栅格，等高线栅格比原栅格小一圈刚好可以避免边界问题（例如上一种方法会够不到边界）
+> - 并且该算法从单个栅格的角度考虑问题，可以很容易实现并行计算提高效率
+> - 该算法实现难度较大，暂时没有实现。我会参照该算法的思路进一步优化思路二的代码。
 
 ### 累积表面 (Accumulation Surfaces)
 > 参考链接： 
@@ -216,3 +240,6 @@ for(let i = 0; i < 3; i++){
 - 统计类基础渲染器与统计信息的解耦合： 为了更好地与现有的 JS 生态融合，统计类不强制要求使用自带的渲染器
 - 物理仿真模块：基于重构后的栅格类（也可能是 DEM 类），通过物理仿真模块包装，实现基础的环境方向的物理仿真。也会有一些基于流水物理的地形分析算法放在该类下面。
 - 本代码库永远不会涉及：具体界面的搭建。除了必要的数据渲染工具（用于debug）之外，本库不会设计编写用户界面部分的代码。
+
+## Reference
+- [1] [Marching squares. (2022, October 6). In Wikipedia.](https://en.wikipedia.org/wiki/Marching_squares) https://en.wikipedia.org/wiki/Marching_squares

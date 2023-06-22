@@ -22,9 +22,16 @@ export class pan {
      * @param {number} y - 纵坐标
      * 直接在上下文中绘制
      */
-    draw_point(x,y){
+    draw_point(x,y,Mycolor = null){
         const color = this.ctx.fillStyle;
-        this.ctx.fillStyle = this.color;
+
+        if(Mycolor){
+
+            this.ctx.fillStyle = Mycolor;
+        }else{
+            this.ctx.fillStyle = this.color;
+        }
+
         // this.ctx.fillRect(x, y, 10, 10);
         // draw a point with radius 10
         this.ctx.beginPath();
@@ -85,7 +92,7 @@ export class pan {
      * @param {array} pointlist 
      * @param {boolean} smooth - 是否平滑
      */
-     draw_complexline(pointlist,smooth=false){
+     draw_complexline(pointlist,smooth=false,EveryPoint=false){
         // draw poly line with sharp corners
         if(!smooth){
             this.ctx.strokeStyle =this.color;
@@ -111,6 +118,23 @@ export class pan {
             let i = pointlist.length-1;
             this.ctx.quadraticCurveTo(pointlist[i].x,pointlist[i].y,pointlist[i].x,pointlist[i].y);
             this.ctx.stroke();
+        }
+
+        // draw every point
+        if(EveryPoint){
+            for(let i=0;i<pointlist.length;i++){
+                // 始点为绿色
+                if(i==0 || i==pointlist.length-1){
+                    this.draw_point(pointlist[i].x,pointlist[i].y,"yellow");
+                    continue;
+                }else{
+                    // 中间为白色
+                    this.draw_point(pointlist[i].x,pointlist[i].y,"white");
+                }
+                
+                
+            
+            }
         }
         
     }

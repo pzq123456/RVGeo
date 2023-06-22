@@ -77,7 +77,7 @@ class Contour_CurveView {
           let line = new Line(pointset);
           // this.line.getSubSetByDP(threashold)
           let new_pointset = line.getSubSetByDP(0);
-          pan1.draw_complexline(new_pointset,true);
+          pan1.draw_complexline(new_pointset,true,true);
           this.ctx.restore();
           // 取中间点 标注
           let mid = Math.floor(this.contour_curve_list[i].length/2);

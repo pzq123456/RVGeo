@@ -41,6 +41,10 @@ export class grid {
         return tm;
     }
 
+    get2DArray(){
+        return this.gridset;
+    }
+
     /**
      * **注意：该操作会改变栅格本身 请谨慎操作！**
      * 在原栅格四周缓冲出一个size大小的区域 并填充上 num 值
@@ -635,7 +639,8 @@ export class grid {
                 continue;
             }
             for(let j = 0; j < tmp_contour.length; j++){
-                value.push(level);
+                
+                value.push(Math.round(level));
                 if(tmp_contour[j] === null){
                     continue;
                 }
@@ -643,7 +648,8 @@ export class grid {
             }
         }
 
-        contour = Arrange(contour);
+        
+        Arrange(contour,value);
 
         // raster to vector
         let contourList = this.V_RasLine2VecLine(contour,MBR);
@@ -656,8 +662,8 @@ export class grid {
         return res;
 
         // 整理点的辅助函数
-    function Arrange(contour){
-        console.log(contour);
+    function Arrange(contour,ValueList){
+
         for(let i = 0; i < contour.length; i++){
             if(contour[i].length == 0){continue;}
             let tmp = contour[i]; // [[x1,y1],[x2,y2],...]
@@ -678,6 +684,7 @@ export class grid {
                 let a = Math.atan2(y,x);
                 angle.push(a);
             }
+
             // 然后根据夹角排序顺时针
             // angle 的顺序与 tmp 的顺序一致
             for(let j = 0; j < angle.length; j++){
@@ -692,15 +699,11 @@ export class grid {
                     }
                 }
             }
-
-            
-
-
-
-            
             contour[i] = tmp;
         }
-        return contour;
+
+        // 闭合所有的线
+
 
     }
         
