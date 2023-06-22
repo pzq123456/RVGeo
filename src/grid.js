@@ -39,7 +39,6 @@ export class grid {
             }
         }
         return tm;
-
     }
 
     /**
@@ -242,6 +241,7 @@ export class grid {
             let res = this.gridset[row][column];
             return res * scale;
     }
+
     /**
      * 按照栅格行列号取栅格集合的值
      * * 输入格式：
@@ -314,6 +314,65 @@ export class grid {
         return accSerface;
     }
 
+    // === 性能调优 ===
+    // 对内含栅格进行四叉树 分割
+    // 该算法为递归算法
+    // 该算法为私有方法
+    /**
+     * 对内含栅格进行四叉树分割
+     * #### `internal function` 该算法处于内部测试阶段，不建议使用。
+     * > - 栅格部分的代码，下一个版本将会进行重构。
+     * > - 计算及渲染将引入webworker，以提高性能。同时内部数据将基于四叉树进行管理。
+     * - 该算法为递归算法
+     * - 该算法为私有方法
+     * @param {Array} gridset - 栅格集合
+     * @param {number} threshold - 分割阈值
+     * @returns {Array} 返回一个二维数组，包含若干个栅格集合
+     * @example
+     * // 返回一个二维数组，包含若干个栅格集合
+     * let res = quadTreeSplit(gridset,threshold);
+     * // res = [gridset1,gridset2,gridset3,gridset4];
+     */
+    #quadTreeSplit(gridset,threshold){
+        let res = [];
+        let n = gridset.length;
+        let m = gridset[0].length;
+        let flag = true;
+        for(let i = 0 ; i < n ; i++){
+            for(let j = 0 ; j < m ; j++){
+                // 如果有一个栅格值大于阈值，则不分割
+                if(gridset[i][j] > threshold){
+                    flag = false;
+                    break;
+                }
+            }
+            if(!flag) break;
+        }
+        if(flag){
+            res.push(gridset);
+            return res;
+        }
+        // 递归分割
+        let gridset1 = [];
+        let gridset2 = [];
+        let gridset3 = [];
+        let gridset4 = [];
+        for(let i = 0 ; i < n/2 ; i++){
+            gridset1.push(gridset[i].slice(0,m/2));
+            gridset2.push(gridset[i].slice(m/2,m));
+        }
+        for(let i = n/2 ; i < n ; i++){
+            gridset3.push(gridset[i].slice(0,m/2));
+            gridset4.push(gridset[i].slice(m/2,m));
+        }
+        res = res.concat(this.#quadTreeSplit(gridset1,threshold));
+        res = res.concat(this.#quadTreeSplit(gridset2,threshold));
+        res = res.concat(this.#quadTreeSplit(gridset3,threshold));
+        res = res.concat(this.#quadTreeSplit(gridset4,threshold));
+        return res;
+    }
+
+
     /**
      * 将内部栅格转化为整数栅格
      * @returns {Array} 返回一个二维矩阵,该矩阵为整数栅格
@@ -369,6 +428,8 @@ export class grid {
         const dx = [0,0,1,-1,1,1,-1,-1];
         const dy = [1,-1,0,0,1,-1,1,-1];
         const vis = this.#creataGridSet(0);
+
+        
         const contour = [];
         const ValueList = []; // 用于存储每个等值线的值    
         // 根据 栅格值与 value 的关系，将栅格进行分类
@@ -498,7 +559,36 @@ export class grid {
 
     }
 
+    /**
+     * 
+     * @param {Array} reaterlist 三维数组，[ [ [x1,y1],[x2,y2],... ],[ [x1,y1],[x2,y2],... ],...
+     * @param {*} MBR 
+     */
+    V_RasLine2VecLine(reaterlist,MBR){
+        let contourList = [];
+        for(let i = 0 ; i < reaterlist.length ; i++){
+            let points = [];
+            for(let j = 0 ; j < reaterlist[i].length ; j++){
+                
+                let poi = this.get_CellPoint_in_MBR(MBR,reaterlist[i][j][0],reaterlist[i][j][1]);
+                points.push(poi);
+            }
+            contourList.push(points);
+        }
+        // console.log("V_RasLine2VecLine");
+        // console.log(contourList);
+        return contourList;
+
+    }
+
     // 根据输入的分级数，及指定的层次数，获取 DEM 切面栅格 
+    /**
+     *  根据输入的分级数，及指定的层次数，获取 DEM 切面栅格 
+     * @param {Number} levels - 分级数
+     * @param {Number} index - 指定获取的层次数（0~levels）
+     * @param {Stastic} stastic - 统计信息
+     * @returns {Array} - 返回一个二维数组，表示 DEM 切面栅格
+     */
     get_DEM_Slice(levels,index,stastic){
         // 首先 获取栅格值的最大最小值并计算间隔
         let max = stastic.max;
@@ -513,25 +603,261 @@ export class grid {
         // 根据索引获取对应的等级，该等级以下的实体设为1， 空白设为0
         let level = expLevels[index];
         // 新建空白栅格作为结果
-        let result = this.#creataGridSet(0);
+        let result = this.#creataGridSet(0); // 0 表示空白栅格
         // 遍历栅格集合，将符合条件的栅格设为1
         for(let i = 0 ; i < this.row ; i++){
             for(let j = 0 ; j < this.column ; j++){
-                if(this.gridset[i][j] <= level){
+                // 如果该栅格值大于等于指定的等级，则设为1
+                if( this.gridset[i][j] <= level ){
                     result[i][j] = 1;
                 }
             }
         }
-        return result;
+
+        
+        // 返回结果
+        let res = {
+            "data":result,
+            "level":level
+        }
+        return res;
+    }
+
+    V_get_Contour_from_Slice(MBR,levels,stastic){
+        let contour = [];
+        let value = [];
+        for(let i =0; i < levels; i++){
+            let sliceobj = this.get_DEM_Slice(levels,i,stastic);
+            let data = sliceobj["data"];
+            let level = sliceobj["level"];
+            let tmp_contour = this.get_BinaryGrid_Boundary(data,false);
+            if(tmp_contour.length === 0){
+                continue;
+            }
+            for(let j = 0; j < tmp_contour.length; j++){
+                value.push(level);
+                if(tmp_contour[j] === null){
+                    continue;
+                }
+                contour.push(tmp_contour[j]);
+            }
+        }
+
+        contour = Arrange(contour);
+
+        // raster to vector
+        let contourList = this.V_RasLine2VecLine(contour,MBR);
+
+        // 返回结果
+        let res = {
+            "contour":contourList,
+            "value":value
+        }
+        return res;
+
+        // 整理点的辅助函数
+    function Arrange(contour){
+        console.log(contour);
+        for(let i = 0; i < contour.length; i++){
+            if(contour[i].length == 0){continue;}
+            let tmp = contour[i]; // [[x1,y1],[x2,y2],...]
+            // 顺时针
+            // 先找质心
+            let center = [0,0];
+            for(let j = 0; j < tmp.length; j++){
+                center[0] += tmp[j][0];
+                center[1] += tmp[j][1];
+            }
+            center[0] /= tmp.length;
+            center[1] /= tmp.length;
+            // 然后计算每个点与质心的夹角
+            let angle = [];
+            for(let j = 0; j < tmp.length; j++){
+                let x = tmp[j][0] - center[0];
+                let y = tmp[j][1] - center[1];
+                let a = Math.atan2(y,x);
+                angle.push(a);
+            }
+            // 然后根据夹角排序顺时针
+            // angle 的顺序与 tmp 的顺序一致
+            for(let j = 0; j < angle.length; j++){
+                for(let k = j + 1; k < angle.length; k++){
+                    if(angle[j] > angle[k]){
+                        let tmp_angle = angle[j];
+                        angle[j] = angle[k];
+                        angle[k] = tmp_angle;
+                        let tmp_point = tmp[j];
+                        tmp[j] = tmp[k];
+                        tmp[k] = tmp_point;
+                    }
+                }
+            }
+
+            
+
+
+
+            
+            contour[i] = tmp;
+        }
+        return contour;
 
     }
+        
+
+
+
+    }
+
+    /**
+     * 获取二值矩阵中所有的分界线
+     * @param {Array} data - 二值矩阵
+     * @param {Boolean} IsAnimation - 是否开启动画
+     */
+    get_BinaryGrid_Boundary(data,IsAnimation = false){
+        /**
+         * input: [[0,0,0,0,0,0,0,0,0,0],[0,0,1,1,1,0,0,0,0,0],...]
+         * result: [
+         * [ [x1,y1],[x2,y2] ], // 第一条分界线
+         * [ [x1,y1],[x2,y2] ], // 第二条分界线
+         * ...
+         * ]
+         */
+        //this.get_BinaryGrid_MaxConnected(data,x,y,threshold,value);
+        let all_MaxConnected = [];
+        let result = [];
+
+        // 首先获取所有的最大连通域
+        let vis = this.#creataGridSet(0);
+        for(let i = 0 ; i < this.row ; i++){
+            for(let j = 0 ; j < this.column ; j++){
+                if(vis[i][j] == 0 && data[i][j] == 1){
+                    let maxConnected = this.get_BinaryGrid_MaxConnected(data,i,j,4,1);
+                    all_MaxConnected.push(maxConnected);
+                    // 将该连通域设为已访问
+                    vis[i][j] = 1;
+                    for(let k = 0 ; k < maxConnected.length ; k++){
+                        let [x,y] = maxConnected[k];
+                        vis[x][y] = 1;
+                    }
+                }
+            }
+        }
+
+        // 然后取每个连通域的边界放入结果中
+        for(let i = 0 ; i < all_MaxConnected.length ; i++){
+            let maxConnected = all_MaxConnected[i];
+            let boundary = this.get_BinaryGrid_MaxConnected_Boundary(data,maxConnected,1);
+            result.push(boundary);
+        }
+
+        if(IsAnimation){
+        helper(data,result);
+        }
+
+        console.log(result);
+
+        return result;
+
+        function helper(data,result){
+            for(let i = 0; i < result.length ; i++){
+                let set = result[i];
+                for(let j = 0 ; j < set.length ; j++){
+                    let [x,y] = set[j];
+                    data[x][y] = 100;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 获取指定行列号的最大连通域，若连通域小于指定阈值，则返回空集合
+     * @param {Array} data - 二值矩阵,若未指定，则默认为当前栅格集合
+     * @param {Number} x - 指定的行号
+     * @param {Number} y - 指定的列号
+     * @param {Number} threshold - 指定的阈值,若连通域小于指定阈值，则返回空集合
+     * @param {Number} value - 指定要寻找连通域的值 若不是该值，则返回空集合
+     * @returns {Array} - 返回二维数组 [[x1,y1],[x2,y2],...] 表示包含该点的最大连通域 若连通域小于指定阈值，则返回 null
+     */
+    get_BinaryGrid_MaxConnected(data,x,y,threshold,value){
+        if(data === null){
+            data = this.gridset; // 若未指定，则默认为当前栅格集合
+        }
+        // 首先判断该点是否为指定的值
+        if(data[x][y] != value){
+            return [];
+        }
+        // 新建一个空白栅格，用于存储已经遍历过的点
+        let visited = this.#creataGridSet(0);
+        let result = [];
+        let dx = [0,0,1,-1,1,-1,1,-1];
+        let dy = [1,-1,0,0,1,-1,-1,1];
+        let queue = [];
+        queue.push([x,y]);
+        visited[x][y] = 1;
+        while(queue.length > 0){
+            let [x,y] = queue.shift();
+            result.push([x,y]);
+            for(let i = 0 ; i < dx.length ; i++){
+                let newx = x + dx[i];
+                let newy = y + dy[i];
+                if(newx >= 0 && newx < this.row && newy >= 0 && newy < this.column && visited[newx][newy] === 0 && data[newx][newy] === value){
+                    queue.push([newx,newy]);
+                    visited[newx][newy] = 1;
+                }
+            }
+        }
+        if(result.length < threshold){
+            return [];
+        }
+        return result;  
+    }
+    /**
+     * 获取指定行列号的最大连通域的边界点，若连通域小于指定阈值，则返回 null
+     * @param {Array} data - 二值矩阵,若未指定，则默认为当前栅格集合
+     * @param {Array} max_connected - 二值矩阵
+     * @param {Number} value - 指定要寻找连通域的值 若不是该值，则返回 []
+     * @returns {Array} - 返回二维数组 [[x1,y1],[x2,y2],...] 表示包含该点的最大连通域 若连通域小于指定阈值，则返回 null
+     */
+    get_BinaryGrid_MaxConnected_Boundary(data,max_connected,value){
+        if(max_connected.length < 1 ){
+            return [];
+        }
+        // 获取所有的边界点的行列号
+        let boundary = [];
+        // 只需要遍历连通域，找到所有的边界点即可
+        let dx = [0,0,1,-1];
+        let dy = [1,-1,0,0];
+        for(let i = 0 ; i < max_connected.length ; i++){
+            let [x,y] = max_connected[i];
+
+            let flag = false;
+            for(let j = 0 ; j < 4 ; j++){
+                let newx = x + dx[j];
+                let newy = y + dy[j];
+                if(newx >= 0 && newx < this.row && newy >= 0 && newy < this.column && data[newx][newy] != value){
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag){
+                boundary.push([x,y]);
+            }
+        }
+        return boundary;
+    }
+
+
     /**
      * 根据给定的MBR及给定栅格的行列号，计算该栅格的中心点在MBR中的位置（坐标）
+     * - 该方法是栅格数据与矢量数据结合的关键，相当于在栅格上再加一层矢量数据
+     * - 将栅格数据绘制矢量画布上需要指定外包络矩形，并且计算每一个栅格位置都会产生一定的误差，所以需要根据栅格分辨率进行误差控制
      * @param {Array} MBR - 矩形框，格式为 [x1,y1,x2,y2]
      * @param {number} row - 栅格行号
      * @param {number} col - 栅格列号
-     * @param {number} resolution - 栅格分辨率
-     * @returns {Point} 返回一个点
+     * @param {number} resolution - 栅格分辨率（用于控制计算栅格中心点的误差）
+     * @returns {Point} 返回一个点（Base.js 中的 Point 类）
      */
     get_CellPoint_in_MBR(MBR,row,col,resolution=0.1){
         // 首先使用总的行列切割MBR
@@ -594,6 +920,11 @@ export class grid {
     }
 
     // 计算栅格体积
+    /**
+     * 计算内部二维矩阵所代表的栅格的体积
+     * - 仅仅简单的将栅格视为小立方体，值累加
+     * @returns {number} 返回栅格体积
+     */
     getVolume(){
         let sum = 0;
         for(let i = 0 ; i < this.row ; i++){
@@ -617,8 +948,6 @@ export class grid {
         let row = matrix[0];
         let res = new grid(matrix.length,row.length);
         res.gridset = matrix;
-        console.log("读取矩阵成功");
-        console.log(matrix);
         return res;
     }
 

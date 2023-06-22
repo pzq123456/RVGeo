@@ -560,6 +560,8 @@ class PointSet{
         return this.extent;
     }
 
+    
+
     /**
      * 由 二维 Array 生成点集类 
      * * arr:[

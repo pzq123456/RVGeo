@@ -23,7 +23,11 @@ class PointView {
       this.color = color;
       this.point = point;
     }
-
+    /**
+     * 绘制自身(点)
+     * @param {number} canvas_height - canvas的高度
+     * @param {boolean} IsReaterMode - 是否为反转模式（与栅格绘制模式统一，以屏幕左下角为原点，符合直觉）
+     */
     draw(canvas_height,IsReaterMode = false) {
       if(!IsReaterMode){
         let pan1 = new pan(this.ctx,this.color);
@@ -61,12 +65,18 @@ class Contour_CurveView {
 
 
       for(let i=0;i<this.contour_curve_list.length;i++){
+        if(this.contour_curve_list[i] === null){
+          continue;
+        }
+        if(this.contour_curve_list[i].length === 0){
+          continue;
+        }
 
         if(smooth){
           let pointset = this.contour_curve_list[i];
           let line = new Line(pointset);
           // this.line.getSubSetByDP(threashold)
-          let new_pointset = line.getSubSetByDP(40);
+          let new_pointset = line.getSubSetByDP(0);
           pan1.draw_complexline(new_pointset,true);
           this.ctx.restore();
           // 取中间点 标注

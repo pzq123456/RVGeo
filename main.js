@@ -131,23 +131,24 @@ cs3Btn.addEventListener('click', () => {
     let grid1= RV.Raster.fromMatrix(data);
     // grid1.toIntGrid();
   
-
+    let MBR = [30,1024,1024+30,0]
     let stt =new RV.Stastic(grid1.get1DArray());
     grid1.padding_(10,stt.mean);// 可以选择padding的尺寸以及填充值 默认均值填充
     grid1.depadding_(); // 展示反padding效果 使用该方法可以抵消padding效果！
     grid1.padding_(1,stt.mean);// 可以选择padding的尺寸以及填充值 默认均值填充
     let colorramp = new RV.Renderer.ColorRamp(stt);
-    let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1,30,512+30,512+30,30);
+    let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1,30,512+30,512+30,30);// 
     gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"栅格1-1 原始DEM渲染");
 
-    // let curobj = grid1.V_get_Contour(MBR,10,stt);
+    // let curobj = grid1.V_get_Contour_from_Slice(MBR,10,stt);
     // console.log(curobj);
     // let contours = curobj["contour"];
-    // let values = curobj["values"];
+    // let values = curobj["value"];
   
     // let CintourView = new RV.Renderer.Contour_CurveView(myCanvas.ctx,myCanvas.height,"red",contours,values);
 
-    // CintourView.draw();
+    // CintourView.draw(true,true);
+    // CintourView.draw(true,true);
 
 
 
@@ -269,23 +270,16 @@ cs6Btn.addEventListener('click', () => {
 
   // clear the canvas before drawing
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-  let grid = new RV.Raster(50,50,0);
+  let grid = new RV.Raster(100,100,0);
   let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(35,15,1000));
   let stt =new RV.Stastic(grid1.get1DArray());
-  let curobj = grid1.V_get_Contour(MBR,5,stt);
+  let curobj = grid1.V_get_Contour_from_Slice(MBR,15,stt);
   console.log(curobj);
   let contours = curobj["contour"];
   let values = curobj["value"];
 
 
   let CintourView = new RV.Renderer.Contour_CurveView(myCanvas.ctx,myCanvas.height,"red",contours,values);
-
-
-  // let point = new RV.Vector.Point(645, 385); 
-
-
-
-
 
   let point =  grid1.get_CellPoint_in_MBR(MBR,0,0,0.1);
 
@@ -305,19 +299,35 @@ cs6Btn.addEventListener('click', () => {
 })
 let cs7Btn = document.querySelector('.cs7');
 cs7Btn.addEventListener('click', () => {
- // clear the canvas before drawing
-  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
 function slice(index){
-  let grid = new RV.Raster(50,50,0);
+  // clear the canvas before drawing
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
+  // 新建一个栅格
+  let grid = new RV.Raster(100,100,0);
+  // 生成累积表面
   let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(35,15,1000));
+  // 获取累积表面的统计信息
   let stt0 = new RV.Stastic(grid1.get1DArray());
-  let grid2 = RV.Raster.fromMatrix(grid1.get_DEM_Slice(10,index,stt0));
+
+  // 获取累积表面的切片
+  let resobj = grid1.get_DEM_Slice(10,index,stt0);
+  // 解包
+  let data = resobj["data"];
+  let level = resobj["level"];
+
+  grid1.get_BinaryGrid_Boundary(data,true);
+
+  let grid2 = RV.Raster.fromMatrix(data);
   let stt =new RV.Stastic(grid2.get1DArray());
   let colorramp = new RV.Renderer.ColorRamp(stt);
+
   let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid2,30,1024,1024+30,0);
   gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积表面及等高线测试视图");
-
 }
+
+// slice(3);
 
 // animation the slice 
 let index = 0;
@@ -325,7 +335,7 @@ let timer = setInterval(function(){
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   slice(index);
   index++;
-  if(index>50){
+  if(index>10){
     clearInterval(timer);
   }
 },1000)

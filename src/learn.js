@@ -115,6 +115,10 @@ export class Tensor_2D{
         this.shape=[this.row,this.column];
     }
 
+    /**
+     * 获取 centroid 质心
+     * @returns {array} - 返回一个一维向量
+     */
     get_centroid(){
         let res = [];
         for(let i = 0;i<this.column;i++){
