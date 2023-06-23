@@ -383,32 +383,39 @@ cs8Btn.addEventListener('click', () => {
 
   let cs9Btn = document.querySelector('.cs9');
   cs9Btn.addEventListener('click', () => {
+
+function animation(distance){
     // clear the canvas before drawing
     myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-
     let point = new RV.Vector.Point(100,100);
     let pointview = new RV.Renderer.PointView(myCanvas.ctx,'red',point);
     pointview.draw(myCanvas.height,false);
-
-
-
     // get buffer
-    let buffer = point.getBuffer(20);
+    let buffer = point.getBuffer(distance);
     pointview.draw_Buffer(buffer,myCanvas.height,false);
 
     let pl = RV.Test.test_4(1000,500,200,100,100);
     let pointset1 = new RV.Renderer.LineView(myCanvas.ctx,"rgba(255, 157, 0, 0.846)",pl);
     pointset1.draw("rgba(255, 157, 0, 0.846)",1,false);
 
-
-
-
-
     let line = new RV.Vector.Line(pl);
-    let bufferline = line.getBuffer(20);
+    let bufferline = line.getBuffer(distance);
 
     let polylineview = new RV.Renderer.PolygonView(myCanvas.ctx,'red',bufferline);
     polylineview.draw(myCanvas.height,false,true);
+  }
+
+
+
+  // animation the distance
+  let timer = setInterval(function(){
+    let distance = Math.random()*100;
+    animation(distance);
+    distance+=10;
+    if(distance>1000){
+      clearInterval(timer);
+    }
+  },1000)
 
 
 
