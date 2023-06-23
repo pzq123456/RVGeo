@@ -1,4 +1,4 @@
-# A Brief Tutorial for Experiment of Spatial Analysis (for Raster Part)
+# A Brief Tutorial for Experiment of Spatial Analysis (Raster Part)
 > - Pan 6.19 `14:00`
 > - 本文主要介绍一下个人对空间分析实习的一些想法，**水平有限**。若有错误，欢迎批评指正。
 > - 在 `GitHub`上修改 [本文档](https://github.com/pzq123456/RVGeo/tree/main/docs) 。拉取、提交 `Pull Request` 即可。本教程不定期更新，若要获取最新版本也请读者访问上述链接。
@@ -7,9 +7,11 @@
 
 个人精力有限，本教程不会涉及 **矢量相关算法、分型、正态云** 部分的算法。另外，本教程内的算法思路仅代表个人观点，会给出一些与解题相关的链接，烦请读者自行阅读理解。
 
+
 > `Joke` : 当你正真开始写代码的时候，你会发现困扰你的其实只有两个问题：
 > - 这个变量该叫什么？
 > - 这段功能该放在哪个文件夹下？
+ 
 
 - 本教程的主要内容及更新计划：（同时也是 RVGeo 的更新计划）
   - 第一阶段（栅格 DEM 部分算法）：累积表面的生成、栅格等值线生成、基于累积表面的简单应用、栅格水流模拟部分算法、DEM 地形分析部分算法、基于栅格的物理仿真

@@ -408,12 +408,8 @@ cs8Btn.addEventListener('click', () => {
     let bufferline = line.getBuffer(20);
 
     let polylineview = new RV.Renderer.PolygonView(myCanvas.ctx,'red',bufferline);
-    polylineview.draw(myCanvas.height,false,false);
+    polylineview.draw(myCanvas.height,false,true);
 
-    
-    // pan.draw_polygon(bufferline,myCanvas.height,false);
-    console.log(bufferline);
-    //let pointset1 = new RV.Renderer.LineView(myCanvas.ctx,"rgba(255, 157, 0, 0.846)",pl);
 
 
 

@@ -541,34 +541,112 @@ class Line {
 
             }
 
-        // 按顺序遍历点集，计算相邻组成向量的法向量，沿着法向量方向平移距离distance，将平移后的点集作为缓冲区的边界点集
+            // 计算将矢量延长并返回延长后的终点
+            const getExtendedPoint = (p1,p2,distance)=>{
+                let x = p2.x - p1.x;
+                let y = p2.y - p1.y;
+                let len = Math.sqrt(x*x + y*y);
+                let nx = x/len;
+                let ny = y/len;
+                let ex = p2.x + nx*distance;
+                let ey = p2.y + ny*distance;
+                let ep = new Point(ex,ey);
+                return ep;
+            }
+
+            // 获取两向量角平分线向量延伸后的终点
+            const getBisectorPoint = (p1,p2,p3,p4,distance)=>{
+                let v1 = {x:p2.x-p1.x,y:p2.y-p1.y};
+                let v2 = {x:p4.x-p3.x,y:p4.y-p3.y};
+                let len1 = Math.sqrt(v1.x*v1.x + v1.y*v1.y);
+                let len2 = Math.sqrt(v2.x*v2.x + v2.y*v2.y);
+                let cos = (v1.x*v2.x + v1.y*v2.y)/(len1*len2);
+                let angle = Math.acos(cos);
+                let nv1 = getNormalVector(p1,p2);
+                let nv2 = getNormalVector(p3,p4);
+                let nv = {x:nv1.x+nv2.x,y:nv1.y+nv2.y};
+                let len = Math.sqrt(nv.x*nv.x + nv.y*nv.y);
+                let nx = nv.x/len;
+                let ny = nv.y/len;
+                let ex = p2.x + nx*distance;
+                let ey = p2.y + ny*distance;
+                let ep = new Point(ex,ey);
+                return ep;
+            }
+
+
+
+        // 按顺序遍历点集，计算相邻两线的角平分线向量延长后的终点
         let BufferPointSet = [];
         let pointlist = this.pointlist;
         let len = pointlist.length;
-        for(let i = 0;i<len-1;i++){
+        // 取相邻 三点 [p1,p2,p3]
+        // 相邻两线 [p1, p2]  [p2, p3]
+        // 计算两线的角平分线向量延长后的终点
+
+        for(let i=0;i<len-2;i++){
             let p1 = pointlist[i];
             let p2 = pointlist[i+1];
-            let nv = getNormalVector(p1,p2);
-            let p3 = new Point(p1.x+nv.x*distance,p1.y+nv.y*distance);
-            let p4 = new Point(p2.x+nv.x*distance,p2.y+nv.y*distance);
-            BufferPointSet.push(p3);
-            BufferPointSet.push(p4);
+            let p3 = pointlist[i+2];
+            // 对于第一个点和最后一个点，需要特殊处理
+            // 第一个点需要首先向第一个向量的反方向平移距离distance
+            if(i==0){
+                let endp = getExtendedPoint(p2,p1,distance);
+                BufferPointSet.push(endp);
+
+                let nv = getNormalVector(p1,p2);
+                let p3 = new Point(p1.x+nv.x*distance,p1.y+nv.y*distance);
+                BufferPointSet.push(p3);
+                
+            }
+            let ep = getBisectorPoint(p1,p2,p2,p3,distance);
+            BufferPointSet.push(ep);
+
+            if(i==len-3){
+                let nv = getNormalVector(p2,p3);
+                let p4 = new Point(p3.x+nv.x*distance,p3.y+nv.y*distance);
+                BufferPointSet.push(p4);
+            }
+
         }
 
-        // 再反向遍历点集，计算相邻组成向量的法向量，沿着法向量方向平移距离distance，将平移后的点集作为缓冲区的边界点集
-        for(let i = len-1;i>0;i--){
+
+        // 最后一个点需要沿着最后一根线的法向量平移距离distance
+
+
+        // 反过来取相邻 三点 [p1,p2,p3]
+        // 相邻两线 [p1, p2]  [p2, p3]
+        // 计算两线的角平分线向量延长后的终点
+        for(let i=len-1;i>1;i--){
             let p1 = pointlist[i];
             let p2 = pointlist[i-1];
-            let nv = getNormalVector(p1,p2);
-            let p3 = new Point(p1.x+nv.x*distance,p1.y+nv.y*distance);
-            let p4 = new Point(p2.x+nv.x*distance,p2.y+nv.y*distance);
-            BufferPointSet.push(p3);
-            BufferPointSet.push(p4);
+            let p3 = pointlist[i-2];
+            
+
+
+            if(i==len-1){
+                let endp = getExtendedPoint(p2,p1,distance);
+                BufferPointSet.push(endp);
+
+                let nv = getNormalVector(p1,p2);
+                let p3 = new Point(p1.x+nv.x*distance,p1.y+nv.y*distance);
+                BufferPointSet.push(p3);
+            }
+
+
+            let ep = getBisectorPoint(p1,p2,p2,p3,distance);
+            BufferPointSet.push(ep);
+
+            if(i==2){
+                let nv = getNormalVector(p2,p3);
+                let p4 = new Point(p3.x+nv.x*distance,p3.y+nv.y*distance);
+                BufferPointSet.push(p4);
+            }
+
+            
         }
 
         // 生成缓冲区
-
-
         let polygon = new Polygon(BufferPointSet);
         return polygon;
     }
@@ -1044,6 +1122,8 @@ class Circle{
         this.radius = radius;
     }
 
+    // 重载构造函数 
+
     /**
      * 判断某点是否在圆上 考虑到误差这里会设置一个阈值
      * @param {Point} op - 需要判断相对关系的带你
@@ -1075,6 +1155,13 @@ class Circle{
      */
     getRadius(){
         return this.radius;
+    }
+
+    // 静态方法创建圆(Three Points)
+    static createCircle_from_Trangle(po1,po2,po3){
+        let tri = new Triangle(po1,po2,po3);
+        let cir = tri.getEXCircle();
+        return cir;
     }
 }
 

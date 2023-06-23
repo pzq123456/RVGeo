@@ -1,4 +1,4 @@
-import { Point, Polygon }  from './base.js';
+import { Point, Polygon, Circle }  from './base.js';
 import { ColorRamp } from './display.js';
 
 
@@ -105,25 +105,27 @@ export class pan {
      * 绘制填充多边形
      * @param {Polygon} polygon
      * @param {boolean} IsFill - 是否填充(会自动计算出较浅的填充颜色)
+     * @param {boolean} IsSmooth - 是否平滑绘制(Bezier曲线)
      */
-    draw_polygon2(polygon,IsFill=false){
+    draw_polygon2(polygon,IsFill=false,IsSmooth=false){
+
         //this.ctx.fillStyle = "#0000ff5a";
         let OriColor = this.ctx.fillStyle;
         this.ctx.strokeStyle = this.color;
         this.ctx.lineWidth = 3 ;
         this.ctx.beginPath();
-
-        console.log("draw_polygon2");
+        
+        // 用直线绘制
         let vectorlist = polygon.get_VectorList()
-        console.log(vectorlist);
+
         let simpleline0 = vectorlist[0].getSimpleLine();
         let spl0_sp = simpleline0[0];
-        let spl0_ep = simpleline0[1];
+
         this.ctx.moveTo(spl0_sp.x,spl0_sp.y);
         for(let i=1;i<vectorlist.length;i++){
             let simpleline = vectorlist[i].getSimpleLine();
             let spl_sp = simpleline[0];
-            let spl_ep = simpleline[1];
+
             this.ctx.lineTo(spl_sp.x,spl_sp.y);
         }
 

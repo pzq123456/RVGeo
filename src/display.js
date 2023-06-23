@@ -26,16 +26,16 @@ class PolygonView {
       this.polygon = polygon;
     }
 
-    draw(canvas_height,IsReaterMode = false, IsFill = false) {
+    draw(canvas_height,IsReaterMode=false, IsFill=false) {
       if(!IsReaterMode){
         let pan1 = new pan(this.ctx,this.color);
-        pan1.draw_polygon2(this.polygon,IsFill);
+        pan1.draw_polygon2(this.polygon,IsFill,true);
       }else{
         this.ctx.save();
         this.ctx.scale(1,-1);
         this.ctx.translate(0,-canvas_height);
         let pan1 = new pan(this.ctx,this.color);
-        pan1.draw_polygon2(this.polygon,IsFill);
+        pan1.draw_polygon2(this.polygon,IsFill,true);
         this.ctx.restore();
       }
     }
