@@ -152,10 +152,19 @@ cs2Btn.addEventListener('click', () => {
 
 let cs3Btn = document.querySelector('.cs3');
 cs3Btn.addEventListener('click', () => {
-  //http://124.221.217.153:5003/datapublic/dem.csv
-  //服务器数据地址
-  $.get("public/dem.csv",
-  function(data1,status){
+  // clear the canvas before drawing
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
+  // 获取本页网址并在后面加上 public/dem.csv
+  let url = window.location.href;
+  let url1 = url.split('/');
+  url1.pop();
+  url1.push('public/dem.csv');
+  let url2 = url1.join('/');
+  // 读取csv文件
+
+
+  $.get(url2,function(data1,status){
     // clear the canvas before drawing
     myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
     let data = RV.Raster.parser1(255,256,data1);
