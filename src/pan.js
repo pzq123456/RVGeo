@@ -108,27 +108,58 @@ export class pan {
      * @param {boolean} IsSmooth - 是否平滑绘制(Bezier曲线)
      */
     draw_polygon2(polygon,IsFill=false,IsSmooth=false){
+        let vectorlist = polygon.get_VectorList(); 
+        // 搜集所有的起点
+        let sp_list = [];
+        for(let i=0;i<vectorlist.length;i++){
+            let sp = vectorlist[i].sp;
+            sp_list.push(sp);
+        }
 
         //this.ctx.fillStyle = "#0000ff5a";
         let OriColor = this.ctx.fillStyle;
         this.ctx.strokeStyle = this.color;
         this.ctx.lineWidth = 3 ;
         this.ctx.beginPath();
-        
-        // 用直线绘制
-        let vectorlist = polygon.get_VectorList()
 
-        let simpleline0 = vectorlist[0].getSimpleLine();
-        let spl0_sp = simpleline0[0];
+        if(IsSmooth){
+            // 0 2 点 以 1 为控制点绘制 贝塞尔曲线
+            // length / 2 及 length / 2 + 2 以 length / 2 + 1 为控制点绘制 贝塞尔曲线
 
-        this.ctx.moveTo(spl0_sp.x,spl0_sp.y);
-        for(let i=1;i<vectorlist.length;i++){
-            let simpleline = vectorlist[i].getSimpleLine();
-            let spl_sp = simpleline[0];
+            // 将起点添加到末尾 并将末尾的点添加到起点
+            sp_list.push(sp_list[0]);
+            sp_list.unshift(sp_list[sp_list.length - 2]);
+            // this.draw_point(sp_list[0].x,sp_list[0].y,"#ff0000");
 
-            this.ctx.lineTo(spl_sp.x,spl_sp.y);
+            let len = sp_list.length;
+            // this.draw_point(sp_list[len - 1].x,sp_list[len - 1].y,"#00ff00");
+
+
+            for(let i=0; i<len; i++){
+                if( i==len/2 ){
+                    this.ctx.quadraticCurveTo(sp_list[i].x,sp_list[i].y,sp_list[i+1].x,sp_list[i+1].y);
+                }else if( i==0 ){
+                    this.ctx.moveTo(sp_list[0].x,sp_list[0].y);
+                    this.ctx.quadraticCurveTo(sp_list[i+1].x,sp_list[i+1].y,sp_list[i+2].x,sp_list[i+2].y);
+                    i++;
+                }
+                else if(i==len-1){
+                    continue;
+                }else{
+                    this.ctx.lineTo(sp_list[i].x,sp_list[i].y);
+                }
+            }
+
+
+        }else{
+            // 根据起点绘制
+            this.ctx.moveTo(sp_list[0].x,sp_list[0].y);
+            for(let i=1;i<sp_list.length;i++){
+                this.ctx.lineTo(sp_list[i].x,sp_list[i].y);
+            }
+
         }
-
+        
         // 若为填充多边形
         if(IsFill){
             console.log("IsFill");
