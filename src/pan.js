@@ -1,4 +1,4 @@
-import { Point }  from './base.js';
+import { Point, Polygon }  from './base.js';
 import { ColorRamp } from './display.js';
 
 
@@ -26,7 +26,6 @@ export class pan {
         const color = this.ctx.fillStyle;
 
         if(Mycolor){
-
             this.ctx.fillStyle = Mycolor;
         }else{
             this.ctx.fillStyle = this.color;
@@ -39,6 +38,8 @@ export class pan {
         this.ctx.fill();
         this.ctx.fillStyle = color;
     }
+
+    
 
     /**
      * 绘制点集
@@ -70,9 +71,11 @@ export class pan {
     /**
      * 绘制填充多边形
      * @param {array} pointlist 
+     * @param {boolean} IsFill - 是否填充(会自动计算出较浅的填充颜色)
      */
-    draw_polygon(pointlist){
+    draw_polygon(pointlist,IsFill=false){
         //this.ctx.fillStyle = "#0000ff5a";
+        let OriColor = this.ctx.fillStyle;
         this.ctx.strokeStyle = this.color;
         this.ctx.lineWidth = 3 ;
         this.ctx.beginPath();
@@ -81,9 +84,61 @@ export class pan {
         for(let i=1;i<pointlist.length;i++){
             this.ctx.lineTo(pointlist[i].x,pointlist[i].y);
         }
+
+        // 若为填充多边形
+        if(IsFill){
+            // 解析 this.color 并调高透明度
+            let FillColor = ColorParser.parseColor(this.color);
+            FillColor.transparent(0.8);
+            this.ctx.fillStyle = FillColor.toString();
+            this.ctx.fill();
+        }
+
         //this.ctx.fill();
         this.ctx.closePath();
         this.ctx.stroke();
+        this.ctx.fillStyle = OriColor;
+       
+    }
+
+    /**
+     * 绘制填充多边形
+     * @param {Polygon} polygon
+     * @param {boolean} IsFill - 是否填充(会自动计算出较浅的填充颜色)
+     */
+    draw_polygon2(polygon,IsFill=false){
+        //this.ctx.fillStyle = "#0000ff5a";
+        let OriColor = this.ctx.fillStyle;
+        this.ctx.strokeStyle = this.color;
+        this.ctx.lineWidth = 3 ;
+        this.ctx.beginPath();
+
+        console.log("draw_polygon2");
+        let vectorlist = polygon.get_VectorList()
+        console.log(vectorlist);
+        let simpleline0 = vectorlist[0].getSimpleLine();
+        let spl0_sp = simpleline0[0];
+        let spl0_ep = simpleline0[1];
+        this.ctx.moveTo(spl0_sp.x,spl0_sp.y);
+        for(let i=1;i<vectorlist.length;i++){
+            let simpleline = vectorlist[i].getSimpleLine();
+            let spl_sp = simpleline[0];
+            let spl_ep = simpleline[1];
+            this.ctx.lineTo(spl_sp.x,spl_sp.y);
+        }
+
+        // 若为填充多边形
+        if(IsFill){
+            console.log("IsFill");
+            // 解析 this.color 并调高透明度
+            let FillColor = ColorParser.parseColor(this.color);
+            FillColor.transparent(0.8);
+            this.ctx.fillStyle = FillColor.toString();
+            this.ctx.fill();
+        }
+        this.ctx.closePath();
+        this.ctx.stroke();
+        this.ctx.fillStyle = OriColor;
        
     }
     
@@ -142,18 +197,36 @@ export class pan {
     /**
      * 绘制矩形框 [x1,y1,x2,y2]
      * @param {array} list1
+     * @param {boolean} IsFill - 是否填充(会自动计算出较浅的填充颜色)
      */
-    draw_rect(list1){
-        let list = list1.slice();
-        this.ctx.strokeStyle =this.color;
+    draw_rect(list1,IsFill=false){
+
+        let OriColor = this.ctx.fillStyle;
+        this.ctx.strokeStyle = this.color;
         this.ctx.lineWidth = 3 ;
         this.ctx.beginPath();
-        this.ctx.moveTo(list[0],list[1]);
-        this.ctx.lineTo(list[2],list[1]);
-        this.ctx.lineTo(list[2],list[3]);
-        this.ctx.lineTo(list[0],list[3]);
+
+        this.ctx.moveTo(list1[0],list1[1]);
+        this.ctx.lineTo(list1[2],list1[1]);
+        this.ctx.lineTo(list1[2],list1[3]);
+        this.ctx.lineTo(list1[0],list1[3]);
+        this.ctx.closePath();
+
+        // 若为填充多边形
+        if(IsFill){
+            // 解析 this.color 并调高透明度
+            let FillColor = ColorParser.parseColor(this.color);
+            FillColor.transparent(0.8);
+            // console.log("Rect");
+            // console.log(FillColor);
+            this.ctx.fillStyle = FillColor.toString();
+            this.ctx.fill();
+        }
+
+
         this.ctx.closePath();
         this.ctx.stroke();
+        this.ctx.fillStyle = OriColor;
     }
 
     /**
@@ -176,17 +249,39 @@ export class pan {
      * @param {number} x - 圆心x坐标
      * @param {number} y - 圆心y坐标
      * @param {number} r - 外接圆半径
+     * @param {boolean} IsFill - 是否填充(会自动计算出较浅的填充颜色)
      */
-    draw_circle(x,y,r)
+    draw_circle(x,y,r,IsFill=false)
     {
-        // 开始绘制路径
-        this.ctx.beginPath();
-        this.ctx.lineWidth = 2;
+        let OriColor = this.ctx.fillStyle;
         this.ctx.strokeStyle = this.color;
-        // 绘制圆的路径
-        this.ctx.arc(x, y, r, 0, Math.PI * 2, false);
-        // 描边路径
+        this.ctx.lineWidth = 3 ;
+        this.ctx.beginPath();
+        this.ctx.arc(x,y,r,0,Math.PI*2,false);
+        this.ctx.closePath();
         this.ctx.stroke();
+
+        // 若为填充多边形
+        if(IsFill){
+            // 解析 this.color 并调高透明度
+            let FillColor = ColorParser.parseColor(this.color);
+            FillColor.transparent(0.8);
+            // console.log("Circle");
+            // console.log(FillColor);
+            this.ctx.fillStyle = FillColor.toString();
+            this.ctx.fill();
+        }
+
+        this.ctx.fillStyle = OriColor;
+
+        // // 开始绘制路径
+        // this.ctx.beginPath();
+        // this.ctx.lineWidth = 2;
+        // this.ctx.strokeStyle = this.color;
+        // // 绘制圆的路径
+        // this.ctx.arc(x, y, r, 0, Math.PI * 2, false);
+        // // 描边路径
+        // this.ctx.stroke();
     }
 
     /**
@@ -467,6 +562,147 @@ export class CellValueRenderer{
 
    
  }
+
+ /**
+  * **颜色解析类 用于解析颜色字符串**
+  * ## 静态对象，不需要实例化，直接使用静态方法
+  */
+ export class ColorParser{
+    // 颜色解析类 用于解析颜色字符串
+    // 1. rgb(255,255,255) 2. rgba(255,255,255,0.5) 3. #ffffff 4. #ffffffff 5. red 6. #fff 7. #ffff
+    // 8. #fff5 9. #fff5f5 10. #fff5f5f5 11. #fff5f5f5f5 12. #fff5f5f5f5f5
+    /**
+     * **解析颜色字符串**
+     * @param {*} color - 颜色字符串
+     * @returns 
+     */
+    static parseColor(color){
+
+        if(color == undefined || color == null){
+            return null;
+        }
+        if(typeof color == "string"){
+            if(color.startsWith("rgb")){
+                return this.parseColorByRGB(color);
+            }
+            else if(color.startsWith("#")){
+                return this.parseColorByHex(color);
+            }
+            else{
+                return this.parseColorByName(color);
+            }
+        }
+        return null;
+    }
+
+    static parseColorByRGB(color){
+        let colorStr = color.substring(color.indexOf("(")+1,color.indexOf(")"));
+        let colors = colorStr.split(",");
+        if(colors.length == 3){
+            return new Color(parseInt(colors[0]),parseInt(colors[1]),parseInt(colors[2]));
+        }
+        else if(colors.length == 4){
+            return new Color(parseInt(colors[0]),parseInt(colors[1]),parseInt(colors[2]),parseFloat(colors[3]));
+        }
+        return null;
+    }
+
+    static parseColorByHex(color){
+        let colorStr = color.substring(1);
+        let colors = [];
+        if(colorStr.length == 3){
+            colors = [colorStr.substring(0,1),colorStr.substring(1,2),colorStr.substring(2,3)];
+            return new Color(parseInt(colors[0]+colors[0],16),parseInt(colors[1]+colors[1],16),parseInt(colors[2]+colors[2],16));
+        }
+        else if(colorStr.length == 4){
+            colors = [colorStr.substring(0,1),colorStr.substring(1,2),colorStr.substring(2,3),colorStr.substring(3,4)];
+            return new Color(parseInt(colors[0]+colors[0],16),parseInt(colors[1]+colors[1],16),parseInt(colors[2]+colors[2],16),parseInt(colors[3]+colors[3],16)/255);
+        }
+        else if(colorStr.length == 6){
+            colors = [colorStr.substring(0,2),colorStr.substring(2,4),colorStr.substring(4,6)];
+            return new Color(parseInt(colors[0],16),parseInt(colors[1],16),parseInt(colors[2],16));
+        }
+        else if(colorStr.length == 8){
+            colors = [colorStr.substring(0,2),colorStr.substring(2,4),colorStr.substring(4,6),colorStr.substring(6,8)];
+            return new Color(parseInt(colors[0],16),parseInt(colors[1],16),parseInt(colors[2],16),parseInt(colors[3],16)/255);
+        }
+        return null;
+    }
+
+    static parseColorByName(color){
+        if(color == "red"){
+            return new Color(255,0,0);
+        }
+        else if(color == "green"){
+            return new Color(0,255,0);
+        }
+        else if(color == "blue"){
+            return new Color(0,0,255);
+        }
+        else if(color == "yellow"){
+            return new Color(255,255,0);
+        }
+        else if(color == "black"){
+            return new Color(0,0,0);
+        }
+        else if(color == "white"){
+            return new Color(255,255,255);
+        }
+        else if(color == "gray"){
+            return new Color(128,128,128);
+        }
+        else if(color == "orange"){
+            return new Color(255,165,0);
+        }
+        else if(color == "purple"){
+            return new Color(128,0,128);
+        }
+        else if(color == "pink"){
+            return new Color(255,192,203);
+        }
+        else if(color == "brown"){
+            return new Color(165,42,42);
+        }
+        else if(color == "cyan"){
+            return new Color(0,255,255);
+        }
+        return null;
+    }
+ }
+
+export class Color{
+    // 颜色类
+    constructor(r,g,b,a){
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
+
+    lighter(value){
+        this.r = this.r + value;
+        this.g = this.g + value;
+        this.b = this.b + value;
+    }
+
+    transparent(value){
+        if(this.a == undefined){
+            this.a = 1;
+        }
+        this.a = this.a - value;
+
+        if(this.a < 0){
+            this.a = Math.abs(this.a);
+        }
+    }
+
+    toString(){
+        if(this.a == undefined){
+            return "rgb("+this.r+","+this.g+","+this.b+")";
+        }
+        return "rgba("+this.r+","+this.g+","+this.b+","+this.a+")";
+    }
+}
 
 
  

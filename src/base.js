@@ -144,6 +144,16 @@ class Point {
         this.x = x;
         this.y = y;
     }
+
+    /**
+     * 获取点的缓冲区（圆）
+     * @param {number} distance - 缓冲区半径
+     * @return {Circle} - 返回缓冲区对象（圆）
+    */
+    getBuffer(distance){
+        return new Circle(this,distance);
+    }
+
     /**
      * Get the x value.
      * @return {number} The x value.
@@ -498,7 +508,69 @@ class Line {
      * 获取该折线的外包络矩形
      */
     getExtent(){
-    this.extent = getExtentOfPointSet(this.pointlist);
+        this.extent = getExtentOfPointSet(this.pointlist);
+    }
+
+    /**
+     * 获得该折线的缓冲区
+     * - 缓冲区为一个多边形
+     * @param {*} distance - 缓冲区距离
+     * @return {Polygon} 返回缓冲区
+     */
+    getBuffer(distance){
+
+        // 计算两点间的法向量
+            const getNormalVector = (p1,p2)=>{
+                let x = p2.x - p1.x;
+                let y = p2.y - p1.y;
+                let len = Math.sqrt(x*x + y*y);
+                let nx = -y/len;
+                let ny = x/len;
+                return {x:nx,y:ny};
+            }
+
+            // 计算两向量的夹角
+            const getAngle = (p1,p2,p3,p4)=>{
+                let v1 = {x:p2.x-p1.x,y:p2.y-p1.y};
+                let v2 = {x:p4.x-p3.x,y:p4.y-p3.y};
+                let len1 = Math.sqrt(v1.x*v1.x + v1.y*v1.y);
+                let len2 = Math.sqrt(v2.x*v2.x + v2.y*v2.y);
+                let cos = (v1.x*v2.x + v1.y*v2.y)/(len1*len2);
+                let angle = Math.acos(cos);
+                return angle;
+
+            }
+
+        // 按顺序遍历点集，计算相邻组成向量的法向量，沿着法向量方向平移距离distance，将平移后的点集作为缓冲区的边界点集
+        let BufferPointSet = [];
+        let pointlist = this.pointlist;
+        let len = pointlist.length;
+        for(let i = 0;i<len-1;i++){
+            let p1 = pointlist[i];
+            let p2 = pointlist[i+1];
+            let nv = getNormalVector(p1,p2);
+            let p3 = new Point(p1.x+nv.x*distance,p1.y+nv.y*distance);
+            let p4 = new Point(p2.x+nv.x*distance,p2.y+nv.y*distance);
+            BufferPointSet.push(p3);
+            BufferPointSet.push(p4);
+        }
+
+        // 再反向遍历点集，计算相邻组成向量的法向量，沿着法向量方向平移距离distance，将平移后的点集作为缓冲区的边界点集
+        for(let i = len-1;i>0;i--){
+            let p1 = pointlist[i];
+            let p2 = pointlist[i-1];
+            let nv = getNormalVector(p1,p2);
+            let p3 = new Point(p1.x+nv.x*distance,p1.y+nv.y*distance);
+            let p4 = new Point(p2.x+nv.x*distance,p2.y+nv.y*distance);
+            BufferPointSet.push(p3);
+            BufferPointSet.push(p4);
+        }
+
+        // 生成缓冲区
+
+
+        let polygon = new Polygon(BufferPointSet);
+        return polygon;
     }
 
 
@@ -644,121 +716,6 @@ function getconvex_hull(pointlist1){
     lower.shift();
     let res = upper.concat(lower);
     return res;
-
-    //Graham扫描法
-   
-    //辅助函数
-    // /**
-    //  * 
-    //  * @param {Point} p0 
-    //  * @param {Point} a 
-    //  * @param {Point} b 
-    //  * @returns 
-    //  */
-    //  function angle_sort(p0,a,b){
-    //     if(p0.getAngle_(a) - p0.getAngle_(b)===0){
-    //         return p0.getEuclideanDistance_(a) - p0.getEuclideanDistance_(b);
-    //     }
-    //     else {return p0.getAngle_(a) - p0.getAngle_(b);}
-
-    // }
-    //  /**
-    //  * @param {Point} a 
-    //  * @param {Point} b 
-    //  * @returns 
-    //  */
-    //   function y_sort(a,b){
-    //     if(a.y - b.y === 0 ){
-    //         return a.x - b.x;
-    //     }
-    //     else {return a.y - b.y;}
-    // }
-   
-
-    //代码主体
-
-    // let pointlist = pointlist1.slice();
-    // let reslist = [];
-    // pointlist.sort((a, b) => y_sort(a,b)); // 1. 依照y升降序排列 若y相同则依照x升序排序
-    // const p0 = pointlist.shift(); //获取y坐标最小的点
-    // const p1 = pointlist.shift(); //获取与x轴夹角最小的点
-    // pointlist.sort((a,b)=>angle_sort(p0,a,b)); // 2.依照与p0连线的角度值升序排序 若角度一样则取距离较远点
-
-    // reslist.push(p0);
-    // reslist.push(p1); 
-    // for(let i = 0 ; i < pointlist.length; i++){
-    //     let pl = reslist[reslist.length-1];
-    //     let psl = reslist[reslist.length-2];
-    //     let pnow = pointlist[i];
-    //     if(getClockwiseFea(psl,pl,pnow) === 1){//若逆时针则将点压入栈
-    //         reslist.push(pnow);
-    //         //continue;
-    //     }
-    //     else if(getClockwiseFea(psl,pl,pnow) === 3) {//若共线
-    //         if(getClockwiseFea(polast,ponow,pointlist[i+1])===3){
-    //                                 //let j = i;
-    //                                 while(i === pointlist.length-3 ){
-    //                                     if(getClockwiseFea(pointlist[i],pointlist[i+1],pointlist[i+2])===3){
-    //                                         i++;
-    //                                     }
-    //                                     else {continue;}
-    //                                 }
-    //                                 reslist.pop();
-    //                                 reslist.push(pointlist[i+2]);
-    //                             }
-    //     }     
-    //     else {
-    //         reslist.pop();//若顺时针则中间点弹出
-    //         //continue;
-    //     }
-    // }
-    // return reslist;
-
-    // if(pointlist1.length<=3){return pointlist1;}
-    // let pointlist=pointlist1.slice();
-    // let reslist=[];
-    // pointlist.sort((a, b) => y_sort(a,b)); // 1. 依照升降序排列
-    // //console.log(pointlist);
-    // const p0=pointlist.shift(); // 取第一个点
-    // reslist.push(p0);
-    // pointlist.sort((a,b)=>angle_sort(p0,a,b)); // 依照与p0连线的角度值升序排序 若角度一样则取距离较远点
-
-    // const ps = pointlist.shift();
-    // reslist.push(ps);    
-    // for(let i=0;i<pointlist.length;i++){ // bug原因：点在一条直线上
-    //         // get the two points on the stack head
-    //         let polast=reslist[reslist.length-1];
-    //         let poseclast=reslist[reslist.length-2];
-    //         let ponow=pointlist[i];
-    //         if(getClockwiseFea(poseclast,polast,ponow) === 1){// 若逆时针则将该点压入栈中(共线也要入栈，否则只能追踪出凸多边形)
-    //             reslist.push(pointlist[i]);
-    //         }
-    //         else if (getClockwiseFea(poseclast,polast,ponow)===3){
-    //                 if(getClockwiseFea(polast,ponow,pointlist[i+1])===3){
-    //                     let j = i;
-    //                     while(j === pointlist.length-3 ){
-    //                         if(getClockwiseFea(pointlist[j],pointlist[j+1],pointlist[j+2])===3){
-    //                             j++;
-    //                         }
-    //                         else {break;}
-    //                     }
-    //                     let mmm = [pointlist[j],pointlist[j+1],pointlist[j+2]];
-    //                     mmm.sort((a,b)=>p0.getEuclideanDistance_(a)-p0.getEuclideanDistance_(b));
-    //                     reslist.pop();
-    //                     reslist.push(mmm[2]);
-    //                 }
-    //         }
-    //         else if(getClockwiseFea(poseclast,polast,ponow)===2)
-    //         { //否则将栈顶元素推出
-    //             reslist.pop();
-    //         }
-            
-    // }
-
-    // reslist.push(pointlist[pointlist.length-1]);
-   
-    // return reslist;
-
 }
 
 /** 
@@ -927,6 +884,13 @@ class Polygon extends Line{
                 return false;
             }
         }
+    }
+
+    /**
+     * 获取多边形的边的点列表（逆时针）
+     */
+    get_VectorList(){
+        return this.vectorlist;
     }
 }
 

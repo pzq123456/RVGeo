@@ -65,8 +65,10 @@ import { Point,PointSet,Line,SimpleLine,Polygon,Triangle,getClockwiseFea,Delauna
 
  /**
   * 生成随机三角形
-  * @param {number} a 
-  * @returns 
+  * - 该方法会调用三次test_1(a)方法，生成三个随机点，然后判断三点是否共线，若不共线则返回三角形对象，否则返回 null
+  * - 三点共线则返回 null
+  * @param {number} a - 随机范围的上限
+  * @returns {Triangle} - 返回的三角形对象 若三点共线则返回 null
   */
 function test_5 (a){
     let po1 = test_1(a);
@@ -74,7 +76,7 @@ function test_5 (a){
     let po3 = test_1(a);
     if(getClockwiseFea(po1,po2,po3)===3){
         console.log("three point are on the same line");
-        return -1;
+        return null;
     }
     else{
         let tr = new Triangle(po1,po2,po3);

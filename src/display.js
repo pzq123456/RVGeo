@@ -4,9 +4,43 @@
  * 若想要获得更加丰富的可视化效果，建议搭配其他可视化库使用。
  * 该模块的作用：在开发阶段用以检验各个模块的功能、为node模块洁癖者提供更多的选择、由作者亲自编写所以学习成本更低。
  */
-import { PointSet,Line, Triangle, Point, MBRect }  from './base.js';
+import { PointSet,Line, Triangle, Point, MBRect, Circle }  from './base.js';
 import { pan,CellValueRenderer} from './pan.js' ;
 import {Stastic , grid} from './grid.js';
+
+/**
+ * 多边形的显示
+ * - 该类用于显示多边形
+ * - 该类的实例对象是一个多边形的显示对象
+*/
+class PolygonView {
+    /**
+     * 包装一个 Polygon
+     * @param {CanvasRenderingContext2D} ctx 
+     * @param {string} color 
+     * @param {Polygon} polygon 
+     */
+    constructor(ctx,color,polygon) {
+      this.ctx = ctx;
+      this.color = color;
+      this.polygon = polygon;
+    }
+
+    draw(canvas_height,IsReaterMode = false, IsFill = false) {
+      if(!IsReaterMode){
+        let pan1 = new pan(this.ctx,this.color);
+        pan1.draw_polygon2(this.polygon,IsFill);
+      }else{
+        this.ctx.save();
+        this.ctx.scale(1,-1);
+        this.ctx.translate(0,-canvas_height);
+        let pan1 = new pan(this.ctx,this.color);
+        pan1.draw_polygon2(this.polygon,IsFill);
+        this.ctx.restore();
+      }
+    }
+
+}
 
 /**
  * 点的显示
@@ -38,6 +72,31 @@ class PointView {
         this.ctx.translate(0,-canvas_height);
         let pan1 = new pan(this.ctx,this.color);
         pan1.draw_point(this.point.x,this.point.y);
+        }
+        this.ctx.restore();
+    }
+
+    /**
+     * 绘制点的缓冲区
+     * - 需要事先调用 getBuffer 方法获取缓冲区
+     * @param {Circle} buffer - 缓冲区
+     * @param {number} canvas_height - canvas的高度
+     * @param {boolean} IsReaterMode - 是否为反转模式（与栅格绘制模式统一，以屏幕左下角为原点，符合直觉）
+     */
+    draw_Buffer(buffer,canvas_height,IsReaterMode = false) {
+      // console.log(buffer);
+      if(!IsReaterMode){
+        console.log("draw_Buffer");
+        let pan1 = new pan(this.ctx,this.color);
+        // console.log(buffer.center.x,buffer.center.y,buffer.radius);
+        pan1.draw_circle(buffer.center.x,buffer.center.y,buffer.radius,true);
+      }else{
+        // console.log("draw_Buffer");
+        this.ctx.save();
+        this.ctx.scale(1,-1);
+        this.ctx.translate(0,-canvas_height);
+        let pan1 = new pan(this.ctx,this.color);
+        pan1.draw_circle(buffer.center.x,buffer.center.y,buffer.radius,true);
         }
         this.ctx.restore();
     }
@@ -128,16 +187,17 @@ class PointSetView {
     }
     /**
      * 绘制凸包
+     * @param {boolean} IsFill - 是否填充凸包
      */
-    draw_convex_hull(){
+    draw_convex_hull(IsFill = false){
         let pan2 = new pan(this.ctx,this.color);
-        pan2.draw_polygon(this.pointset.getConvexHull()); //绘制凸壳所围成的多边形
+        pan2.draw_polygon(this.pointset.getConvexHull(),IsFill); //绘制凸壳所围成的多边形
         //pan2.draw_pointset(this.pointset.getConvexHull()); //绘制所有在凸壳上的点
     }
 
     draw_extent(){
       let pan2 = new pan(this.ctx,"#00ffff5a");
-      pan2.draw_rect(this.pointset.extent);
+      pan2.draw_rect(this.pointset.extent,false);
     }
 
     //计划将该对象的一些属性信息写入页面的元素
@@ -152,7 +212,7 @@ class LineView{
      * @param {CanvasRenderingContext2D} ctx 
      * @param {number} number 
      * @param {string} color 
-     * @param {array} pointset 
+     * @param {Array} pointlist - 点列表(该类会自动包装成Line类)
      */
     constructor(ctx,color,pointset) {
     this.ctx = ctx;
@@ -212,7 +272,7 @@ class TriangleView{
   draw_EXCircle(){
     let pan1 = new pan(this.ctx,"red");
     let center = this.triangle.getEXCCenter();
-    pan1.draw_circle(center.x,center.y,this.triangle.getEXCRadius());
+    pan1.draw_circle(center.x,center.y,this.triangle.getEXCRadius(),false);
     pan1.draw_point(center.x,center.y);
   }
   /**
@@ -1079,5 +1139,5 @@ export class ColorRamp{
   }
 }
 
-  export {PointSetView,LineView,TriangleView,PointView,Contour_CurveView};
+  export {PointSetView,LineView,TriangleView,PointView,Contour_CurveView,PolygonView};
   
