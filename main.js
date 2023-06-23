@@ -295,8 +295,11 @@ cs4Btn.addEventListener('click', () => {
 
 let cs5Btn = document.querySelector('.cs5');
 cs5Btn.addEventListener('click', () => {
+
+
     // clear the canvas before drawing
     myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+    // 
     let pl = RV.Test.test_10(200,3,1000);
     let ten = new RV.Learn.Tensor_2D(pl);
     let res = ten.K_means(3,0.0001,100);

@@ -131,11 +131,6 @@ export class Tensor_2D{
         return res;
     }
 
-    // /**
-    //  * 
-    //  * @param {number} k 
-    //  * @returns 
-    //  */
     /**
      * k均值聚类
      * @param {number} k - 分类个数

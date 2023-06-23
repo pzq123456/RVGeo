@@ -12,7 +12,7 @@
 > - 这段功能该放在哪个文件夹下？
 
 - 本教程的主要内容及更新计划：（同时也是 RVGeo 的更新计划）
-  - 第一阶段（栅格 DEM 部分算法）：累积表面的生成、栅格等值线生成、基于累积表面的简单应用、栅格水流模拟部分算法、DEM 地形分析部分算法。
+  - 第一阶段（栅格 DEM 部分算法）：累积表面的生成、栅格等值线生成、基于累积表面的简单应用、栅格水流模拟部分算法、DEM 地形分析部分算法、基于栅格的物理仿真
   - 第二阶段（图论及最短路径部分算法）：略
   - 第三阶段（聚类算法及地图统计分析部分算法）：略
 
@@ -231,6 +231,35 @@ for(let i = 0; i < 3; i++){
 
 参照上述题目，我们可以通过计算正方体的表面积来近似得计算 DEM 的表面积。
 
+## 聚类算法
+> - 该部分算法位于 `learn.js` 文件中，方便起见我简单编写了多维向量类。
+
+### K均值聚类
+> - K均值聚类已经实现，参考 `learn.js` 第 `158` 行， 使用方法见 `main.js` 第 `297`行
+
+1. 从样本中选择 K 个点作为初始质心（完全随机）
+2. 计算每个样本到各个质心的距离，将样本划分到距离最近的质心所对应的簇中
+3. 计算每个簇内所有样本的均值，并使用该均值更新簇的质心
+4. 重复步骤 2 与 3 ，直到达到以下条件之一：
+    - 质心的位置变化小于指定的阈值（默认为 0.0001）;
+    - 达到最大迭代次数
+
+
+### 迭代自组织聚类算法 (ISODATA) [2]
+- 思路
+1. 选择某些初始值。可选不同的参数指标，也可在迭代过程中人为修改，以将N个模式样本按指标分配到各个聚类中心中去。 
+2. 计算各类中诸样本的距离指标函数。
+3. 按给定的要求，将前一次获得的聚类集进行分裂和合并处理
+   1. 分裂处理
+   2. 合并处理
+4. 重新进行迭代运算，计算各项指标，判断聚类结果是否符合要求。
+   - 经过多次迭代后，若结果收敛，则运算结束。
+- 空间应用背景下的性能调优[3]
+  - To improve the running time, an obvious alternative would be to store the k centers in a spatial index such as a kd-tree.6 
+
+
+
+
 ## 物理仿真
 - 下一版本将带来基于物理学的风场、流场仿真。目前，该部分会有一个简单的示意 Demo 。
 
@@ -243,3 +272,5 @@ for(let i = 0; i < 3; i++){
 
 ## Reference
 - [1] [Marching squares. (2022, October 6). In Wikipedia.](https://en.wikipedia.org/wiki/Marching_squares) https://en.wikipedia.org/wiki/Marching_squares
+- [2] [ISODATA](https://zhuanlan.zhihu.com/p/403365978) https://zhuanlan.zhihu.com/p/403365978
+- [3] [A FAST IMPLEMENTATION OF THE ISODATA CLUSTERING ALGORITHM](https://www.cs.umd.edu/users/mount/Papers/ijcga07-isodata.pdf) https://www.cs.umd.edu/users/mount/Papers/ijcga07-isodata.pdf
