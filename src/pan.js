@@ -34,7 +34,7 @@ export class pan {
         // this.ctx.fillRect(x, y, 10, 10);
         // draw a point with radius 10
         this.ctx.beginPath();
-        this.ctx.arc(x, y, 3, 0, 2 * Math.PI);
+        this.ctx.arc(x, y, 2, 0, 2 * Math.PI);
         this.ctx.fill();
         this.ctx.fillStyle = color;
     }
@@ -179,35 +179,39 @@ export class pan {
      * 绘制折线
      * @param {array} pointlist 
      * @param {boolean} smooth - 是否平滑
+     * @param {boolean} EveryPoint - 是否绘制每个点
+     * @param {boolean} IsDrawLine - 是否绘制线
      */
-     draw_complexline(pointlist,smooth=false,EveryPoint=false){
-        // draw poly line with sharp corners
-        if(!smooth){
-            this.ctx.strokeStyle =this.color;
-            this.ctx.lineWidth = 3 ;
-            this.ctx.beginPath();
-            this.ctx.moveTo(pointlist[0].x,pointlist[0].y);
-            for(let i=1;i<pointlist.length;i++){
-                this.ctx.lineTo(pointlist[i].x,pointlist[i].y);
+     draw_complexline(pointlist,smooth=false,EveryPoint=false,IsDrawLine = true){
+        if(IsDrawLine){
+            // draw poly line with sharp corners
+            if(!smooth){
+                this.ctx.strokeStyle =this.color;
+                this.ctx.lineWidth = 3 ;
+                this.ctx.beginPath();
+                this.ctx.moveTo(pointlist[0].x,pointlist[0].y);
+                for(let i=1;i<pointlist.length;i++){
+                    this.ctx.lineTo(pointlist[i].x,pointlist[i].y);
+                }
+                this.ctx.stroke();
+            }else{
+                // draw poly line with smooth corners
+                this.ctx.strokeStyle = this.color;
+                this.ctx.lineWidth = 3 ;
+                this.ctx.beginPath();
+                this.ctx.moveTo(pointlist[0].x,pointlist[0].y);
+                for(let i=1;i<pointlist.length-1;i++){
+                    let xc = (pointlist[i].x + pointlist[i+1].x) / 2;
+                    let yc = (pointlist[i].y + pointlist[i+1].y) / 2;
+                    this.ctx.quadraticCurveTo(pointlist[i].x,pointlist[i].y,xc,yc);
+                }
+                // curve through the last two points
+                let i = pointlist.length-1;
+                this.ctx.quadraticCurveTo(pointlist[i].x,pointlist[i].y,pointlist[i].x,pointlist[i].y);
+                this.ctx.stroke();
             }
-            this.ctx.stroke();
-        }else{
-            // draw poly line with smooth corners
-            this.ctx.strokeStyle = this.color;
-            this.ctx.lineWidth = 3 ;
-            this.ctx.beginPath();
-            this.ctx.moveTo(pointlist[0].x,pointlist[0].y);
-            for(let i=1;i<pointlist.length-1;i++){
-                let xc = (pointlist[i].x + pointlist[i+1].x) / 2;
-                let yc = (pointlist[i].y + pointlist[i+1].y) / 2;
-                this.ctx.quadraticCurveTo(pointlist[i].x,pointlist[i].y,xc,yc);
-            }
-            // curve through the last two points
-            let i = pointlist.length-1;
-            this.ctx.quadraticCurveTo(pointlist[i].x,pointlist[i].y,pointlist[i].x,pointlist[i].y);
-            this.ctx.stroke();
-        }
 
+        }
         // draw every point
         if(EveryPoint){
             for(let i=0;i<pointlist.length;i++){
@@ -218,10 +222,7 @@ export class pan {
                 }else{
                     // 中间为白色
                     this.draw_point(pointlist[i].x,pointlist[i].y,"white");
-                }
-                
-                
-            
+                }        
             }
         }
         

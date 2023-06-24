@@ -591,7 +591,7 @@ class Line {
             // 对于第一个点和最后一个点，需要特殊处理
             // 第一个点需要首先向第一个向量的反方向平移距离distance
             if(i==0){
-                let endp = getExtendedPoint(p2,p1,distance);
+                let endp = getExtendedPoint(p2,p1,distance*2);
                 BufferPointSet.push(endp);
 
                 let nv = getNormalVector(p1,p2);
@@ -625,7 +625,7 @@ class Line {
 
 
             if(i==len-1){
-                let endp = getExtendedPoint(p2,p1,distance);
+                let endp = getExtendedPoint(p2,p1,distance*2);
                 BufferPointSet.push(endp);
 
                 let nv = getNormalVector(p1,p2);

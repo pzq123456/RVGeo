@@ -110,19 +110,25 @@ class Contour_CurveView {
     this.contour_curve_list = contour_curve_list;
     this.contour_curve_value_list = contour_curve_value_list;
   }
-
-  draw(IsReaterMode = false, smooth=false) {
+  /**
+   * 绘制自身(等值线)
+   * @param {boolean} IsReaterMode - 是否为反转模式（与栅格绘制模式统一，以屏幕左下角为原点，符合直觉）
+   * @param {boolean} smooth - 是否平滑绘制(B样条曲线)
+   * @param {boolean} EveryPoint - 是否绘制每个点
+   * @param {boolean} IsDrawLine - 是否绘制线
+   * @param {boolean} IsText - 是否绘制文字(等值线值)
+   * @param {number} threashold - 绘制等值线的阈值
+   */
+  draw(IsReaterMode = false, smooth=false, EveryPoint=false, IsDrawLine=true, IsText=true,threashold=0) {
     let pan1 = new pan(this.ctx,this.color);
     // pan1.draw_text("balck","等值线",10,10);
     if(!IsReaterMode){
-      pan1.draw_complexline(this.contour_curve_list,true);
+      // console.log("draw_Buffer");
+      pan1.draw_complexline(this.contour_curve_list,smooth,EveryPoint,IsDrawLine);
     }else{
       this.ctx.save();
       this.ctx.scale(1,-1);
       this.ctx.translate(0,-this.canvas_height);
-
-
-
       for(let i=0;i<this.contour_curve_list.length;i++){
         if(this.contour_curve_list[i] === null){
           continue;
@@ -131,28 +137,32 @@ class Contour_CurveView {
           continue;
         }
 
-        if(smooth){
+
           let pointset = this.contour_curve_list[i];
           let line = new Line(pointset);
-          // this.line.getSubSetByDP(threashold)
-          let new_pointset = line.getSubSetByDP(0);
-          pan1.draw_complexline(new_pointset,true,true);
+          let new_pointset = line.getSubSetByDP(threashold);
+          pan1.draw_complexline(new_pointset,smooth,EveryPoint,IsDrawLine);
           this.ctx.restore();
           // 取中间点 标注
-          let mid = Math.floor(this.contour_curve_list[i].length/2);
-          pan1.draw_text("white",this.contour_curve_value_list[i],this.contour_curve_list[i][mid].x,this.canvas_height - this.contour_curve_list[i][mid].y);
-          this.ctx.save();
-          this.ctx.scale(1,-1);
-          this.ctx.translate(0,-this.canvas_height);
-        }else{
-        pan1.draw_complexline(this.contour_curve_list[i],true);
-        this.ctx.restore();
-        pan1.draw_text("white",this.contour_curve_value_list[i],this.contour_curve_list[i][0].x,this.contour_curve_list[i][0].y);
-        this.ctx.save();
-        this.ctx.scale(1,-1);
-        this.ctx.translate(0,-this.canvas_height);
-          
-        }
+          if(IsText){
+            let mid = Math.floor(this.contour_curve_list[i].length/2);
+            pan1.draw_text("white",this.contour_curve_value_list[i],this.contour_curve_list[i][mid].x,this.canvas_height - this.contour_curve_list[i][mid].y);
+            this.ctx.save();
+            this.ctx.scale(1,-1);
+            this.ctx.translate(0,-this.canvas_height);
+          }else{
+            this.ctx.save();
+            this.ctx.scale(1,-1);
+            this.ctx.translate(0,-this.canvas_height);
+          }
+          // this.ctx.restore();
+          // let mid = Math.floor(this.contour_curve_list[i].length/2);
+          // pan1.draw_text("white",this.contour_curve_value_list[i],this.contour_curve_list[i][mid].x,this.canvas_height - this.contour_curve_list[i][mid].y);
+          // this.ctx.save();
+          // this.ctx.scale(1,-1);
+          // this.ctx.translate(0,-this.canvas_height);
+        
+        
       }
     }
     this.ctx.restore();

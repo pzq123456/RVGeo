@@ -148,7 +148,7 @@ cs3Btn.addEventListener('click', () => {
     let grid1= RV.Raster.fromMatrix(data);
     // grid1.toIntGrid();
   
-    let MBR = [30,1024,1024+30,0]
+    let MBR = [30,512+30,512+30,30]
     let stt =new RV.Stastic(grid1.get1DArray());
     grid1.padding_(10,stt.mean);// 可以选择padding的尺寸以及填充值 默认均值填充
     grid1.depadding_(); // 展示反padding效果 使用该方法可以抵消padding效果！
@@ -157,18 +157,15 @@ cs3Btn.addEventListener('click', () => {
     let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1,30,512+30,512+30,30);// 
     gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"栅格1-1 原始DEM渲染");
 
-    // let curobj = grid1.V_get_Contour_from_Slice(MBR,10,stt);
-    // console.log(curobj);
-    // let contours = curobj["contour"];
-    // let values = curobj["value"];
+    let curobj = grid1.V_get_Contour_from_Slice(MBR,3,stt);
+    console.log(curobj);
+    let contours = curobj["contour"];
+    let values = curobj["value"];
   
-    // let CintourView = new RV.Renderer.Contour_CurveView(myCanvas.ctx,myCanvas.height,"red",contours,values);
+    let CintourView = new RV.Renderer.Contour_CurveView(myCanvas.ctx,myCanvas.height,"red",contours,values);
 
+    CintourView.draw(true,false,true,false,false);
     // CintourView.draw(true,true);
-    // CintourView.draw(true,true);
-
-
-
 
     let dd = grid1.get_Aspect();
     let grid2 = RV.Raster.fromMatrix(dd);
@@ -292,13 +289,12 @@ cs6Btn.addEventListener('click', () => {
   // clear the canvas before drawing
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   let grid = new RV.Raster(200,200,0);
-  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(100,100,0));
+  let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(0,100,0));
   let stt =new RV.Stastic(grid1.get1DArray());
-  let curobj = grid1.V_get_Contour_from_Slice(MBR,25,stt);
-  console.log(curobj);
+  let curobj = grid1.V_get_Contour_from_Slice(MBR,50,stt);
+  // console.log(curobj); 
   let contours = curobj["contour"];
   let values = curobj["value"];
-
 
   let CintourView = new RV.Renderer.Contour_CurveView(myCanvas.ctx,myCanvas.height,"red",contours,values);
 
@@ -307,13 +303,13 @@ cs6Btn.addEventListener('click', () => {
 
   // render point 
   let pointview = new RV.Renderer.PointView(myCanvas.ctx,'red',point);
-  console.log(stt.get_statistics_info());
+  // console.log(stt.get_statistics_info());
   let colorramp = new RV.Renderer.ColorRamp(stt);
   let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1,30,1024,1024+30,0);
   gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积表面及等高线测试视图");
 
   pointview.draw(myCanvas.height,true);
-  CintourView.draw(true,true);
+  CintourView.draw(true,true,false,true,true,1);
 
 
 
@@ -394,7 +390,7 @@ function animation(distance){
     let buffer = point.getBuffer(distance);
     pointview.draw_Buffer(buffer,myCanvas.height,false);
 
-    let pl = RV.Test.test_4(1000,500,200,100,100);
+    let pl = RV.Test.test_4(1000,500,100,100,100);
     let pointset1 = new RV.Renderer.LineView(myCanvas.ctx,"rgba(255, 157, 0, 0.846)",pl);
     pointset1.draw("rgba(255, 157, 0, 0.846)",1,false);
 

@@ -664,6 +664,8 @@ export class grid {
         // 整理点的辅助函数
     function Arrange(contour,ValueList){
 
+        // 整理步骤1 按逆时针排序 （与求点集凸包相似）
+
         for(let i = 0; i < contour.length; i++){
             if(contour[i].length == 0){continue;}
             let tmp = contour[i]; // [[x1,y1],[x2,y2],...]
@@ -702,9 +704,100 @@ export class grid {
             contour[i] = tmp;
         }
 
-        // 闭合所有的线
+        // 整理步骤二 截断
+        // contour [[[x1,y1],[x2,y2],...],...] 表示的栅格行列号且与 ValueList 一一对应
+        // 但是 contour 中有一些线需要截断,不是同一条线
+        // 例如： [[196, 4], [197, 5], [198, 6], [199, 7], [1, 199],[9, 198], [8, 198], [7, 197], [6, 197]]
+        // 就需要截断为两条线： [[196, 4], [197, 5], [198, 6], [199, 7]] 和 [[1, 199],[9, 198], [8, 198], [7, 197], [6, 197]]
+        // 但是这两条线的值是一样的，所以需要将 ValueList 也要在对应位置上添加一个值
+        // 例如： [1,2,3,4,5,6,7,8,9] -> [1,2,3,4,5,6,6,7,8,9] (第六个位置添加一个值)
+        // 整理步骤三 对于起点与终点相邻的线，需要将起点与终点相连
+        // contour [[[x1,y1],[x2,y2],...],...] 表示的栅格行列号且与 ValueList 一一对应
+        // [[92, 99], [92, 98], [92, 97], [92, 96], [93, 95], [94, 94], [95, 93], [96, 92], [97, 93], [98, 93], [92, 100]]
+        // 起点与终点相邻，需要将起点与终点相连
+        // [[92, 99], [92, 98], [92, 97], [92, 96], [93, 95], [94, 94], [95, 93], [96, 92], [97, 93], [98, 93], [92, 100], [92, 99]]
 
 
+        // 遍历 contour
+        for(let i = 0; i < contour.length; i++){
+            let tmp = contour[i]; // [[x1,y1],[x2,y2],...]
+            // let tmp = contour[i]; // [[x1,y1],[x2,y2],...]
+            // console.log(tmp);
+
+            if(tmp.length <= 1){
+                continue;
+            }else{
+                // 起点
+                let x1 = tmp[0][0];
+                let y1 = tmp[0][1];
+                // 终点
+                let x2 = tmp[tmp.length - 1][0];
+                let y2 = tmp[tmp.length - 1][1];
+
+                // 相邻： x 坐标相差 1 或者 y 坐标相差 1
+                // 不相邻： x 坐标相差大于 1 或者 y 坐标相差大于 1
+                // 由于都是整数，直接相减即可
+
+                // 起点与终点相邻，需要将起点与终点相连
+                if( Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1 ){
+                    // 将起点与终点相连
+                    tmp.push(tmp[0]);
+                }
+            } 
+
+            // 遍历 tmp
+            for(let j = 0; j < tmp.length - 1; j++){
+                let x1 = tmp[j][0];
+                let y1 = tmp[j][1];
+                let x2 = tmp[j+1][0];
+                let y2 = tmp[j+1][1];
+                // 相邻： x 坐标相差 1 或者 y 坐标相差 1
+                // 不相邻： x 坐标相差大于 1 或者 y 坐标相差大于 1
+                // 由于都是整数，直接相减即可
+                if( Math.abs(x1 - x2) > 20 || Math.abs(y1 - y2) > 20 ){
+                // 如果 tmp[j] 与 tmp[j+1] 不相邻，则需要截断
+                // 截断后的结果为： [tmp[0],tmp[1],...,tmp[j]] 和 [tmp[j+1],tmp[j+2],...,tmp[tmp.length-1]]
+                // 但是这两条线的值是一样的，所以需要将 ValueList 也要在对应位置上添加一个值
+
+                // 截断后的第一条线
+                let tmp1 = [];
+                for(let k = 0; k <= j; k++){
+                    tmp1.push(tmp[k]);
+                }
+                // 截断后的第二条线
+                let tmp2 = [];
+                for(let k = j + 1; k < tmp.length; k++){
+                    tmp2.push(tmp[k]);
+                }
+
+                // 将截断后的两条线添加到 contour 中
+                contour.push(tmp1);
+                contour.push(tmp2);
+
+                // 将 ValueList 中对应的值也添加到 ValueList 中
+                ValueList.push(ValueList[i]);
+                ValueList.push(ValueList[i]);
+                // 将 contour 中的原来的线删除
+                contour.splice(i,1);
+                // 将 ValueList 中的原来的值删除
+                ValueList.splice(i,1);
+                // 由于删除了 contour 中的一条线，所以需要将 i 减 1
+                i--;
+                // 由于删除了 contour 中的一条线，所以需要将 j 减 1
+                j--;
+                break;
+            }
+        }
+        }
+
+        // fix bug 对于长度小于3 的线，需要删除
+        for(let i = 0; i < contour.length; i++){
+            if(contour[i].length < 3){
+                contour.splice(i,1);
+                ValueList.splice(i,1);
+                i--;
+            }
+        }
     }
         
 
@@ -758,7 +851,7 @@ export class grid {
         helper(data,result);
         }
 
-        console.log(result);
+        // console.log(result);
 
         return result;
 
