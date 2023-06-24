@@ -4,7 +4,7 @@
 - 基础类的重构： 随着代码量的增加，库的复杂性也在上升，因此需要不时重新组织代码片段。
 - 统计类基础渲染器与统计信息的解耦合： 为了更好地与现有的 JS 生态融合，统计类不强制要求使用自带的渲染器
 - 物理仿真模块：基于重构后的栅格类（也可能是 DEM 类），通过物理仿真模块包装，实现基础的环境方向的物理仿真。也会有一些基于流水物理的地形分析算法放在该类下面。
-- 本代码库永远不会涉及：具体界面的搭建。除了必要的数据渲染工具（用于debug）之外，本库不会设计编写用户界面部分的代码。
+- 本代码库暂时不会涉及：具体界面的搭建。除了必要的数据渲染工具（用于debug）之外，本库暂时不会设计编写用户界面部分的代码。
 
 ## SOMETHING NEW FOR V1.0.22 (22/11/28)
 * `NEW Interface `: __pan__ 
@@ -108,8 +108,8 @@ pointset1.draw();// we can use this renderer conveniously
 pointset1.draw_convex_hull();
 pointset1.draw_extent();
 ```
-Now start your server ,click the button, and you will see this:
-![img](./Tutorial/img/exm1.png "result")
+
+
 
               
 

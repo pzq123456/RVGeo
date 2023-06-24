@@ -232,9 +232,9 @@ class Point {
      * @return {number} 本点到这条直线的距离
      */
     getDistance2Line_(sp,ep){
-        
         return getPoint2LineDistence(sp,ep,this);
     }
+    
     /**
      * 判断两点是否为同一点
      * @param {Point} op - 输入点
@@ -519,15 +519,7 @@ class Line {
      */
     getBuffer(distance){
 
-        // 计算两点间的法向量
-            const getNormalVector = (p1,p2)=>{
-                let x = p2.x - p1.x;
-                let y = p2.y - p1.y;
-                let len = Math.sqrt(x*x + y*y);
-                let nx = -y/len;
-                let ny = x/len;
-                return {x:nx,y:ny};
-            }
+
 
             // 计算两向量的夹角
             const getAngle = (p1,p2,p3,p4)=>{
@@ -553,7 +545,6 @@ class Line {
                 let ep = new Point(ex,ey);
                 return ep;
             }
-
             // 获取两向量角平分线向量延伸后的终点
             const getBisectorPoint = (p1,p2,p3,p4,distance)=>{
                 let v1 = {x:p2.x-p1.x,y:p2.y-p1.y};
@@ -572,6 +563,15 @@ class Line {
                 let ey = p2.y + ny*distance;
                 let ep = new Point(ex,ey);
                 return ep;
+            }
+            // 计算两点间的法向量
+            const getNormalVector = (p1,p2)=>{
+                let x = p2.x - p1.x;
+                let y = p2.y - p1.y;
+                let len = Math.sqrt(x*x + y*y);
+                let nx = -y/len;
+                let ny = x/len;
+                return {x:nx,y:ny};
             }
 
 
@@ -969,6 +969,93 @@ class Polygon extends Line{
      */
     get_VectorList(){
         return this.vectorlist;
+    }
+
+    /**
+     * 获取多边形的边的点列表（逆时针）
+     * @returns {Array} 返回多边形的边的点列表（逆时针）
+     */
+    get_OrderedPointList(){
+        let vectorlist = this.get_VectorList(); 
+        // 搜集所有的起点
+        let sp_list = [];
+        for(let i=0;i<vectorlist.length;i++){
+            let sp = vectorlist[i].sp;
+            sp_list.push(sp);
+        }
+        // 返回起点列表
+        return sp_list;
+    }
+
+    getBuffer(distance){
+        // 获取两向量角平分线向量延伸后的终点
+        const getBisectorPoint = (p1,p2,p3,p4,distance,ISreverse=false)=>{
+            if(ISreverse){
+                let tmp1 = p1;
+                p1 = p4;
+                p4 = tmp1;
+            }
+            let v1 = {x:p2.x-p1.x,y:p2.y-p1.y};
+            let v2 = {x:p4.x-p3.x,y:p4.y-p3.y};
+            let len1 = Math.sqrt(v1.x*v1.x + v1.y*v1.y);
+            let len2 = Math.sqrt(v2.x*v2.x + v2.y*v2.y);
+            let cos = (v1.x*v2.x + v1.y*v2.y)/(len1*len2);
+            let angle = Math.acos(cos);
+            let nv1 = getNormalVector(p1,p2);
+            let nv2 = getNormalVector(p3,p4);
+            let nv = {x:nv1.x+nv2.x,y:nv1.y+nv2.y};
+            let len = Math.sqrt(nv.x*nv.x + nv.y*nv.y);
+            let nx = nv.x/len;
+            let ny = nv.y/len;
+            let ex = p2.x + nx*distance;
+            let ey = p2.y + ny*distance;
+            let ep = new Point(ex,ey);
+            return ep;
+        }
+        // 计算两点间的法向量
+        const getNormalVector = (p1,p2)=>{
+            let x = p2.x - p1.x;
+            let y = p2.y - p1.y;
+            let len = Math.sqrt(x*x + y*y);
+            let nx = -y/len;
+            let ny = x/len;
+            return {x:nx,y:ny};
+        }
+
+        // 按顺序遍历点集，计算相邻两线的角平分线向量延长后的终点
+        let BufferPointSet = [];
+        let pointlist = this.pointlist;
+        let len = pointlist.length;
+
+        for(let i=0;i<len-2;i++){
+            let p1 = pointlist[i];
+            let p2 = pointlist[i+1];
+            let p3 = pointlist[i+2];
+            
+            let ep = getBisectorPoint(p1,p2,p2,p3,distance,true);
+            BufferPointSet.push(ep);
+        }
+        // 计算最后两个点的缓冲区点
+        let p1 = pointlist[len-2];
+        let p2 = pointlist[len-1];
+        let p3 = pointlist[0];
+        let p4 = pointlist[1];
+        let ep = getBisectorPoint(p1,p2,p2,p3,distance,true);
+        BufferPointSet.push(ep);
+
+        p1 = pointlist[len-1];
+        p2 = pointlist[0];
+        p3 = pointlist[1];
+        p4 = pointlist[2];
+        ep = getBisectorPoint(p1,p2,p2,p3,distance,true);
+        BufferPointSet.push(ep);
+
+
+
+        let result = new Polygon(BufferPointSet);
+        return result;
+
+        
     }
 }
 

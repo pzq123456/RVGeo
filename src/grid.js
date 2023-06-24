@@ -14,6 +14,9 @@ export class grid {
         this.gridset = this.#creataGridSet(filler);
     }
 
+
+    
+
     /**
      * 创建空白二维栅格(默认填充值为 0)
      * @param {Number} filler 
@@ -161,6 +164,31 @@ export class grid {
             res.push(tpp);
         }
         return res;
+    }
+
+    // 根据阈值进行二值化（也叫重分类）
+    // 二值化后的栅格值只有0和1
+    // 0表示不属于该类 1表示属于该类
+    // 该方法会改变原栅格
+    /**
+     * 根据阈值进行二值化（也叫重分类）
+     * - **该方法不反回新的栅格，而是直接在原栅格上进行修改**
+     * @param {number} threshold 阈值
+     * @returns - 无返回值(直接在原栅格上进行修改)
+     * - 重分类后的栅格值只有0和1，而不是返回一个新的栅格
+     */
+    reClassify_Binary_(threshold){
+        alert("该方法会改变原栅格");
+        for(let i = 0; i < this.row ;i++){
+            for(let j = 0; j < this.column;j++){
+                if(this.gridset[i][j] >= threshold){
+                    this.gridset[i][j] = 1;
+                }else{
+                    this.gridset[i][j] = 0;
+                }
+            }
+        }
+        console.log(this.gridset);
     }
 
 
@@ -703,7 +731,7 @@ export class grid {
             }
             contour[i] = tmp;
         }
-
+        // 整理步骤1 按逆时针排序 （与求点集凸包相似）
         // 整理步骤二 截断
         // contour [[[x1,y1],[x2,y2],...],...] 表示的栅格行列号且与 ValueList 一一对应
         // 但是 contour 中有一些线需要截断,不是同一条线

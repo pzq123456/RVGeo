@@ -389,13 +389,13 @@ export class CellValueRenderer{
         if(ISReversed) {
             value = 1 - value; 
         }
-     let r = 255*value;
-     let g = r;
-     let b = r;
-     if(alpha == undefined){
-        return "rgb("+r+","+g+","+b+")";
-     }
-     return "rgba("+r+","+g+","+b+","+alpha+")";
+        let r = 255*value;
+        let g = r;
+        let b = r;
+        if(alpha == undefined){
+            return "rgb("+r+","+g+","+b+")";
+        }
+        return "rgba("+r+","+g+","+b+","+alpha+")";
    }
 
     /**
@@ -523,6 +523,10 @@ export class CellValueRenderer{
      return "rgba("+r+","+g+","+b+","+alpha+")";
    }
 
+
+
+   
+
    /**
     * **取值限制[0,255]**
     * @param {*} value 
@@ -580,6 +584,70 @@ export class CellValueRenderer{
     return "rgb("+r+","+g+","+b+")";
    } 
 
+   /**
+    * 与 ArcGis 统一 采用 1 2 8 16 32 64 128 表示八个方向
+    * @param {*} value 
+    * @param {*} alpha 
+    * @returns
+    * - |-32-|-64-|128-|
+    * - |-16-|-0--|--1-|
+    * - |-8--|-4--|--2-| 
+    */
+   static Stadard_Aspact(value,alpha){
+    let r,g,b;
+    if(value == 1 ){
+        r=255;
+        g=0;
+        b=0;
+    }
+    if(value == 2){
+        r=255;
+        g=165;
+        b=0;
+    }
+    if(value == 4){
+        r=255;
+        g=255;
+        b=0;
+    }
+    if(value == 8){
+        r=0;
+        g=255;
+        b=0;
+    }
+    if(value == 16){
+        r=0;
+        g=255;
+        b=255;
+    }
+    if(value == 32){
+        r=135;
+        g=206;
+        b=250;
+    }
+    if(value == 64){
+        r=0;
+        g=0;
+        b=255;
+    }
+    if(value == 128){
+        r=139;
+        g=0;
+        b=255;
+    }
+    if(value == 0){
+        r=0;
+        g=0;
+        b=0;
+    }
+
+     if(alpha == undefined){
+        return "rgb("+r+","+g+","+b+")";
+     }
+     return "rgba("+r+","+g+","+b+","+alpha+")";
+
+   }
+
    static  Pure(value,ISReversed,alpha){
     if(ISReversed) {
         value = 1 - value; 
@@ -591,11 +659,8 @@ export class CellValueRenderer{
       return "rgb("+r+","+g+","+b+")";
    }
    return "rgba("+r+","+g+","+b+","+alpha+")";
+    }
 }
-
-
-   
- }
 
  /**
   * **颜色解析类 用于解析颜色字符串**
@@ -710,7 +775,9 @@ export class Color{
         this.r = r;
         this.g = g;
         this.b = b;
-        this.a = a;
+        if(a != undefined){
+            this.a = a;
+        }
     }
 
     lighter(value){

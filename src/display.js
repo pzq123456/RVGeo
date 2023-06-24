@@ -26,7 +26,13 @@ class PolygonView {
       this.polygon = polygon;
     }
 
-    draw(canvas_height,IsReaterMode=false, IsFill=false) {
+    /**
+     * 绘制有圆滑两端的多边形（主要是为折线缓冲区绘制服务的）
+     * @param {number} canvas_height - canvas的高度
+     * @param {boolean} IsReaterMode - 是否为反转模式（与栅格绘制模式统一，以屏幕左下角为原点，符合直觉）
+     * @param {boolean} IsFill - 是否填充
+     */
+    draw_Smooth_EndPgn(canvas_height,IsReaterMode=false, IsFill=false) {
       if(!IsReaterMode){
         let pan1 = new pan(this.ctx,this.color);
         pan1.draw_polygon2(this.polygon,IsFill,true);
@@ -36,6 +42,20 @@ class PolygonView {
         this.ctx.translate(0,-canvas_height);
         let pan1 = new pan(this.ctx,this.color);
         pan1.draw_polygon2(this.polygon,IsFill,true);
+        this.ctx.restore();
+      }
+    }
+
+    draw(canvas_height,IsReaterMode=false, IsFill=false) {
+      if(!IsReaterMode){
+        let pan1 = new pan(this.ctx,this.color);
+        pan1.draw_polygon(this.polygon.get_OrderedPointList(),IsFill);
+      }else{
+        this.ctx.save();
+        this.ctx.scale(1,-1);
+        this.ctx.translate(0,-canvas_height);
+        let pan1 = new pan(this.ctx,this.color);
+        pan1.draw_polygon(this.polygon.get_OrderedPointList(),IsFill);
         this.ctx.restore();
       }
     }
@@ -624,6 +644,16 @@ export class GridView{
 
   }
   
+  /**
+   * 绘制坡度图
+   * @param {*} colorramp - 颜色带
+   * @param {*} canvas_height - 画布高度
+   * @param {*} canvas_width - 画布宽度
+   * @param {*} ISDrawRamp - 是否绘制预览色带
+   * @param {*} name - 栅格名
+   * @memberof grid
+   * @returns {void}
+   */
   draw_aspect(colorramp,canvas_height,canvas_width,ISDrawRamp,name){
     let pan1 = new pan(this.ctx,"#00ffff5a"); // 小问题 初始化pan对象必须要给一个颜色 但是栅格用不上
     let xn = this.grid.column;//获取x轴栅格数
@@ -638,7 +668,7 @@ export class GridView{
     this.ctx.translate(0,-canvas_height);
 
     
-    pan1.draw_rect(this.MBR);
+    // pan1.draw_rect(this.MBR);
 
     for(let i =0;i<this.grid.row;i++){
       for(let j = 0 ;j<this.grid.column;j++){
@@ -719,7 +749,8 @@ export class GridView{
   }
 
   /**
-   * 用户自定义的栅格渲染方式 绘制连续值 需要统计数据
+   * ### 绘制连续值 (用户自定义的栅格渲染方式)
+   * - 需要统计数据
    * @param {*} canvas_height - 二维canvas上下文的高度
    * @param {*} ISDrawRamp - 是否要绘制示意颜色条带（位于栅格的右上角）
    * @param {*} ISDrawmain - 是否只绘制主体区域（即只绘制箱线图“箱”中的数据）
@@ -801,6 +832,15 @@ export class GridView{
     
   }
 
+  /**
+   * ### 绘制离散值 (用户自定义的栅格渲染方式)
+   * @param {*} canvas_height - 二维canvas上下文的高度
+   * @param {*} ISDrawRamp  - 是否要绘制示意颜色条带（位于栅格的右上角）
+   * @param {*} render_function  - 颜色渲染函数
+   * @param {*} name - 栅格名
+   * @param {*} level - 离散值的等级
+   * @param {*} alpha  - 栅格渲染的不透明度
+   */
   draw_dispersed_custom(canvas_height,ISDrawRamp,render_function,name,level,alpha){
     let pan1 = new pan(this.ctx,"#00ffff5a");
     this.ctx.save();
@@ -1046,7 +1086,6 @@ export class ColorRamp{
     蓝色 [RGB] 0, 0, 255 
     紫色 [RGB] 139, 0, 255 
     */
-
     if(value<22.5){
       return this.rgb_renderer(255,0,0);
     }

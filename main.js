@@ -36,11 +36,6 @@ footer.style.flex = '0 0 auto';
 footer.style.textAlign = 'center';
 footer.style.backgroundColor = '#f5f5f5';
 
-
-
-
-
-
 // draw a pointset and its convex_hull
 pointsetBtn.addEventListener('click', () => {
     let pl = RV.Test.test_2(80,700,100,100); //生成随机点集
@@ -69,7 +64,6 @@ lineBtn.addEventListener('click', () => {
 
 let cs1Btn = document.querySelector('.cs1');
 cs1Btn.addEventListener('click', () => {
-
 
   let tr = RV.Test.test_5(800);
   let tri = new RV.Renderer.TriangleView(myCanvas.ctx,'green',tr);
@@ -166,6 +160,7 @@ cs3Btn.addEventListener('click', () => {
     // CintourView.draw(true,true);
 
     let dd = grid1.get_Aspect();
+    console.log(dd);
     let grid2 = RV.Raster.fromMatrix(dd);
     let stt2 =new RV.Stastic(grid2.get1DArray());
     let colorramp2 = new RV.Renderer.ColorRamp(stt2);
@@ -288,6 +283,10 @@ cs6Btn.addEventListener('click', () => {
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   let grid = new RV.Raster(200,200,0);
   let grid1 = RV.Raster.fromMatrix(grid.splash_AccmulationSerface(0,100,0));
+  // grid1.reClassify_Binary_(51); // 阈值分割（二值化）
+
+
+
   let stt =new RV.Stastic(grid1.get1DArray());
   let curobj = grid1.V_get_Contour_from_Slice(MBR,50,stt);
   // console.log(curobj); 
@@ -335,6 +334,9 @@ function slice(index){
   grid1.get_BinaryGrid_Boundary(data,true);
 
   let grid2 = RV.Raster.fromMatrix(data);
+
+
+
   let stt =new RV.Stastic(grid2.get1DArray());
   let colorramp = new RV.Renderer.ColorRamp(stt);
 
@@ -388,7 +390,7 @@ function animation(distance){
     let buffer = point.getBuffer(distance);
     pointview.draw_Buffer(buffer,myCanvas.height,false);
 
-    let pl = RV.Test.test_4(1000,500,100,100,100);
+    let pl = RV.Test.test_4(1000,500,200,100,100);
     let pointset1 = new RV.Renderer.LineView(myCanvas.ctx,"rgba(255, 157, 0, 0.846)",pl);
     pointset1.draw("rgba(255, 157, 0, 0.846)",1,false);
 
@@ -396,10 +398,18 @@ function animation(distance){
     let bufferline = line.getBuffer(distance);
 
     let polylineview = new RV.Renderer.PolygonView(myCanvas.ctx,'red',bufferline);
-    polylineview.draw(myCanvas.height,false,true);
+    polylineview.draw_Smooth_EndPgn(myCanvas.height,false,true);
+
+    let RandomPolygon = RV.Test.Random_Regular_Polygon(600,600,200,16);
+    let bufferPolygon = RandomPolygon.getBuffer(distance);
+
+    let polygonview = new RV.Renderer.PolygonView(myCanvas.ctx,'red',RandomPolygon);
+    polygonview.draw(myCanvas.height,false,true);
+
+    let polygonBview = new RV.Renderer.PolygonView(myCanvas.ctx,'green',bufferPolygon);
+    polygonBview.draw(myCanvas.height,false,true);
   }
-
-
+  // animation(100);
 
   // animation the distance
   let timer = setInterval(function(){
@@ -411,7 +421,4 @@ function animation(distance){
     }
   },1000)
 
-
-
-
-  })
+})

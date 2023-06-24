@@ -238,6 +238,25 @@ function parser_1(a){
     return res;
 }
 
+/**
+ * 生成任意边数的正多边形
+ * @param {number} x - 中心点x坐标
+ * @param {number} y - 中心点y坐标
+ * @param {number} radius - 正多边形的半径
+ * @param {number} side - 正多边形的边数
+ * return {Polygon} - 返回一个正多边形 
+ */
+export function Random_Regular_Polygon(x,y,radius,side){
+    let vertices = [];
+    let angle = 2*Math.PI/side;
+    for(let i = 0;i<side;i++){
+        let point = new Point(x+radius*Math.cos(i*angle),y+radius*Math.sin(i*angle));
+        vertices.push(point);
+    }
+    let polygon = new Polygon(vertices);
+    return polygon;
+}
+
 export {
     test_1,
     test_2,

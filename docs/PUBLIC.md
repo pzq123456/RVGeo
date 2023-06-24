@@ -5,21 +5,6 @@
 > - 以下 JavaScript 简称 JS ， 该语言易于理解，可以很容易地转换成其他语言的代码。若读者对 JS 不了解可以参考 MDN 的 [这篇教程](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript)
 > - 若觉得本教程有用，欢迎为这个仓库点赞。
 
-个人精力有限，本教程不会涉及 **矢量相关算法、分型、正态云** 部分的算法。另外，本教程内的算法思路仅代表个人观点，会给出一些与解题相关的链接，烦请读者自行阅读理解。
-
-
-> `Joke` : 当你正真开始写代码的时候，你会发现困扰你的其实只有两个问题：
-> - 这个变量该叫什么？
-> - 这段功能该放在哪个文件夹下？
- 
-
-- 本教程的主要内容及更新计划：（同时也是 RVGeo 的更新计划）
-  - 第一阶段（栅格 DEM 部分算法）：累积表面的生成、栅格等值线生成、基于累积表面的简单应用、栅格水流模拟部分算法、DEM 地形分析部分算法、基于栅格的物理仿真
-  - 第二阶段（图论及最短路径部分算法）：略
-  - 第三阶段（聚类算法及地图统计分析部分算法）：略
-
-> 其中，第一阶段是正式开始编写的算法。二、三阶段算法会逐步整理及实现。
-
 ## [算法自查表](/docs/README.md)
 
 ## 项目结构方面的建议
@@ -84,6 +69,110 @@ for(let i = 0; i < 3; i++){
     brush.DrawPoint(ctx,Arr[i])
 }
 ```
+## 一些矢量算法的思路
+### 缓冲区（点、线、面）的生成
+- 点的缓冲区： 就是以该点为圆心，缓冲范围生成一个圆，并绘制出来。由于我已经编写了基础圆类 [Circle](https://github.com/pzq123456/RVGeo/blob/55ea4006b491249c3644f9843f776c14cf7c80e5/src/base.js#L1114)，所以直接生成即可。[点的缓冲区生成算法](https://github.com/pzq123456/RVGeo/blob/55ea4006b491249c3644f9843f776c14cf7c80e5/src/base.js#L153)
+  ```js
+      /**
+       * 获取点的缓冲区（圆）
+       * @param {number} distance - 缓冲区半径
+       * @return {Circle} - 返回缓冲区对象（圆）
+      */
+      getBuffer(distance){
+          return new Circle(this,distance);
+      }
+  ```
+- 线的缓冲区： 对于一条折线，它的缓冲区是一个多边形 [Polygon](https://github.com/pzq123456/RVGeo/blob/55ea4006b491249c3644f9843f776c14cf7c80e5/src/base.js#L912)。相较于点，折线的缓冲区复杂一些，难点在于线的拐点不好处理，我采用的是角平分线法（通过计算线拐点处的角平分线方向，然后延伸指定的距离）。该方法比较考验编程基础，我首先编写了以下工具函数：
+  - 一些工具函数：
+  ```js
+    // 计算两点间的法向量
+    const getNormalVector = (p1,p2)=>{
+        let x = p2.x - p1.x;
+        let y = p2.y - p1.y;
+        let len = Math.sqrt(x*x + y*y);
+        let nx = -y/len;
+        let ny = x/len;
+        return {x:nx,y:ny};
+    }
+    // 计算将矢量延长并返回延长后的终点
+    const getExtendedPoint = (p1,p2,distance)=>{
+        let x = p2.x - p1.x;
+        let y = p2.y - p1.y;
+        let len = Math.sqrt(x*x + y*y);
+        let nx = x/len;
+        let ny = y/len;
+        let ex = p2.x + nx*distance;
+        let ey = p2.y + ny*distance;
+        let ep = new Point(ex,ey);
+        return ep;
+    }
+    // 获取两向量角平分线向量延伸后的终点
+    const getBisectorPoint = (p1,p2,p3,p4,distance)=>{
+        let v1 = {x:p2.x-p1.x,y:p2.y-p1.y};
+        let v2 = {x:p4.x-p3.x,y:p4.y-p3.y};
+        let len1 = Math.sqrt(v1.x*v1.x + v1.y*v1.y);
+        let len2 = Math.sqrt(v2.x*v2.x + v2.y*v2.y);
+        let cos = (v1.x*v2.x + v1.y*v2.y)/(len1*len2);
+        let angle = Math.acos(cos);
+        let nv1 = getNormalVector(p1,p2);
+        let nv2 = getNormalVector(p3,p4);
+        let nv = {x:nv1.x+nv2.x,y:nv1.y+nv2.y};
+        let len = Math.sqrt(nv.x*nv.x + nv.y*nv.y);
+        let nx = nv.x/len;
+        let ny = nv.y/len;
+        let ex = p2.x + nx*distance;
+        let ey = p2.y + ny*distance;
+        let ep = new Point(ex,ey);
+        return ep;
+    }
+  ```
+  - 然后是具体缓冲区多边形生成：
+  ```js
+      /**
+     * 获得该折线的缓冲区
+     * - 缓冲区为一个多边形
+     * @param {*} distance - 缓冲区距离
+     * @return {Polygon} 返回缓冲区
+     */
+    getBuffer(distance){
+        // 按顺序遍历点集，计算相邻两线的角平分线向量延长后的终点
+        let BufferPointSet = [];
+        let pointlist = this.pointlist;
+        let len = pointlist.length;
+        // 取相邻 三点 [p1,p2,p3]
+        // 相邻两线 [p1, p2]  [p2, p3]
+        // 计算两线的角平分线向量延长后的终点
+        for(let i=0;i<len-2;i++){
+            let p1 = pointlist[i];
+            let p2 = pointlist[i+1];
+            let p3 = pointlist[i+2];
+            // 对于第一个点和最后一个点，需要特殊处理
+            // 第一个点需要首先向第一个向量的反方向平移距离distance
+            if(i==0){
+                let endp = getExtendedPoint(p2,p1,distance*2);
+                BufferPointSet.push(endp);
+
+                let nv = getNormalVector(p1,p2);
+                let p3 = new Point(p1.x+nv.x*distance,p1.y+nv.y*distance);
+                BufferPointSet.push(p3);
+            }
+            let ep = getBisectorPoint(p1,p2,p2,p3,distance);
+            BufferPointSet.push(ep);
+
+            if(i==len-3){
+                let nv = getNormalVector(p2,p3);
+                let p4 = new Point(p3.x+nv.x*distance,p3.y+nv.y*distance);
+                BufferPointSet.push(p4);
+            }
+          }
+        // 反向遍历生成另一边的点
+        // 生成缓冲区多边形
+        let polygon = new Polygon(BufferPointSet);
+        return polygon;
+      }
+  ```
+- 面的缓冲区：面的缓冲区也是多边形，并且对于简单的凸多边形面，只需要按顺序沿着相邻两边的角平分线延长指定的距离即可。（该部分代码略）
+
 
 ## 一些栅格算法的思路（ 基于 DEM ）
 > - 矢量部分、分型部分以及正态云部分的算法相对好实现，去年很多小组都已经实现的很好了，这里就不再赘述。当然，也可以参考我们的代码及文档（不全）。限于个人时间及精力，我无法一一整理。
@@ -111,9 +200,26 @@ for(let i = 0; i < 3; i++){
   - > 注： 
   - > - 该方法虽然效果不好，但是思路比较直接，对于编程联系还是有一定的帮助的
   - > - 该算法与 marching squares 的第一步极其相似，可以说本质上还是相通的。
-  - 
-  - 也可以采用淹没模拟的方法
-  - 从最小的值开始，逐层提取被淹没区域的边界线
+  - 在已经获得所有同一高度的等高线上点后，还需要对这些线进行如下处理以达到理想效果：
+```
+    整理步骤一 按逆时针排序 （与求点集凸包相似）
+    整理步骤二 截断
+      contour [[[x1,y1],[x2,y2],...],...] 表示的栅格行列号且与 ValueList 一一对应
+      但是 contour 中有一些线需要截断,不是同一条线
+        例如： [[196, 4], [197, 5], [198, 6], [199, 7], [1, 199],[9, 198], [8, 198], [7, 197], [6, 197]]
+        就需要截断为两条线： [[196, 4], [197, 5], [198, 6], [199, 7]] 和 [[1, 199],[9, 198], [8, 198], [7, 197], [6, 197]]
+        但是这两条线的值是一样的，所以需要将 ValueList 也要在对应位置上添加一个值
+        例如： [1,2,3,4,5,6,7,8,9] -> [1,2,3,4,5,6,6,7,8,9] (第六个位置添加一个值)
+    整理步骤三 对于起点与终点相邻的线，需要将起点与终点相连
+      contour [[[x1,y1],[x2,y2],...],...] 表示的栅格行列号且与 ValueList 一一对应
+      [[92, 99], [92, 98], [92, 97], [92, 96], [93, 95], [94, 94], [95, 93], [96, 92], [97, 93], [98, 93], [92, 100]]
+      起点与终点相邻，需要将起点与终点相连
+      [[92, 99], [92, 98], [92, 97], [92, 96], [93, 95], [94, 94], [95, 93], [96, 92], [97, 93], [98, 93], [92, 100], [92, 99]]
+```
+- 该算法的总结与反思：
+  - 在面对复杂数据的处理时，即使是传统的结构化处理函数也需要通过调参等手段去达到最好的运行效果。调参过程本质上就是一个磨合各个结构化过程的过程。就拿本函数来说，粗略地讲，本函数涉及：栅格数据的处理，矢量数据的生成，曲线抽稀（道格拉斯）。可以说，这是一个“复杂”的函数了。这些函数都有自己的参数，怎么样获得这些参数的最优组合？这个问题的答案无法通过任何理论得到，只有自己去动手调参数。
+  - “经验之谈”：在判断在哪里需要断开重新生成一条直线的过程中，两点之间到底距离多少才算两根直线？这个阈值就需要运用个人经验去把握。例如，可以写一个统计程序，把那些少数几个异常值标定为直线的断裂点。但是，这样算法的时间复杂度就太高了。也可以手动设置一个阈值，像道格拉斯扑克法那样，但是这个阈值到底需要多大呢？到底是计算矢量图层的实数距离还是计算栅格图层的整数距离？经过观察，我发现**栅格中行列号之差均小于二即可判定这两点相邻**。这样，我就通过这个小小经验优化了代码效果。
+
 
 #### 正解 (marching squares) 方法:
 > - In computer graphics, [marching squares](https://en.wikipedia.org/wiki/Marching_squares) is an algorithm that generates contours for a two-dimensional scalar field (rectangular array of individual numerical values). A similar method can be used to contour 2D triangle meshes.
@@ -233,6 +339,14 @@ for(let i = 0; i < 3; i++){
 
 参照上述题目，我们可以通过计算正方体的表面积来近似得计算 DEM 的表面积。
 
+
+### 栅格水流模拟(Flow Modeling)
+> 参考资料
+> - 英文资料，一些专有名词翻译未必准确
+> - https://www.youtube.com/watch?v=_KlRRowXv7k&t=143s
+栅格水流模拟指的是根据栅格数据所表示的地形特征（坡向），模拟水流累积所产生的效果，以达到提取水系栅格的目的。以下资料及思路均来自上述视频链接。
+
+
 ## 聚类算法
 > - 该部分算法位于 `learn.js` 文件中，方便起见我简单编写了多维向量类。
 
@@ -257,7 +371,7 @@ for(let i = 0; i < 3; i++){
 4. 重新进行迭代运算，计算各项指标，判断聚类结果是否符合要求。
    - 经过多次迭代后，若结果收敛，则运算结束。
 - 空间应用背景下的性能调优[3]
-  - To improve the running time, an obvious alternative would be to store the k centers in a spatial index such as a kd-tree.6 
+  - To improve the running time, an obvious alternative would be to store the k centers in a spatial index such as a kd-tree.
 
 
 
@@ -276,3 +390,5 @@ for(let i = 0; i < 3; i++){
 - [1] [Marching squares. (2022, October 6). In Wikipedia.](https://en.wikipedia.org/wiki/Marching_squares) https://en.wikipedia.org/wiki/Marching_squares
 - [2] [ISODATA](https://zhuanlan.zhihu.com/p/403365978) https://zhuanlan.zhihu.com/p/403365978
 - [3] [A FAST IMPLEMENTATION OF THE ISODATA CLUSTERING ALGORITHM](https://www.cs.umd.edu/users/mount/Papers/ijcga07-isodata.pdf) https://www.cs.umd.edu/users/mount/Papers/ijcga07-isodata.pdf
+- [4] [Flow Mdeling](https://www.youtube.com/watch?v=_KlRRowXv7k&t=143s) https://www.youtube.com/watch?v=_KlRRowXv7k&t=143s
+
