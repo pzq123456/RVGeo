@@ -291,7 +291,7 @@ class TriangleView{
   draw_INCircle(){
     let pan1 = new pan(this.ctx,this.color);
     let center = this.triangle.getINCcenter();
-    pan1.draw_circle(center.x,center.y,this.triangle.getINCRadius());
+    pan1.draw_circle(center.x,center.y,this.triangle.getINCRadius(),true);
     pan1.draw_point(center.x,center.y);
   }
 

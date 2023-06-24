@@ -2,15 +2,13 @@ import * as RV from './index.js';
 import { RasterDemo1 } from './helpers.js';
 
 
-let pl = RV.Test.test_6(8,1000);//生成狄罗妮三角形的点集个数
+let pl = RV.Test.test_6(100,1000);//生成狄罗妮三角形的点集个数
 let plt = [];
 
 for(let itm of pl){
   let po = new RV.Vector.Point(itm[0],itm[1]);
   plt.push(po);
 }
-
-
 
 
 
@@ -58,7 +56,7 @@ pointsetBtn.addEventListener('click', () => {
 
 // draw a complexline and its DPline
 lineBtn.addEventListener('click', () => {
-  let pl = RV.Test.test_4(1000,500,20);
+  let pl = RV.Test.test_4(1900,500,10);
   let pointset1 = new RV.Renderer.LineView(myCanvas.ctx,"rgba(255, 157, 0, 0.846)",pl);
   // clear the canvas before drawing
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
@@ -106,7 +104,7 @@ cs2Btn.addEventListener('click', () => {
   
   let grid1= RV.Raster.fromMatrix(data);
   let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1,512+512,512+512+10,512+512+512,512+10);
-  gridview.draw_dispersed_custom(myCanvas.height,true,RV.pan.CellValueRenderer.ColorBand_2,"三角形邻接关系",4)
+  gridview.draw_dispersed_custom(myCanvas.height,true,RV.pan.CellValueRenderer.ColorBand_1,"三角形邻接关系",4)
 
 })
 

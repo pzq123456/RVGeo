@@ -37,19 +37,20 @@ function RasterDemo1(data,myCanvas){
   let stv3 = new RV.Renderer.StasticView(myCanvas.ctx,stt2);
   stv3.draw_box_whisker_plot(30+600,512+600,512+600+30,600,10,60,myCanvas.height,myCanvas.width,"图表 2-2 坡向数据箱线图");
 
-  let cs = grid1.get_SampleLine(254,100,0,100);
-  gridview.draw_cell_set(cs,"green",myCanvas.height);
-  let da = grid3.get_CellValueList(cs,10);
-  let st = new RV.Stastic(da);
-  let stv4 = new RV.Renderer.StasticView(myCanvas.ctx,st);
-  stv4.draw_step_plot(30+600,512+30,512+600+600+30,30,10,250,myCanvas.height,myCanvas.width,"green","图表 3-1 剖面图");
+  // let cs = grid1.get_SampleLine(254,100,0,100);
+  // gridview.draw_cell_set(cs,"green",myCanvas.height);
+  // let da = grid3.get_CellValueList(cs,10);
+  // let st = new RV.Stastic(da);
+  // let stv4 = new RV.Renderer.StasticView(myCanvas.ctx,st);
+  // stv4.draw_step_plot(30+600,512+30,512+600+600+30,30,10,250,myCanvas.height,myCanvas.width,"green","图表 3-1 剖面图");
 
-  let cs2 = grid1.get_SampleLine(100,254,100,0);
-  gridview.draw_cell_set(cs2,"red",myCanvas.height);
-  let da2 = grid3.get_CellValueList(cs2,10);
-  let st2 = new RV.Stastic(da2);
-  let stv5 = new RV.Renderer.StasticView(myCanvas.ctx,st2);
-  stv5.draw_step_plot_single(30+600,512,512+600+600+30,0,10,250,myCanvas.height,myCanvas.width,"red");
+  // let cs2 = grid1.get_SampleLine(100,254,100,0);
+
+  // gridview.draw_cell_set(cs2,"red",myCanvas.height);
+  // let da2 = grid3.get_CellValueList(cs2,10);
+  // let st2 = new RV.Stastic(da2);
+  // let stv5 = new RV.Renderer.StasticView(myCanvas.ctx,st2);
+  // stv5.draw_step_plot_single(30+600,512,512+600+600+30,0,10,250,myCanvas.height,myCanvas.width,"red");
 }
 
 export {RasterDemo1};
