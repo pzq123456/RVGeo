@@ -20,9 +20,11 @@ export class pan {
      * 绘点
      * @param {number} x - 横坐标
      * @param {number} y - 纵坐标
+     * @param {string} Mycolor - 自定义颜色
+     * @param {number} pointSize - 点大小
      * 直接在上下文中绘制
      */
-    draw_point(x,y,Mycolor = null){
+    draw_point(x,y,Mycolor = null,pointSize = 2){
         const color = this.ctx.fillStyle;
 
         if(Mycolor){
@@ -34,7 +36,7 @@ export class pan {
         // this.ctx.fillRect(x, y, 10, 10);
         // draw a point with radius 10
         this.ctx.beginPath();
-        this.ctx.arc(x, y, 2, 0, 2 * Math.PI);
+        this.ctx.arc(x, y, pointSize, 0, Math.PI * 2, true);
         this.ctx.fill();
         this.ctx.fillStyle = color;
     }
@@ -55,17 +57,29 @@ export class pan {
      * 绘制单一直线
      * @param {Point} sp - start point
      * @param {Point} ep - end point
+     * @param {number} lineWidth - 线宽
      */
-    draw_line(sp,ep){
-        this.ctx.lineWidth = 3 ;
+    draw_line(sp,ep,lineWidth=3){
+        let OriColor = this.ctx.strokeStyle;
+        this.ctx.strokeStyle = this.color;
+        this.ctx.lineWidth = lineWidth;
         this.ctx.beginPath();
         this.ctx.moveTo(sp.x,sp.y);
         this.ctx.lineTo(ep.x,ep.y);
-        this.ctx.strokeStyle = this.color;
-        this.ctx.lineWidth = 3 ;
         this.ctx.closePath();
         this.ctx.stroke();
+        this.ctx.strokeStyle = OriColor;
     }
+
+        // this.ctx.lineWidth = lineWidth;
+        // this.ctx.beginPath();
+        // this.ctx.moveTo(sp.x,sp.y);
+        // this.ctx.lineTo(ep.x,ep.y);
+        // this.ctx.strokeStyle = this.color;
+        // this.ctx.lineWidth = 3 ;
+        // this.ctx.closePath();
+        // this.ctx.stroke();
+    
 
 
     /**
@@ -266,8 +280,25 @@ export class pan {
     /**
      * 绘制三角形
      * @param {array} list - 三角形的点表
+     * @param {boolean} IsFill - 是否填充(会自动计算出较浅的填充颜色)
      */
-    draw_triangle(list){
+    draw_triangle(list,IsFill=false){
+        let OriColor = this.ctx.fillStyle;
+
+        // 若为填充多边形
+        if(IsFill){
+            // 解析 this.color 并调高透明度
+            let FillColor = ColorParser.parseColor(this.color);
+            FillColor.transparent(0.8);
+            this.ctx.fillStyle = FillColor.toString();
+            this.ctx.beginPath();
+            this.ctx.moveTo(list[0].x,list[0].y);
+            this.ctx.lineTo(list[1].x,list[1].y);
+            this.ctx.lineTo(list[2].x,list[2].y);
+            this.ctx.closePath();
+            this.ctx.fill();
+        }
+
         this.ctx.strokeStyle =this.color;
         this.ctx.lineWidth = 3 ;
         this.ctx.beginPath();
@@ -276,6 +307,17 @@ export class pan {
         this.ctx.lineTo(list[2].x,list[2].y);
         this.ctx.closePath();
         this.ctx.stroke();
+        this.ctx.fillStyle = OriColor;
+
+
+        // this.ctx.strokeStyle =this.color;
+        // this.ctx.lineWidth = 3 ;
+        // this.ctx.beginPath();
+        // this.ctx.moveTo(list[0].x,list[0].y);
+        // this.ctx.lineTo(list[1].x,list[1].y);
+        // this.ctx.lineTo(list[2].x,list[2].y);
+        // this.ctx.closePath();
+        // this.ctx.stroke();
     }
 
     /**
@@ -356,6 +398,7 @@ export class pan {
     }
     /**
      * 绘制文字
+     * @param {string} color
      * @param {string} text 
      * @param {number} x 
      * @param {number} y 

@@ -292,34 +292,60 @@ class TriangleView{
     this.ctx = ctx;
     this.color = color;
     this.triangle = tri;
+    this.pan = new pan(this.ctx,this.color);
   }
-  draw(){
-    let pan1 = new pan(this.ctx,this.color);
-    pan1.draw_triangle(this.triangle.getTriangle());
+  draw(IsFill = false){
+    let pan1 = this.pan;
+    pan1.draw_triangle(this.triangle.getTriangle(),IsFill);
   }
   /**
    * 绘制外接圆
+   * @param {boolean} IsFill - 是否填充(默认不填充)
    */
-  draw_EXCircle(){
+  draw_EXCircle(IsFill = false){
     let pan1 = new pan(this.ctx,"red");
     let center = this.triangle.getEXCCenter();
-    pan1.draw_circle(center.x,center.y,this.triangle.getEXCRadius(),false);
+    pan1.draw_circle(center.x,center.y,this.triangle.getEXCRadius(),IsFill);
     pan1.draw_point(center.x,center.y);
   }
   /**
    * 绘制三角形内切圆
    */
-  draw_INCircle(){
-    let pan1 = new pan(this.ctx,this.color);
+  draw_INCircle(IsFill){
+    let pan1 = this.pan;
     let center = this.triangle.getINCcenter();
-    pan1.draw_circle(center.x,center.y,this.triangle.getINCRadius(),true);
+    pan1.draw_circle(center.x,center.y,this.triangle.getINCRadius(),IsFill);
     pan1.draw_point(center.x,center.y);
   }
 
   draw_info(text){
-    let pan1 = new pan(this.ctx,this.color);
+    let pan1 = this.pan;
+    let center = this.triangle.getEXCCenter();
+    let info = "("+"x:"+center.x.toFixed(2)+","+"y:"+center.y.toFixed(2)+")";
+    text+=info;
+    pan1.draw_text("black",text,center.x,center.y);
+  } 
+
+  /**
+   * 绘制三角形的三条垂线
+   * @param {string} color - 线的颜色
+   * @param {boolean} Isannotate - 是否标注垂足
+   */
+  draw_vertices(color,Isannotate){
+    let pan1 = new pan(this.ctx,color);
     let center = this.triangle.getINCcenter();
-    pan1.draw_text(text,center.x,center.y);
+    let footer1 = center.getFootPoint_(this.triangle.a);
+    let footer2 = center.getFootPoint_(this.triangle.b);
+    let footer3 = center.getFootPoint_(this.triangle.c);
+    pan1.draw_line(center,footer1,1);
+    pan1.draw_line(center,footer2,1);
+    pan1.draw_line(center,footer3,1);
+    if(Isannotate){
+      // alert("垂足坐标为：\n"+footer1.x.toFixed(2)+","+footer1.y.toFixed(2)+"\n"+footer2.x.toFixed(2)+","+footer2.y.toFixed(2)+"\n"+footer3.x.toFixed(2)+","+footer3.y.toFixed(2));
+      pan1.draw_point(footer1.x,footer1.y,"white",3);
+      pan1.draw_point(footer2.x,footer2.y,"white",3);
+      pan1.draw_point(footer3.x,footer3.y,"white",3);
+    }
   }
 
 }

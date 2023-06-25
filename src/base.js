@@ -155,6 +155,14 @@ class Point {
     }
 
     /**
+     *  获取到 p 点的向量
+     * @param {*} p 
+     */
+    getVector_(p){
+        return new Vector(this,p);
+    }
+
+    /**
      * Get the x value.
      * @return {number} The x value.
      */
@@ -1544,7 +1552,93 @@ class MBRect{
 
 }
 
+/**
+ * ### `向量类`: 为向量提供更丰富的功能
+ * - 由两点构成的向量
+ */
+export class Vector{
+    constructor(p1,p2){
+        this.x = p2[0] - p1[0];
+        this.y = p2[1] - p1[1];
+        this.orip = p1;
+        this.endp = p2;
+    }
 
+    // 获取向量的模
+    getModule(){
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    // 获取向量的单位向量
+    getUnitVector(){
+        let module = this.getModule();
+        return [this.x/module,this.y/module];
+    }
+
+    // 获取向量的法向量
+    getNormalVector(){
+        return [-this.y,this.x];
+    }
+
+    // 获取向量的点积
+    getDotProduct(vector){
+        return this.x * vector.x + this.y * vector.y;
+    }
+
+    // 获取向量的叉积
+    getCrossProduct(vector){
+        return this.x * vector.y - this.y * vector.x;
+    }
+
+
+    // 获取向量的夹角（弧度制）
+    getAngleInRadian(vector){
+        let dotProduct = this.getDotProduct(vector);
+        let module1 = this.getModule();
+        let module2 = vector.getModule();
+        return Math.acos(dotProduct/(module1 * module2));
+    }
+
+    // 获取向量的夹角（角度制）
+    getAngleInDegree(vector){
+        let dotProduct = this.getDotProduct(vector);
+        let module1 = this.getModule();
+        let module2 = vector.getModule();
+        return Math.acos(dotProduct/(module1 * module2)) * 180 / Math.PI;
+    }
+
+    // 获取向量的方向
+    getDirection(){
+        return Math.atan2(this.y,this.x);
+    }
+
+    // 获取向量的方向（角度制）
+
+    getDirectionInDegree(){
+        return Math.atan2(this.y,this.x) * 180 / Math.PI;
+    }
+
+    // 获取向量的方向（弧度制）
+    getDirectionInRadian(){
+        return Math.atan2(this.y,this.x);
+    }
+
+    get_1DVector(){
+        return [this.x,this.y];
+    }
+
+    get_2DVector(){
+        return [[0,0],[this.x,this.y]];
+    }
+
+    get_1DPointVector(){
+        return [this.orip,this.endp];
+    }
+
+    get_2DPointVector(){
+        return [[this.orip.x,this.orip.y],[this.endp.x,this.endp.y]];
+    }
+}
 
 
  
