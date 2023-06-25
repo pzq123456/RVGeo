@@ -259,19 +259,22 @@ cs5Btn.addEventListener('click', () => {
     let ps1 = RV.Vector.PointSet.fromaArray_2D(pl1,1,0);
     let psv1 = new RV.Renderer.PointSetView(myCanvas.ctx,'green',ps1);
     psv1.draw();
-    psv1.draw_convex_hull();
+    psv1.draw_convex_hull(true);
+    // psv1.draw_extent(true);
 
     let pl2 = res[1];
     let ps2 = RV.Vector.PointSet.fromaArray_2D(pl2,1,0);
     let psv2 = new RV.Renderer.PointSetView(myCanvas.ctx,'red',ps2);
     psv2.draw();
-    psv2.draw_convex_hull();
+    psv2.draw_convex_hull(true);
+    // psv2.draw_extent(true);
 
     let pl3 = res[2];
     let ps3 = RV.Vector.PointSet.fromaArray_2D(pl3,1,0);
     let psv3 = new RV.Renderer.PointSetView(myCanvas.ctx,'blue',ps3);
     psv3.draw();
-    psv3.draw_convex_hull();
+    psv3.draw_convex_hull(true);
+    // psv3.draw_extent(true);
 
 })
 
@@ -406,7 +409,7 @@ function animation(distance){
     let polygonview = new RV.Renderer.PolygonView(myCanvas.ctx,'red',RandomPolygon);
     polygonview.draw(myCanvas.height,false,true);
 
-    let polygonBview = new RV.Renderer.PolygonView(myCanvas.ctx,'green',bufferPolygon);
+    let polygonBview = new RV.Renderer.PolygonView(myCanvas.ctx,'black',bufferPolygon);
     polygonBview.draw(myCanvas.height,false,true);
   }
   // animation(100);

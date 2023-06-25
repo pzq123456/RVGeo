@@ -225,9 +225,10 @@ class PointSetView {
         //pan2.draw_pointset(this.pointset.getConvexHull()); //绘制所有在凸壳上的点
     }
 
-    draw_extent(){
+    draw_extent(IsFill = false){
       let pan2 = new pan(this.ctx,"#00ffff5a");
-      pan2.draw_rect(this.pointset.extent,false);
+      pan2.draw_rect(this.pointset.extent,IsFill);
+
     }
 
     //计划将该对象的一些属性信息写入页面的元素

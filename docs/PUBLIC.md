@@ -1,4 +1,4 @@
-# A Brief Tutorial for Experiment of Spatial Analysis (Raster Part)
+# A Brief Tutorial for Experiment of Spatial Analysis 
 > - Pan 6.19 `14:00`
 > - 本文主要介绍一下个人对空间分析实习的一些想法，**水平有限**。若有错误，欢迎批评指正。
 > - 在 `GitHub`上修改 [本文档](https://github.com/pzq123456/RVGeo/tree/main/docs) 。拉取、提交 `Pull Request` 即可。本教程不定期更新，若要获取最新版本也请读者访问上述链接。
@@ -174,6 +174,236 @@ for(let i = 0; i < 3; i++){
 - 面的缓冲区：面的缓冲区也是多边形，并且对于简单的凸多边形面，只需要按顺序沿着相邻两边的角平分线延长指定的距离即可。（该部分代码略）
 
 
+### 两点间的距离量测
+- 首先编写一些工具函数
+  ```js
+  /**
+   * kernel_1 : (a-b)^2 
+   * @param {number} a - a
+   * @param {number} b - b 
+   * @return {number} The result value.
+   */
+  function kernel_1(a,b){
+      return Math.pow((a-b),2);
+  }
+
+  /**
+   * kernel_2 : |a-b| 
+   * @param {number} a - a
+   * @param {number} b - b 
+   * @return {number} The result value.
+   */
+  function kernel_2(a,b){
+      return Math.abs((a-b));
+  }
+  ```
+- 然后根据公式计算两点间的距离
+
+  ```js
+  /**
+   * 计算欧氏距离(Euclidean Distance)
+   * functionname_()表示对某对象的运算
+   * @param {Point} InPoint - 输入点对象
+   * @return {number} - 返回两点间的欧氏距离
+   */
+  getEuclideanDistance_(InPoint) {
+      return Math.sqrt(kernel_1(this.x,InPoint.x)+kernel_1(this.y,InPoint.y));
+  }
+  /**
+   * 曼哈顿距离(Manhattan Distance) Chebyshev distance
+   * @param {Point} InPoint - 输入点对象
+   * @return {number} - 返回两点间的曼哈顿距离
+   */
+      getManhattanDistance_(InPoint) {
+      return kernel_2(this.x,InPoint.x)+kernel_2(this.y,InPoint.y);
+  }
+  /**
+   * 切比雪夫距离(Chebyshev distance) : max(|a-b|...)
+   * @param {Point} InPoint - 输入点对象
+   * @return {number} - 返回两点间的切比雪夫距离
+   */
+    getChebyshevDistance_(InPoint) {
+      return Math.max(kernel_2(this.x,InPoint.x),kernel_2(this.y,InPoint.y));
+  }
+  /**
+   * 简化闵氏距离(Minkowski Distance) : (｜a-b｜^p+...)^(1/p)
+   * @param {Point} InPoint - 输入点对象
+   * @param {number} p - 闵氏距离的维度
+   * @return {number} - 返回两点间的闵氏距离
+   */
+  getMinkowskiDistance_(InPoint,p) {
+      return Math.pow(
+              Math.pow(kernel_2(this.x,InPoint.x),p)+
+              Math.pow(kernel_2(this.y,InPoint.y),p),
+              Math.pow(p,-1)
+              );
+          
+  }
+  ```
+
+### 点到线的距离量测（仅欧氏距离）
+```js
+/**
+ * 求解 ax+by+c=0 直线外一点到该直线的距离 
+ * - formula ：distance = |ax+by+c|/sqrt(a^2+b^2)
+ * @param {Point} sp - the start point
+ * @param {Point} ep - the end point
+ * @param {Point} op - the point over the line
+ * @return {number} 
+ * - 返回点到直线的距离
+ * - Return the distance from a point to the straight line( ax+by+c=0 )
+ */
+ function getPoint2LineDistence(sp,ep,op){
+    let fun = SolveLineForm(sp,ep);
+    let x = op.x;
+    let y = op.y;
+    let a=fun[0];
+    let b=fun[1];
+    let c=fun[2];
+    let up = Math.abs(a*x+b*y+c);
+    let down = Math.sqrt(a*a+b*b);
+    return up/down;
+}
+```
+### 道格拉斯扑克法（距离阈值法）
+- 算法实现
+```js
+/**
+ * 道格拉斯扑克法的递归算子
+ * @param {array} line - 输入的点列 [ 起点 , 中间点 , 终点 ]
+ * @param {number} n - 阈值
+ * @param {array} ouarr - 递归结果存储栈
+ */
+function Douglas_Peuker_kernel(line,n,ouarr){
+    let line1 = line.slice();
+    let sp=line1.shift();
+    let ep=line1.pop();
+
+    if (line1.length === 0){
+        ouarr.push(line);
+    }
+    else{
+        line1.sort((a,b)=>a.getDistance2Line_(sp,ep)-b.getDistance2Line_(sp,ep));// 根据到中间点到该线的距离升序排序
+
+        let midpoint = line1[line1.length-1]; //获取中间的分段点
+        let m = line.indexOf(midpoint); 
+
+        if( midpoint.getDistance2Line_(sp,ep)< n){
+            ouarr.push([sp,ep]) ;//若最大值小于阈值 则去掉所有中间点
+        }
+        else {
+            let obj=getTwoLineFromeOne(line,m);
+            Douglas_Peuker_kernel(obj.firstline,n,ouarr);
+            Douglas_Peuker_kernel(obj.secondline,n,ouarr);
+        }
+    }
+   
+}
+```
+- 算法封装（封装在 Line 类中）
+```js
+/**
+ * 线抽稀算法 道格拉斯扑克法
+ * @param {array} line - 输入的点列 [ 起点 , 中间点 , 终点 ]
+ * @param {number} n - 阈值
+ * @return {array} 返回抽稀后的点列
+ */
+ function Douglas_Peuker(line,n){
+    let ouarr= [];
+    Douglas_Peuker_kernel(line,n,ouarr);
+
+    // 数据处理部分 去重
+    let resarr=[];
+    for (let it of ouarr){
+        resarr.push(it[0]);
+    }
+    resarr.push(ouarr[ouarr.length-1][1]);
+    //console.log(ouarr);
+    return  resarr;
+ }
+```
+### 离散点集的凸包算法
+- 首先编写一些工具函数
+```js
+/**
+ * 求连续三个带坐标点的时针性 (亦可判断三点共线)
+ * get the clockwise of three points
+ *  原理：
+ * *  area = (b.x-a.x) * (c.y-a.y) - (b.y-a.y) * (c.x-a.x) 
+ *  * area >0，A-B-C逆时针旋转； counterclockwise
+ *  * area <0，A-B-C顺时针旋转； clockwise
+ *  * area =0，A-B-C在一条直线上; Collinear
+ * @param {Point} a - the first point
+ * @param {Point} b - the middle point
+ * @param {Point} c - the last point
+ * @return {number} - the output list
+ * 
+ | 逆时针 | 顺时针 | 共线 | 其他 |
+  |--|--|--|--|
+ | counterclockwise | clockwise | Collinear | other |
+ | 1 | 2 | 3 |-1|
+ ---
+ */
+export function getClockwiseFea(a,b,c){ // 单元测试有bug：
+    let area = (b.x-a.x) * (c.y-b.y) - (b.y-a.y) * (c.x-b.x) ;
+    //(xi - xi-1) * (yi+1 - yi) - (yi - yi-1) * (xi+1 - xi)
+    //let area = (b.x-a.x) * (c.y-a.y) - (b.y-a.y) * (c.x-a.x) ;
+    //(b.getX()-a.getX()) * (c.getY()-a.getY()) - (b.getY()-a.getY()) * (c.getX()-a.getX());
+
+    if ( area > 0 ) {
+        return 1;
+    }
+    else if (area < 0) {
+        return 2;
+    }
+    else if ( area === 0){
+        return 3;
+    }
+    else {return -1;}
+}
+```
+- 算法实现
+```js
+/** 
+* 点集凸包算法
+* @param {array} pointlist1 - 点集列表
+* @return {array} - 构成凸包的点列表
+*/
+function getconvex_hull(pointlist1){
+    //Melkman算法 双向表法
+    let pointlist = pointlist1.slice();
+    pointlist.sort((a,b)=>a.x - b.x );
+
+    let upper = [];
+    upper.push(pointlist[0]);
+    upper.push(pointlist[1]);
+    for (let i =2; i<pointlist.length;i++){
+        upper.push(pointlist[i]);
+        while(upper.length>=3 && 
+            getClockwiseFea(upper[upper.length-3],upper[upper.length-2],upper[upper.length-1]) == 2){
+            upper.splice(upper.length-2,1);
+        }
+    }
+
+    let lower = [];
+    lower.push(pointlist[pointlist.length-1]);
+    lower.push(pointlist[pointlist.length-2]);
+    for (let i =pointlist.length-3; i>=0;i--){
+        upper.push(pointlist[i]);
+        while(upper.length>=3 && 
+            getClockwiseFea(upper[upper.length-3],upper[upper.length-2],upper[upper.length-1])==2){
+            upper.splice(upper.length-2,1);
+        }
+    }
+
+    lower.pop();
+    lower.shift();
+    let res = upper.concat(lower);
+    return res;
+}
+```
+
+
 ## 一些栅格算法的思路（ 基于 DEM ）
 > - 矢量部分、分型部分以及正态云部分的算法相对好实现，去年很多小组都已经实现的很好了，这里就不再赘述。当然，也可以参考我们的代码及文档（不全）。限于个人时间及精力，我无法一一整理。
 
@@ -197,8 +427,7 @@ for(let i = 0; i < 3; i++){
   - 并根据起止点之间的距离判断是否闭合该段等高线
   - 最后将边界点集转换为点集
 - 思路2（目前采用该方法实现，但是对于正负地形的处理仍存在问题，无法处理复杂情况）
-  - > 注： 
-  - > - 该方法虽然效果不好，但是思路比较直接，对于编程联系还是有一定的帮助的
+  - > 注：  - 该方法虽然效果不好，但是思路比较直接，对于编程联系还是有一定的帮助的
   - > - 该算法与 marching squares 的第一步极其相似，可以说本质上还是相通的。
   - 在已经获得所有同一高度的等高线上点后，还需要对这些线进行如下处理以达到理想效果：
 ```
@@ -384,7 +613,7 @@ for(let i = 0; i < 3; i++){
 - 基础类的重构： 随着代码量的增加，库的复杂性也在上升，因此需要不时重新组织代码片段。
 - 统计类基础渲染器与统计信息的解耦合： 为了更好地与现有的 JS 生态融合，统计类不强制要求使用自带的渲染器
 - 物理仿真模块：基于重构后的栅格类（也可能是 DEM 类），通过物理仿真模块包装，实现基础的环境方向的物理仿真。也会有一些基于流水物理的地形分析算法放在该类下面。
-- 本代码库永远不会涉及：具体界面的搭建。除了必要的数据渲染工具（用于debug）之外，本库不会设计编写用户界面部分的代码。
+- 本代码库暂时不会涉及：具体界面的搭建。除了必要的数据渲染工具（用于debug）之外，本库暂时不会设计编写用户界面部分的代码。
 
 ## Reference
 - [1] [Marching squares. (2022, October 6). In Wikipedia.](https://en.wikipedia.org/wiki/Marching_squares) https://en.wikipedia.org/wiki/Marching_squares
