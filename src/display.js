@@ -681,15 +681,26 @@ export class GridView{
    * @memberof grid
    * @returns {void}
    */
-  draw_aspect(colorramp,canvas_height,canvas_width,ISDrawRamp,name){
+  draw_aspect(colorramp,canvas_height,canvas_width,ISDrawRamp,name,resolution = 0.1){
     let pan1 = new pan(this.ctx,"#00ffff5a"); // 小问题 初始化pan对象必须要给一个颜色 但是栅格用不上
+
+    // let xn = this.grid.column;//获取x轴栅格数
+    // let yn = this.grid.row;//获取y轴栅格数
+    // let width = Math.abs(this.MBR[0]-this.MBR[2]);
+    // let height = Math.abs(this.MBR[1]-this.MBR[3]);
+    // let dx = Math.round(width/xn);
+    // let dy = Math.round(height/yn);
+
     let xn = this.grid.column;//获取x轴栅格数
     let yn = this.grid.row;//获取y轴栅格数
+
     let width = Math.abs(this.MBR[0]-this.MBR[2]);
     let height = Math.abs(this.MBR[1]-this.MBR[3]);
-    let dx = Math.round(width/xn);
-    let dy = Math.round(height/yn);
-
+    // make the error more small
+    // 栅格渲染精度控制在0.1
+    let dx = Math.round(width/xn/resolution)*resolution;
+    let dy = Math.round(height/yn/resolution)*resolution;
+    
     this.ctx.save();
     this.ctx.scale(1,-1);
     this.ctx.translate(0,-canvas_height);
