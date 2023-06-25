@@ -878,14 +878,25 @@ export class GridView{
    * @param {*} name - 栅格名
    * @param {*} level - 离散值的等级
    * @param {*} alpha  - 栅格渲染的不透明度
+   * @param {*} resolution - 栅格渲染精度控制在0.1
+   * @param {*} ValueList - 预先计算好的离散值列表
    */
-  draw_dispersed_custom(canvas_height,ISDrawRamp,render_function,name,level,alpha){
+  draw_dispersed_custom(canvas_height,ISDrawRamp,render_function,name,level,alpha,resolution=0.1,ValueList){
     let pan1 = new pan(this.ctx,"#00ffff5a");
     this.ctx.save();
     this.ctx.scale(1,-1);
     this.ctx.translate(0,-canvas_height);
-    let dx =this.dx;
-    let dy =this.dy;
+
+    let xn = this.grid.column;//获取x轴栅格数
+    let yn = this.grid.row;//获取y轴栅格数
+
+    let width = Math.abs(this.MBR[0]-this.MBR[2]);
+    let height = Math.abs(this.MBR[1]-this.MBR[3]);
+    // make the error more small
+    // 栅格渲染精度控制在0.1
+    let dx = Math.round(width/xn/resolution)*resolution;
+    let dy = Math.round(height/yn/resolution)*resolution;
+
 
     for(let i = 0; i<this.grid.row;i++){
       for(let j = 0 ;j<this.grid.column;j++){
@@ -902,23 +913,40 @@ export class GridView{
     }
 
     if(ISDrawRamp){
+      
       let previewgrid = grid.get_dispersed_ramp(level);
       let rampBOX = [this.MBR[2]-100,this.MBR[1]+20,this.MBR[2],this.MBR[1]];
       let dxr = 100/previewgrid[0].length;
       let dyr = 20/previewgrid.length;
 
-      for(let i =0;i<previewgrid.length;i++){
-        for(let j = 0 ;j<previewgrid[0].length;j++){
-          pan1.draw_GridCell(
-            rampBOX[0]+j*dxr,
-            rampBOX[1]-i*dyr -dyr,
-            dxr,dyr,
-            render_function(
-              previewgrid[i][j],alpha
-          )
-        )
+
+      if(ValueList === null||ValueList === undefined){
+        for(let i =0;i<previewgrid.length;i++){
+          for(let j = 0 ;j<previewgrid[0].length;j++){
+            pan1.draw_GridCell(
+              rampBOX[0]+j*dxr,
+              rampBOX[1]-i*dyr -dyr,
+              dxr,dyr,
+              render_function(previewgrid[i][j],alpha)
+            )
+          }
+        }
+      }else{
+        let previewgrid = grid.get_Custom_ramp(ValueList);
+        for(let i =0;i<previewgrid.length;i++){
+          for(let j = 0 ;j<previewgrid[0].length;j++){
+
+            pan1.draw_GridCell(
+              rampBOX[0]+j*dxr,
+              rampBOX[1]-i*dyr -dyr,
+              dxr,dyr,
+              render_function(previewgrid[i][j],alpha)
+            )
+
+          }
         }
       }
+
     }
 
     pan1.draw_rect(this.MBR);

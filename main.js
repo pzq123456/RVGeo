@@ -1,5 +1,6 @@
 import * as RV from './index.js';
 import { RasterDemo1 } from './helpers.js';
+import { grid } from './src/grid.js';
 
 
 let pl = RV.Test.test_6(100,1000);//生成狄罗妮三角形的点集个数
@@ -447,17 +448,32 @@ cs10Btn.addEventListener('click', () => {
       let stt =new RV.Stastic(grid1.get1DArray());
 
       grid1.padding_(1,stt.mean);// 可以选择padding的尺寸以及填充值 默认均值填充
-      let colorramp = new RV.Renderer.ColorRamp(stt);
+      let colorramp0 = new RV.Renderer.ColorRamp(stt);
       let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1, 950,1050,1850,150);
-      gridview.draw(colorramp,myCanvas.height,myCanvas.width,true,"原始DEM渲染");
+      gridview.draw(colorramp0,myCanvas.height,myCanvas.width,true,"原始DEM渲染");
   
-      let dd = grid1.get_Aspect();
+      // let dd = grid1.get_Aspect();
 
-      let grid2 = RV.Raster.fromMatrix(dd);
-      let stt2 =new RV.Stastic(grid2.get1DArray());
-      let colorramp2 = new RV.Renderer.ColorRamp(stt2);
+      // let testAspext = RV.Test.Random_staAspect_Matrix(256,256);
+      // console.log(testAspext);
+      let grid2 = RV.Raster.fromMatrix(grid1.getAccumulationFlow());
+      console.log(grid2.gridset);
+      // let preview = 
+  
+      // let colorramp2 = new RV.Renderer.ColorRamp(stt2);
       let gridview2 = new RV.Renderer.GridView(myCanvas.ctx,grid2,50,1050,950,150);
-      gridview2.draw_aspect(colorramp2,myCanvas.height,myCanvas.width,true,"坡向测试视图");
+
+
+      // gridview2.draw_aspect(colorramp2,myCanvas.height,myCanvas.width,true,"坡向测试视图");
+      // gridview2.draw_dispersed_custom(myCanvas.height,true,RV.pan.CellValueRenderer.Stadard_Aspact,"坡向测试视图",9,1,0.1,[0,1,2,4,8,16,32,64,128]);
+
+
+      grid2.reClassify_Binary_(15)
+      let stt2 =new RV.Stastic(grid2.get1DArray());
+      let colorramp = new RV.Renderer.ColorRamp(stt2);
+      gridview2.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积流量测试视图（重分类后）");
+      
+     
 
       
     });

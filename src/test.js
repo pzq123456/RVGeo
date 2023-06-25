@@ -257,6 +257,27 @@ export function Random_Regular_Polygon(x,y,radius,side){
     return polygon;
 }
 
+/**
+ * 生成随机包含[0,1,2,8,16,32,64,128]二维数组
+ * @param {number} row - 行
+ * @param {number} column - 列
+ * @return {array} - 返回一个二维数组
+ */
+export function Random_staAspect_Matrix(row,column){
+    // 生成随机包含[0,1,2,8,16,32,64,128]二维数组
+    let numbers = [0,1,2,4,8,16,32,64,128];
+    let res = [];
+    for(let i = 0;i<row;i++){
+        let col = [];
+        for(let j = 0;j<column;j++){
+            let val = kernel_8(9);
+            col.push(numbers[val]);
+        }
+        res.push(col);
+    }
+    return res;
+}
+
 export {
     test_1,
     test_2,

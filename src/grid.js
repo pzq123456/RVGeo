@@ -8,7 +8,7 @@ export class grid {
      * @param {number} column 栅格列数
      * @param {number} filler 填充值（默认为 0 ）
      */
-    constructor(row,column, filler = 0){
+    constructor(row,column,filler = 0){
         this.row = row;
         this.column = column;
         this.gridset = this.#creataGridSet(filler);
@@ -178,7 +178,7 @@ export class grid {
      * - 重分类后的栅格值只有0和1，而不是返回一个新的栅格
      */
     reClassify_Binary_(threshold){
-        alert("该方法会改变原栅格");
+        // alert("该方法会改变原栅格");
         for(let i = 0; i < this.row ;i++){
             for(let j = 0; j < this.column;j++){
                 if(this.gridset[i][j] >= threshold){
@@ -1059,6 +1059,112 @@ export class grid {
         return sum;
     }
 
+    /**
+     * 计算当前地形的模拟水流流向栅格
+     * - 该方法不需要 padding 操作，返回值与原始栅格大小相同
+     * @param {*} RealDistance - 当前栅格代表的真实距离（默认为1）
+     * @returns {Array} 返回一个二维数组，代表每一个栅格的流向
+     */
+    getFlowDirection(RealDistance=1){
+        let directionCode = [0,1,2,4,8,16,32,64,128]; // 0 带表无流向 1-128 代表8个方向
+        let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]];
+        let res = [];
+        for(let i = 0 ; i < this.row ; i++){
+            let ttp = [];
+            for(let j = 0 ; j < this.column ; j++){
+                let max = 0;
+                let maxIndex = 0;
+                for(let k = 0 ; k < 8 ; k++){
+                    let nr = i + direction[k][0];
+                    let nc = j + direction[k][1];
+                    let nv = 0;
+                    if(nr >= 0 && nr < this.row && nc >= 0 && nc < this.column){
+                        nv = this.gridset[nr][nc];
+                    }
+                    if(nv > max){
+                        max = nv;
+                        maxIndex = k;
+                    }
+                }
+                let resValue = directionCode[maxIndex];
+                ttp.push(resValue);
+            }
+            res.push(ttp);
+        }
+        console.log(res);
+        return res;
+    }
+
+    /**
+     * 计算当前地形的模拟水流累积量栅格
+     * @param {number} RealDistance - 当前栅格代表的真实距离（默认为1）
+     * - 该方法不需要 padding 操作，返回值与原始栅格大小相同
+     * @returns {Array} 返回一个二维数组，代表每一个栅格的累积量
+     */
+    getAccumulationFlow(RealDistance){
+        let directionCode = [1,2,4,8,16,32,64,128]; // 0 带表无流向 1-128 代表8个方向
+        let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]];// 8个方向
+        let directuionCodeReverse = [128,64,32,16,8,4,2,1]; // 周围栅格的流向（按照direction找到周围，若周围栅格满足该流向，则目标栅格的累积量+1）
+        // 1. 计算流向栅格
+        let flowDirection = this.getFlowDirection(RealDistance);
+        // 2. 计算累积流量栅格，深度优先搜索
+        let res = this.#creataGridSet(this.row,this.column,0);
+        for(let i = 0 ; i < this.row ; i++){
+            for(let j = 0 ; j < this.column ; j++){
+                let memo = {};
+                let rest = AccumateFlow(i,j,flowDirection,this.row,this.column,memo);
+                res[i][j] = rest;
+            }
+        }
+
+        return res;
+
+        /**
+         * 深度优先搜索,计算当前栅格的累积量
+         * @param {*} i - 当前栅格的行号
+         * @param {*} j - 当前栅格的列号
+         * @param {*} flowDirection - 当前栅格的流向
+         * @param {*} memo 
+         * @returns 
+         */
+        function AccumateFlow(i,j,flowDirection,row,col,memo={}){
+            let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]];// 8个方向
+            let directuionCodeReverse = [128,64,32,16,8,4,2,1]; // 周围栅格的流向（按照direction找到周围，若周围栅格满足该流向，则目标栅格的累积量+1）
+
+            // 首先统计当前栅格的累积量
+            let res = 0;
+            for(let k = 0 ; k < 8 ; k++){
+                let nr = i + direction[k][0];
+                let nc = j + direction[k][1];
+                if(nr >= 0 && nr < row && nc >= 0 && nc < col){
+                    if(flowDirection[nr][nc] == directuionCodeReverse[k]){
+                        res += 1;
+                    }
+                }
+            }
+
+            // 然后递归计算周围栅格的累积量
+            for(let k = 0 ; k < 8 ; k++){
+                let nr = i + direction[k][0];
+                let nc = j + direction[k][1];
+                if(nr >= 0 && nr < row && nc >= 0 && nc < col){
+                    if(flowDirection[nr][nc] == directuionCodeReverse[k]){
+                        if(memo[nr+"-"+nc] == undefined){
+                            memo[nr+"-"+nc] = true;
+                            res += AccumateFlow(nr,nc,flowDirection,row,col,memo);
+                        }
+                    }
+                }
+            }
+
+            return res;
+            
+        }
+
+
+
+    }
+
 
 
 
@@ -1126,6 +1232,26 @@ export class grid {
             }
             res.push(ttp);
         }
+        return res;
+    }
+
+    /**
+     * 生成自定义离散值条带
+     * @param {array} ValueList - 值列表
+     * @returns 
+     */
+    static get_Custom_ramp(ValueList){
+        // 根据值列表生成离散值条带
+        let res = [];
+        let dx = 1;
+        for(let i=0;i<5;i++){
+            let ttp = [];
+            for(let j = 0;j<ValueList.length;j++){
+                ttp.push(ValueList[j]);
+            }
+            res.push(ttp);
+        }
+        // console.log(res);
         return res;
     }
 

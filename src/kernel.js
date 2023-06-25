@@ -70,13 +70,17 @@ export function kernel_7(a){
     return a*Math.pow((Math.PI/180),-1);
 }
 
-/** kernel_8 : get the rendom float number from [0,max)
+/** kernel_8 : get the rendom int number from [0,max)
+ * - 获取一个随机整数（0-max），包含0，不包含max
  * @param {number} max - the superior limit of the radom reagion
- * @return {number} the random float number
+ * @return {number} the random int number
  */
  export function kernel_8(max) {
-    return Math.round(Math.random() * max + 0.5);       
+    // 返回一个随机整数，包括0，不包括max
+    return Math.floor(Math.random() * max);
 }
+
+
 
 
 /**
