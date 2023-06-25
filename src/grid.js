@@ -1066,32 +1066,58 @@ export class grid {
      * @returns {Array} 返回一个二维数组，代表每一个栅格的流向
      */
     getFlowDirection(RealDistance=1){
-        let directionCode = [0,1,2,4,8,16,32,64,128]; // 0 带表无流向 1-128 代表8个方向
+        let directionCode = [1,2,4,8,16,32,64,128]; // 0 带表无流向 1-128 代表8个方向
         let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]];
         let res = [];
         for(let i = 0 ; i < this.row ; i++){
             let ttp = [];
             for(let j = 0 ; j < this.column ; j++){
-                let max = 0;
-                let maxIndex = 0;
+                let value = this.gridset[i][j];
+                let MostNegative = 0;
+                let MostNegativeIndex = 0;
                 for(let k = 0 ; k < 8 ; k++){
                     let nr = i + direction[k][0];
                     let nc = j + direction[k][1];
                     let nv = 0;
                     if(nr >= 0 && nr < this.row && nc >= 0 && nc < this.column){
-                        nv = this.gridset[nr][nc];
+                        if(k == 0 || k == 2 || k == 4 || k == 6){
+                            nv = (this.gridset[nr][nc] - value)/RealDistance;
+                         }else{
+                            nv = (this.gridset[nr][nc] - value)/RealDistance*Math.sqrt(2);
+                        }
                     }
-                    if(nv > max){
-                        max = nv;
-                        maxIndex = k;
+                    if(nv < MostNegative){
+                        MostNegative = nv;
+                        MostNegativeIndex = k;
                     }
                 }
-                let resValue = directionCode[maxIndex];
-                ttp.push(resValue);
+                if(MostNegative >= 0){
+                    ttp.push(0);
+                }else{
+                    let resValue = directionCode[MostNegativeIndex];
+                    ttp.push(resValue);
+                }
+
+
+                // let maxIndex = 0;
+                // for(let k = 0 ; k < 8 ; k++){
+                //     let nr = i + direction[k][0];
+                //     let nc = j + direction[k][1];
+                //     let nv = 0;
+                //     if(nr >= 0 && nr < this.row && nc >= 0 && nc < this.column){
+                //         nv = this.gridset[nr][nc];
+                //     }
+                //     if(nv > max){
+                //         max = nv;
+                //         maxIndex = k;
+                //     }
+                // }
+                // let resValue = directionCode[maxIndex];
+                // ttp.push(resValue);
             }
             res.push(ttp);
         }
-        console.log(res);
+        // console.log(res);
         return res;
     }
 
@@ -1102,9 +1128,9 @@ export class grid {
      * @returns {Array} 返回一个二维数组，代表每一个栅格的累积量
      */
     getAccumulationFlow(RealDistance){
-        let directionCode = [1,2,4,8,16,32,64,128]; // 0 带表无流向 1-128 代表8个方向
-        let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]];// 8个方向
-        let directuionCodeReverse = [128,64,32,16,8,4,2,1]; // 周围栅格的流向（按照direction找到周围，若周围栅格满足该流向，则目标栅格的累积量+1）
+        // let directionCode = [1,2,4,8,16,32,64,128]; // 0 带表无流向 1-128 代表8个方向
+        // let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]];// 8个方向
+        // let directuionCodeReverse = [128,64,32,16,8,4,2,1]; // 周围栅格的流向（按照direction找到周围，若周围栅格满足该流向，则目标栅格的累积量+1）
         // 1. 计算流向栅格
         let flowDirection = this.getFlowDirection(RealDistance);
         // 2. 计算累积流量栅格，深度优先搜索

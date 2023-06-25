@@ -575,6 +575,138 @@ function getconvex_hull(pointlist1){
 > - https://www.youtube.com/watch?v=_KlRRowXv7k&t=143s
 栅格水流模拟指的是根据栅格数据所表示的地形特征（坡向），模拟水流累积所产生的效果，以达到提取水系栅格的目的。以下资料及思路均来自上述视频链接。
 
+#### 流水物理模拟之水流方向栅格
+> 该算法代表某一栅格处水流的可能流向
+- 在进行累积水流栅格统计之前，首先需要计算出当前栅格的水流方向。在这里，我们为八个方向编码为:（0代表平地，无流向）
+    ```
+        |32|64|128|
+        |16| 0| 1 | 
+        |8 | 4| 2 |
+    ```
+- 算法思路: 
+  - 为了方便表述，我们对方向及对应方向栅格增量编码
+  - ```js
+    let directionCode = [0,1,2,4,8,16,32,64,128]; // 0 带表无流向 1-128 代表8个方向
+    let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]]; // 对应方向栅格步长增量
+    ```
+  - 遍历栅格中所有的格网，对每一个格网进行如下操作：
+    - 与周围八领域的栅格值求坡度（对于超出栅格范围的格网跳过，斜对角线的距离需要乘 1.414）
+    - 四领域情况
+    - $$ Slope = \frac{V_{to} - V_{from}}{ RealDistance} $$ 
+    - 对角线情况
+    - $$ Slope = \frac{V_{to} - V_{from}}{ RealDistance*1.414} $$
+    - 找到最大负值的栅格并使用栅格与中心栅格的方向作为该栅格处的流向
+-
+- 算法实现:
+```js
+    /**
+     * 计算当前地形的模拟水流流向栅格
+     * - 该方法不需要 padding 操作，返回值与原始栅格大小相同
+     * @param {*} RealDistance - 当前栅格代表的真实距离（默认为1）
+     * @returns {Array} 返回一个二维数组，代表每一个栅格的流向
+     */
+    getFlowDirection(RealDistance=1){
+        let directionCode = [0,1,2,4,8,16,32,64,128]; // 0 带表无流向 1-128 代表8个方向
+        let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]];
+        let res = [];
+        for(let i = 0 ; i < this.row ; i++){
+            let ttp = [];
+            for(let j = 0 ; j < this.column ; j++){
+                let max = 0;
+                let maxIndex = 0;
+                for(let k = 0 ; k < 8 ; k++){
+                    let nr = i + direction[k][0];
+                    let nc = j + direction[k][1];
+                    let nv = 0;
+                    if(nr >= 0 && nr < this.row && nc >= 0 && nc < this.column){
+                        nv = this.gridset[nr][nc];
+                    }
+                    if(nv > max){
+                        max = nv;
+                        maxIndex = k;
+                    }
+                }
+                let resValue = directionCode[maxIndex];
+                ttp.push(resValue);
+            }
+            res.push(ttp);
+        }
+        console.log(res);
+        return res;
+    }
+```
+#### 流水物理模拟之水流累积栅格（也可以基于此设定一定的阈值来提取山谷线山脊线）
+- 该算法通过递归地寻找当前栅格的下一个流向栅格，直到找到流向栅格为 0 的栅格，然后将当前栅格的值加一，直到所有栅格都被访问过。
+- 算法实现
+```js
+    /**
+     * 计算当前地形的模拟水流累积量栅格
+     * @param {number} RealDistance - 当前栅格代表的真实距离（默认为1）
+     * - 该方法不需要 padding 操作，返回值与原始栅格大小相同
+     * @returns {Array} 返回一个二维数组，代表每一个栅格的累积量
+     */
+    getAccumulationFlow(RealDistance){
+        // let directionCode = [1,2,4,8,16,32,64,128]; // 0 带表无流向 1-128 代表8个方向
+        // let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]];// 8个方向
+        // let directuionCodeReverse = [128,64,32,16,8,4,2,1]; // 周围栅格的流向（按照direction找到周围，若周围栅格满足该流向，则目标栅格的累积量+1）
+        // 1. 计算流向栅格
+        let flowDirection = this.getFlowDirection(RealDistance);
+        // 2. 计算累积流量栅格，深度优先搜索
+        let res = this.#creataGridSet(this.row,this.column,0);
+        for(let i = 0 ; i < this.row ; i++){
+            for(let j = 0 ; j < this.column ; j++){
+                let memo = {};
+                let rest = AccumateFlow(i,j,flowDirection,this.row,this.column,memo);
+                res[i][j] = rest;
+            }
+        }
+        return res;
+        /**
+         * 深度优先搜索,计算当前栅格的累积量
+         * @param {*} i - 当前栅格的行号
+         * @param {*} j - 当前栅格的列号
+         * @param {*} flowDirection - 当前栅格的流向
+         * @param {*} memo 
+         * @returns 
+         */
+        function AccumateFlow(i,j,flowDirection,row,col,memo={}){
+            let direction = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1],[1,1]];// 8个方向
+            let directuionCodeReverse = [128,64,32,16,8,4,2,1]; // 周围栅格的流向（按照direction找到周围，若周围栅格满足该流向，则目标栅格的累积量+1）
+            // 首先统计当前栅格的累积量
+            let res = 0;
+            for(let k = 0 ; k < 8 ; k++){
+                let nr = i + direction[k][0];
+                let nc = j + direction[k][1];
+                if(nr >= 0 && nr < row && nc >= 0 && nc < col){
+                    if(flowDirection[nr][nc] == directuionCodeReverse[k]){
+                        res += 1;
+                    }
+                }
+            }
+            // 然后递归计算周围栅格的累积量
+            for(let k = 0 ; k < 8 ; k++){
+                let nr = i + direction[k][0];
+                let nc = j + direction[k][1];
+                if(nr >= 0 && nr < row && nc >= 0 && nc < col){
+                    if(flowDirection[nr][nc] == directuionCodeReverse[k]){
+                        if(memo[nr+"-"+nc] == undefined){
+                            memo[nr+"-"+nc] = true;
+                            res += AccumateFlow(nr,nc,flowDirection,row,col,memo);
+                        }
+                    }
+                }
+            }
+            return res;   
+        }
+    }
+```
+- 思路：
+  - 1. 首先计算每一个栅格的流向，然后将流向栅格的值设置为 1-128，其他栅格的值设置为 0
+  - 2. 然后递归地计算每一个栅格的累积量，直到所有栅格都被访问过
+- 应用：
+  - 对于正地形可以用来提取山谷线
+  - 对地形取反即可提取山脊线
+  - 累积流量栅格本身也可以用来表示河流的（可能）分布情况
 
 ## 聚类算法
 > - 该部分算法位于 `learn.js` 文件中，方便起见我简单编写了多维向量类。
@@ -601,6 +733,141 @@ function getconvex_hull(pointlist1){
    - 经过多次迭代后，若结果收敛，则运算结束。
 - 空间应用背景下的性能调优[3]
   - To improve the running time, an obvious alternative would be to store the k centers in a spatial index such as a kd-tree.
+
+## 统计算法
+- 箱线图绘制算法：
+  - 对数据进行排序，然后计算四分位数，最后绘制箱线图
+- 难点：
+  - 绘制统计图表需要仔细设计
+- 实现
+- 构建箱线图必要的数据对象
+-   ```js
+        /**
+         * **创建盒须图对象：**
+         * 首先定义MBR 外包络矩形 左上角和右下角
+         * 考虑到与其他绘图js库的**兼容性** 在其他函数中我们会
+         * - 将求出的、绘制某些统计图所必备的数据单独输出以供那些想要使用其他绘图库的用户使用
+         * - 对于那些只想使用自带绘图模块的用户，我们会另写解析函数来根据这些数据创建本库自带的统计图。
+         * @param {number} x1 - 用以定位盒须图绘制区域的外包络矩形坐标
+         * @param {number} y1 
+         * @param {number} x2 
+         * @param {number} y2 
+         * @param {number} yleve - y轴尺度
+         * @param {number} xleve - x轴尺度
+         * @returns {JSON} 返回一个描述统计图的json对象
+         */
+        create_box_whisker_plot(x1,y1,x2,y2,yleve,xleve){
+            //留出空间
+            let width = Math.abs(x2 - x1);
+            let height = Math.abs(y2 - y1)-40;
+            let blank = 20;
+
+            let midx = (x1+x2)/2;
+
+            let range = Math.abs(this.max - this.min);
+            let stratch = height/range;
+            let dx = width/xleve;
+
+            if(yleve === 0){
+                yleve = 10;
+            }
+            
+            let dy = height/yleve;
+            let dyv = Math.round(range/yleve);
+
+            let yaxi = [];
+            let yano = [];
+
+            for(let i=1 ; i < yleve;i++ ){
+                let itt =[x1,blank+y2 + dy*i,x1-dx,blank+y2+dy * i];
+                let iit = [Math.round(this.min+dyv*i),x1-5*dx,blank+y2+dy * i];
+                yaxi.push(itt);
+                yano.push(iit);
+            }
+
+            let max_line = [midx - 2*dx,(this.max - this.min)*stratch+y2+blank,midx+2*dx,(this.max - this.min)*stratch +y2+blank];
+            let min_line = [midx - 2*dx,(this.min- this.min)*stratch+y2+blank,midx+2*dx,(this.min- this.min)*stratch +y2+blank];
+            
+            let whisker = [];
+            //let whiskerano = [];
+
+        
+            whisker.push([midx,(this.max - this.min)*stratch+y2+blank,midx,(this.min- this.min)*stratch+y2+blank]);
+            whisker.push(max_line);
+            whisker.push(min_line);
+
+            yano.push([this.max,midx+2*dx,(this.max - this.min)*stratch +y2+blank]);
+            yano.push([this.min,midx+2*dx,(this.min- this.min)*stratch +y2+blank]);
+
+
+            let box = [midx - 4*dx,(this.q1- this.min)*stratch+y2+blank,midx+4*dx,(this.q3- this.min)*stratch +y2+blank];
+
+            yano.push([this.q1,midx + 4*dx,(this.q1- this.min)*stratch+y2+blank]);
+            yano.push([this.q3,midx + 4*dx,(this.q3- this.min)*stratch+y2+blank]);
+            
+
+            let box_whisker_plot= {
+                //边框
+                "MBR" : [x1,y1,x2,y2], 
+                "YAXI":yaxi,
+                "BOX":box,
+                "WHISKER":whisker,
+                //文字部分
+                "YANO":yano,
+            }
+            
+            return box_whisker_plot;
+        }
+    ```
+- 绘制箱线图
+    ```js
+    /**
+        * **绘制盒须图 需要指定该图的外包络矩形及xy轴的分辨率**
+        * @param {number} x1 - 左上
+        * @param {number} y1 
+        * @param {number} x2 - 右下
+        * @param {number} y2 
+        * @param {number} yleve - y轴尺度
+        * @param {number} xleve - x轴尺度
+        * */
+    draw_box_whisker_plot(x1,y1,x2,y2,yleve,xleve,canvas_height,canvas_width,name){//
+        let box_whisker_plot = this.stastic.create_box_whisker_plot(x1,y1,x2,y2,yleve,xleve);
+
+        let MBR = box_whisker_plot.MBR;
+        let yaxi = box_whisker_plot.YAXI;
+        let whisker = box_whisker_plot.WHISKER;
+        let box = box_whisker_plot.BOX;
+        let yano = box_whisker_plot.YANO;
+
+        let pan1 =new pan(this.ctx,"gray");
+        let pan2 =new pan(this.ctx,"blue");
+        let pan3 = new pan(this.ctx,"green");
+
+        this.ctx.save();
+        this.ctx.scale(1,-1);
+        this.ctx.translate(0,-canvas_height);
+
+        pan1.draw_rect(MBR);
+        for(let itm of yaxi){
+        pan2.draw_line_arr(itm);
+        }
+
+        for(let itm of whisker){
+        pan2.draw_line_arr(itm);
+        }
+
+        pan3.draw_rect(box);
+        this.ctx.restore();
+
+        this.ctx.font = 'oblique bold 20px Arial';
+        for(let itm of yano){
+        this.ctx.fillText(itm[0], itm[1],canvas_height-itm[2]);//
+        }
+        if(name == ""|| name == undefined){name = "box whisker plot"}
+        let x_mid = (x1+x2)/2;
+        this.ctx.fillText(name,x_mid-60,canvas_height-y1-5);
+    }
+    ```
 
 
 

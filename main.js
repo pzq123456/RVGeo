@@ -468,7 +468,7 @@ cs10Btn.addEventListener('click', () => {
       // gridview2.draw_dispersed_custom(myCanvas.height,true,RV.pan.CellValueRenderer.Stadard_Aspact,"坡向测试视图",9,1,0.1,[0,1,2,4,8,16,32,64,128]);
 
 
-      grid2.reClassify_Binary_(15)
+      grid2.reClassify_Binary_(20)
       let stt2 =new RV.Stastic(grid2.get1DArray());
       let colorramp = new RV.Renderer.ColorRamp(stt2);
       gridview2.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积流量测试视图（重分类后）");
