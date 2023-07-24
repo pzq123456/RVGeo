@@ -441,7 +441,7 @@ cs10Btn.addEventListener('click', () => {
       let grid1= RV.Raster.fromMatrix(data);
       let stt =new RV.Stastic(grid1.get1DArray());
 
-      grid1.padding_(1,stt.mean);// 可以选择padding的尺寸以及填充值 默认均值填充
+      // grid1.padding_(1,stt.mean);// 可以选择padding的尺寸以及填充值 默认均值填充
       let colorramp0 = new RV.Renderer.ColorRamp(stt);
       let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1, 950,1050,1850,150);
       gridview.draw(colorramp0,myCanvas.height,myCanvas.width,true,"原始DEM渲染");
@@ -450,8 +450,8 @@ cs10Btn.addEventListener('click', () => {
 
       // let testAspext = RV.Test.Random_staAspect_Matrix(256,256);
       // console.log(testAspext);
-      let grid2 = RV.Raster.fromMatrix(grid1.getAccumulationFlow());
-      console.log(grid2.gridset);
+      let grid2 = RV.Raster.fromMatrix(grid1.getFlowDirection());
+      // console.log(grid2.gridset);
       // let preview = 
   
       // let colorramp2 = new RV.Renderer.ColorRamp(stt2);
@@ -459,18 +459,80 @@ cs10Btn.addEventListener('click', () => {
 
 
       // gridview2.draw_aspect(colorramp2,myCanvas.height,myCanvas.width,true,"坡向测试视图");
-      // gridview2.draw_dispersed_custom(myCanvas.height,true,RV.pan.CellValueRenderer.Stadard_Aspact,"坡向测试视图",9,1,0.1,[0,1,2,4,8,16,32,64,128]);
+      gridview2.draw_dispersed_custom(myCanvas.height,true,RV.pan.CellValueRenderer.Stadard_Aspact,"坡向测试视图",9,1,0.1,[0,1,2,4,8,16,32,64,128]);
 
 
-      grid2.reClassify_Binary_(20)
-      let stt2 =new RV.Stastic(grid2.get1DArray());
-      let colorramp = new RV.Renderer.ColorRamp(stt2);
-      gridview2.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积流量测试视图（重分类后）");
+      // grid2.reClassify_Binary_(20)
+      // let stt2 =new RV.Stastic(grid2.get1DArray());
+      // let colorramp = new RV.Renderer.ColorRamp(stt2);
+      // gridview2.draw(colorramp,myCanvas.height,myCanvas.width,true,"累积流量测试视图（重分类后）");
+      anotationAspects(350,80);
+      
       
      
 
       
     });
+
+    function anotationAspects(x,y){
+      // 绘制坡向圆盘形状标注，颜色值根据 RV.pan.CellValueRenderer.Stadard_Aspact 计算得出
+      // 坡向列表 [1,2,4,8,16,32,64,128] 对应的颜色值 由 RV.pan.CellValueRenderer.Stadard_Aspact 计算得出
+      const colorramp = RV.pan.CellValueRenderer.Stadard_Aspact; // 颜色映射函数
+      const aspect = [1,2,4,8,16,32,64,128];
+      // 绘制圆盘，等分为8份，每份的颜色值由 RV.pan.CellValueRenderer.Stadard_Aspact 计算得出
+      let center = [x,y];
+
+      // 圆盘平分为8份，每份的角度
+      let angle = 2*Math.PI/8;
+      // 22.5 度 -> 0.39269908169872414
+      let startAngle = - 0.39269908169872414;
+      // 圆盘半径
+      let radius = 50;
+      // 绘制圆盘
+
+
+
+      for(let i=0;i<aspect.length;i++){
+        let color = colorramp(aspect[i]);
+        myCanvas.ctx.beginPath();
+        myCanvas.ctx.fillStyle = color;
+        myCanvas.ctx.moveTo(x,y);
+        // 从 - 22.5 度开始绘制，即正北方向
+        myCanvas.ctx.arc(x,y,radius,startAngle+i*angle,startAngle+(i+1)*angle);
+        // myCanvas.ctx.arc(x,y,radius,i*angle,(i+1)*angle);
+        myCanvas.ctx.fill();
+        myCanvas.ctx.closePath();
+      }
+
+      let textRadius = radius + 15;
+      // 绘制坡向标注
+      let text = ['N','NE','E','SE','S','SW','W','NW'];
+      let textX = [x,x+textRadius/Math.sqrt(2),x+textRadius,x+textRadius/Math.sqrt(2),x,x-textRadius/Math.sqrt(2),x-textRadius,x-textRadius/Math.sqrt(2)];
+      let textY = [y-textRadius,y-textRadius/Math.sqrt(2),y,y+textRadius/Math.sqrt(2),y+textRadius,y+textRadius/Math.sqrt(2),y,y-textRadius/Math.sqrt(2)];
+      for(let i=0;i<text.length;i++){
+        myCanvas.ctx.beginPath();
+        myCanvas.ctx.fillStyle = 'black';
+        myCanvas.ctx.font = '20px serif';
+        myCanvas.ctx.fillText(text[i],textX[i],textY[i]);
+        myCanvas.ctx.closePath();
+      }
+
+
+      // // 绘制坡向标注
+      // let text = ['N','NE','E','SE','S','SW','W','NW'];
+      // let textX = [x,x+radius/Math.sqrt(2),x+radius,x+radius/Math.sqrt(2),x,x-radius/Math.sqrt(2),x-radius,x-radius/Math.sqrt(2)];
+      // let textY = [y-radius,y-radius/Math.sqrt(2),y,y+radius/Math.sqrt(2),y+radius,y+radius/Math.sqrt(2),y,y-radius/Math.sqrt(2)];
+      // for(let i=0;i<text.length;i++){
+      //   myCanvas.ctx.beginPath();
+      //   myCanvas.ctx.fillStyle = 'black';
+      //   myCanvas.ctx.font = '20px serif';
+      //   myCanvas.ctx.fillText(text[i],textX[i],textY[i]);
+      //   myCanvas.ctx.closePath();
+      // }
+
+
+
+    }
     
 
 
