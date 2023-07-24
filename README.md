@@ -1,116 +1,42 @@
-# RVGeo 长期更新计划
+# RVGeo 重构
+> next version: V2.X.X
+## 重构计划
+- 参考 GeoTools 重构 RVGeo
+- 标准化代码
+- 引入测试框架
+- 引入文档生成工具
+- https://github.com/torokmark/design_patterns_in_typescript
+- https://www.codenong.com/js0dea3b0a4b75/
 
-> - 本代码库及文档会长期维护，并尽可能服务于教学目的。
-- 基础类的重构： 随着代码量的增加，库的复杂性也在上升，因此需要不时重新组织代码片段。
-- 统计类基础渲染器与统计信息的解耦合： 为了更好地与现有的 JS 生态融合，统计类不强制要求使用自带的渲染器
-- 物理仿真模块：基于重构后的栅格类（也可能是 DEM 类），通过物理仿真模块包装，实现基础的环境方向的物理仿真。也会有一些基于流水物理的地形分析算法放在该类下面。
-- 本代码库暂时不会涉及：具体界面的搭建。除了必要的数据渲染工具（用于debug）之外，本库暂时不会设计编写用户界面部分的代码。
+## 一些设想
+> 若有使用者对于该代码仓库有任何想法，欢迎与我联系。（issue 或者 email）
 
-## SOMETHING NEW FOR V1.0.22 (22/11/28)
-* `NEW Interface `: __pan__ 
-* `pan` is the most base renderer, the final operator which utilizes the canvas-api to draw pixels on screen.
-* `CHANGE` in interface `RASTER`:
-* * `NEW FUNCTION`
-* * - `depadding()`: restore the grid-data to its original state(before padding).
-## SOMETHING NEW FOR V1.0.18 (22/11/23)
-* `CHANGE` in interface `TEST`:
-* * `function`:
-* * - :`test_1(a, bx=0, by=0) `
-* * - :`test_2(n, a, bx=0, by=0) `
-> info:
-> bx: bias for x
-> by: bias for y
-
->`attention`:I am now modifing this package for [`vue`](https://cn.vuejs.org/).
-## SOMETHING NEW FOR V1.0.16 (22/10/20)
-* `NEW Interface `: __Test__ 
-* * __Test__ can generate test data,which is based on `Math.Random` function.
-* * `Test.test_1`, `Test.test_2`...
-* `NEW Interface `: __Learn__
-* * `Learn.Vector_nD`:n dimentions vector ,different types of distance calculation formulations
-* * `Learn.Tensor_2D`:now just has k-means clustering function
-## NEW FEATURE QUICK EXAMPLE : 3D CLUSTERING
-```JS
-    let pl = test_10(200,3,1000);// generate random data
-
-    let ten = new Tensor_2D(pl);
-    let res = ten.K_means(3,0.0001,100);// run k-means function (k means the number of groups)
-
-    let pl1 = res[0];
-    let ps1 = PointSet.fromaArray_2D(pl1,1,0); // choose plot dimention by index(n-1)
-    let psv1 = new PointSetView(myCanvas.ctx,'green',ps1);
-    psv1.draw();// draw point set in 2d canvas 
-    psv1.draw_convex_hull();
-
-    let pl2 = res[1];
-    let ps2 = PointSet.fromaArray_2D(pl2,1,0);
-    let psv2 = new PointSetView(myCanvas.ctx,'red',ps2);
-    psv2.draw();
-    psv2.draw_convex_hull();
-
-    let pl3 = res[2];
-    let ps3 = PointSet.fromaArray_2D(pl3,1,0);
-    let psv3 = new PointSetView(myCanvas.ctx,'blue',ps3);
-    psv3.draw();
-    psv3.draw_convex_hull();
-```
----
-# Tutorial 1 : Base vector graphics
-> `NOTE`: The vector graphics part (Vector interface) are now in __Planar Cartesian coordinate system__. We plan to support geoJSON in the 2.x.x version.
-## Creating our "stage" --- canvas element
-We need a HTML file and a list of buttons in it to boudle our codes.
-
-```html
-<!----
-index.html
------>
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-    <meta charset="utf-8">
-    <title>Example_1</title>
-    <script type="module" src="main.js"></script>
-</head>
-<body>
-    <h1> Raster example </h1>
-    <button class="pointset">button_1</button>
-</body>
-</html>
-```
-Notice this line :"`<script type="module" src="main.js"></script>`".We insert our code segments as a module into this HTML file. Next,create the `main.js` file and we will write most of our codes in it.
-
-```js
-// main.js
-import * as RV from './node_modules/rvgeo/index.js'
-let myCanvas = new RV.Creator.Canvas('myCanvas', document.body, 1900, 1200);
-myCanvas.create();
-let pointsetBtn = document.querySelector('.pointset');
-``` 
-## Working with vector objects in RVGeo
-RVGeo decouples data from its display. Vector objects store the geomatries and their corresponding properties, and Render classes wrap an renderer around the Vector object.
-
-First ,let's create a Vector object (one of `Point` , `PointSet` , `Line` , `SimpleLine` , `Triangle` , `Circle`):(here we instantiate a `PointSet` Object.)
-We pass the random point list, `pl` , as an argument to PointSet. This wraps an object over our point list, and supports geting deduplication and bbox， Here we define a pointset of 80 random points , and each element in it is limited in the range of "[0,700)".
-
-```javascript
-let pl = RV.Test.test_2(80,700); // create the random point list
-let ps = new RV.Vector.PointSet(pl);// instantitate the PointSet object
-
-```
-## Displaying data
-To show some Vector objects in RVGeo, we create a class from "`renderer`" interface . PointSetView wraps the PointSet ,`ps`,and draw it on canvas.
-> NOTE: To vector objects ,we just use the "screen coordinate" and __the original point__ is at __the top right corner__.
-
-```js
-// to instantitate the object we need 2d context of the canvas ,the pen color and the object stored the original data.
-let pointset1 = new RV.Renderer.PointSetView(myCanvas.ctx,'green',ps);
-pointset1.draw();// we can use this renderer conveniously
-pointset1.draw_convex_hull();
-pointset1.draw_extent();
+总的来说 RVGeo 未来的渲染能力有三个大的分支： 二维 Canvas 上下文、三维 WebGL 上下文、依附现有的 WGS84 地图渲染库（百度地图、高德地图、MapBox等）。数据模型依旧分为栅格和矢量，其中二维渲染器主要渲染数据结构，三维及地图渲染器负责渲染具有实际意义的地理目标。 RVGeo 内部数据组织使用多维数组来维护，对外提供 GeoJSON 对象。
+```mermaid
+graph LR
+A[RVGeo] --> B[二维 Canvas 上下文]
+A --> C[三维 WebGL 上下文]
+A --> D[依附现有的 WGS84 地图渲染库]
+A --> E[数据模型]
+E --> F[栅格]
+E --> G[矢量]
+G --> H[GeoJSON]
+G --> I[多维数组]
 ```
 
 
+1. 百度地图API：引入百度地图作为底图，采用 WGS84 坐标系下的点。（百度地图国内区域的坐标会进行二次加密，国外则正常 WGS84 坐标系。对于国内区域，会使用官方提供的坐标转换接口。考虑到通用性，样例代码会放在非国内区域，使用 WGS84 坐标系。）
+2. 平面坐标系：依旧保留原来的二维 Canvas 上下文及平面坐标系计算能力。二维坐标系与 WGS84 坐标系无法兼容，但是考虑到百度地图 api 支持 Canvas 接口绘制，并且对于小尺度的场景只要做好坐标系定向还是可以直接使用二维坐标系的。（兼容接口会重新设计）
+3. 栅格数据：有别与其他地理图形库， RVGeo 具有栅格数据的计算与渲染能力。原本栅格数据与矢量数据共用一套绘制接口，同在一个坐标系下，在二维 Canvas 上下文中绘制。通过颜色条带来渲染不同的栅格值，使用矩阵运算来实现一些栅格（空间）运算能力。
+   1. 三维画布：采用 Three.js 在三维场景中渲染地形（DEM）、温度等数据。并整合一定的三维分析能力（洪水淹没模拟、光照渲染等），同时提供简单的材质及光照渲染能力。
+   2. 二维 Canvas 上下文：依旧保留原来的二维渲染能力，与上文理由一样，对于小范围可以直接使用二维坐标系绘制，节省计算资源。
+   3. 对于栅格数据的一些思考：
+      1. 栅格数据本质上是二维（及以上）数组，不考虑投影及空间覆盖，以二维的方式绘制利于检验一些基于二维（及以上）数组的分析算法。如果考虑实际情况，那么每一个栅格都不可能是相同大小的标准正方形（计算机图形方面的模型）。从实际意义上讲，栅格更像是对一定地理范围进行的“均匀采样”。单个栅格值只是对所表示地理区域的一次采样。并且对于一帧（一幅）栅格，每一个栅格覆盖的范围及栅格值的可信度其实是不一样的。
+      2. 栅格立方体：对于遥感数据及其他一些具有时间轴的数据，我们可以在三维画布中渲染，并通过截取断面的方式获得新的数据栅格。我们同样使用 Three.js 来绘制栅格立方体，并提供三维栅格数据分析。该功能属于探索性功能，版本迭代时有关方法可能会有较大变化。
+4. 内部数据模型：
+   1. 唯一的具有地理意义的数据模型：与 GeoJSON 兼容的数据模型，附带属性信息。
+   2. 易于处理的数据结构：基于多维列表的数据管理，只涉及最基本的几何对象及其拓扑关系。
+   3. 数据转换模块：主要是根据一定的规则将列表中的数据转换为 WGS84 下的坐标。
 
-              
-
-
+## 简单使用教程
+[npm page](https://www.npmjs.com/package/rvgeo)

@@ -65,21 +65,15 @@ lineBtn.addEventListener('click', () => {
 
 let cs1Btn = document.querySelector('.cs1');
 cs1Btn.addEventListener('click', () => {
-
   let tr = RV.Test.test_5(800);
   let tri = new RV.Renderer.TriangleView(myCanvas.ctx,'green',tr);
   // clear the canvas before drawing
   myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   tri.draw_EXCircle(true);
-  
-
   tri.draw();
   tri.draw_INCircle();
   tri.draw_info("外接圆圆心");
   tri.draw_vertices("red",true);
-
-  
-
 });
 
 

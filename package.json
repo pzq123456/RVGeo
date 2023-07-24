@@ -1,7 +1,7 @@
 {
   "name": "rvgeo",
   "version": "1.0.24",
-  "description": "RVGeo is a JavaScript library for rendering geographic data in raster format. It is based on WebGL and can be used in browsers and node.js.",
+  "description": "RVGeo is a JavaScript library for rendering geographic data in raster format.",
   "main": "./index.js",
   "type": "module",
   "keywords": [
