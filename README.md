@@ -1,42 +1,219 @@
-# RVGeo 重构
+# RVGeo (contemporary version)
 > next version: V2.X.X
-## 重构计划
-- 参考 GeoTools 重构 RVGeo
+> - see in Branch: `next`
+## TODO
+- 参考 GeoTools 及 Truf.js 重构 RVGeo
 - 标准化代码
 - 引入测试框架
 - 引入文档生成工具
 - https://github.com/torokmark/design_patterns_in_typescript
 - https://www.codenong.com/js0dea3b0a4b75/
 
-## 一些设想
-> 若有使用者对于该代码仓库有任何想法，欢迎与我联系。（issue 或者 email）
+## Simple Usage
+[npm page](https://www.npmjs.com/package/rvgeo)
+# A Brief Tutorial for RVGeo.js
+> - `Something new` is coming soon! ( 3D terrian rendering and GeoJSON with WGS84 ) See in V2.X.X .
+> - You can check those code on [GitHub](https://github.com/pzq123456/RVGeo). I have written a basic example page to show you how to use it! Just click on this [link](https://pzq123456.github.io/RVGeo/) and start the broswer-debugger-toolkit.
+> - `Note`: RVGeo.js is now in the early stage of development. We will continue to improve it and add more features. If you have any questions or suggestions, please contact me by email: `
+> - `Warning`: Everything is on 2D plane now. We will support 3D and sphere in the future. Unfortunately, you **CAN NOT** directly introduce RVGeo.js into existing map frameworks like `leaflet` or `mapbox-gl-js` now. We will support GeoJSON in the future.
 
-总的来说 RVGeo 未来的渲染能力有三个大的分支： 二维 Canvas 上下文、三维 WebGL 上下文、依附现有的 WGS84 地图渲染库（百度地图、高德地图、MapBox等）。数据模型依旧分为栅格和矢量，其中二维渲染器主要渲染数据结构，三维及地图渲染器负责渲染具有实际意义的地理目标。 RVGeo 内部数据组织使用多维数组来维护，对外提供 GeoJSON 对象。
-```mermaid
-graph LR
-A[RVGeo] --> B[二维 Canvas 上下文]
-A --> C[三维 WebGL 上下文]
-A --> D[依附现有的 WGS84 地图渲染库]
-A --> E[数据模型]
-E --> F[栅格]
-E --> G[矢量]
-G --> H[GeoJSON]
-G --> I[多维数组]
+First let's create our "stage" --- canvas element. We need a HTML file with a list of buttons to boudle our codes.
+
+```html
+<!---- index.html ----->
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <title>Example</title>
+    <script type="module" src="main.js"></script>
+</head>
+<body>
+    <button class="btn1">button_1</button>
+    <button class="btn2">button_2</button>
+    <button class="btn3">button_3</button>
+    <button class="btn4">button_4</button>
+    <!-- add a button once you need it! -->
+</body>
+</html>
+```
+> Notice this line :"`<script type="module" src="main.js"></script>`". 
+> - We insert our code segments as a module into this HTML file. Next, create the `main.js` file and we will write most of our codes in it.
+
+## Namespace
+Here is the `index.js` for RVGeo.
+```js
+// index.js
+// ... some code
+export {
+    Vector,
+    Raster,
+    Stastic,
+    Renderer,
+    Creator,
+    Learn,
+    Test,
+    pan
+}
 ```
 
+## Import RVGeo
+If you use npm to install RVGeo, you can import it like this.
+```js
+// main.js
+import * as RV from "./node_modules/rvgeo/index.js"
+```
+> If you use vite, you can config the vite.config.js like this:
+> ```js
+> export default defineConfig({
+>     plugins: [vue(),vitePluginString()],
+>     resolve: {
+>         alias: {
+>             'rvgeo': path.resolve(__dirname, './node_modules/rvgeo/index.js')
+>         }
+>     }
+> })
+> ```
+> Then you can import it like this:
+> ```js
+> import * as RV from "rvgeo"
+> ```
 
-1. 百度地图API：引入百度地图作为底图，采用 WGS84 坐标系下的点。（百度地图国内区域的坐标会进行二次加密，国外则正常 WGS84 坐标系。对于国内区域，会使用官方提供的坐标转换接口。考虑到通用性，样例代码会放在非国内区域，使用 WGS84 坐标系。）
-2. 平面坐标系：依旧保留原来的二维 Canvas 上下文及平面坐标系计算能力。二维坐标系与 WGS84 坐标系无法兼容，但是考虑到百度地图 api 支持 Canvas 接口绘制，并且对于小尺度的场景只要做好坐标系定向还是可以直接使用二维坐标系的。（兼容接口会重新设计）
-3. 栅格数据：有别与其他地理图形库， RVGeo 具有栅格数据的计算与渲染能力。原本栅格数据与矢量数据共用一套绘制接口，同在一个坐标系下，在二维 Canvas 上下文中绘制。通过颜色条带来渲染不同的栅格值，使用矩阵运算来实现一些栅格（空间）运算能力。
-   1. 三维画布：采用 Three.js 在三维场景中渲染地形（DEM）、温度等数据。并整合一定的三维分析能力（洪水淹没模拟、光照渲染等），同时提供简单的材质及光照渲染能力。
-   2. 二维 Canvas 上下文：依旧保留原来的二维渲染能力，与上文理由一样，对于小范围可以直接使用二维坐标系绘制，节省计算资源。
-   3. 对于栅格数据的一些思考：
-      1. 栅格数据本质上是二维（及以上）数组，不考虑投影及空间覆盖，以二维的方式绘制利于检验一些基于二维（及以上）数组的分析算法。如果考虑实际情况，那么每一个栅格都不可能是相同大小的标准正方形（计算机图形方面的模型）。从实际意义上讲，栅格更像是对一定地理范围进行的“均匀采样”。单个栅格值只是对所表示地理区域的一次采样。并且对于一帧（一幅）栅格，每一个栅格覆盖的范围及栅格值的可信度其实是不一样的。
-      2. 栅格立方体：对于遥感数据及其他一些具有时间轴的数据，我们可以在三维画布中渲染，并通过截取断面的方式获得新的数据栅格。我们同样使用 Three.js 来绘制栅格立方体，并提供三维栅格数据分析。该功能属于探索性功能，版本迭代时有关方法可能会有较大变化。
-4. 内部数据模型：
-   1. 唯一的具有地理意义的数据模型：与 GeoJSON 兼容的数据模型，附带属性信息。
-   2. 易于处理的数据结构：基于多维列表的数据管理，只涉及最基本的几何对象及其拓扑关系。
-   3. 数据转换模块：主要是根据一定的规则将列表中的数据转换为 WGS84 下的坐标。
+## Usage
+### 1. Create a canvas and a footer
+We create the canvas and footer in the `main.js` file. Every "ctx" in RVGeo is a 2d context of a canvas element. We can use it to draw something on the canvas.
+```js
+// main.js
+// create the canvas 
+let myCanvas = new RV.Creator.Canvas('myCanvas', document.body, 1900, 1200);
+myCanvas.create();
 
-## 简单使用教程
-[npm page](https://www.npmjs.com/package/rvgeo)
+// creater footer 
+// just skip this part if you don't need it.
+let footer = document.createElement('footer');
+footer.innerHTML = '© 2022-2023 Powered by RVGeo.js';
+document.body.appendChild(footer);
+footer.style.flex = '0 0 auto';
+footer.style.textAlign = 'center';
+footer.style.backgroundColor = '#f5f5f5';
+```
+
+### 2. Add handler for buttons
+First of all, let's query the buttons and add event listeners to them.
+- `btn1` : draw a pointset and its convex hull.
+- `btn2` : draw a complexline and it trend line.
+```js
+    // Some semantic code may make it more readable. like this: 
+    // let btnOfLine = document.querySelector('.btn1'); // line
+    let btn1 = document.querySelector('.btn1');
+    let btn2 = document.querySelector('.btn2');
+
+    // add event listener
+    // 1.draw a pointset and its convex_hull
+    btn1.addEventListener('click', () => {
+        let pl = RV.Test.test_2(80,700,100,100); //get rendom point list
+        let ps = new RV.Vector.PointSet(pl);
+        let pointset1 = new RV.Renderer.PointSetView(myCanvas.ctx,'green',ps)
+        // clear the canvas before drawing
+        myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        pointset1.draw();
+        pointset1.draw_convex_hull(true);
+        pointset1.draw_extent();
+    });
+    // 2.draw a complexline and it trend line
+    btn2.addEventListener('click', () => {
+        let pl = RV.Test.test_4(1900,500,10);
+        let pointset1 = new RV.Renderer.LineView(myCanvas.ctx,"rgba(255, 157, 0, 0.846)",pl);
+        // clear the canvas before drawing
+        myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        pointset1.draw("rgba(255, 157, 0, 0.846)",1,false);
+        pointset1.draw_DPsmmoth(290,true);
+        pointset1.draw_extent();
+    });
+```
+
+### 3. Triangle and Circle (inner&outer)
+```js
+let btn3 = document.querySelector('.btn3');
+btn3.addEventListener('click', () => {
+  let tr = RV.Test.test_5(800);
+  let tri = new RV.Renderer.TriangleView(myCanvas.ctx,'green',tr);
+  // clear the canvas before drawing
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+  tri.draw_EXCircle(true);
+  tri.draw();
+  tri.draw_INCircle();
+  tri.draw_info("center of outer circle"); // draw the info of the outer circle in the canvas
+  tri.draw_vertices("red",true);
+});
+```
+
+### 4. Delaunay Triangulation
+First let's generate mock data.
+```js
+let pl = RV.Test.test_6(100,1000); // generate random point list
+let plt = [];
+
+for(let itm of pl){
+  let po = new RV.Vector.Point(itm[0],itm[1]);
+  plt.push(po);
+}
+```
+Then we can use the `Delaunay_triangulation` function to get the triangulation.
+```js
+let btn4 = document.querySelector('.btn4');
+btn4.addEventListener('click', () => {
+  // clear the canvas before drawing
+  myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+  // get the triangulation
+  let trilist = RV.Vector.Delaunay_triangulation(pl);
+  let data = RV.Vector.Tesson_polygon_adj_Matrix(pl);
+
+  for(let tri of trilist){
+    let triview = new RV.Renderer.TriangleView(myCanvas.ctx,'green',tri);
+    triview.draw();
+  }
+
+  let grid1= RV.Raster.fromMatrix(data);
+  let gridview = new RV.Renderer.GridView(myCanvas.ctx,grid1,512+512,512+512+10,512+512+512,512+10);
+  gridview.draw_dispersed_custom(myCanvas.height,true,RV.pan.CellValueRenderer.ColorBand_1,"三角形邻接关系",4)
+})
+```
+> - Render the 2D Data Structure : We can use adjaceny matrix to represent the adjacency relationship of the triangles. RVGeo.js provides a `GridView` class to render the matrix. This is a very intesting feature. You can use it to render any matrix you want. Just try it!
+
+### 5. K-means Clustering
+We can use the `K_means` function to get the clustering result.
+```js
+let btn5 = document.querySelector('.btn5');
+btn.addEventListener('click', () => {
+
+    // clear the canvas before drawing
+    myCanvas.ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
+    let pl = RV.Test.test_10(200,3,1000); // generate random data
+
+    let ten = new RV.Learn.Tensor_2D(pl);
+    let res = ten.K_means(3,0.0001,100);
+
+    let pl1 = res[0];
+    let ps1 = RV.Vector.PointSet.fromaArray_2D(pl1,1,0);
+    let psv1 = new RV.Renderer.PointSetView(myCanvas.ctx,'green',ps1);
+    psv1.draw();
+    psv1.draw_convex_hull(true);
+    // psv1.draw_extent(true);
+
+    let pl2 = res[1];
+    let ps2 = RV.Vector.PointSet.fromaArray_2D(pl2,1,0);
+    let psv2 = new RV.Renderer.PointSetView(myCanvas.ctx,'red',ps2);
+    psv2.draw();
+    psv2.draw_convex_hull(true);
+    // psv2.draw_extent(true);
+
+    let pl3 = res[2];
+    let ps3 = RV.Vector.PointSet.fromaArray_2D(pl3,1,0);
+    let psv3 = new RV.Renderer.PointSetView(myCanvas.ctx,'blue',ps3);
+    psv3.draw();
+    psv3.draw_convex_hull(true);
+    // psv3.draw_extent(true);
+})
+```
