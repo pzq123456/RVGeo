@@ -1,6 +1,6 @@
 /**
  * Sphere Parameter 
- * @module EllipsoidParm
+ * @module Ellipsoid
  * @description
  * - Static data used to describe the shape of the sphere.
  * - 球面参数(静态数据，用于描述球面的形状)
