@@ -21,6 +21,10 @@ export class Point{
         this.properties = args; // 属性信息 （含任意类型的列表）
     }
 
+    /**
+     * 将点转换为 GeoJSON 格式
+     * @returns 返回 GeoJSON 格式的点
+     */
     toGeoJSON(){        
         return {
             type: "Point",
@@ -29,6 +33,30 @@ export class Point{
                 ...this.properties // 将属性信息转换为 GeoJSON 格式
             }
         }
+    }
+
+    /**
+     * 将点转换为二维数组
+     * @returns 返回二维数组
+     */
+    to2DArray(){
+        return [this.lon, this.lat];
+    }
+
+    /**
+    * 将点转换为三维数组
+     * @returns 返回三维数组
+     */
+    to3DArray(){
+        return [this.lon, this.lat, this.asl];
+    }
+
+    /**
+     * 将点转换为字符串
+     * @returns 返回字符串
+     */
+    toString(){
+        return `Point(${this.lon}, ${this.lat}, ${this.asl})`;
     }
 }
 
