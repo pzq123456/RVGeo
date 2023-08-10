@@ -31,6 +31,8 @@ git clone --branch next --single-branch https://github.com/pzq123456/RVGeo.git
 - https://zh.wikipedia.org/wiki/Web%E5%A2%A8%E5%8D%A1%E6%89%98%E6%8A%95%E5%BD%B1
 - https://proj.org/en/9.2/index.html
 - https://github.com/proj4js/proj4js
+- https://glmatrix.net/
+- https://blog.csdn.net/Richard__Ting/article/details/99319860
 
 ## 一些设想
 > 若有使用者对于该代码仓库有任何想法，欢迎与我联系。（issue 或者 email）

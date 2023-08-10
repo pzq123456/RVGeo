@@ -7,6 +7,7 @@
 
 // Path: src\packages\Distance.ts
 
-// 球面坐标系（经纬度）上两点之间的距离，球面形状为正球
+// 球面坐标系（经纬度）上两点之间的距离，球面形状为正球体
+import { sphere } from "./constants/Ellipsoid.ts"
 
-// 定义距离计算接口
+
