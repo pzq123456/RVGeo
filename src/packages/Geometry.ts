@@ -129,6 +129,19 @@ class MultiPoint extends Geometry{
         this.coordinates = points;
     }
 
+    /**
+     * - 以数列形式返回内部点列表
+     * - return array which wrappers all of the points in it
+     */
+    toArray(): number[][] {
+        let res = [];
+        for(let i = 0; i  < this.coordinates.length; i++){
+            let tmp = this.coordinates[i].to2DArray();
+            res.push(tmp);
+        }
+        return res;
+    }
+
 
 
 }
