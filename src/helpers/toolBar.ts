@@ -3,6 +3,7 @@
  * 自动为创建工具条
  * @param element 用于挂载工具条的元素
  * @param tools 工具条上的工具( {name: string, action: () => void} )
+ * @param itemsPerRow 每行按钮个数
  */
 export function createToolBar(
   element: HTMLDivElement,
