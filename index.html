@@ -5,8 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RVGeo: Base Example</title>
-    <!-- <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&&type=webgl&ak=zsuRD8fmHkCdmWzC84NDbsvwAiWBdCce">
-    </script> -->
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&&type=webgl&ak=zsuRD8fmHkCdmWzC84NDbsvwAiWBdCce">
+    </script>
   </head>
   <style>
     body{
@@ -84,6 +84,8 @@
       display: none;
     }
   </style>
+  <!-- <style src="./src/helpers/DrawingManager.min.css"></style> -->
+  <link rel="stylesheet" href="./src/helpers/DrawingManager.min.css">
   <body>
     <div class="title">
       <img src="logo.svg" alt="logo" height="32px" width="32px"/>
@@ -98,6 +100,13 @@
       </div>
         <div id="toolBar">
       </div>
+      <!-- <ul class="drawing-panel">
+        <li class="bmap-btn bmap-marker" @click="draw('marker')" :style="{ 'background-position-y': actNav === 'marker' ? '-52px' : '0px'}"></li>
+        <li class="bmap-btn bmap-polyline" @click="draw('polyline')" :style="{ 'background-position-y': actNav === 'polyline' ? '-52px' : '0px' }"></li>
+        <li class="bmap-btn bmap-rectangle" @click="draw('rectangle')" :style="{ 'background-position-y': actNav === 'rectangle' ? '-52px' : '0px' }"></li>
+        <li class="bmap-btn bmap-polygon" @click="draw('polygon')" :style="{'background-position-y': actNav === 'polygon' ? '-52px' : '0px'}"></li>
+        <li class="bmap-btn bmap-circle" @click="draw('circle')" :style="{'background-position-y': actNav === 'circle' ? '-52px' : '0px'}"></li>
+      </ul> -->
       <div class="map" id="allmap">
       </div>
       <footer>
@@ -106,5 +115,6 @@
         </h3>
       </footer>
     <script type="module" src="/src/main.ts"></script>
+    <script src="./src/helpers/DrawingManager.min.js"></script>
   </body>
 </html>

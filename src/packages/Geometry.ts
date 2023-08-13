@@ -2,6 +2,7 @@
  * 该模块中的是内置的 geometry 对象（存储的坐标全部为 WGS 84 经纬度坐标）
  * @see http://geojson.io/
  * 地理要素分为Point（点）、MultiPoint（多点）、LineString（线）、MultiLineString（多线）、Polygon（面）、MultiPolygon（多面）、GeometryCollection（几何集合）
+ * - 该模块的目的就是为了方便操作这些地理要素
  */
 
 /**
@@ -12,16 +13,34 @@ abstract class Geometry{
     type: string; // 类型
     properties: any[]; // 属性信息
     MBR: number[]; // 最小外包矩形 (Minimum Bounding Rectangle)
+    coordinates: any[]; // 坐标信息
 
-    constructor(type: string, ...args: any[]){
+    /**
+     * - 构造函数
+     * - constructor
+     * @warning 该类为抽象类，不能直接实例化。在构造函数中会自动调用 calculateMBR() 方法计算最小外包矩形。内部数据变化时需要手动调用该方法更新最小外包矩形。
+     * @param type 类型
+     * @param args 属性信息
+     */
+    constructor(type: string, coordinates: any[],...args: any[]){
         this.type = type;
         this.properties = args;
-        this.MBR = this.calculateMBR();
+        this.coordinates = coordinates;
+        this.MBR = this.calculateMBR(); // 计算最小外包矩形
     }
 
     abstract toGeoJSON(): any; // 转换为 GeoJSON 格式
-    abstract toArray(): any[]; // 转换为数组
+    abstract toArray(): any[]; // 转换为数组（数列）形式
     abstract calculateMBR(): number[]; // 计算最小外包矩形 抽象函数需要每一个具体的类具体实现
+    
+    /**
+     * - 获取（当前）图形的属性信息数组
+     * - get properties array of geometry
+     * @returns 返回属性信息数组
+     */
+    getPropertyArray(): any[] {
+        return this.properties;
+    }
 
     /**
      * - 获取图形的外包矩形
@@ -115,18 +134,17 @@ export class Point{
 
 /**
  * 多点类型 MultiPoint type
+ * - 内部维护一个点列表 Point[]
+ * - maintain a point list Point[] inside
  */
-class MultiPoint extends Geometry{
-    coordinates: Point[]; // 点坐标数组
-
+export class MultiPoint extends Geometry{
     /**
      * - 构造函数
      * @param points 点坐标数组
      * @param args 属性信息
      */
     constructor(points: Point[], ...args: any[]){
-        super("MultiPoint", ...args);
-        this.coordinates = points;
+        super("MultiPoint", points, ...args);
     }
 
     /**
@@ -142,6 +160,56 @@ class MultiPoint extends Geometry{
         return res;
     }
 
+    /**
+     * - 将多点转换为 GeoJSON 格式
+     * - transform MultiPoint to GeoJSON format
+     * @returns 返回 GeoJSON 格式的多点
+     */
+    toGeoJSON() {
+        return {
+            type: "MultiPoint",
+            coordinates: this.toArray(),
+            properties:{
+                ...this.properties
+            }
+        }
+    }
 
+    /**
+     * - 计算最小外包矩形
+     * - calculate MBR
+     * @returns 返回最小外包矩形 [minLon, minLat, maxLon, maxLat]
+     */
+    calculateMBR(): number[] {
+        let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;
+        for(let i = 0; i < this.coordinates.length; i++){
+            let tmp = this.coordinates[i].to2DArray();
+            minLon = Math.min(minLon, tmp[0]);
+            minLat = Math.min(minLat, tmp[1]);
+            maxLon = Math.max(maxLon, tmp[0]);
+            maxLat = Math.max(maxLat, tmp[1]);
+        }
+        return [minLon, minLat, maxLon, maxLat];
+    }
+
+    /**
+     * - 删除指定索引的点
+     * - delete point by index
+     * @param index 索引
+     */
+    deletePoint(index: number){
+        this.coordinates.splice(index, 1);
+        this.MBR = this.calculateMBR();
+    }
+
+    /**
+     * - 添加点
+     * - add point
+     * @param point 点 
+     */
+    addPoint(point: Point){
+        this.coordinates.push(point);
+        this.MBR = this.calculateMBR();
+    }
 
 }

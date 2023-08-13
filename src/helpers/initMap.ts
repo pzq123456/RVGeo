@@ -30,15 +30,14 @@ export function loadBaiDuMap(): Promise<any> {
 export async function loadBaiDuDrawMap(): Promise<any> {
   const BMapGL = await loadBaiDuMap();
 
-  console.log('BMapLib.DrawingManager loading!');
-  let script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = 'http://mapopen.cdn.bcebos.com/github/BMapGLLib/DrawingManager/src/DrawingManager.min.js';
-  document.body.appendChild(script);
-  let link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'http://mapopen.cdn.bcebos.com/github/BMapGLLib/DrawingManager/src/DrawingManager.min.css';
-  document.body.appendChild(link);
+  // let script = document.createElement('script');
+  // script.type = 'text/javascript';
+  // script.src = 'http://mapopen.cdn.bcebos.com/github/BMapGLLib/DrawingManager/src/DrawingManager.min.js';
+  // document.body.appendChild(script);
+  // let link = document.createElement('link');
+  // link.rel = 'stylesheet';
+  // link.href = 'http://mapopen.cdn.bcebos.com/github/BMapGLLib/DrawingManager/src/DrawingManager.min.css';
+  // document.body.appendChild(link);
 
   return BMapGL;
 }
