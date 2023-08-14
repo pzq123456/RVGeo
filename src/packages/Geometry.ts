@@ -8,13 +8,15 @@
 /**
  * 图形基类（抽象类）
  * - 该类定义了一些图形共有的方法及属性
+ * @warning 该类为抽象类，不能直接实例化。在构造函数中会自动调用 calculateMBR() 方法计算最小外包矩形。内部数据变化时需要手动调用该方法更新最小外包矩形。
+ * @warning 该类的子类需要实现 toGeoJSON()、toArray()、calculateMBR() 方法
+ * @warning 这里的coordinates是一个数组，数组中的元素是包装了坐标的对象，而 GeoJSON 中的 coordinates 是一个数组，数组中的元素是坐标
  */
 abstract class Geometry{
     type: string; // 类型
     properties: any[]; // 属性信息
     MBR: number[]; // 最小外包矩形 (Minimum Bounding Rectangle)
-    coordinates: any[]; // 坐标信息
-
+    coordinates: any[]; // 注意这里的coordinates与 GeoJSON 中的意义不同
     /**
      * - 构造函数
      * - constructor
@@ -87,7 +89,7 @@ export class Point{
     toGeoJSON(){
         return {
             type: "Point",
-            coordinates: [this.lon, this.lat, this.asl],
+            coordinates: [this.lon, this.lat],
             properties:{
                 ...this.properties // 将属性信息转换为 GeoJSON 格式
             }

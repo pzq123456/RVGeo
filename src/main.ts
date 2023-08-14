@@ -8,13 +8,13 @@ import { draw } from './helpers/BLDraw.ts';
 // console.log(p.toGeoJSON());
 // console.log(p.getPropertyArray());
 
-// let ps = mockPoints(10);
-// console.log(ps);
-// let mp = new MultiPoint(ps,"a", "b", "c", 10);
-// console.log(mp);
-// console.log(mp.toGeoJSON());
-// console.log(mp.getMBR());
-// console.log(mp.toArray());
+let ps = mockPoints(10);
+console.log(ps);
+let mp = new MultiPoint(ps,"a", "b", "c", 10);
+console.log(mp);
+console.log(mp.toGeoJSON());
+console.log(mp.getMBR());
+console.log(mp.toArray());
 
 
 
