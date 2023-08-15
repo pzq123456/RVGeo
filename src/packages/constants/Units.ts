@@ -1,6 +1,8 @@
 /**
  * @moudle Units
  * @description 单位 Units 部分代码来自 Turf.js
+ * - 该模块主要用于单位换算，包括距离单位和面积单位。
+ * - This module is mainly used for unit conversion, including distance units and area units.
  */
 
 import { sphere } from "./Ellipsoid.ts";
@@ -37,7 +39,7 @@ export type AreaUnits =
  * - 键是单位的名称，值是相较于1弧度的单位缩放比例。
  * - `definition`: The length of the arc on the unit circle subtended by an angle of 1 radian.
  * - `定义`：弧长等于半径的弧，其所对的圆心角为1弧度。
- * 
+ * - `注意`: 其中已经含有地球半径的信息，因此不需要再乘以地球半径。
  * @memberof Units
  * @type {Object}
  */
@@ -129,4 +131,28 @@ export function lengthToRadians(
     throw new Error(units + " units is invalid");
   }
   return distance / factor;
+}
+
+/**
+ * - Converts an angle in degrees to radians
+ * - 将角度转换为弧度
+ * @name degreesToRadians
+ * @param {number} degrees angle between 0 and 360 degrees
+ * @returns {number} angle in radians
+ */
+export function degreesToRadians(degrees: number): number {
+  const radians = degrees % 360;
+  return (radians * Math.PI) / 180;
+}
+
+/**
+ * - Converts an angle in radians to degrees
+ * - 将弧度转换为角度
+ * @name radiansToDegrees
+ * @param {number} radians angle in radians
+ * @returns {number} degrees between 0 and 360 degrees
+ */
+export function radiansToDegrees(radians: number): number {
+  const degrees = radians % (2 * Math.PI);
+  return (degrees * 180) / Math.PI;
 }
