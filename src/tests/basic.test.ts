@@ -1,11 +1,20 @@
 import { assert, expect, test } from 'vitest'
 
+import { round } from '../packages/constants/Units'
+
 import { haversine } from '../packages/Distance'
 
-// TEST haversine ([36.12, -86.67], [33.94, -118.40]) --> 2887.26
-test('haversine', () => {
-  expect(haversine([36.12, -86.67], [33.94, -118.40],"kilometers")).toBe(2887.2599506071106)
+test('round', () => {
+  expect(round(120.4321, 2)).toBe(120.43)
+  expect(round(120.4321)).toBe(120)
 })
+
+test('haversine', () => {
+  expect(
+      round(haversine([-86.67 ,36.12], [-118.40 ,33.94],"kilometers"),2)
+    ).toBe(2886.44)
+})
+
 
 
 
