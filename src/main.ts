@@ -1,23 +1,31 @@
 import { createToolBar } from './helpers/toolBar.ts'
 import { Point, MultiPoint } from './packages/Geometry.ts'
 import { mockPoints } from './tests/Mock.ts';
-import { draw } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay } from './helpers/BLDraw.ts';
 
 // test code
 // let p = new Point(1, 2, 3, "a", "b", "c", 10);
 // console.log(p.toGeoJSON());
 // console.log(p.getPropertyArray());
 
-let ps = mockPoints(10);
-console.log(ps);
-let mp = new MultiPoint(ps,"a", "b", "c", 10);
-console.log(mp);
-console.log(mp.toGeoJSON());
-console.log(mp.getMBR());
-console.log(mp.toArray());
+const myMBR1 = [
+  -109.07111505279033,
+  36.990057191562045,
+  -102.06399125241506,
+  40.981780653665425
+]
 
 
+// console.log(ps);
+// let mp = new MultiPoint(ps,"a", "b", "c", 10);
+// console.log(mp);
+// console.log(mp.toGeoJSON());
+// console.log(mp.getMBR());
+// console.log(mp.toArray());
 
+// GL版命名空间为BMapGL
+// 按住鼠标右键，修改倾斜角和角度
+var map = new BMapGL.Map("allmap");    // 创建Map实例
 
 createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: 'Point', action: () =>  draw('marker')},
@@ -25,13 +33,24 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: 'rectangle', action: () =>  draw('rectangle')},
   { name: 'polygon', action: () =>  draw('polygon')},
   { name: 'circle', action: () =>  draw('circle')},
+  { name: 'clear', action: () =>  removeAllOverlay(map)},
 ])
 
-// GL版命名空间为BMapGL
-// 按住鼠标右键，修改倾斜角和角度
-var map = new BMapGL.Map("allmap");    // 创建Map实例
-map.centerAndZoom(new BMapGL.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
+
+
+map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+
+let ps = mockPoints(10, myMBR1);
+let mps = new MultiPoint(ps);
+drawMultiPoint2BLMap(mps, map);
+
+
+
+
+
+
+
 
 function draw(type) {
   const styleOptions = {

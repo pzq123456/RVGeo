@@ -1,8 +1,8 @@
 /**
  * @module distance
  * @description
- * - Returns the distance between two points.(Supports both 2D and 3D points on the Sphere and the Cartesian plane)
- * - 距离模块，返回两点之间的距离（支持球面和笛卡尔平面上的2D和3D点）
+ * - Returns the distance between two points.
+ * - 距离模块，返回两点之间的距离
  * @see https://en.wikipedia.org/wiki/Haversine_formula
  */
 
@@ -12,6 +12,15 @@ import { degreesToRadians, radiansToLength} from "./constants/Units.ts"
 import { Point } from "./Geometry.ts"
 import { Units } from "./constants/Units.ts"
 
+/**
+ * @description
+ * - Returns the distance between two points.
+ * - 距离模块，返回两点之间的距离（ haversine 公式）
+ * @param from 点类型或者经纬度数组
+ * @param to 点类型或者经纬度数组
+ * @param unit 单位
+ * @returns {number}
+ */
 export function haversine(from: Point | [lon1 : number ,lat1 : number] ,to: Point | [lon2 : number ,lat2 : number] ,unit: Units = "kilometers"): number {
     // 处理输入参数
     const coordinates1 = Array.isArray(from) ? from : from.to2DArray();
