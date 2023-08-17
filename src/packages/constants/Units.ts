@@ -7,7 +7,7 @@
 
 import { sphere } from "./Ellipsoid.ts";
 
-const earthRadius = sphere.a;
+export const earthRadius = sphere.a; // 6371008.8
 
 export type Units =
   | "meters"
@@ -61,6 +61,27 @@ export const factors: Record<Units, number> = {
     yards: earthRadius * 1.0936,
   };
   
+/**
+ * - Unit of measurement factors based on 1 meter.
+ * - 单位换算关系，以1米为基准。
+ */
+export const factors2: Record<Units, number> = {
+  centimeters: 1 * 100,
+  centimetres: 1 * 100,
+  degrees: 360 / (2 * Math.PI) * 1/earthRadius,
+  feet: 1 * 3.28084,
+  inches: 1 * 39.37,
+  kilometers: 1 / 1000,
+  kilometres: 1 / 1000,
+  meters: 1,
+  metres: 1,
+  miles: 1 / 1609.344,
+  millimeters: 1 * 1000,
+  millimetres: 1 * 1000,
+  nauticalmiles: 1 / 1852,
+  radians: 1 / earthRadius,
+  yards: 1 * 1.0936,
+}
 /**
   * - Area of measurement factors based on 1 square meter.
   * - 单位换算关系，以1平方米为基准。

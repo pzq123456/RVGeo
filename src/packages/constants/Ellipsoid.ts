@@ -18,7 +18,8 @@ export enum EllipsoidName {
 /**
  * @description
  * - WGS84 Ellipsoid
- * - WGS84椭球
+ * - WGS84椭球 
+ * - EPSG:3857
  */
 export const WGS84 = {
     a: 6378137.0,  // 长半轴
@@ -32,7 +33,7 @@ export const WGS84 = {
  * 正球参数
  */
 export const sphere = {
-    a: 6370997.0,  // 长半轴
-    b: 6370997.0,  // 短半轴
-    Name: "Normal Sphere (r=6370997)"  // 正球
+    a: 6371008.8,  // 长半轴
+    b: 6371008.8, // 短半轴
+    Name: "Normal Sphere ( r= 6371008.8 )"  // 正球
 };
