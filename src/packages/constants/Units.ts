@@ -157,23 +157,4 @@ export function radiansToDegrees(radians: number): number {
   return (degrees * 180) / Math.PI;
 }
 
-/**
- * - Round number to precision
- * - 将数字四舍五入到指定精度
- * @param {number} num Number
- * @param {number} [precision=0] Precision
- * @returns {number} rounded number
- * @example
- * round(120.4321)
- * //=120
- *
- * round(120.4321, 2)
- * //=120.43
- */
-export function round(num: number, precision : number = 0): number {
-  if (precision && !(precision >= 0)) {
-    throw new Error("precision must be a positive number");
-  }
-  const multiplier = Math.pow(10, precision || 0); // 取10的precision次方
-  return Math.round(num * multiplier) / multiplier; // 乘以10的precision次方，四舍五入，再除以10的precision次方
-}
+

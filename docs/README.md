@@ -37,3 +37,11 @@ GeoJSON supports the following geometry types:
 - https://github.com/Turfjs/turf/blob/master/packages/turf-area/index.ts
 - read://https_datatracker.ietf.org/?url=https%3A%2F%2Fdatatracker.ietf.org%2Fdoc%2Fhtml%2Frfc7946%23section-3.1.4
 - read://https_tech.meituan.com/?url=https%3A%2F%2Ftech.meituan.com%2F2014%2F09%2F05%2Flucene-distance.html
+
+## 凸包及散点轮廓 Convex hull & Alpha Shapes
+> reference: 
+> - [Convex hull](https://en.wikipedia.org/wiki/Convex_hull_algorithms)
+> - [Alpha Shapes](https://graphics.stanford.edu/courses/cs268-11-spring/handouts/AlphaShapes/as_fisher.pdf)
+> - [Graham scan](https://en.wikipedia.org/wiki/Graham_scan)
+> - [Mercator projection](https://en.wikipedia.org/wiki/Mercator_projection)
+> - [turf projection](https://github.com/Turfjs/turf/blob/master/packages/turf-projection/index.ts)
