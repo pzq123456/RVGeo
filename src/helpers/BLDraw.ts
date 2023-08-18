@@ -5,7 +5,7 @@
  * - 由于无法使用 import 语句，所以只能使用全局变量 BMap。
  */
 
-import { Point, MultiPoint, LineString } from '../packages/Geometry.ts';
+import { Point, MultiPoint, LineString, MultiLineString } from '../packages/Geometry.ts';
 
 // disable ts error
 declare var BMapGL: any;
@@ -88,17 +88,11 @@ export function drawRectangle2BLMap( rect : [minLon:number, minLat:number, maxLo
         new BMapGL.Point(pEnd.lng, pStart.lat),
         pEnd,
         new BMapGL.Point(pStart.lng, pEnd.lat)
-    ], { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 });  //创建矩形
+    ], { strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });  //创建矩形
     map.addOverlay(rectangle);   //增加矩形
 }
 
 export function drawLineString2BLMap(lineString: LineString, map: any) {
-    // var polyline = new BMapGL.Polyline([
-	// 	new BMapGL.Point(116.399, 39.910),
-	// 	new BMapGL.Point(116.405, 39.920),
-	// 	new BMapGL.Point(116.425, 39.900)
-	// ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});   //创建折线
-
     let points = lineString.coordinates;
     let blPoints = [];
     for (let i = 0; i < points.length; i++) {
@@ -109,6 +103,13 @@ export function drawLineString2BLMap(lineString: LineString, map: any) {
     map.addOverlay(polyline);   //增加折线
 }
 
+export function drawMultiLineString2BLMap(multiLineString: MultiLineString, map: any) {
+    let lineStrings = multiLineString.coordinates;
+    for (let i = 0; i < lineStrings.length; i++) {
+        let lineString = lineStrings[i];
+        drawLineString2BLMap(lineString, map);
+    }
+}
 // var polyline = new BMapGL.Polyline([
 //     new BMapGL.Point(116.399, 39.910),
 //     new BMapGL.Point(116.405, 39.920),

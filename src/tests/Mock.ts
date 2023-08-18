@@ -1,8 +1,8 @@
 /**
  * 用于生成mock数据
  */
-import { Point } from "../packages/Geometry";
-
+import { Point, LineString } from "../packages/Geometry";
+import { MBR } from '../packages/Geometry.ts';
 
 function mockLon(
     maxLon: number = 180,
@@ -69,3 +69,17 @@ export function mockPoints(
         return points;
     } 
 
+/**
+ * - 生成一个随机线
+ * - generate a random line
+ * - 根据给出 MBR 的长按照一定步长生成线
+ */
+export function mockLineString(num: number, MBR: number[] = [-180, -90, 180, 90]){
+    let points: Point[] = [];
+    // 由 num 计算出步长
+    let step = (MBR[2] - MBR[0]) / num;
+    for(let i = 0; i < num; i++){
+        points.push(new Point(MBR[0] + step * i, mockLat(MBR[3], MBR[1]), mockAsl(), ...mockProperties()));
+    }
+    return new LineString(points);
+}

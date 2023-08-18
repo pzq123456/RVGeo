@@ -57,11 +57,6 @@ abstract class Geometry{
     }
 }
 
-
-
-
-
-
 /**
  * 点类型 point type
  * - 坐标为经纬度 (WGS 84)
@@ -259,7 +254,6 @@ export class MultiLineString extends Geometry{
     constructor(lines: LineString[], ...args: any[]){
         super("MultiLineString", lines, ...args);
     }
-
     /**
      * - 计算线集合的最小外包矩形
      * @returns {MBR} 返回最小外包矩形 [minLon, minLat, maxLon, maxLat]
@@ -275,5 +269,43 @@ export class MultiLineString extends Geometry{
         }
         return [minLon, minLat, maxLon, maxLat];
     }
+    /**
+     * - 将多线转换为数组形式
+     * - transform MultiLineString to array
+     * @returns {any[]} 返回数组形式
+     */
+    toArray(): any[] {
+        let res = [];
+        for(let i = 0; i  < this.coordinates.length; i++){
+            let tmp = this.coordinates[i].toArray();
+            res.push(tmp);
+        }
+        return res;
+    }
+    /**
+     * - 将多线转换为 GeoJSON 格式
+     * - transform MultiLineString to GeoJSON format
+     * @returns 
+     */
+    toGeoJSON() {
+        return {
+            type: "MultiLineString",
+            coordinates: this.toArray(),
+            properties:{
+                ...this.properties
+            }
+        }
+    }
     
+}
+
+/**
+ * 一个有孔单面。这个数组的第一个元素表示的是外部环。其他后续的元素表示的内部环（或者孔）。
+ * 外部环逆时针，内部环顺时针（右手定则）
+ */
+export class Polygon extends MultiLineString{
+    constructor(lines: LineString[], ...args: any[]){
+        super(lines, ...args);
+        super.type = "Polygon";
+    }
 }

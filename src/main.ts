@@ -1,8 +1,10 @@
 import { createToolBar } from './helpers/toolBar.ts'
-import { Point, MultiPoint, LineString } from './packages/Geometry.ts'
-import { mockPoints } from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap } from './helpers/BLDraw.ts';
+import { Point, MultiPoint, LineString, MultiLineString } from './packages/Geometry.ts'
+import { mockPoints, mockLineString } from './tests/Mock.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap } from './helpers/BLDraw.ts';
 
+declare const BMapGL: any;
+declare const BMapGLLib: any;
 // test code
 // let p = new Point(1, 2, 3, "a", "b", "c", 10);
 // console.log(p.toGeoJSON());
@@ -41,22 +43,32 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 
-let ps = mockPoints(10, myMBR1);
-// let mps = new MultiPoint(ps);
-let mps = new LineString(ps);
-let rect = mps.getMBR();
-drawMultiPoint2BLMap(mps, map);
-drawLineString2BLMap(mps, map);
+let l0 = mockLineString(10, myMBR1);
+let l1 = mockLineString(10, myMBR1);
+let l2 = mockLineString(10, myMBR1);
+let ml = new MultiLineString([l0, l1, l2]);
+// let rect0 = l0.getMBR();
+// let rect1 = l1.getMBR();
+// let rect2 = l2.getMBR();
+// drawRectangle2BLMap(rect0, map);
+// drawRectangle2BLMap(rect1, map);
+// drawRectangle2BLMap(rect2, map);
+drawMultiLineString2BLMap(ml, map);
+let rect = ml.getMBR();
 drawRectangle2BLMap(rect, map);
 
+// drawLineString2BLMap(ml, map);
+// let rect = ml.getMBR();
+// drawRectangle2BLMap(rect, map);
+// let ps = mockPoints(10, myMBR1);
+// // let mps = new MultiPoint(ps);
+// let mps = new LineString(ps);
+// let rect = mps.getMBR();
+// drawMultiPoint2BLMap(mps, map);
+// drawLineString2BLMap(mps, map);
+// drawRectangle2BLMap(rect, map);
 
-
-
-
-
-
-
-function draw(type) {
+function draw(type: string) {
   const styleOptions = {
     strokeColor: "#5E87DB", // 边线颜色
     fillColor: "#5E87DB", // 填充颜色。当参数为空时，圆形没有填充颜色
