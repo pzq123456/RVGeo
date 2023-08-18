@@ -1,7 +1,7 @@
 import { createToolBar } from './helpers/toolBar.ts'
-import { Point, MultiPoint } from './packages/Geometry.ts'
+import { Point, MultiPoint, LineString } from './packages/Geometry.ts'
 import { mockPoints } from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap } from './helpers/BLDraw.ts';
 
 // test code
 // let p = new Point(1, 2, 3, "a", "b", "c", 10);
@@ -42,8 +42,12 @@ map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  //
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 
 let ps = mockPoints(10, myMBR1);
-let mps = new MultiPoint(ps);
+// let mps = new MultiPoint(ps);
+let mps = new LineString(ps);
+let rect = mps.getMBR();
 drawMultiPoint2BLMap(mps, map);
+drawLineString2BLMap(mps, map);
+drawRectangle2BLMap(rect, map);
 
 
 

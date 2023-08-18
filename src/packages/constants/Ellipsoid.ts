@@ -33,7 +33,7 @@ export const WGS84 = {
  * 正球参数
  */
 export const sphere = {
-    a: 6371008.8,  // 长半轴
+    a: 6378137.0,  // 长半轴
     b: 6371008.8, // 短半轴
     Name: "Normal Sphere ( r= 6371008.8 )"  // 正球
 };

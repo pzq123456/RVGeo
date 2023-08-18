@@ -1,7 +1,6 @@
 /**
  * 一些工具方法 用于辅助计算
  */
-import { Point } from '../Geometry.ts'
 
 /**
  * - Round number to precision

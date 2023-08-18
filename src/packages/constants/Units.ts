@@ -7,7 +7,7 @@
 
 import { sphere } from "./Ellipsoid.ts";
 
-export const earthRadius = sphere.a; // 6371008.8
+export const earthRadius = sphere.a; // 6371008.8 m
 
 export type Units =
   | "meters"
@@ -68,7 +68,7 @@ export const factors: Record<Units, number> = {
 export const factors2: Record<Units, number> = {
   centimeters: 1 * 100,
   centimetres: 1 * 100,
-  degrees: 360 / (2 * Math.PI) * 1/earthRadius,
+  degrees: ( 360 / (2 * Math.PI) ) * 1 / earthRadius,
   feet: 1 * 3.28084,
   inches: 1 * 39.37,
   kilometers: 1 / 1000,
@@ -177,5 +177,54 @@ export function radiansToDegrees(radians: number): number {
   const degrees = radians % (2 * Math.PI);
   return (degrees * 180) / Math.PI;
 }
+
+/**
+ * - 将距离单位转换为米
+ * - Convert distance units to meters
+ * @param distance - 距离
+ * @param units - 距离单位
+ * @returns {number} - 距离（米）
+ */
+export function toMeters(distance: number, units: Units): number {
+  const factor = factors2[units];
+  if (!factor) {
+    throw new Error(units + " units is invalid");
+  }
+  return distance / factor;
+}
+
+/**
+ * - 将距离单位米转换为指定单位
+ * - Convert distance units from meters to specified units
+ * @param distance - 距离（米）
+ * @param units - 距离单位
+ * @returns {number} - 距离
+ */
+export function metersTo(distance: number, units: Units): number {
+  const factor = factors2[units];
+  if (!factor) {
+    throw new Error(units + " units is invalid");
+  }
+  return distance * factor;
+}
+
+/**
+ * - 距离单位内互相转换
+ * - Convert distance units to each other
+ * @param distance - 距离
+ * @param from - 当前距离单位
+ * @param to - 目标距离单位
+ * @returns {number} - 转换后距离
+ */
+export function unitTounit(
+  distance: number,
+  from: Units,
+  to: Units
+): number {
+  // Convert to meters first, then to final units to ensure the best possible precision.
+  return metersTo(toMeters(distance, from), to);
+}
+
+
 
 

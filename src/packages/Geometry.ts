@@ -4,6 +4,10 @@
  * 地理要素分为Point（点）、MultiPoint（多点）、LineString（线）、MultiLineString（多线）、Polygon（面）、MultiPolygon（多面）、GeometryCollection（几何集合）
  * - 该模块的目的就是为了方便操作这些地理要素
  */
+import { convertToMercator } from "./Referencing";
+
+// define MBR type
+export type MBR = [number, number, number, number];
 
 /**
  * 图形基类（抽象类）
@@ -15,7 +19,7 @@
 abstract class Geometry{
     type: string; // 类型
     properties: any[]; // 属性信息
-    MBR: number[]; // 最小外包矩形 (Minimum Bounding Rectangle)
+    MBR: [number, number, number, number]; // 最小外包矩形 (Minimum Bounding Rectangle)
     coordinates: any[]; // 注意这里的coordinates与 GeoJSON 中的意义不同
     /**
      * - 构造函数
@@ -33,7 +37,7 @@ abstract class Geometry{
 
     abstract toGeoJSON(): any; // 转换为 GeoJSON 格式
     abstract toArray(): any[]; // 转换为数组（数列）形式
-    abstract calculateMBR(): number[]; // 计算最小外包矩形 抽象函数需要每一个具体的类具体实现
+    abstract calculateMBR(): [number, number, number, number]; // 计算最小外包矩形 抽象函数需要每一个具体的类具体实现
     
     /**
      * - 获取（当前）图形的属性信息数组
@@ -48,7 +52,7 @@ abstract class Geometry{
      * - 获取图形的外包矩形
      * @returns 返回外包矩形 [minLon, minLat, maxLon, maxLat]
      */
-    getMBR(): number[]{
+    getMBR(): [number, number, number, number]{
         return this.MBR;
     }
 }
@@ -79,6 +83,15 @@ export class Point{
         this.lat = lat;
         this.asl = asl;
         this.properties = args; // 属性信息 （含任意类型的列表）
+    }
+
+    /**
+     * - 将点坐标转换为墨卡托坐标 EPSG:4326 -> EPSG:3857
+     * - transform point to Mercator coordinate EPSG:4326 -> EPSG:3857
+     * @returns {[number, number]} 返回墨卡托坐标 [x, y]
+     */
+    toXY(): [number, number]{
+        return convertToMercator(this);
     }
 
     /**
@@ -163,6 +176,20 @@ export class MultiPoint extends Geometry{
     }
 
     /**
+     * - 获得 墨卡托 投影下的平面坐标
+     * - get Mercator coordinate
+     * @returns 返回墨卡托坐标数组
+     */
+    toXYArray(): number[][] {
+        let res = [];
+        for(let i = 0; i  < this.coordinates.length; i++){
+            let tmp = this.coordinates[i].toXY();
+            res.push(tmp);
+        }
+        return res;
+    }
+
+    /**
      * - 将多点转换为 GeoJSON 格式
      * - transform MultiPoint to GeoJSON format
      * @returns 返回 GeoJSON 格式的多点
@@ -182,7 +209,7 @@ export class MultiPoint extends Geometry{
      * - calculate MBR
      * @returns 返回最小外包矩形 [minLon, minLat, maxLon, maxLat]
      */
-    calculateMBR(): number[] {
+    calculateMBR(): [number, number, number, number] {
         let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;
         for(let i = 0; i < this.coordinates.length; i++){
             let tmp = this.coordinates[i].to2DArray();
@@ -214,4 +241,39 @@ export class MultiPoint extends Geometry{
         this.MBR = this.calculateMBR();
     }
 
+}
+
+export class LineString extends MultiPoint{
+    /**
+     * - 构造函数
+     * @param points 点坐标数组
+     * @param args 属性信息
+     */
+    constructor(points: Point[], ...args: any[]){
+        super(points, ...args);
+        super.type = "LineString";
+    }
+}
+
+export class MultiLineString extends Geometry{
+    constructor(lines: LineString[], ...args: any[]){
+        super("MultiLineString", lines, ...args);
+    }
+
+    /**
+     * - 计算线集合的最小外包矩形
+     * @returns {MBR} 返回最小外包矩形 [minLon, minLat, maxLon, maxLat]
+     */
+    calculateMBR(): [number, number, number, number] {
+        let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;
+        for(let i = 0; i < this.coordinates.length; i++){
+            let tmp = this.coordinates[i].getMBR();
+            minLon = Math.min(minLon, tmp[0]);
+            minLat = Math.min(minLat, tmp[1]);
+            maxLon = Math.max(maxLon, tmp[2]);
+            maxLat = Math.max(maxLat, tmp[3]);
+        }
+        return [minLon, minLat, maxLon, maxLat];
+    }
+    
 }

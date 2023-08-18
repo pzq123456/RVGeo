@@ -5,7 +5,7 @@
  * - 由于无法使用 import 语句，所以只能使用全局变量 BMap。
  */
 
-import { Point, MultiPoint } from '../packages/Geometry.ts';
+import { Point, MultiPoint, LineString } from '../packages/Geometry.ts';
 
 // disable ts error
 declare var BMapGL: any;
@@ -67,8 +67,6 @@ export function removeAllOverlay(map: any) {
     map.clearOverlays();
 }
 
-
-
 /**
  * 在 百度地图上 绘制多点
  * @param multiPoint - 多点
@@ -81,3 +79,49 @@ export function drawMultiPoint2BLMap(multiPoint: MultiPoint, map: any) {
         drawPoint2BLMap(point, map);
     }
 }
+
+export function drawRectangle2BLMap( rect : [minLon:number, minLat:number, maxLon:number, maxLat:number], map: any) {
+    let pStart = new BMapGL.Point(rect[0], rect[1]);
+    let pEnd = new BMapGL.Point(rect[2], rect[3]);
+    let rectangle = new BMapGL.Polygon([
+        pStart,
+        new BMapGL.Point(pEnd.lng, pStart.lat),
+        pEnd,
+        new BMapGL.Point(pStart.lng, pEnd.lat)
+    ], { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 });  //创建矩形
+    map.addOverlay(rectangle);   //增加矩形
+}
+
+export function drawLineString2BLMap(lineString: LineString, map: any) {
+    // var polyline = new BMapGL.Polyline([
+	// 	new BMapGL.Point(116.399, 39.910),
+	// 	new BMapGL.Point(116.405, 39.920),
+	// 	new BMapGL.Point(116.425, 39.900)
+	// ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});   //创建折线
+
+    let points = lineString.coordinates;
+    let blPoints = [];
+    for (let i = 0; i < points.length; i++) {
+        let point = points[i];
+        blPoints.push(new BMapGL.Point(point.lon, point.lat));
+    }
+    let polyline = new BMapGL.Polyline(blPoints, { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 });   //创建折线
+    map.addOverlay(polyline);   //增加折线
+}
+
+// var polyline = new BMapGL.Polyline([
+//     new BMapGL.Point(116.399, 39.910),
+//     new BMapGL.Point(116.405, 39.920),
+//     new BMapGL.Point(116.425, 39.900)
+// ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});   //创建折线
+
+
+
+// var polygon = new BMapGL.Polygon([
+//     new BMapGL.Point(116.387112,39.920977),
+//     new BMapGL.Point(116.385243,39.913063),
+//     new BMapGL.Point(116.394226,39.917988),
+//     new BMapGL.Point(116.401772,39.921364),
+//     new BMapGL.Point(116.41248,39.927893)
+// ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+// map.addOverlay(polygon);
