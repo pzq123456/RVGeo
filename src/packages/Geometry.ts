@@ -139,6 +139,10 @@ export class Point{
     getPropertyArray(): any[]{
         return this.properties;
     }
+
+    static isPoint(point: any): point is Point{
+        return point.type === "Point";
+    }
 }
 
 
@@ -236,6 +240,11 @@ export class MultiPoint extends Geometry{
         this.MBR = this.calculateMBR();
     }
 
+    // 判断是否为多点类型
+    static isMultiPoint(multiPoint: any): multiPoint is MultiPoint{
+        return multiPoint.type === "MultiPoint";
+    }
+
 }
 
 export class LineString extends MultiPoint{
@@ -247,6 +256,10 @@ export class LineString extends MultiPoint{
     constructor(points: Point[], ...args: any[]){
         super(points, ...args);
         super.type = "LineString";
+    }
+
+    static isLineString(lineString: any): lineString is LineString{
+        return lineString.type === "LineString";
     }
 }
 
@@ -296,6 +309,10 @@ export class MultiLineString extends Geometry{
             }
         }
     }
+
+    static isMultiLineString(multiLineString: any): multiLineString is MultiLineString{
+        return multiLineString.type === "MultiLineString";
+    }
     
 }
 
@@ -311,5 +328,9 @@ export class Polygon extends MultiLineString{
     constructor(lines: LineString[], ...args: any[]){
         super(lines, ...args);
         super.type = "Polygon";
+    }
+
+    static isPolygon(polygon: any): polygon is Polygon{
+        return polygon.type === "Polygon";
     }
 }

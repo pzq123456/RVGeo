@@ -3,6 +3,7 @@ import { Point, MultiPoint, LineString, MultiLineString, Polygon } from './packa
 import { mockPoints, mockLineString } from './tests/Mock.ts';
 import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
+import { convexHull } from './packages/Shell.ts';
 
 declare const BMapGL: any;
 declare const BMapGLLib: any;
@@ -118,14 +119,31 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 
-let ps1 = new LineString(createPointListFromArr(myPolygon1));
-let ps2 = new LineString(createPointListFromArr(myPolygon2));
-let ps3 = new LineString(createPointListFromArr(myPolygon4));
-let polygon = new Polygon([ps1, ps2,ps3]);
+let ps = mockPoints(100, myMBR1);
+console.log(ps);
+// drawMultiPoint2BLMap(ps, map);
+let ps2 = convexHull(ps);
+console.log(ps2);
+let ls = new LineString(ps2);
+let polygon = new Polygon([ls]);
 let rect = polygon.getMBR();
-console.log(rect);
-console.log(polygon);
 drawPolygon2BLMap(polygon, map);
+drawRectangle2BLMap(rect, map);
+
+
+
+
+
+
+
+// let ps1 = new LineString(createPointListFromArr(myPolygon1));
+// let ps2 = new LineString(createPointListFromArr(myPolygon2));
+// let ps3 = new LineString(createPointListFromArr(myPolygon4));
+// let polygon = new Polygon([ps1, ps2,ps3]);
+// let rect = polygon.getMBR();
+// console.log(rect);
+// console.log(polygon);
+// drawPolygon2BLMap(polygon, map);
 // drawRectangle2BLMap(rect, map);
 
 

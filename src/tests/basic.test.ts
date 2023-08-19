@@ -1,6 +1,6 @@
 import { assert, expect, test } from 'vitest'
 
-import { round } from '../packages/constants/Utils'
+import { round,ccw } from '../packages/constants/Utils'
 
 import { haversine } from '../packages/Distance'
 
@@ -50,6 +50,11 @@ test('convertToMercator', () => {
   expect(convertToMercator([-71, 41])).toEqual([-7903683.846322, 5012341.663848])
 })
 
+test('ccw', () => {
+  expect(ccw([0,0],[0,1],[1,0])).toBe(-1)    // 顺时针
+  expect(ccw([0,0],[1,0],[0,1])).toBe(1)  // 逆时针
+  expect(ccw([0,0],[0,1],[0,2])).toBe(0)  // 共线
+})
 
 // test('Math.sqrt()', () => {
 //   expect(Math.sqrt(4)).toBe(2)
