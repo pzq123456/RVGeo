@@ -31,7 +31,7 @@ export function convexHull(points: Point[]): Point[] {
             pop stack
         push point to stack
     end
-*/
+    */
     // 按照极角排序
     pointsXY.sort((a, b) => {
         // let angleA = getAngle(lowestPoint, a);
@@ -57,7 +57,8 @@ export function convexHull(points: Point[]): Point[] {
             }
         }
     });
-    // // 凸包算法
+    
+    // 凸包算法
     let stack = [];
     stack.push(pointsXY[0]);
     stack.push(pointsXY[1]);
@@ -68,6 +69,7 @@ export function convexHull(points: Point[]): Point[] {
         }
         stack.push(pointsXY[i]);
     }
+
     // 根据stack 中最后一个元素的索引，找到原始的点
     let res = [];
     for (let i = 0; i < stack.length; i++) {
@@ -75,5 +77,4 @@ export function convexHull(points: Point[]): Point[] {
         res.push(points[index]);
     }
     return res;
-    // return stack;
 }

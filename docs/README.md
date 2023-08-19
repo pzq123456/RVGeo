@@ -45,3 +45,5 @@ GeoJSON supports the following geometry types:
 > - [Graham scan](https://en.wikipedia.org/wiki/Graham_scan)
 > - [Mercator projection](https://en.wikipedia.org/wiki/Mercator_projection)
 > - [turf projection](https://github.com/Turfjs/turf/blob/master/packages/turf-projection/index.ts)
+
+Every Alpha Shape is a convex hull, but not every convex hull is an alpha shape. 
