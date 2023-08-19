@@ -1,7 +1,8 @@
 import { createToolBar } from './helpers/toolBar.ts'
-import { Point, MultiPoint, LineString, MultiLineString } from './packages/Geometry.ts'
+import { Point, MultiPoint, LineString, MultiLineString, Polygon } from './packages/Geometry.ts'
 import { mockPoints, mockLineString } from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap } from './helpers/BLDraw.ts';
+import { createPointListFromArr } from './packages/MetaData.ts';
 
 declare const BMapGL: any;
 declare const BMapGLLib: any;
@@ -17,6 +18,80 @@ const myMBR1 = [
   40.981780653665425
 ]
 
+const myPolygon1 = [
+  [
+    -109.06074206666483,
+    41.01216732997898
+  ],
+  [
+    -109.06074206666483,
+    37.0057642714261
+  ],
+  [
+    -102.04308145299771,
+    37.0057642714261
+  ],
+  [
+    -102.04308145299771,
+    41.01216732997898
+  ],
+  [
+    -109.06074206666483,
+    41.01216732997898
+  ]
+]
+
+const myPolygon2 = [
+  [
+    -107.38260583296193,
+    39.90219587081049
+  ],
+  [
+    -107.38260583296193,
+    38.221743810305355
+  ],
+  [
+    -103.90238012102105,
+    38.221743810305355
+  ],
+  [
+    -103.90238012102105,
+    39.90219587081049
+  ],
+  [
+    -107.38260583296193,
+    39.90219587081049
+  ]
+]
+
+const myPolygon4 = [
+  [
+    -103.90238012102105,
+    40.78153399458114
+  ],
+  [
+    -103.90238012102105,
+    40.17230060880212
+  ],
+  [
+    -102.62470821581522,
+    40.17230060880212
+  ],
+  [
+    -102.62470821581522,
+    40.78153399458114
+  ],
+  [
+    -103.90238012102105,
+    40.78153399458114
+  ]
+]
+
+const myPolygon3 = [
+  myPolygon1,
+  myPolygon2,
+  myPolygon4
+]
 
 // console.log(ps);
 // let mp = new MultiPoint(ps,"a", "b", "c", 10);
@@ -43,19 +118,44 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 
-let l0 = mockLineString(10, myMBR1);
-let l1 = mockLineString(10, myMBR1);
-let l2 = mockLineString(10, myMBR1);
-let ml = new MultiLineString([l0, l1, l2]);
+let ps1 = new LineString(createPointListFromArr(myPolygon1));
+let ps2 = new LineString(createPointListFromArr(myPolygon2));
+let ps3 = new LineString(createPointListFromArr(myPolygon4));
+let polygon = new Polygon([ps1, ps2,ps3]);
+let rect = polygon.getMBR();
+console.log(rect);
+console.log(polygon);
+drawPolygon2BLMap(polygon, map);
+// drawRectangle2BLMap(rect, map);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// let l0 = mockLineString(10, myMBR1);
+// let l1 = mockLineString(10, myMBR1);
+// let l2 = mockLineString(10, myMBR1);
+// let ml = new MultiLineString([l0, l1, l2]);
 // let rect0 = l0.getMBR();
 // let rect1 = l1.getMBR();
 // let rect2 = l2.getMBR();
 // drawRectangle2BLMap(rect0, map);
 // drawRectangle2BLMap(rect1, map);
 // drawRectangle2BLMap(rect2, map);
-drawMultiLineString2BLMap(ml, map);
-let rect = ml.getMBR();
-drawRectangle2BLMap(rect, map);
+// drawMultiLineString2BLMap(ml, map);
+// let rect = ml.getMBR();
+// drawRectangle2BLMap(rect, map);
 
 // drawLineString2BLMap(ml, map);
 // let rect = ml.getMBR();

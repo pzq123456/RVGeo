@@ -5,7 +5,7 @@
  * - 由于无法使用 import 语句，所以只能使用全局变量 BMap。
  */
 
-import { Point, MultiPoint, LineString, MultiLineString } from '../packages/Geometry.ts';
+import { Point, MultiPoint, LineString, MultiLineString, Polygon } from '../packages/Geometry.ts';
 
 // disable ts error
 declare var BMapGL: any;
@@ -109,6 +109,22 @@ export function drawMultiLineString2BLMap(multiLineString: MultiLineString, map:
         let lineString = lineStrings[i];
         drawLineString2BLMap(lineString, map);
     }
+}
+
+export function drawPolygon2BLMap(polygon: Polygon, map: any) {
+    let coordinates = polygon.toArray();
+    console.log(coordinates);
+    let blPoints = [];
+    for (let i = 0; i < coordinates.length; i++) {
+        let tmp = [];
+        for (let j = 0; j < coordinates[i].length; j++) {
+            tmp.push(new BMapGL.Point(coordinates[i][j][0], coordinates[i][j][1]));
+        }
+        blPoints.push(tmp);
+    }
+    let blPolygon = new BMapGL.Polygon(blPoints, { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 });
+    console.log(blPoints);
+    map.addOverlay(blPolygon);
 }
 // var polyline = new BMapGL.Polyline([
 //     new BMapGL.Point(116.399, 39.910),

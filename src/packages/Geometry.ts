@@ -301,7 +301,11 @@ export class MultiLineString extends Geometry{
 
 /**
  * 一个有孔单面。这个数组的第一个元素表示的是外部环。其他后续的元素表示的内部环（或者孔）。
- * 外部环逆时针，内部环顺时针（右手定则）
+ * - A polygon is planar, and the boundary of a polygon is a closed LineString.
+ * - polygon 中的所有环都是封闭的 LineString （环的第一个点和最后一个点是同一个点）
+ * - polygon 中的所有环都是简单的（不相交）
+ * - polygon 中的所有环都是平面的（共面的）
+ * - polygon 中的所有环都是左手定则（外部环逆时针，内部环顺时针）
  */
 export class Polygon extends MultiLineString{
     constructor(lines: LineString[], ...args: any[]){
