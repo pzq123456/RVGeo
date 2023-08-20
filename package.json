@@ -14,5 +14,8 @@
     "typescript": "^5.0.2",
     "vite": "^4.4.0",
     "vitest": "^0.33.0"
+  },
+  "dependencies": {
+    "robust-predicates": "^3.0.2"
   }
 }

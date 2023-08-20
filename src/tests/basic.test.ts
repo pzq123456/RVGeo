@@ -1,6 +1,6 @@
 import { assert, expect, test } from 'vitest'
 
-import { round,ccw } from '../packages/constants/Utils'
+import { round,ccw,ccwRobust,inCircleRobust } from '../packages/constants/Utils'
 
 import { haversine } from '../packages/Distance'
 
@@ -55,6 +55,20 @@ test('ccw', () => {
   expect(ccw([0,0],[1,0],[0,1])).toBe(1)  // 逆时针
   expect(ccw([0,0],[0,1],[0,2])).toBe(0)  // 共线
 })
+
+test('ccwRobust', () => {
+  expect(ccwRobust([0,0],[0,1],[1,0])).toBe(-1)    // 顺时针
+  expect(ccwRobust([0,0],[1,0],[0,1])).toBe(1)  // 逆时针
+  expect(ccwRobust([0,0],[0,1],[0,2])).toBe(0)  // 共线
+})
+
+test('inCircleRobust', () => {
+  // rectange 6,8,10 
+  expect(inCircleRobust([0,0],[0,6],[8,0],[4,3])).toBe(-1)   
+  expect(inCircleRobust([0,0],[0,6],[8,0],[9,0])).toBe(1)  
+  expect(inCircleRobust([0,0],[0,6],[8,0],[8,6])).toBe(0)  
+})
+
 
 // test('Math.sqrt()', () => {
 //   expect(Math.sqrt(4)).toBe(2)

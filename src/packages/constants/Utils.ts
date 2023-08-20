@@ -2,6 +2,8 @@
  * 一些工具方法 用于辅助计算
  */
 import { Point } from '../Geometry.ts'
+import { orient2d, incircle } from 'robust-predicates';
+
 /**
  * - Round number to precision
  * - 将数字四舍五入到指定精度
@@ -45,26 +47,19 @@ export function sign(x: number) : -1 | 0 | 1 {
     return x < 0 ? -1 : x > 0 ? 1 : 0;
 }
 
-
-
 /**
-The pseudocode below uses a function ccw: 
-- ccw > 0 if three points make a counter-clockwise turn 
-- clockwise if ccw < 0 
-- collinear if ccw = 0 
-    (In real applications, if the coordinates are arbitrary real numbers, 
-        the function requires exact comparison of floating-point numbers, 
-        and one has to beware of numeric singularities for "nearly" collinear points.)
- */
-/**
- * Counter-clockwise 
- * - Returns 1 if three points make a counter-clockwise turn,
- * - Returns -1 if three points make a clockwise turn,
+ * Counter-clockwise (not robust version)
+ * ccw 算法的非鲁棒版本
+ * - Returns 1 if three points make a counter-clockwise turn
+ * - 逆时针返回 1
+ * - Returns -1 if three points make a clockwise turn
+ * - 顺时针返回 -1
  * - Returns 0 if three points are collinear
+ * - 共线返回 0
  * @param p1 - 可以是点类型，也可以是平面坐标数组（墨卡托） 
  * @param p2 - 可以是点类型，也可以是平面坐标数组（墨卡托）
  * @param p3 - 可以是点类型，也可以是平面坐标数组（墨卡托）
- * @returns {number} - 1|0|-1
+ * @returns {number} - 1 | 0 | -1
  */
 export function ccw (
         p1: Point | [X1: number, Y1: number],
@@ -78,10 +73,6 @@ export function ccw (
         let a = p1[0], b = p1[1];
         let c = p2[0], d = p2[1];
         let e = p3[0], f = p3[1];
-
-        // private static int CCW(Point p1, Point p2, Point p3) {
-        //     return (p1.x*p2.y+p2.x*p3.y+p3.x*p1.y)-(p1.y*p2.x+p2.y*p3.x+p3.y*p1.x) >0? 1:-1;
-        // }    
 
         let det = (c - a) * (f - b) - (d - b) * (e - a);
         det = sign(det);
@@ -108,4 +99,63 @@ export function getAngle(p1: Point | [X1:number,Y1:number], p2: Point| [X2:numbe
         angle += 360;
     }
     return angle;
+}
+
+/**
+ * robust version of ccw 封装了 robust-predicates 库的 orient2d 函数
+ * - `Note:` unlike J. Shewchuk's original code, `all the functions in this library assume y axis is oriented downwards ↓`, so the semantics are different.
+ * - `注意:` 与 J. Shewchuk 的原始代码不同，`本库中的所有函数都假设 y 轴向下 ↓`，因此语义不同。刚好与 ccw 相反。
+ * @param p1 - 可以是点类型，也可以是平面坐标数组（墨卡托）
+ * @param p2 - 可以是点类型，也可以是平面坐标数组（墨卡托）
+ * @param p3 - 可以是点类型，也可以是平面坐标数组（墨卡托）
+ * @param isReverse - 是否反转(默认为 true 这样就会保持与 ccw 一致)
+ * @returns {number} - 1 | 0 | -1
+ */
+export function ccwRobust(
+    p1: Point | [X1: number, Y1: number],
+    p2: Point | [X2: number, Y2: number], 
+    p3: Point | [X3: number, Y3: number],
+    isReverse: boolean = true
+): number {
+    p1 = Array.isArray(p1) ? p1 : p1.toXY();
+    p2 = Array.isArray(p2) ? p2 : p2.toXY();
+    p3 = Array.isArray(p3) ? p3 : p3.toXY();
+
+    let a = p1[0], b = p1[1];
+    let c = p2[0], d = p2[1];
+    let e = p3[0], f = p3[1];
+
+    let det = orient2d(a,b,c,d,e,f);
+    if (isReverse) {
+        det = -det;
+    }
+    det = sign(det);
+    return det;
+}
+
+/*
+incircle(ax,ay, bx,by, cx,cy, dx,dy)
+Returns a positive value if the point d lies outside the circle passing through a, b, and c.
+Returns a negative value if it lies inside.
+Returns zero if the four points are cocircular.
+*/
+export function inCircleRobust(
+    p1: Point | [X1: number, Y1: number],
+    p2: Point | [X2: number, Y2: number], 
+    p3: Point | [X3: number, Y3: number],
+    p4: Point | [X4: number, Y4: number],
+){
+    p1 = Array.isArray(p1) ? p1 : p1.toXY();
+    p2 = Array.isArray(p2) ? p2 : p2.toXY();
+    p3 = Array.isArray(p3) ? p3 : p3.toXY();
+    p4 = Array.isArray(p4) ? p4 : p4.toXY();
+
+    let a = p1[0], b = p1[1];
+    let c = p2[0], d = p2[1];
+    let e = p3[0], f = p3[1];
+    let g = p4[0], h = p4[1];
+
+    let det = incircle(a,b,c,d,e,f,g,h);
+    det = sign(det);
+    return det;
 }
