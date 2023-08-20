@@ -159,3 +159,52 @@ export function inCircleRobust(
     det = sign(det);
     return det;
 }
+
+/**
+ * 快速计算最后一点与前三点组成的圆的关系 calculate the relative position of the last point to the circle formed by the first three points
+ * - Returns 1 if point d is outside the circle passing through a, b, and c
+ * - 返回 1 如果点 d 在通过 a、b 和 c 的圆外
+ * - Returns -1 if point d is inside the circle
+ * - 返回 -1 如果点 d 在圆内
+ * - Returns 0 if the four points are cocircular
+ * - 返回 0 如果四个点共圆
+ * @param p1 
+ * @param p2 
+ * @param p3 
+ * @param p4 
+ * @returns {1|-1|0}
+ */
+export function inCircle(
+    p1: Point | [X1: number, Y1: number],
+    p2: Point | [X2: number, Y2: number], 
+    p3: Point | [X3: number, Y3: number],
+    p4: Point | [X4: number, Y4: number],
+    ) : 1 | -1 | 0 {
+    p1 = Array.isArray(p1) ? p1 : p1.toXY();
+    p2 = Array.isArray(p2) ? p2 : p2.toXY();
+    p3 = Array.isArray(p3) ? p3 : p3.toXY();
+    p4 = Array.isArray(p4) ? p4 : p4.toXY();
+
+    let ax = p1[0], ay = p1[1];
+    let bx = p2[0], by = p2[1];
+    let cx = p3[0], cy = p3[1];
+    let px = p4[0], py = p4[1];
+
+    const dx = ax - px; 
+    const dy = ay - py;
+    const ex = bx - px;
+    const ey = by - py;
+    const fx = cx - px;
+    const fy = cy - py;
+
+    const ap = dx * dx + dy * dy;
+    const bp = ex * ex + ey * ey;
+    const cp = fx * fx + fy * fy;
+
+    let det = dx * (ey * cp - bp * fy) -
+           dy * (ex * cp - bp * fx) +
+           ap * (ex * fy - ey * fx) ;
+    
+    return sign(det);
+}
+

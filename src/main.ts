@@ -1,9 +1,10 @@
 import { createToolBar } from './helpers/toolBar.ts'
 import { Point, MultiPoint, LineString, MultiLineString, Polygon } from './packages/Geometry.ts'
 import { mockPoints, mockLineString } from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap, innerIcon } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
 import { convexHull } from './packages/Shell.ts';
+import Delaunator from "./packages/Delaunay.ts"
 
 declare const BMapGL: any;
 declare const BMapGLLib: any;
@@ -94,6 +95,23 @@ const myPolygon3 = [
   myPolygon4
 ]
 
+const dPs = [
+  [168, 180], [168, 178], [168, 179], [168, 181], [168, 183], 
+  [167, 183], [167, 184], [165, 184], [162, 186], [164, 188], 
+  [161, 188], [160, 191], [158, 193], [156, 193], [152, 195], 
+  [152, 198], [150, 198], [147, 198], [148, 205], [150, 210], 
+  [148, 210], [148, 208], [145, 206], [142, 206], [140, 206], 
+  [138, 206], [135, 206], [135, 209], [131, 209], [131, 211], 
+  [127, 211], [124, 210], [120, 207], [120, 204], [120, 202], 
+  [124, 201], [123, 201], [125, 198], [125, 194], [127, 194], 
+  [127, 191], [130, 191], [132, 189], [134, 189], [134, 186], 
+  [136, 184], [134, 182], [134, 179], [134, 176], [136, 174]
+]
+
+// let del = Delaunator.from(dPs);
+// console.log(del.getTriangles());
+// console.log(del.getHull());
+// console.log(del.getHalfedges());
 // console.log(ps);
 // let mp = new MultiPoint(ps,"a", "b", "c", 10);
 // console.log(mp);
@@ -120,10 +138,10 @@ map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  //
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 
 let ps = mockPoints(100, myMBR1);
-console.log(ps);
-// drawMultiPoint2BLMap(ps, map);
+let icon = innerIcon(1);
+drawMultiPoint2BLMap(ps, map, icon);
 let ps2 = convexHull(ps);
-console.log(ps2);
+
 let ls = new LineString(ps2);
 let polygon = new Polygon([ls]);
 let rect = polygon.getMBR();
