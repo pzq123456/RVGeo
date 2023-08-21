@@ -10,7 +10,7 @@ const EDGE_STACK = new Uint32Array(512);
 
 import {orient2d} from 'robust-predicates';
 
-export default class Delaunator {
+export class Delaunator {
     static from(points, getX = defaultGetX, getY = defaultGetY) {
         const n = points.length;
         const coords = new Float64Array(n * 2);
@@ -23,8 +23,6 @@ export default class Delaunator {
 
         return new Delaunator(coords);
     }
-
-    
 
     constructor(coords) {
         const n = coords.length >> 1;
@@ -514,4 +512,15 @@ function defaultGetX(p) {
 }
 function defaultGetY(p) {
     return p[1];
+}
+
+export class Voronoi{
+    delaunay: Delaunator; // Delaunay triangulation
+    constructor(
+        points: number[][],
+        x?: (p: number[]) => number = defaultGetX,
+        y?: (p: number[]) => number = defaultGetY
+    ) {
+        this.delaunay = Delaunator.from(points, x, y);
+    }
 }

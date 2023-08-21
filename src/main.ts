@@ -1,10 +1,10 @@
 import { createToolBar } from './helpers/toolBar.ts'
 import { Point, MultiPoint, LineString, MultiLineString, Polygon } from './packages/Geometry.ts'
 import { mockPoints, mockLineString } from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap, innerIcon, drawPolygonArray2BLMap } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap, innerIcon, drawPolygonArray2BLMap, drawTriangleEdge2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
 import { convexHull } from './packages/Shell.ts';
-import Delaunator from "./packages/Delaunay.ts"
+import { Delaunator } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
 
 declare const BMapGL: any;
@@ -137,13 +137,16 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 
-let ps = mockPoints(7, myMBR1);
+let ps = mockPoints(100, myMBR1);
 let mps = new MultiPoint(ps);
-let icon = null; // innerIcon(1);
+let icon = innerIcon(1);
 let del = Delaunator.from(mps.toXYArray());
-let res = fillIndexArray(del.getTriangleIndices(), mps.toArray());
+let trs = fillIndexArray(del.getTriangleIndices(), mps.toArray());
+// console.log(trs);
+drawTriangleEdge2BLMap(trs, map, {strokeColor: 'blue'});
+let res = fillIndexArray(del.getHull(), mps.toArray());
 console.log(res);
-drawPolygonArray2BLMap(res,map);
+drawPolygon2BLMap([res],map, {fillColor: 'gray'});
 drawMultiPoint2BLMap(mps, map, icon);
 // let ps2 = convexHull(ps);
 // let ls = new LineString(ps2);

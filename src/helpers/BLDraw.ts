@@ -110,7 +110,6 @@ export function drawPolygon2BLMap(polygon: Polygon | any[], map: any, style:Obje
     for (let i = 0; i < coordinates.length; i++) {
         let tmp = [];
         for (let j = 0; j < coordinates[i].length; j++) {
-            console.log(coordinates[i][j]);
             tmp.push(new BMapGL.Point(coordinates[i][j][0], coordinates[i][j][1]));
         }
         blPoints.push(tmp);
@@ -119,9 +118,24 @@ export function drawPolygon2BLMap(polygon: Polygon | any[], map: any, style:Obje
     map.addOverlay(blPolygon);
 }
 
-export function drawPolygonArray2BLMap(polygonArray: Polygon[] | any[], map: any, style:Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}) {
+export function drawPolygonArray2BLMap(polygonArray: Polygon[] | any[], map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}) {
     for (let i = 0; i < polygonArray.length; i++) {
         let polygon = polygonArray[i];
         drawPolygon2BLMap([polygon], map, style);
     }
+}
+
+export function drawTriangleEdge2BLMap(triangleEdge: any[], map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}) {
+
+    for (let i = 0; i < triangleEdge.length; i++) {
+        let blPoints = [];
+        for(let j = 0; j < triangleEdge[i].length; j++) {
+                blPoints.push(new BMapGL.Point(triangleEdge[i][j][0], triangleEdge[i][j][1]));
+        }
+        // add the first point to the end of the array
+        blPoints.push(new BMapGL.Point(triangleEdge[i][0][0], triangleEdge[i][0][1]));
+        let polyline = new BMapGL.Polyline(blPoints, style);   //创建折线
+        map.addOverlay(polyline);   //增加折线
+    }
+
 }
