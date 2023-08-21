@@ -108,8 +108,8 @@ const dPs = [
   [136, 184], [134, 182], [134, 179], [134, 176], [136, 174]
 ]
 
-// let del = Delaunator.from(dPs);
-// console.log(del.getTriangles());
+let del = Delaunator.from(dPs);
+console.log(del.getTriangleIndices());
 // console.log(del.getHull());
 // console.log(del.getHalfedges());
 // console.log(ps);

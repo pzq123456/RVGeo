@@ -208,3 +208,19 @@ export function inCircle(
     return sign(det);
 }
 
+/**
+ * - 根据 indexArray 中存储的索引 从 fillArray 中取出对应的元素并填充到 indexArray 中
+ * - fill indexArray with elements from fillArray according to the index stored in indexArray
+ * @param indexArray 
+ * @param fillArray 
+ */
+export function fillIndexArray(indexArray : number[], fillArray : any[] ) {
+    let res = [];
+    for(let i = 0; i < indexArray.length; i++) {
+        let index = indexArray[i];
+        let tmp = fillArray[index];
+        res.push(tmp);
+    }
+    return res;
+}
+

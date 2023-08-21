@@ -9,6 +9,15 @@ import { convertToMercator } from "./Referencing";
 // define MBR type
 export type MBR = [number, number, number, number];
 
+[
+    [
+        [],[],[]
+    ],
+    [
+        [],[],[]
+    ]
+]
+
 /**
  * 图形基类（抽象类）
  * - 该类定义了一些图形共有的方法及属性
@@ -47,7 +56,7 @@ abstract class Geometry{
     getPropertyArray(): any[] {
         return this.properties;
     }
-
+    
     /**
      * - 获取图形的外包矩形
      * @returns 返回外包矩形 [minLon, minLat, maxLon, maxLat]
