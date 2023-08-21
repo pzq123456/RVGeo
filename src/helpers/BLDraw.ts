@@ -110,18 +110,18 @@ export function drawPolygon2BLMap(polygon: Polygon | any[], map: any, style:Obje
     for (let i = 0; i < coordinates.length; i++) {
         let tmp = [];
         for (let j = 0; j < coordinates[i].length; j++) {
+            console.log(coordinates[i][j]);
             tmp.push(new BMapGL.Point(coordinates[i][j][0], coordinates[i][j][1]));
         }
         blPoints.push(tmp);
     }
     let blPolygon = new BMapGL.Polygon(blPoints, style);
-    // console.log(blPoints);
     map.addOverlay(blPolygon);
 }
 
 export function drawPolygonArray2BLMap(polygonArray: Polygon[] | any[], map: any, style:Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}) {
     for (let i = 0; i < polygonArray.length; i++) {
         let polygon = polygonArray[i];
-        drawPolygon2BLMap(polygon, map, style);
+        drawPolygon2BLMap([polygon], map, style);
     }
 }

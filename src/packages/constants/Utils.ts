@@ -209,17 +209,54 @@ export function inCircle(
 }
 
 /**
+ * 计算数组的形状
+ * @param array - 数组
+ * @returns {number[]}
+ */
+export function calculateArrayShape(array: any[]): number[] {
+    let shape = [];
+    let tmp = array;
+    while(Array.isArray(tmp)) {
+        shape.push(tmp.length);
+        tmp = tmp[0];
+    }
+    return shape;
+}
+
+export function flattenArray(array: any[]): any[] {
+    let res = [];
+    for(let i = 0; i < array.length; i++) {
+        let tmp = array[i];
+        if (Array.isArray(tmp)) {
+            res.push(...flattenArray(tmp));
+        } else {
+            res.push(tmp);
+        }
+    }
+    return res;
+}
+
+
+
+
+
+/**
  * - 根据 indexArray 中存储的索引 从 fillArray 中取出对应的元素并填充到 indexArray 中
  * - fill indexArray with elements from fillArray according to the index stored in indexArray
- * @param indexArray 
- * @param fillArray 
+ * - `注意`： indexArray 的形状未知 但是 fillArray 不论形状如何始终视为一维数组
+ * - Note: the shape of indexArray is unknown, but fillArray is always regarded as a one-dimensional array regardless of its shape
+ * @param indexArray - 存储索引的数组（被填充）
+ * @param fillArray - 存储元素的数组 （用于填充）
  */
-export function fillIndexArray(indexArray : number[], fillArray : any[] ) {
+export function fillIndexArray(indexArray : any, fillArray : any ) : any{
     let res = [];
     for(let i = 0; i < indexArray.length; i++) {
-        let index = indexArray[i];
-        let tmp = fillArray[index];
-        res.push(tmp);
+        let tmp = indexArray[i];
+        if (Array.isArray(tmp)) {
+            res.push(fillIndexArray(tmp, fillArray));
+        }else{
+            res.push(fillArray[tmp]);
+        }
     }
     return res;
 }

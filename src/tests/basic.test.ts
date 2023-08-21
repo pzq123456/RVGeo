@@ -1,6 +1,6 @@
 import { assert, expect, test } from 'vitest'
 
-import { round,ccw,ccwRobust,inCircleRobust, inCircle, fillIndexArray } from '../packages/constants/Utils'
+import { round,ccw,ccwRobust,inCircleRobust, inCircle, fillIndexArray, calculateArrayShape } from '../packages/constants/Utils'
 
 import { haversine } from '../packages/Distance'
 
@@ -83,12 +83,23 @@ test('inCircle', () => {
 // [[9],[8],[7],[6],[5],[4],[3],[2],[1],[0]]
 
 test('fillIndexArray', () => {
-  let indexArray = [9,8,7,6,5,4,3,2,1,0];
+  let indexArray = [[9,8,7],[6,5,4],[3,2,1]];
   let fillArray = [[0],[1],[2],[3],[4],[5],[6],[7],[8],[9]];
   let res = fillIndexArray(indexArray, fillArray);
-  expect(res).toEqual([[9],[8],[7],[6],[5],[4],[3],[2],[1],[0]])
+  expect(res).toEqual([[[9],[8],[7]],[[6],[5],[4]],[[3],[2],[1]]])
+  
 })
 
+// calculateArrayShape
+test('calculateArrayShape', () => {
+  let array = [[1,2,3],[4,5,6],[7,8,9]];
+  let res = calculateArrayShape(array);
+  expect(res).toEqual([3,3])
+
+  let array2 = [[[1,2,3],[4,5,6],[7,8,9]],[[1,2,3],[4,5,6],[7,8,9]],[[1,2,3],[4,5,6],[7,8,9]],[[1,2,3],[4,5,6],[7,8,9]]];
+  let res2 = calculateArrayShape(array2);
+  expect(res2).toEqual([4,3,3])
+})
 
 // test('Math.sqrt()', () => {
 //   expect(Math.sqrt(4)).toBe(2)
