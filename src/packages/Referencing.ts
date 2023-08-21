@@ -53,7 +53,7 @@ export function convertToMercator(oriPoint: Point | [lon : number ,lat : number]
  * @param {Array<number>} xy Mercator [x, y] point
  * @returns {Array<number>} WGS84 [lon, lat] point
  */
-function convertToWgs84(xy: number[]) {
+export function convertToWgs84(xy: number[]) {
   // 900913 properties.
   var R2D = 180 / Math.PI;
   var A = 6378137.0;

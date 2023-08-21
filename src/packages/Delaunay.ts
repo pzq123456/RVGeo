@@ -7,6 +7,7 @@
 // @ts-nocheck
 const EPSILON = Math.pow(2, -52);
 const EDGE_STACK = new Uint32Array(512);
+import { convertToWgs84 } from './Referencing';
 
 import {orient2d} from 'robust-predicates';
 
@@ -146,7 +147,7 @@ export class Delaunator {
             i2y = y;
         }
 
-        const center = circumcenter(i0x, i0y, i1x, i1y, i2x, i2y);
+        const center = this.circumcenter(i0x, i0y, i1x, i1y, i2x, i2y);
         this._cx = center.x;
         this._cy = center.y;
 
@@ -398,6 +399,22 @@ export class Delaunator {
         return res;
     }
 
+    circumcenter(ax, ay, bx, by, cx, cy) {
+        const dx = bx - ax;
+        const dy = by - ay;
+        const ex = cx - ax;
+        const ey = cy - ay;
+    
+        const bl = dx * dx + dy * dy;
+        const cl = ex * ex + ey * ey;
+        const d = 0.5 / (dx * ey - dy * ex);
+    
+        const x = ax + (ey * bl - dy * cl) * d;
+        const y = ay + (dx * cl - ex * bl) * d;
+    
+        return {x, y};
+    }
+
 
 }
 
@@ -445,23 +462,6 @@ function circumradius(ax, ay, bx, by, cx, cy) {
 
     return x * x + y * y;
 }
-
-function circumcenter(ax, ay, bx, by, cx, cy) {
-    const dx = bx - ax;
-    const dy = by - ay;
-    const ex = cx - ax;
-    const ey = cy - ay;
-
-    const bl = dx * dx + dy * dy;
-    const cl = ex * ex + ey * ey;
-    const d = 0.5 / (dx * ey - dy * ex);
-
-    const x = ax + (ey * bl - dy * cl) * d;
-    const y = ay + (dx * cl - ex * bl) * d;
-
-    return {x, y};
-}
-
 function quicksort(ids, dists, left, right) {
     if (right - left <= 20) {
         for (let i = left + 1; i <= right; i++) {
@@ -514,6 +514,97 @@ function defaultGetY(p) {
     return p[1];
 }
 
+/**
+ * 计算三角形的边（对于 Delauany 三角剖分的结果数组）
+ * @param t - 三角形的索引
+ * @returns {[number,number,number]}
+ */
+function edgesOfTriangle(t): [number, number, number] {return [3 * t, 3 * t + 1, 3 * t + 2]; }
+
+/**
+ * 计算三角形的顶点（对于 Delauany 三角剖分的结果数组）
+ * @param delaunay {Delaunator}
+ * @param t - 三角形的索引
+ * @returns {[number,number,number]} - 三角形的顶点
+ */
+function pointsOfTriangle(delaunay, t) : [number, number, number] {
+    return edgesOfTriangle(t)
+        .map(e => delaunay.triangles[e]);
+}
+
+function forEachTriangle(points, delaunay, callback) {
+    for (let t = 0; t < delaunay.triangles.length / 3; t++) {
+        callback(t, pointsOfTriangle(delaunay, t).map(p => points[p]));
+    }
+}
+
+function triangleOfEdge(e)  { return Math.floor(e / 3); }
+
+function trianglesAdjacentToTriangle(delaunay, t) {
+    const adjacentTriangles = [];
+    for (const e of edgesOfTriangle(t)) {
+        const opposite = delaunay.halfedges[e];
+        if (opposite >= 0) {
+            adjacentTriangles.push(triangleOfEdge(opposite));
+        }
+    }
+    return adjacentTriangles;
+}
+
+function circumcenter(a, b, c) {
+    const ad = a[0] * a[0] + a[1] * a[1];
+    const bd = b[0] * b[0] + b[1] * b[1];
+    const cd = c[0] * c[0] + c[1] * c[1];
+    const D = 2 * (a[0] * (b[1] - c[1]) + b[0] * (c[1] - a[1]) + c[0] * (a[1] - b[1]));
+    return [
+        1 / D * (ad * (b[1] - c[1]) + bd * (c[1] - a[1]) + cd * (a[1] - b[1])),
+        1 / D * (ad * (c[0] - b[0]) + bd * (a[0] - c[0]) + cd * (b[0] - a[0])),
+    ];
+}
+
+/**
+ * 计算三角形的外心（对于 Delauany 三角剖分的结果数组）
+ * @param points - 原始点数组（墨卡托）
+ * @param delaunay - Delauany 三角剖分
+ * @param t - 三角形的索引
+ * @returns 
+ */
+export function triangleCenter(points, delaunay, t, projection = convertToWgs84):[number, number] {
+    const vertices = pointsOfTriangle(delaunay, t).map(p => points[p]);
+    let center =  circumcenter(vertices[0], vertices[1], vertices[2]);
+    // console.log(center);
+    if (projection) {
+        center = projection(center);
+    }
+    return center;
+}
+function nextHalfedge(e) { return (e % 3 === 2) ? e - 2 : e + 1; }
+function prevHalfedge(e) { return (e % 3 === 0) ? e + 2 : e - 1; }
+function edgesOfTriangle(t) { return [3 * t, 3 * t + 1, 3 * t + 2]; }
+function triangleOfEdge(e)  { return Math.floor(e / 3); }
+function edgesAroundPoint(delaunay, start) {
+    const result = [];
+    let incoming = start;
+    do {
+        result.push(incoming);
+        const outgoing = nextHalfedge(incoming);
+        incoming = delaunay.halfedges[outgoing];
+    } while (incoming !== -1 && incoming !== start);
+    return result;
+}
+function forEachVoronoiCell(points, delaunay, callback) {
+    const seen = new Set();  // of point ids
+    for (let e = 0; e < delaunay.triangles.length; e++) {
+        const p = delaunay.triangles[nextHalfedge(e)];
+        if (!seen.has(p)) {
+            seen.add(p);
+            const edges = edgesAroundPoint(delaunay, e);
+            const triangles = edges.map(triangleOfEdge);
+            const vertices = triangles.map(t => triangleCenter(points, delaunay, t));
+            callback(p, vertices);
+        }
+    }
+}
 export class Voronoi{
     delaunay: Delaunator; // Delaunay triangulation
     constructor(
