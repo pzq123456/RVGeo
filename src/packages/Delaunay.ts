@@ -580,8 +580,6 @@ export function triangleCenter(points, delaunay, t, projection = convertToWgs84)
 }
 function nextHalfedge(e) { return (e % 3 === 2) ? e - 2 : e + 1; }
 function prevHalfedge(e) { return (e % 3 === 0) ? e + 2 : e - 1; }
-function edgesOfTriangle(t) { return [3 * t, 3 * t + 1, 3 * t + 2]; }
-function triangleOfEdge(e)  { return Math.floor(e / 3); }
 function edgesAroundPoint(delaunay, start) {
     const result = [];
     let incoming = start;

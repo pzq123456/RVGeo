@@ -108,8 +108,6 @@ const dPs = [
   [127, 191], [130, 191], [132, 189], [134, 189], [134, 186], 
   [136, 184], [134, 182], [134, 179], [134, 176], [136, 174]
 ]
-
-
 // console.log(del.getHull());
 // console.log(del.getHalfedges());
 // console.log(ps);
@@ -129,38 +127,49 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: 'rectangle', action: () =>  draw('rectangle')},
   { name: 'polygon', action: () =>  draw('polygon')},
   { name: 'circle', action: () =>  draw('circle')},
+  { name: '绘制多点及其重心', action: () =>  example1()},
+  { name: '绘制三角网', action: () =>  example2()},
+  { name: '绘制凸包', action: () =>  example3()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
 ])
 
-
-
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-
 let ps = mockPoints(10, myMBR1);
 let mps = new MultiPoint(ps);
-let icon = innerIcon(1);
-let del = Delaunator.from(mps.toXYArray());
 
-let trs = fillIndexArray(del.getTriangleIndices(), mps.toArray());
+function example1(){
+  removeAllOverlay(map)
+  let icon = innerIcon(0);
+  drawPoint2BLMap(mps.calculateCentroid(), map);
+  drawMultiPoint2BLMap(mps, map, icon);
+}
 
-let trc = triangleCenter(mps.toXYArray(),del, 0);
-console.log(trc);
-drawPoint2BLMap(trc, map);
+function example2(){
+  removeAllOverlay(map)
+  let del = Delaunator.from(mps.toXYArray());
+  let trs = fillIndexArray(del.getTriangleIndices(), mps.toArray());
+  let trc = triangleCenter(mps.toXYArray(),del, 0);
+  drawPoint2BLMap(trc, map);
+  drawTriangleEdge2BLMap(trs, map, {strokeColor: 'blue'});
+  let res = fillIndexArray(del.getHull(), mps.toArray());
+  drawPolygon2BLMap([res],map, {fillColor: 'gray'});
+  drawMultiPoint2BLMap(mps, map);
+}
+
+function example3(){
+  removeAllOverlay(map)
+  let ps2 = convexHull(ps);
+  let ls = new LineString(ps2);
+  let polygon = new Polygon([ls]);
+  let rect = polygon.getMBR();
+  drawPolygon2BLMap(polygon, map);
+  drawRectangle2BLMap(rect, map);
+}
 
 
-// console.log(trs);
-drawTriangleEdge2BLMap(trs, map, {strokeColor: 'blue'});
-let res = fillIndexArray(del.getHull(), mps.toArray());
-// console.log(res);
-drawPolygon2BLMap([res],map, {fillColor: 'gray'});
-drawMultiPoint2BLMap(mps, map, icon);
-// let ps2 = convexHull(ps);
-// let ls = new LineString(ps2);
-// let polygon = new Polygon([ls]);
-// let rect = polygon.getMBR();
-// drawPolygon2BLMap(polygon, map);
-// drawRectangle2BLMap(rect, map);
+
+
 
 
 

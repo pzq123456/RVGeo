@@ -9,15 +9,6 @@ import { convertToMercator } from "./Referencing";
 // define MBR type
 export type MBR = [number, number, number, number];
 
-[
-    [
-        [],[],[]
-    ],
-    [
-        [],[],[]
-    ]
-]
-
 /**
  * 图形基类（抽象类）
  * - 该类定义了一些图形共有的方法及属性
@@ -230,6 +221,49 @@ export class MultiPoint extends Geometry{
     }
 
     /**
+     * - 计算多点的重心
+     * - calculate centroid of MultiPoint
+     * @param values - 可指定权重数组(可选) 会首先归一化权重数组
+     * @returns {Point} 返回重心坐标
+     * @see https://en.wikipedia.org/wiki/Centroid
+     */
+    calculateCentroid(
+        values?: number[]
+    ): Point{
+        // 若有权重数组 则归一化
+        if(values){
+            let sum = 0;
+            for(let i = 0; i < values.length; i++){
+                sum += values[i];
+            }
+            for(let i = 0; i < values.length; i++){
+                values[i] /= sum;
+            }
+
+            let sumLon = 0, sumLat = 0;
+            for(let i = 0; i < this.coordinates.length; i++){
+                let tmp = this.coordinates[i].to2DArray();
+                sumLon += tmp[0] * values[i];
+                sumLat += tmp[1] * values[i];
+            }
+            let lon = sumLon;
+            let lat = sumLat;
+
+            return new Point(lon, lat);
+        }else{
+            let sumLon = 0, sumLat = 0;
+            for(let i = 0; i < this.coordinates.length; i++){
+                let tmp = this.coordinates[i].to2DArray();
+                sumLon += tmp[0];
+                sumLat += tmp[1];
+            }
+            let lon = sumLon / this.coordinates.length;
+            let lat = sumLat / this.coordinates.length;
+            return new Point(lon, lat);
+        }
+    }
+
+    /**
      * - 删除指定索引的点
      * - delete point by index
      * @param index 索引
@@ -240,7 +274,7 @@ export class MultiPoint extends Geometry{
     }
 
     /**
-     * - 添加点
+     * - 向尾部添加点
      * - add point
      * @param point 点 
      */
@@ -249,11 +283,12 @@ export class MultiPoint extends Geometry{
         this.MBR = this.calculateMBR();
     }
 
+
+
     // 判断是否为多点类型
     static isMultiPoint(multiPoint: any): multiPoint is MultiPoint{
         return multiPoint.type === "MultiPoint";
     }
-
 }
 
 export class LineString extends MultiPoint{
@@ -342,4 +377,6 @@ export class Polygon extends MultiLineString{
     static isPolygon(polygon: any): polygon is Polygon{
         return polygon.type === "Polygon";
     }
+
 }
+
