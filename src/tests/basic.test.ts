@@ -2,7 +2,7 @@ import { assert, expect, test } from 'vitest'
 
 import { round,ccw,ccwRobust,inCircleRobust, inCircle, fillIndexArray, calculateArrayShape } from '../packages/constants/Utils'
 
-import { haversine } from '../packages/Distance'
+import { haversine, PlanePolygonArea } from '../packages/Distance'
 
 import { toMeters, metersTo, unitTounit } from '../packages/constants/Units'
 
@@ -100,6 +100,14 @@ test('calculateArrayShape', () => {
   let res2 = calculateArrayShape(array2);
   expect(res2).toEqual([4,3,3])
 })
+
+// planePolygonArea
+test('planePolygonArea', () => {
+  let polygon = [[0,0],[0,2],[2,2],[2,0]];
+  let res = PlanePolygonArea(polygon,"meters");
+  expect(res).toBe(4)
+})
+
 
 // test('Math.sqrt()', () => {
 //   expect(Math.sqrt(4)).toBe(2)

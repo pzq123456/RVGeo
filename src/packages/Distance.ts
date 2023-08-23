@@ -1,16 +1,18 @@
 /**
- * @module distance
  * @description
- * - Returns the distance between two points.
- * - 距离模块，返回两点之间的距离
+ * - 量测模块 暂时包括距离量测及面积量测
+ * - Measurement module currently includes distance measurement and area measurement
  * @see https://en.wikipedia.org/wiki/Haversine_formula
  */
 
 // Path: src\packages\Distance.ts
-import { degreesToRadians, radiansToLength} from "./constants/Units.ts"
+import { AreaUnits, areaFactors, degreesToRadians, radiansToLength} from "./constants/Units.ts"
 
 import { Point, LineString } from "./Geometry.ts"
 import { Units } from "./constants/Units.ts"
+import { sphere } from "./constants/Ellipsoid.ts";
+
+const RADIUS = sphere.a; // 地球半径
 
 /**
  * - Returns the distance between two points.
@@ -47,20 +49,87 @@ export function haversine(from: Point | [lon1 : number ,lat1 : number] ,to: Poin
     return radiansToLength(a, unit); // 2886.4430836583665
 }
 
+/**
+ * - 使用 Shoelace Theorem 求多边形面积
+ * - calculate the area of a polygon using the Shoelace Theorem
+ * @param points - 可以为点类型数组、LineString 类型或者二维数组（需要为墨卡托平面坐标系下）
+ * - 需确保点按照顺时针或者逆时针排列 
+ * - need to ensure that the points are arranged clockwise or counterclockwise
+ * @param unit - 单位（默认为千米）
+ * @returns 
+ */
 export function PlanePolygonArea(
-    points: Point[] | LineString | [X : number ,Y : number][] ,
-    unit: Units = "kilometers"
+    points: Point[] | LineString | number[][] ,
+    unit: AreaUnits = "kilometers"
 ) : number{
     // 处理输入参数
     // 首先统一为二维数组
-    const coordinates = LineString.isLineString(points) ? points.toXYArray() : points;
+    let coordinates = LineString.isLineString(points) ? points.toXYArray() : points as number[][];
     // 判断数组长度
     if (coordinates.length < 3) {
         return 0;
     }
+    // 判断元素类型 若为 Point 则转换为二维数组
+    if (Point.isPoint(coordinates[0])) {
+        coordinates.map((item, index) => {
+            coordinates[index] = item.toXY();
+        });
+    }
+    // 用 Shoelace Theorem 计算面积
+    let area = 0;
+    let j = coordinates.length - 1;
+    for (let i = 0; i < coordinates.length; i++) {
+        area += (coordinates[j][0] + coordinates[i][0]) * (coordinates[j][1] - coordinates[i][1]);
+        j = i;
+    }
+    // 转换为指定单位
+    area = area * areaFactors[unit];
+    return Math.abs(area/2);
 }
 
+/**
+ * - 使用格林公式及球面积分直接计算球面多边形的面积
+ * - calculate the area of a spherical polygon using the spherical excess method
+ * @see http://home.ustc.edu.cn/~liujunyan/blog/Area-and-center-of-spherical-polygon/
+ * @param points - 可以为点类型数组、LineString 类型或者二维数组（需要为经纬度坐标系下）
+ * @param unit - 单位（默认为千米）
+ * @returns {number} - 面积
+ */
+export function SpherePolygonArea(
+    points: Point[] | LineString | number[][] ,
+    unit: AreaUnits = "kilometers"
+) : number{
+    // 首先统一为二维数组
+    let coordinates = LineString.isLineString(points) ? points.toArray() : points as number[][];
+    // 判断数组长度
+    if (coordinates.length < 3) {
+        return 0;
+    }
+    // 判断元素类型 若为 Point 则转换为二维数组
+    if (Point.isPoint(coordinates[0])) {
+        coordinates.map((item, index) => {
+            coordinates[index] = item.to2DArray();
+        });
+    }
 
-export function SpherePolygonArea() : number{
+    // 计算球面多边形的面积
+    let area = 0;
+    let len = coordinates.length;
 
+    // 将经纬度转换为弧度
+    coordinates.forEach((item, index) => {
+        item.forEach((item2, index2) => {
+            coordinates[index][index2] = degreesToRadians(item2);
+        });
+    });
+    console.log(coordinates);
+    for (let i = 0; i < len; i++) {
+        let j = (i + 1) % len;
+        let k = (i + 2) % len;
+        area += (coordinates[i][0] - coordinates[k][0]) * Math.sin(coordinates[j][1]);
+    }
+    area = (area * RADIUS * RADIUS) / 2;
+    // 转换为指定单位
+    area = area * areaFactors[unit];
+    return Math.abs(area);
 }

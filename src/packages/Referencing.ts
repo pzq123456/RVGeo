@@ -10,7 +10,7 @@ import { Point } from "./Geometry";
  * - Converts geographic coordinates to Mercator coordinates. ( EPSG:4326 -> EPSG:3857 )
  * - 将经纬度转换为墨卡托坐标
  * @param oriPoint - 点类型或者经纬度数组
- * @param unit - 距离单位
+ * @param unit - 距离单位（默认为米）
  * @param roundNum - 保留小数位数
  * @returns 
  */
@@ -53,7 +53,8 @@ export function convertToMercator(oriPoint: Point | [lon : number ,lat : number]
  * @param {Array<number>} xy Mercator [x, y] point
  * @returns {Array<number>} WGS84 [lon, lat] point
  */
-export function convertToWgs84(xy: number[]) {
+export function convertToWgs84(xy: number[]) : [number, number]
+ {
   // 900913 properties.
   var R2D = 180 / Math.PI;
   var A = 6378137.0;

@@ -6,6 +6,7 @@ import { createPointListFromArr } from './packages/MetaData.ts';
 import { convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
+import { PlanePolygonArea, SpherePolygonArea } from './packages/Distance.ts';
 
 declare const BMapGL: any;
 declare const BMapGLLib: any;
@@ -19,6 +20,13 @@ const myMBR1 = [
   36.990057191562045,
   -102.06399125241506,
   40.981780653665425
+]
+
+const MBR2 = [
+  [-109.07111505279033,36.990057191562045],
+  [-109.07111505279033,40.981780653665425],
+  [-102.06399125241506,40.981780653665425],
+  [-102.06399125241506,36.990057191562045],
 ]
 
 const myPolygon1 = [
@@ -130,6 +138,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '绘制多点及其重心', action: () =>  example1()},
   { name: '绘制三角网', action: () =>  example2()},
   { name: '绘制凸包', action: () =>  example3()},
+  { name: '计算面积', action: () =>  example4()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
 ])
 
@@ -169,7 +178,15 @@ function example3(){
   drawRectangle2BLMap(rect, map);
 }
 
-
+function example4(){
+  // const data = [[-11913098.969607, 4721892.674269], [-11894440.774108, 4905529.4068], [-12002892.93265, 4534749.619498], [-12049791.150961, 4484157.977775], [-11464780.149742, 4897848.71788], [-11442003.998876, 4897349.45794], [-11891500.170537, 4589758.834727], [-11845520.041687, 4865124.16612], [-11623105.108907, 4558569.954722], [-11791757.054504, 4517046.643686]];
+  // const data = [[-109.07111505279033, 38.127647092868436], [-108.3704026727528, 38.89686606436471], [-107.66969029271527, 37.54255530190678], [-106.96897791267776, 37.97885670198897], [-106.26826553264023, 37.66837197304874], [-105.5675531526027, 39.66587627745989], [-104.86684077256517, 37.277106263419846], [-104.16612839252764, 39.265644135865976], [-103.46541601249012, 38.04773824659322], [-102.7647036324526, 39.803126875156096]];
+  let ls = mockLineString(10, myMBR1);
+  removeAllOverlay(map);
+  // console.log(PlanePolygonArea(ls));
+  console.log("Sphere",SpherePolygonArea(MBR2));
+  console.log("Plane",PlanePolygonArea(ls));
+}
 
 
 

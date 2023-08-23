@@ -5,6 +5,7 @@
  * - 该模块的目的就是为了方便操作这些地理要素
  */
 import { convertToMercator } from "./Referencing";
+import { Units } from "./constants/Units";
 
 // define MBR type
 export type MBR = [number, number, number, number];
@@ -83,10 +84,10 @@ export class Point{
     /**
      * - 将点坐标转换为墨卡托坐标 EPSG:4326 -> EPSG:3857
      * - transform point to Mercator coordinate EPSG:4326 -> EPSG:3857
-     * @returns {[number, number]} 返回墨卡托坐标 [x, y]
+     * @returns {[number, number]} 返回墨卡托坐标 [x, y] 默认米为单位
      */
-    toXY(): [number, number]{
-        return convertToMercator(this);
+    toXY(unit: Units = "meters"): [number, number]{
+        return convertToMercator(this, unit);
     }
 
     /**
