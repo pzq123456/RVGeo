@@ -279,8 +279,9 @@ export class MultiPoint extends Geometry{
      * - add point
      * @param point 点 
      */
-    addPoint(point: Point){
-        this.coordinates.push(point);
+    addPoint(point: Point | [number, number]){
+        let p = Point.isPoint(point) ? point : new Point(point[0], point[1]);
+        this.coordinates.push(p);
         this.MBR = this.calculateMBR();
     }
 

@@ -380,6 +380,19 @@ export class Delaunator {
     getHull() {
         return this.hull;
     }
+    getPoints(){
+        // 根据 this.coords 及 下面的代码 反算出 points
+        // for (let i = 0; i < n; i++) {
+        //     const p = points[i];
+        //     coords[2 * i] = getX(p);
+        //     coords[2 * i + 1] = getY(p);
+        // }
+        let points = [];
+        for (let i = 0; i < this.coords.length; i += 2) {
+            points.push([this.coords[i], this.coords[i + 1]]);
+        }
+        return points;
+    }
     /**
      * - get the indices of triangles as array of array of 3 elements
      * - 获得三角形的索引，以3个元素的数组的数组的形式
@@ -589,6 +602,7 @@ function edgesAroundPoint(delaunay, start) {
     return result;
 }
 function forEachVoronoiCell(points, delaunay, callback) {
+    // console.log(points);
     const seen = new Set();  // of point ids
     for (let e = 0; e < delaunay.triangles.length; e++) {
         const p = delaunay.triangles[nextHalfedge(e)];
@@ -603,11 +617,38 @@ function forEachVoronoiCell(points, delaunay, callback) {
 }
 export class Voronoi{
     delaunay: Delaunator; // Delaunay triangulation
+    points: number[][]; // points array
+    /**
+     * - 从点数组构造 Voronoi 图或包装 Delaunator
+     * - Construct Voronoi diagram from points array or wrap Delaunator
+     * @param params - 点数组或 Delaunator 对象： [[x1, y1], [x2, y2], ... 或 Delaunator 对象
+     * @param x - 若 params 为点数组，则为获取 x 坐标的函数（默认规则，取表示点的二维数组中首位）
+     * @param y - 若 params 为点数组，则为获取 y 坐标的函数（有默认规则，取表示点的二维数组中末位）
+     */
+    // 构造函数重载
     constructor(
-        points: number[][],
+        params?: number[][] | Delaunator,
         x?: (p: number[]) => number = defaultGetX,
         y?: (p: number[]) => number = defaultGetY
-    ) {
-        this.delaunay = Delaunator.from(points, x, y);
+    ){
+        if(params instanceof Delaunator){
+            this.delaunay = params;
+            this.points = params.getPoints();
+        }else{
+            this.points = params;
+            this.delaunay = Delaunator.from(params, x, y);
+        }
+    }
+    /**
+     * - 获取 Voronoi cell 的顶点数组
+     * @returns {Map<number, number[][]>} - Map<编号, 顶点数组>
+     */
+    getVoronoi(): Map<number, number[][]>
+    {
+        const {points, delaunay} = this;
+        const voronoi = new Map();
+        forEachVoronoiCell(points, delaunay, (p, v) => voronoi.set(p, v));
+        // 后处理
+        return voronoi;
     }
 }

@@ -1,10 +1,10 @@
 import { createToolBar } from './helpers/toolBar.ts'
 import { Point, MultiPoint, LineString, MultiLineString, Polygon } from './packages/Geometry.ts'
 import { mockPoints, mockLineString } from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap, innerIcon, drawPolygonArray2BLMap, drawTriangleEdge2BLMap, drawPoint2BLMap } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap, innerIcon, drawPolygonArray2BLMap, drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
 import { convexHull } from './packages/Shell.ts';
-import { Delaunator, triangleCenter } from "./packages/Delaunay.ts"
+import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
 import { PlanePolygonArea, SpherePolygonArea } from './packages/Distance.ts';
 
@@ -139,14 +139,38 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '绘制三角网', action: () =>  example2()},
   { name: '绘制凸包', action: () =>  example3()},
   { name: '计算面积', action: () =>  example4()},
+  { name: '绘制Voronoi', action: () =>  example5()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
 ])
 
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 // test data
-let ps = mockPoints(10, myMBR1);
+let ps = mockPoints(50, myMBR1);
 let mps = new MultiPoint(ps);
+mps.addPoint([
+  -109.06074206666483,
+  41.01216732997898
+]);
+mps.addPoint(
+  [
+    -107.38260583296193,
+    38.221743810305355
+  ]
+);
+mps.addPoint(
+  [
+    -103.90238012102105,
+    38.221743810305355
+  ]
+);
+mps.addPoint(
+  [
+    -107.38260583296193,
+    39.90219587081049
+  ]
+);
+
 
 function example1(){
   removeAllOverlay(map)
@@ -188,13 +212,13 @@ function example4(){
   console.log("Plane",PlanePolygonArea(ls));
 }
 
-
-
-
-
-
-
-
+function example5(){
+  let del = Delaunator.from(mps.toXYArray());
+  let vor = new Voronoi(del);
+  let voi = vor.getVoronoi();
+  console.log(voi);
+  drawEdgeMap2BLMap(voi, map);
+}
 
 // let ps1 = new LineString(createPointListFromArr(myPolygon1));
 // let ps2 = new LineString(createPointListFromArr(myPolygon2));
@@ -205,21 +229,6 @@ function example4(){
 // console.log(polygon);
 // drawPolygon2BLMap(polygon, map);
 // drawRectangle2BLMap(rect, map);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // let l0 = mockLineString(10, myMBR1);
 // let l1 = mockLineString(10, myMBR1);
