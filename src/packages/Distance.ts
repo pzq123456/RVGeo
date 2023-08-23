@@ -9,17 +9,16 @@
 // Path: src\packages\Distance.ts
 import { degreesToRadians, radiansToLength} from "./constants/Units.ts"
 
-import { Point } from "./Geometry.ts"
+import { Point, LineString } from "./Geometry.ts"
 import { Units } from "./constants/Units.ts"
 
 /**
- * @description
  * - Returns the distance between two points.
- * - 距离模块，返回两点之间的距离（ haversine 公式）
+ * - 计算两点之间的距离（ haversine 公式）
  * @param from 点类型或者经纬度数组
  * @param to 点类型或者经纬度数组
- * @param unit 单位
- * @returns {number}
+ * @param unit 单位（默认为千米）
+ * @returns {number} - 距离
  */
 export function haversine(from: Point | [lon1 : number ,lat1 : number] ,to: Point | [lon2 : number ,lat2 : number] ,unit: Units = "kilometers"): number {
     // 处理输入参数
@@ -46,4 +45,22 @@ export function haversine(from: Point | [lon1 : number ,lat1 : number] ,to: Poin
         )
     );
     return radiansToLength(a, unit); // 2886.4430836583665
+}
+
+export function PlanePolygonArea(
+    points: Point[] | LineString | [X : number ,Y : number][] ,
+    unit: Units = "kilometers"
+) : number{
+    // 处理输入参数
+    // 首先统一为二维数组
+    const coordinates = LineString.isLineString(points) ? points.toXYArray() : points;
+    // 判断数组长度
+    if (coordinates.length < 3) {
+        return 0;
+    }
+}
+
+
+export function SpherePolygonArea() : number{
+
 }

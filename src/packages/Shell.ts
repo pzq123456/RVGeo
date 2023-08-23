@@ -4,6 +4,11 @@
 import { Point } from './Geometry.ts';
 import { ccw, getAngle } from './constants/Utils';
 
+/**
+ * 凸包算法
+ * @param points - 点数组 
+ * @returns {Point[]} - 凸包点数组
+ */
 export function convexHull(points: Point[]): Point[] {
     // 首先转化为平面坐标
     const pointsXY = points.map((item,index) => {

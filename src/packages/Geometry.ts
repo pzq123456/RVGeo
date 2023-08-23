@@ -177,7 +177,7 @@ export class MultiPoint extends Geometry{
     /**
      * - 获得 墨卡托 投影下的平面坐标
      * - get Mercator coordinate
-     * @returns 返回墨卡托坐标数组
+     * @returns 返回墨卡托坐标数组 [[x1, y1], [x2, y2], ...]
      */
     toXYArray(): number[][] {
         let res = [];
@@ -373,7 +373,6 @@ export class Polygon extends MultiLineString{
         super(lines, ...args);
         super.type = "Polygon";
     }
-
     static isPolygon(polygon: any): polygon is Polygon{
         return polygon.type === "Polygon";
     }

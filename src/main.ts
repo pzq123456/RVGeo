@@ -135,6 +135,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
 
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+// test data
 let ps = mockPoints(10, myMBR1);
 let mps = new MultiPoint(ps);
 
@@ -155,6 +156,7 @@ function example2(){
   let res = fillIndexArray(del.getHull(), mps.toArray());
   drawPolygon2BLMap([res],map, {fillColor: 'gray'});
   drawMultiPoint2BLMap(mps, map);
+  console.log(del.getHull());
 }
 
 function example3(){

@@ -374,14 +374,12 @@ export class Delaunator {
     getTriangles() {
         return this.triangles;
     }
-
     getHalfedges() {
         return this.halfedges;
     }
     getHull() {
         return this.hull;
     }
-
     /**
      * - get the indices of triangles as array of array of 3 elements
      * - 获得三角形的索引，以3个元素的数组的数组的形式

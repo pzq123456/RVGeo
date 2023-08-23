@@ -3,6 +3,8 @@
  * - 百度地图 api 是外部库，所以不放在 package 目录下。
  * - helpers 目录下的文件可以作为使用样例做参考之用。
  * - 由于无法使用 import 语句，所以只能使用全局变量 BMap。
+ * - map 作为参数也是为了应对同一个页面有多个地图的情况。
+ * - 百度地图的文档及接口都比较混乱，与 GeoJSON 的规范也有出入，所以需要做一些转换。
  */
 
 import { Point, MultiPoint, LineString, MultiLineString, Polygon } from '../packages/Geometry.ts';
