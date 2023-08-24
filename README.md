@@ -35,6 +35,9 @@ git clone --branch next --single-branch https://github.com/pzq123456/RVGeo.git
 - https://blog.csdn.net/Richard__Ting/article/details/99319860
 - https://www.osgeo.cn/
 - https://www.lddgo.net/convert/distance
+- [Movable Type Ltd](http://www.movable-type.co.uk/)
+- http://www.movable-type.co.uk/scripts/latlong.html
+- https://github.com/chrisveness/geodesy
 
 ## 一些设想
 > 若有使用者对于该代码仓库有任何想法，欢迎与我联系。（issue 或者 email）

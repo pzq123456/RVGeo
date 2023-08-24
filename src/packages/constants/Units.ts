@@ -225,6 +225,6 @@ export function unitTounit(
   return metersTo(toMeters(distance, from), to);
 }
 
-
+// Computational geometry
 
 

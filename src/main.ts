@@ -148,28 +148,28 @@ map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 // test data
 let ps = mockPoints(50, myMBR1);
 let mps = new MultiPoint(ps);
-mps.addPoint([
-  -109.06074206666483,
-  41.01216732997898
-]);
-mps.addPoint(
-  [
-    -107.38260583296193,
-    38.221743810305355
-  ]
-);
-mps.addPoint(
-  [
-    -103.90238012102105,
-    38.221743810305355
-  ]
-);
-mps.addPoint(
-  [
-    -107.38260583296193,
-    39.90219587081049
-  ]
-);
+// mps.addPoint([
+//   -109.06074206666483,
+//   41.01216732997898
+// ]);
+// mps.addPoint(
+//   [
+//     -107.38260583296193,
+//     38.221743810305355
+//   ]
+// );
+// mps.addPoint(
+//   [
+//     -103.90238012102105,
+//     38.221743810305355
+//   ]
+// );
+// mps.addPoint(
+//   [
+//     -107.38260583296193,
+//     39.90219587081049
+//   ]
+// );
 
 
 function example1(){
@@ -217,7 +217,7 @@ function example5(){
   let vor = new Voronoi(del);
   let voi = vor.getVoronoi();
   console.log(voi);
-  drawEdgeMap2BLMap(voi, map);
+  drawEdgeMap2BLMap(voi, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
 }
 
 // let ps1 = new LineString(createPointListFromArr(myPolygon1));
