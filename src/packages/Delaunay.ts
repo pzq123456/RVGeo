@@ -589,6 +589,8 @@ export function triangleCenter(points, delaunay, t, projection = convertToWgs84)
     }
     return center;
 }
+
+
 function nextHalfedge(e) { return (e % 3 === 2) ? e - 2 : e + 1; }
 function prevHalfedge(e) { return (e % 3 === 0) ? e + 2 : e - 1; }
 function edgesAroundPoint(delaunay, start) {
@@ -651,4 +653,53 @@ export class Voronoi{
         // 后处理
         return voronoi;
     }
+
+    cutVoronoiByMBR(MBR: [number, number, number, number]){
+        const {points, delaunay} = this;
+        const voronoi = new Map();
+        forEachVoronoiCell(points, delaunay, (p, v) => {
+            // console.log(v);
+            if(this.isInsideMBR(v, MBR)){
+                voronoi.set(p, v);
+            }
+        });
+        // 后处理
+        return voronoi;
+    }
+
+    boundaryVoronoiByMBR(MBR: [number, number, number, number]){
+        const {points, delaunay} = this;
+        const voronoi = new Map();
+        forEachVoronoiCell(points, delaunay, (p, v) => {
+            // console.log(v);
+            if(!this.isInsideMBR(v, MBR)){
+                voronoi.set(p, v);
+            }
+        });
+        // 后处理
+        return voronoi;
+    }
+
+    isInsideMBR(points: number[][], MBR: [number, number, number, number]){
+        const [minX, minY, maxX, maxY] = MBR;
+        for(let i = 0; i < points.length; i++){
+            const [x, y] = points[i];
+            if(x < minX || x > maxX || y < minY || y > maxY){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+export function complateMap(allMap: Map<number, number[][]>, cutMap: Map<number, number[][]>){
+    const res = new Map();
+    for(let [key, value] of allMap){
+        if(cutMap.has(key)){
+            res.set(key, cutMap.get(key));
+        }else{
+            res.set(key, value);
+        }
+    }
+    return res;
 }

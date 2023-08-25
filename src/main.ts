@@ -20,7 +20,7 @@ const myMBR1 = [
   36.990057191562045,
   -102.06399125241506,
   40.981780653665425
-]
+] as [number, number, number, number];
 
 const MBR2 = [
   [-109.07111505279033,36.990057191562045],
@@ -215,7 +215,7 @@ function example4(){
 function example5(){
   let del = Delaunator.from(mps.toXYArray());
   let vor = new Voronoi(del);
-  let voi = vor.getVoronoi();
+  let voi = vor.boundaryVoronoiByMBR(myMBR1);
   console.log(voi);
   drawEdgeMap2BLMap(voi, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
 }
