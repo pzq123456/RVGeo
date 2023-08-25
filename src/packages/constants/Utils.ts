@@ -105,6 +105,12 @@ export function getAngle(p1: Point | [X1:number,Y1:number], p2: Point| [X2:numbe
  * robust version of ccw 封装了 robust-predicates 库的 orient2d 函数
  * - `Note:` unlike J. Shewchuk's original code, `all the functions in this library assume y axis is oriented downwards ↓`, so the semantics are different.
  * - `注意:` 与 J. Shewchuk 的原始代码不同，`本库中的所有函数都假设 y 轴向下 ↓`，因此语义不同。刚好与 ccw 相反。
+ * - Returns 1 if three points make a counter-clockwise turn
+ * - 逆时针返回 1
+ * - Returns -1 if three points make a clockwise turn
+ * - 顺时针返回 -1
+ * - Returns 0 if three points are collinear
+ * - 共线返回 0
  * @param p1 - 可以是点类型，也可以是平面坐标数组（墨卡托）
  * @param p2 - 可以是点类型，也可以是平面坐标数组（墨卡托）
  * @param p3 - 可以是点类型，也可以是平面坐标数组（墨卡托）

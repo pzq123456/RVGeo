@@ -8,6 +8,7 @@ import { toMeters, metersTo, unitTounit } from '../packages/constants/Units'
 
 import { convertToMercator } from '../packages/Referencing'
 
+import { intersection } from "../packages/CGUtils.ts"
 test('round', () => {
   expect(round(120.4321, 2)).toBe(120.43)
   expect(round(120.4321)).toBe(120)
@@ -108,6 +109,15 @@ test('planePolygonArea', () => {
   expect(res).toBe(4)
 })
 
+// intersection
+test('intersection', () => {
+  let res = intersection([0,0],[1,1],[0,1],[1,0]);
+  expect(res).toEqual([0.5,0.5])
+  let res2 = intersection([0,0],[1,1],[0,0],[2,2]);
+  expect(res2).toEqual(null)
+  let res3 = intersection([0,0],[1,1],[0,1],[1,2]);
+  expect(res3).toEqual(null)
+})
 
 // test('Math.sqrt()', () => {
 //   expect(Math.sqrt(4)).toBe(2)
