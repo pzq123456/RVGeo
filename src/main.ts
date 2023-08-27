@@ -7,6 +7,7 @@ import { convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
 import { PlanePolygonArea, SpherePolygonArea } from './packages/Distance.ts';
+import { cutPolygonByMBR, intersectionPolygon } from './packages/CGUtils.ts';
 
 declare const BMapGL: any;
 declare const BMapGLLib: any;
@@ -140,7 +141,10 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '绘制凸包', action: () =>  example3()},
   { name: '计算面积', action: () =>  example4()},
   { name: '绘制Voronoi', action: () =>  example5()},
+  { name: '多边形求交', action: () =>  example6()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
+  { name: 'update', action: () =>  {
+    mps = updateData();}}
 ])
 
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
@@ -213,11 +217,35 @@ function example4(){
 }
 
 function example5(){
+  removeAllOverlay(map);
+  mps = updateData();
   let del = Delaunator.from(mps.toXYArray());
   let vor = new Voronoi(del);
   let voi = vor.boundaryVoronoiByMBR(myMBR1);
-  console.log(voi);
-  drawEdgeMap2BLMap(voi, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
+  // let voi = vor.cutVoronoiByMBR(myMBR1);
+  // 获得 voi 中的一个多边形
+  let voipolygon = voi.get(0);
+  console.log(voipolygon);
+  let cutPolygon = cutPolygonByMBR(voipolygon, myMBR1, drawPoint2BLMap);
+  console.log(cutPolygon);
+  drawLineString2BLMap(voipolygon, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  drawLineString2BLMap(cutPolygon, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  // drawEdgeMap2BLMap(voipolygon, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+}
+
+
+function example6(){
+  let rect1 = [
+    [-108.43658107534337,  40.29976780112503],[-108.43658107534337,  38.55075512778069],[-105.67716914258902,  38.55075512778069],[-105.67716914258902,  40.29976780112503],[-108.43658107534337,  40.29976780112503]
+  ];
+  let rect2 = [
+    [-107.34797321677699,  39.68665076371036],[-107.34797321677699,  37.315553928222414],[-103.90893321662871,  37.315553928222414],[-103.90893321662871,  39.68665076371036],[-107.34797321677699,  39.68665076371036]
+  ];
+  // draw rectangle
+  drawPolygonArray2BLMap([rect1,rect2], map);
+  let res = intersectionPolygon(rect1, rect2);
+  console.log(res);
+  drawPolygon2BLMap(res, map);
 }
 
 // let ps1 = new LineString(createPointListFromArr(myPolygon1));
@@ -254,6 +282,14 @@ function example5(){
 // drawMultiPoint2BLMap(mps, map);
 // drawLineString2BLMap(mps, map);
 // drawRectangle2BLMap(rect, map);
+
+function updateData() {
+  let ps = mockPoints(50, myMBR1);
+  let mps = new MultiPoint(ps);
+  return mps;
+}
+
+
 
 function draw(type: string) {
   const styleOptions = {

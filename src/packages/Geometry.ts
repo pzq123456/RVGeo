@@ -8,7 +8,7 @@ import { convertToMercator } from "./Referencing";
 import { Units } from "./constants/Units";
 
 // define MBR type
-export type MBR = [number, number, number, number];
+export type MBR = [number, number, number, number]; // [minLon, minLat, maxLon, maxLat]
 
 /**
  * 图形基类（抽象类）

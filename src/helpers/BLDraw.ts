@@ -86,7 +86,7 @@ export function drawRectangle2BLMap( rect : [minLon:number, minLat:number, maxLo
     map.addOverlay(rectangle);   //增加矩形
 }
 
-export function drawLineString2BLMap(lineString: LineString | number[][], map: any, style:Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 }) {
+export function drawLineString2BLMap(lineString: LineString | number[][], map: any, style:Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 },close:boolean = false) {
     // let points = lineString.coordinates;
     // 处理 LineString 和 number[] 两种情况
     let points = LineString.isLineString(lineString) ? lineString.toArray() : lineString;
@@ -94,6 +94,7 @@ export function drawLineString2BLMap(lineString: LineString | number[][], map: a
     for (let i = 0; i < points.length; i++) {
         blPoints.push(new BMapGL.Point(points[i][0], points[i][1]));
     }
+    if(close) blPoints.push(new BMapGL.Point(points[0][0], points[0][1]));
     let polyline = new BMapGL.Polyline(blPoints, style);   //创建折线
     map.addOverlay(polyline);   //增加折线
 }
@@ -143,8 +144,8 @@ export function drawTriangleEdge2BLMap(triangleEdge: any[][], map: any, style: O
 
 }
 
-export function drawEdgeMap2BLMap(edgeMap: Map<number, number[][]>, map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}) {
+export function drawEdgeMap2BLMap(edgeMap: Map<number, number[][]>, map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5},close:boolean = false) {
     for (let [key, value] of edgeMap) {
-        drawLineString2BLMap(value, map, style);
+        drawLineString2BLMap(value, map, style,close);
     }
 }

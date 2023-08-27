@@ -8,7 +8,7 @@ import { toMeters, metersTo, unitTounit } from '../packages/constants/Units'
 
 import { convertToMercator } from '../packages/Referencing'
 
-import { intersection } from "../packages/CGUtils.ts"
+import { intersection, PointInsidePolygon, PointOutsideMBR, intersectionPolygon,} from "../packages/CGUtils.ts"
 test('round', () => {
   expect(round(120.4321, 2)).toBe(120.43)
   expect(round(120.4321)).toBe(120)
@@ -111,29 +111,31 @@ test('planePolygonArea', () => {
 
 // intersection
 test('intersection', () => {
-  let res = intersection([0,0],[1,1],[0,1],[1,0]);
+  let res = intersection([0,0],[1,1],[0,1],[1,0], null, null);
   expect(res).toEqual([0.5,0.5])
-  let res2 = intersection([0,0],[1,1],[0,0],[2,2]);
+  let res2 = intersection([0,0],[1,1],[0,0],[2,2], null, null);
   expect(res2).toEqual(null)
-  let res3 = intersection([0,0],[1,1],[0,1],[1,2]);
+  let res3 = intersection([0,0],[1,1],[0,1],[1,2], null, null);
   expect(res3).toEqual(null)
 })
 
-// test('Math.sqrt()', () => {
-//   expect(Math.sqrt(4)).toBe(2)
-//   expect(Math.sqrt(144)).toBe(12)
-//   expect(Math.sqrt(2)).toBe(Math.SQRT2)
-// })
+test('PointOutsideMBR', () => {
+  let res3 = PointOutsideMBR([0,0],[0,0,1,1]);
+  expect(res3).toBe(false)
+  let res4 = PointOutsideMBR([10,0],[0,0,1,1]);
+  expect(res4).toBe(true)
+})
 
-// test('JSON', () => {
-//   const input = {
-//     foo: 'hello',
-//     bar: 'world',
-//   }
+// test point in polygon
+test('point in polygon', () => {
+  let polygon = [[0,0],[0,2],[2,2],[2,0]];
+  let res = PointInsidePolygon([1,1], polygon);
+  expect(res).toBe(true)
+})
 
-//   const output = JSON.stringify(input)
-  
-
-//   expect(output).eq('{"foo":"hello","bar":"world"}') // this will fail
-//   assert.deepEqual(JSON.parse(output), input, 'matches original') // this will pass
-// })
+test('intersectionPolygon', () => {
+  let polygon = [[100,150],[200,250],[300,200]];
+  let clipPolygon = [[150,150],[150,200],[200,200],[200,150]];
+  let res = intersectionPolygon(polygon, clipPolygon);
+  expect(res).toEqual([[150,162],[150,200],[200,200],[200,174]])
+})
