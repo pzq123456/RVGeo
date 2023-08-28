@@ -7,7 +7,7 @@ import { convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
 import { PlanePolygonArea, SpherePolygonArea } from './packages/Distance.ts';
-import { cutPolygonByMBR, intersectionPolygon } from './packages/CGUtils.ts';
+import { cutPolygonByMBR, intersection, intersectionPolygon } from './packages/CGUtils.ts';
 
 declare const BMapGL: any;
 declare const BMapGLLib: any;
@@ -142,6 +142,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '计算面积', action: () =>  example4()},
   { name: '绘制Voronoi', action: () =>  example5()},
   { name: '多边形求交', action: () =>  example6()},
+  { name: '线段求交', action: () =>  example7()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
   { name: 'update', action: () =>  {
     mps = updateData();}}
@@ -236,60 +237,66 @@ function example5(){
 
 function example6(){
   let rect1 = [
-    [-108.43658107534337,  40.29976780112503],[-108.43658107534337,  38.55075512778069],[-105.67716914258902,  38.55075512778069],[-105.67716914258902,  40.29976780112503],[-108.43658107534337,  40.29976780112503]
+    [-108.43658107534337,  40.29976780112503],[-108.43658107534337,  38.55075512778069],[-105.67716914258902,  38.55075512778069],[-105.67716914258902,  40.29976780112503]
   ];
   let rect2 = [
-    [-107.34797321677699,  39.68665076371036],[-107.34797321677699,  37.315553928222414],[-103.90893321662871,  37.315553928222414],[-103.90893321662871,  39.68665076371036],[-107.34797321677699,  39.68665076371036]
+    [-107.34797321677699,  39.68665076371036],[-107.34797321677699,  37.315553928222414],[-103.90893321662871,  37.315553928222414],[-103.90893321662871,  39.68665076371036]
   ];
   // draw rectangle
-  drawPolygonArray2BLMap([rect1,rect2], map);
+  drawLineString2BLMap(rect1, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  drawLineString2BLMap(rect2, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
   let res = intersectionPolygon(rect1, rect2);
   console.log(res);
-  drawPolygon2BLMap(res, map);
+  // drawPolygon2BLMap(res, map, {fillColor: 'red'});
+  drawMultiPoint2BLMap(createPointListFromArr(res), map);
 }
 
-// let ps1 = new LineString(createPointListFromArr(myPolygon1));
-// let ps2 = new LineString(createPointListFromArr(myPolygon2));
-// let ps3 = new LineString(createPointListFromArr(myPolygon4));
-// let polygon = new Polygon([ps1, ps2,ps3]);
-// let rect = polygon.getMBR();
-// console.log(rect);
-// console.log(polygon);
-// drawPolygon2BLMap(polygon, map);
-// drawRectangle2BLMap(rect, map);
+function example7(){
+  let line1 = [
+    [
+      -108.742669882491,
+      40.72721830758718
+    ],
+    [
+      -102.29819316274084,
+      37.2873641721976
+    ]
+  ];
+  let line2 = [
+    [
+      -107.97399126074589,
+      37.59766864452851
+    ],
+    [
+      -102.641058204481,
+      40.664014824200905
+    ]
+  ];
+  let line3 =[
+    [
+      -102.3965685720985,
+      41.613436668810465
+    ],
+    [
+      -101.58822187178613,
+      37.428342894987836
+    ]
+  ];
 
-// let l0 = mockLineString(10, myMBR1);
-// let l1 = mockLineString(10, myMBR1);
-// let l2 = mockLineString(10, myMBR1);
-// let ml = new MultiLineString([l0, l1, l2]);
-// let rect0 = l0.getMBR();
-// let rect1 = l1.getMBR();
-// let rect2 = l2.getMBR();
-// drawRectangle2BLMap(rect0, map);
-// drawRectangle2BLMap(rect1, map);
-// drawRectangle2BLMap(rect2, map);
-// drawMultiLineString2BLMap(ml, map);
-// let rect = ml.getMBR();
-// drawRectangle2BLMap(rect, map);
-
-// drawLineString2BLMap(ml, map);
-// let rect = ml.getMBR();
-// drawRectangle2BLMap(rect, map);
-// let ps = mockPoints(10, myMBR1);
-// // let mps = new MultiPoint(ps);
-// let mps = new LineString(ps);
-// let rect = mps.getMBR();
-// drawMultiPoint2BLMap(mps, map);
-// drawLineString2BLMap(mps, map);
-// drawRectangle2BLMap(rect, map);
+  drawLineString2BLMap(line1, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  drawLineString2BLMap(line2, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  drawLineString2BLMap(line3, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  let insPoi = intersection(line1[0], line1[1], line2[0], line2[1]);
+  let insPoi2 = intersection(line1[0], line1[1], line3[0], line3[1]);
+  // drawPoint2BLMap(insPoi2, map);
+  console.log(insPoi2);
+}
 
 function updateData() {
   let ps = mockPoints(50, myMBR1);
   let mps = new MultiPoint(ps);
   return mps;
 }
-
-
 
 function draw(type: string) {
   const styleOptions = {

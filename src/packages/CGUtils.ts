@@ -15,6 +15,7 @@
 import { orient2d } from "robust-predicates";
 import { MBR } from "./Geometry";
 import { convertToMercator, convertToWgs84 } from "./Referencing";
+import { ccw } from "./constants/Utils";
 /* - Returns 1 if three points make a counter-clockwise turn
 * - 逆时针返回 1
 * - Returns -1 if three points make a clockwise turn
@@ -61,12 +62,11 @@ export function intersection(
     p4: [number,number], // 第二条线段的终点
     projectionFrom = convertToMercator, // 投影函数 （在求交之前对输入点投影）
     projectionTo  = convertToWgs84, // 投影函数 (在求交之后对输出点投影)
+    isInfine = false, // 是否视作无穷线段 默认为 false 有限线段
 ): [number,number] {
 
     // 若有投影函数，则对输入点进行投影
     if (projectionFrom) {
-        console.log("投影");
-        console.log(p1);
         p1 = projectionFrom(p1);
         p2 = projectionFrom(p2);
         p3 = projectionFrom(p3);
@@ -89,11 +89,13 @@ export function intersection(
     let t1 = cross([p3[0] - p1[0], p3[1] - p1[1]], v2) / det;
     let t2 = cross([p3[0] - p1[0], p3[1] - p1[1]], v1) / det;
 
-    // // 如果交点不在两条线段上，返回 null
-    // if (t1 < 0 || t1 > 1 || t2 < 0 || t2 > 1) {
-    //     console.log("交点不在两条线段上");
-    //     return null;
-    // }
+    if(!isInfine) {
+        // 如果交点不在两条线段上，返回 null
+        if (t1 < 0 || t1 > 1 || t2 < 0 || t2 > 1) {
+            console.log("交点不在两条线段上");
+            return null;
+        }
+    }
 
     // 若有投影函数，则对输出点进行投影
     if (projectionTo) {
@@ -142,7 +144,7 @@ export function cutPolygonByMBR(polygon: [number,number][],mbr: MBR): [number,nu
  * @param subjectPolygon 
  */
 export function intersectionPolygon(clipPolygon: [number,number][], subjectPolygon: [number,number][]): [number,number][] {
-    let resPolygon: [number,number][] = subjectPolygon; // 交集多边形
+    let resPolygon: [number,number][] = []; // 交集多边形
     let clipEdges: [number,number][][] = []; // 裁剪多边形的边
 
     // 计算裁剪多边形的边
@@ -150,40 +152,16 @@ export function intersectionPolygon(clipPolygon: [number,number][], subjectPolyg
         clipEdges.push([p1, p2]);
     });
 
+    for(let i = 0; i < clipEdges.length; i++) {
+        let edge = clipEdges[i]; // [p1,p2] p1 p2 为边的两个端点 [x,y]
 
-    clipEdges.forEach((edge) => {
-        // This process is repeated iteratively for each clip polygon side, using the output list from one stage as the input list for the next. 
-        // The output list starts as the subject polygon vertices.
-        let inputList = resPolygon;
-        let outputList: [number,number][] = [];
-
-        // For each clip polygon side, the following steps are performed:
-        // 1. Starting with vertex i, check to see if it lies inside or outside the clip edge.
-        // 2. If it lies outside, add it to the output list.
-        // 3. If it lies inside, add it to the output list only if the previous vertex (i − 1) lies outside.
-        // 4. Increment i.
-        // 5. Repeat until all vertices have been processed.
-        for (let i = 0; i < inputList.length; i++) {
-            let p1 = inputList[i];
-            let p2 = inputList[(i + 1) % inputList.length];
-            let inside = PointInsidePolygon(p1, edge);
-            let prevInside = PointInsidePolygon(p2, edge);
-            if (inside) {
-                if (!prevInside) {
-                    outputList.push(p1);
-                }
-                outputList.push(p2);
-            } else {
-                if (prevInside) {
-                    outputList.push(intersection(p1, p2, edge[0], edge[1]));
-                }
-            }
+        for(let i = 0; i < subjectPolygon.length; i++) {
+            let current_point = subjectPolygon[i];
+            let prev_point = subjectPolygon[(i - 1 + subjectPolygon.length) % subjectPolygon.length];
+            // TODO
         }
 
-        // The output list from the last clip polygon side processed becomes the input list for the next clip polygon side.
-        resPolygon = outputList;
-    });
-
+    }
     return resPolygon;
 }
 
@@ -229,4 +207,23 @@ export function iterPolygonEdge(polygon: [number,number][], callback: (p1: [numb
     for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
         callback(polygon[i], polygon[j]);
     }
+}
+
+/**
+ * 返回多边形中 输入索引的前一个点的索引 多边形闭合并按照逆时针方向排列
+ * @param index - 索引
+ * @param polygon - 多边形 [[x1,y1],[x2,y2],...
+ */
+export function prePointInPolygon(
+    index: number,
+    polygonLength: number,
+){
+    /**
+     * polygon: [0,1,2,3,4,5,6,7]
+     * input: 0
+     * output: 7
+     * input: 1
+     * output: 0
+     */
+    return (index - 1 + polygonLength) % polygonLength;
 }

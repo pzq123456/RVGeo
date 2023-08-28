@@ -33,6 +33,7 @@ export function cretePointFromArr(arr: any[]) {
 export function createPointListFromArr(arr: any[]) {
     let res = [];
     for(let i = 0; i < arr.length; i++){
+        if(arr[i] == null) continue;
         let point = cretePointFromArr(arr[i]);
         res.push(point);
     }
