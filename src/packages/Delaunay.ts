@@ -655,6 +655,11 @@ export class Voronoi{
         return voronoi;
     }
 
+    /**
+     * 使用 MBR 对 Voronoi 图进行裁剪（由于精度问题，极端情况下不可靠）
+     * @param MBR 
+     * @returns 
+     */
     cutVoronoiByMBR(MBR: [number, number, number, number]){
         const {points, delaunay} = this;
         const voronoi = new Map();
@@ -670,11 +675,16 @@ export class Voronoi{
         return voronoi;
     }
 
-    boundaryVoronoiByMBR(MBR: [number, number, number, number]){
+    /**
+     * - 更加健壮的 Voronoi 图（将超出 MBR 部分都删去）
+     * @param MBR 
+     * @returns 
+     */
+    robustVoronoi(MBR: [number, number, number, number]){
         const {points, delaunay} = this;
         const voronoi = new Map();
         forEachVoronoiCell(points, delaunay, (p, v) => {
-            if(!this.isInsideMBR(v, MBR)){
+            if(this.isInsideMBR(v, MBR)){
                 voronoi.set(p, v);
             }
         });
