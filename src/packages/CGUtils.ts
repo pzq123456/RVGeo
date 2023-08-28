@@ -13,7 +13,7 @@
 // }
 
 import { orient2d } from "robust-predicates";
-import { MBR } from "./Geometry";
+import { MBR, mbrToPolygon } from "./Geometry";
 import { convertToMercator, convertToWgs84 } from "./Referencing";
 import { ccw } from "./constants/Utils";
 /* - Returns 1 if three points make a counter-clockwise turn
@@ -134,7 +134,7 @@ export function PointOutsideMBR(point: [number,number], mbr: MBR): boolean {
  * @returns {Array | null} - 裁剪后的多边形 或 null （若多边形与 MBR 相离）
  */
 export function cutPolygonByMBR(polygon: [number,number][],mbr: MBR): [number,number][] | null {
-
+    return intersectionPolygon(polygon, mbrToPolygon(mbr));
 }
 
 // TODO: 实现 Sutherland-Hodgman 算法计算多边形与多边形的交集
@@ -144,25 +144,34 @@ export function cutPolygonByMBR(polygon: [number,number][],mbr: MBR): [number,nu
  * @param subjectPolygon 
  */
 export function intersectionPolygon(clipPolygon: [number,number][], subjectPolygon: [number,number][]): [number,number][] {
-    let resPolygon: [number,number][] = []; // 交集多边形
-    let clipEdges: [number,number][][] = []; // 裁剪多边形的边
+    let cp1 = clipPolygon[clipPolygon.length - 1]; // clipPolygon 的最后一个点
+    let cp2 : [number, number]; // clipPolygon 的当前点
+    let s : [number, number]; // subjectPolygon 的当前点
+    let e : [number, number]; // subjectPolygon 的下一个点
+    let outputList = subjectPolygon; // 输出多边形
 
-    // 计算裁剪多边形的边
-    iterPolygonEdge(clipPolygon, (p1, p2) => {
-        clipEdges.push([p1, p2]);
-    });
-
-    for(let i = 0; i < clipEdges.length; i++) {
-        let edge = clipEdges[i]; // [p1,p2] p1 p2 为边的两个端点 [x,y]
-
-        for(let i = 0; i < subjectPolygon.length; i++) {
-            let current_point = subjectPolygon[i];
-            let prev_point = subjectPolygon[(i - 1 + subjectPolygon.length) % subjectPolygon.length];
-            // TODO
+    for(let i in clipPolygon) {
+        cp2 = clipPolygon[i];
+        let inputList = outputList;
+        outputList = [];
+        s = inputList[inputList.length - 1]; // subjectPolygon 的最后一个点
+        for(let j in inputList) {
+            e = inputList[j];
+            if(pointInEdge(e, cp1, cp2)) {
+                if(!pointInEdge(s, cp1, cp2)) {
+                    outputList.push(intersection(s, e, cp1, cp2,
+                        convertToMercator,convertToWgs84,true));
+                }
+                outputList.push(e);
+            } else if(pointInEdge(s, cp1, cp2)) {
+                outputList.push(intersection(s, e, cp1, cp2
+                    ,convertToMercator,convertToWgs84,true));
+            }
+            s = e;
         }
-
+        cp1 = cp2;
     }
-    return resPolygon;
+    return outputList;
 }
 
 
@@ -226,4 +235,16 @@ export function prePointInPolygon(
      * output: 0
      */
     return (index - 1 + polygonLength) % polygonLength;
+}
+
+/**
+ * （前提：逆时针多边形的边）判断点是否在当前边的内部(也就是边前进方向的左侧)
+ * @param point - 点 [x,y]
+ * @param p1 - 边的起点 [x,y]
+ * @param p2 - 边的终点 [x,y]
+ * @returns 
+ */
+export function pointInEdge(point: [number,number], p1: [number,number], p2: [number,number]): boolean {
+    // ccw(p1, p2, point) > 0;
+    return ccw(p1, p2, point) > 0;
 }

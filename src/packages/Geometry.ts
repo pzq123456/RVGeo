@@ -9,7 +9,20 @@ import { Units } from "./constants/Units";
 
 // define MBR type
 export type MBR = [number, number, number, number]; // [minLon, minLat, maxLon, maxLat]
-
+/**
+ * 将 MBR 转化为 逆时针方向的（简单）多边形数组
+ * @param mbr 
+ */
+export function mbrToPolygon(mbr:MBR): [number,number][] {
+    let minLon = mbr[0], minLat = mbr[1], maxLon = mbr[2], maxLat = mbr[3];
+    return [
+        [minLon, minLat],
+        [minLon, maxLat],
+        [maxLon, maxLat],
+        [maxLon, minLat],
+        [minLon, minLat]
+    ];
+}
 /**
  * 图形基类（抽象类）
  * - 该类定义了一些图形共有的方法及属性

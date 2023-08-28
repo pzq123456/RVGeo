@@ -7,7 +7,7 @@ import { convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
 import { PlanePolygonArea, SpherePolygonArea } from './packages/Distance.ts';
-import { cutPolygonByMBR, intersection, intersectionPolygon } from './packages/CGUtils.ts';
+import { cutPolygonByMBR, intersection, intersectionPolygon, pointInEdge } from './packages/CGUtils.ts';
 
 declare const BMapGL: any;
 declare const BMapGLLib: any;
@@ -143,6 +143,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '绘制Voronoi', action: () =>  example5()},
   { name: '多边形求交', action: () =>  example6()},
   { name: '线段求交', action: () =>  example7()},
+  { name: '点线关系', action: () =>  example8()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
   { name: 'update', action: () =>  {
     mps = updateData();}}
@@ -222,15 +223,19 @@ function example5(){
   mps = updateData();
   let del = Delaunator.from(mps.toXYArray());
   let vor = new Voronoi(del);
-  let voi = vor.boundaryVoronoiByMBR(myMBR1);
+  let voi = vor.cutVoronoiByMBR(myMBR1);
+  drawEdgeMap2BLMap(voi, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+
+
   // let voi = vor.cutVoronoiByMBR(myMBR1);
   // 获得 voi 中的一个多边形
-  let voipolygon = voi.get(0);
-  console.log(voipolygon);
-  let cutPolygon = cutPolygonByMBR(voipolygon, myMBR1, drawPoint2BLMap);
-  console.log(cutPolygon);
-  drawLineString2BLMap(voipolygon, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
-  drawLineString2BLMap(cutPolygon, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  // let voipolygon = voi.get(0);
+  // console.log(voipolygon);
+  // let cutPolygon = cutPolygonByMBR(voipolygon, myMBR1, drawPoint2BLMap);
+  // console.log(cutPolygon);
+  // drawLineString2BLMap(voipolygon, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  // drawLineString2BLMap(cutPolygon, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  
   // drawEdgeMap2BLMap(voipolygon, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
 }
 
@@ -247,7 +252,7 @@ function example6(){
   drawLineString2BLMap(rect2, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
   let res = intersectionPolygon(rect1, rect2);
   console.log(res);
-  // drawPolygon2BLMap(res, map, {fillColor: 'red'});
+  drawPolygon2BLMap([res], map, {fillColor: 'red'});
   drawMultiPoint2BLMap(createPointListFromArr(res), map);
 }
 
@@ -287,9 +292,41 @@ function example7(){
   drawLineString2BLMap(line2, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   drawLineString2BLMap(line3, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   let insPoi = intersection(line1[0], line1[1], line2[0], line2[1]);
-  let insPoi2 = intersection(line1[0], line1[1], line3[0], line3[1]);
-  // drawPoint2BLMap(insPoi2, map);
-  console.log(insPoi2);
+  let insPoi2 = intersection(line1[0], line1[1], line3[0], line3[1]); // null
+  drawPoint2BLMap(insPoi, map);
+}
+
+
+function example8(){
+  let line = [
+    [
+      -105.84580648407761,
+      40.23546027049062
+    ],
+    [
+      -105.98171384883719,
+      37.38228706395721
+    ]
+  ];
+
+  let myIcon1 = innerIcon(0);
+  let outPoi = [
+    -107.11904390129598,
+    39.05128102775606
+  ];
+
+  let myIcon2 = innerIcon(1);
+  let inPoi = [
+    -104.51534491327676,
+    38.97346949562407
+  ];
+  let res1 = pointInEdge(outPoi, line[0], line[1]);
+  let res2 = pointInEdge(inPoi, line[0], line[1]);
+
+  drawLineString2BLMap(line, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  drawPoint2BLMap(outPoi, map, myIcon1);
+  drawPoint2BLMap(inPoi, map, myIcon2);
+  alert("outPoi: " + res1 + "\n" + "inPoi: " + res2);
 }
 
 function updateData() {

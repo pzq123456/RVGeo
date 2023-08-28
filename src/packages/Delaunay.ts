@@ -7,6 +7,7 @@
 // @ts-nocheck
 const EPSILON = Math.pow(2, -52);
 const EDGE_STACK = new Uint32Array(512);
+import { cutPolygonByMBR } from './CGUtils';
 import { convertToWgs84 } from './Referencing';
 
 import {orient2d} from 'robust-predicates';
@@ -658,8 +659,10 @@ export class Voronoi{
         const {points, delaunay} = this;
         const voronoi = new Map();
         forEachVoronoiCell(points, delaunay, (p, v) => {
-            // console.log(v);
-            if(this.isInsideMBR(v, MBR)){
+            if(!this.isInsideMBR(v, MBR)){
+                v = cutPolygonByMBR(v, MBR);
+                voronoi.set(p, v);
+            }else{
                 voronoi.set(p, v);
             }
         });
@@ -671,7 +674,6 @@ export class Voronoi{
         const {points, delaunay} = this;
         const voronoi = new Map();
         forEachVoronoiCell(points, delaunay, (p, v) => {
-            // console.log(v);
             if(!this.isInsideMBR(v, MBR)){
                 voronoi.set(p, v);
             }

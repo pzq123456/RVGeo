@@ -69,6 +69,7 @@ export function mockPoints(
         return points;
     } 
 
+
 /**
  * - 生成一个随机线
  * - generate a random line
