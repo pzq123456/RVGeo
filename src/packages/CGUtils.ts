@@ -4,25 +4,12 @@
  */
 
 // 平面 计算几何 部分
-// 说明： - 考虑到通用性，计算几何部分都基于数组，而不是基于类。
-// - 并且提供向量计算支持。
-// - 三维方法会标注.
-// double cross(Point a,Point b)
-// {
-//  return a.x * b.y - b.x * a.y;
-// }
+
 
 import { orient2d } from "robust-predicates";
 import { MBR, mbrToPolygon } from "./Geometry";
 import { convertToMercator, convertToWgs84 } from "./Referencing";
 import { ccw } from "./constants/Utils";
-/* - Returns 1 if three points make a counter-clockwise turn
-* - 逆时针返回 1
-* - Returns -1 if three points make a clockwise turn
-* - 顺时针返回 -1
-* - Returns 0 if three points are collinear
-* - 共线返回 0
-*/
 
 /**
  * 二维向量叉积

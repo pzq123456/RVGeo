@@ -1,5 +1,5 @@
 import { createToolBar } from './helpers/toolBar.ts'
-import { Point, MultiPoint, LineString, MultiLineString, Polygon } from './packages/Geometry.ts'
+import { Point, MultiPoint, LineString, MultiLineString, Polygon, mbrToPolygon } from './packages/Geometry.ts'
 import { mockPoints, mockLineString } from './tests/Mock.ts';
 import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap, innerIcon, drawPolygonArray2BLMap, drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
@@ -11,10 +11,6 @@ import { cutPolygonByMBR, intersection, intersectionPolygon, pointInEdge } from 
 
 declare const BMapGL: any;
 declare const BMapGLLib: any;
-// test code
-// let p = new Point(1, 2, 3, "a", "b", "c", 10);
-// console.log(p.toGeoJSON());
-// console.log(p.getPropertyArray());
 
 const myMBR1 = [
   -109.07111505279033,
@@ -22,109 +18,6 @@ const myMBR1 = [
   -102.06399125241506,
   40.981780653665425
 ] as [number, number, number, number];
-
-const MBR2 = [
-  [-109.07111505279033,36.990057191562045],
-  [-109.07111505279033,40.981780653665425],
-  [-102.06399125241506,40.981780653665425],
-  [-102.06399125241506,36.990057191562045],
-]
-
-const myPolygon1 = [
-  [
-    -109.06074206666483,
-    41.01216732997898
-  ],
-  [
-    -109.06074206666483,
-    37.0057642714261
-  ],
-  [
-    -102.04308145299771,
-    37.0057642714261
-  ],
-  [
-    -102.04308145299771,
-    41.01216732997898
-  ],
-  [
-    -109.06074206666483,
-    41.01216732997898
-  ]
-]
-
-const myPolygon2 = [
-  [
-    -107.38260583296193,
-    39.90219587081049
-  ],
-  [
-    -107.38260583296193,
-    38.221743810305355
-  ],
-  [
-    -103.90238012102105,
-    38.221743810305355
-  ],
-  [
-    -103.90238012102105,
-    39.90219587081049
-  ],
-  [
-    -107.38260583296193,
-    39.90219587081049
-  ]
-]
-
-const myPolygon4 = [
-  [
-    -103.90238012102105,
-    40.78153399458114
-  ],
-  [
-    -103.90238012102105,
-    40.17230060880212
-  ],
-  [
-    -102.62470821581522,
-    40.17230060880212
-  ],
-  [
-    -102.62470821581522,
-    40.78153399458114
-  ],
-  [
-    -103.90238012102105,
-    40.78153399458114
-  ]
-]
-
-const myPolygon3 = [
-  myPolygon1,
-  myPolygon2,
-  myPolygon4
-]
-
-const dPs = [
-  [168, 180], [168, 178], [168, 179], [168, 181], [168, 183], 
-  [167, 183], [167, 184], [165, 184], [162, 186], [164, 188], 
-  [161, 188], [160, 191], [158, 193], [156, 193], [152, 195], 
-  [152, 198], [150, 198], [147, 198], [148, 205], [150, 210], 
-  [148, 210], [148, 208], [145, 206], [142, 206], [140, 206], 
-  [138, 206], [135, 206], [135, 209], [131, 209], [131, 211], 
-  [127, 211], [124, 210], [120, 207], [120, 204], [120, 202], 
-  [124, 201], [123, 201], [125, 198], [125, 194], [127, 194], 
-  [127, 191], [130, 191], [132, 189], [134, 189], [134, 186], 
-  [136, 184], [134, 182], [134, 179], [134, 176], [136, 174]
-]
-// console.log(del.getHull());
-// console.log(del.getHalfedges());
-// console.log(ps);
-// let mp = new MultiPoint(ps,"a", "b", "c", 10);
-// console.log(mp);
-// console.log(mp.toGeoJSON());
-// console.log(mp.getMBR());
-// console.log(mp.toArray());
 
 // GL版命名空间为BMapGL
 // 按住鼠标右键，修改倾斜角和角度
@@ -145,8 +38,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '线段求交', action: () =>  example7()},
   { name: '点线关系', action: () =>  example8()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
-  { name: 'update', action: () =>  {
-    mps = updateData();}}
+  { name: 'update', action: () =>  {mps = updateData();}}
 ])
 
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
@@ -154,38 +46,15 @@ map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 // test data
 let ps = mockPoints(50, myMBR1);
 let mps = new MultiPoint(ps);
-// mps.addPoint([
-//   -109.06074206666483,
-//   41.01216732997898
-// ]);
-// mps.addPoint(
-//   [
-//     -107.38260583296193,
-//     38.221743810305355
-//   ]
-// );
-// mps.addPoint(
-//   [
-//     -103.90238012102105,
-//     38.221743810305355
-//   ]
-// );
-// mps.addPoint(
-//   [
-//     -107.38260583296193,
-//     39.90219587081049
-//   ]
-// );
 
-
-function example1(){
+function example1(){ // 绘制多点及其重心
   removeAllOverlay(map)
   let icon = innerIcon(0);
   drawPoint2BLMap(mps.calculateCentroid(), map);
   drawMultiPoint2BLMap(mps, map, icon);
 }
 
-function example2(){
+function example2(){ // 绘制三角网
   removeAllOverlay(map)
   let del = Delaunator.from(mps.toXYArray());
   let trs = fillIndexArray(del.getTriangleIndices(), mps.toArray());
@@ -198,7 +67,7 @@ function example2(){
   console.log(del.getHull());
 }
 
-function example3(){
+function example3(){ // 绘制凸包
   removeAllOverlay(map)
   let ps2 = convexHull(ps);
   let ls = new LineString(ps2);
@@ -208,39 +77,23 @@ function example3(){
   drawRectangle2BLMap(rect, map);
 }
 
-function example4(){
-  // const data = [[-11913098.969607, 4721892.674269], [-11894440.774108, 4905529.4068], [-12002892.93265, 4534749.619498], [-12049791.150961, 4484157.977775], [-11464780.149742, 4897848.71788], [-11442003.998876, 4897349.45794], [-11891500.170537, 4589758.834727], [-11845520.041687, 4865124.16612], [-11623105.108907, 4558569.954722], [-11791757.054504, 4517046.643686]];
-  // const data = [[-109.07111505279033, 38.127647092868436], [-108.3704026727528, 38.89686606436471], [-107.66969029271527, 37.54255530190678], [-106.96897791267776, 37.97885670198897], [-106.26826553264023, 37.66837197304874], [-105.5675531526027, 39.66587627745989], [-104.86684077256517, 37.277106263419846], [-104.16612839252764, 39.265644135865976], [-103.46541601249012, 38.04773824659322], [-102.7647036324526, 39.803126875156096]];
-  let ls = mockLineString(10, myMBR1);
-  removeAllOverlay(map);
-  // console.log(PlanePolygonArea(ls));
-  console.log("Sphere",SpherePolygonArea(MBR2));
-  console.log("Plane",PlanePolygonArea(ls));
+function example4(){ // 计算面积
+  let Colorado = new LineString(mbrToPolygon(myMBR1).map((p) => new Point(p[0],p[1])) as Point[]); // 科罗拉多州边界（粗略）
+  let area = SpherePolygonArea(Colorado);
+  alert("科罗拉多州面积（计算）：" + area + "平方公里\n" + "科罗拉多州面积（真实）：268,627平方公里");
 }
 
-function example5(){
+function example5(){ // 绘制Voronoi
   removeAllOverlay(map);
   mps = updateData();
   let del = Delaunator.from(mps.toXYArray());
   let vor = new Voronoi(del);
   let voi = vor.cutVoronoiByMBR(myMBR1);
   drawEdgeMap2BLMap(voi, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
-
-
-  // let voi = vor.cutVoronoiByMBR(myMBR1);
-  // 获得 voi 中的一个多边形
-  // let voipolygon = voi.get(0);
-  // console.log(voipolygon);
-  // let cutPolygon = cutPolygonByMBR(voipolygon, myMBR1, drawPoint2BLMap);
-  // console.log(cutPolygon);
-  // drawLineString2BLMap(voipolygon, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
-  // drawLineString2BLMap(cutPolygon, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
-  
-  // drawEdgeMap2BLMap(voipolygon, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
 }
 
-
-function example6(){
+function example6(){ // 多边形求交
+  removeAllOverlay(map);
   let rect1 = [
     [-108.43658107534337,  40.29976780112503],[-108.43658107534337,  38.55075512778069],[-105.67716914258902,  38.55075512778069],[-105.67716914258902,  40.29976780112503]
   ];
@@ -251,12 +104,13 @@ function example6(){
   drawLineString2BLMap(rect1, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   drawLineString2BLMap(rect2, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
   let res = intersectionPolygon(rect1, rect2);
-  console.log(res);
+
   drawPolygon2BLMap([res], map, {fillColor: 'red'});
   drawMultiPoint2BLMap(createPointListFromArr(res), map);
 }
 
-function example7(){
+function example7(){ // 线段求交
+  removeAllOverlay(map);
   let line1 = [
     [
       -108.742669882491,
@@ -298,6 +152,7 @@ function example7(){
 
 
 function example8(){
+  removeAllOverlay(map);
   let line = [
     [
       -105.84580648407761,

@@ -474,6 +474,7 @@ function circumradius(ax, ay, bx, by, cx, cy) {
 
     return x * x + y * y;
 }
+
 function quicksort(ids, dists, left, right) {
     if (right - left <= 20) {
         for (let i = left + 1; i <= right; i++) {
@@ -522,6 +523,7 @@ function swap(arr, i, j) {
 function defaultGetX(p) {
     return p[0];
 }
+
 function defaultGetY(p) {
     return p[1];
 }
