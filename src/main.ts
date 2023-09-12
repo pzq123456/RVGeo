@@ -80,6 +80,7 @@ function example3(){ // 绘制凸包
 function example4(){ // 计算面积
   let Colorado = new LineString(mbrToPolygon(myMBR1).map((p) => new Point(p[0],p[1])) as Point[]); // 科罗拉多州边界（粗略）
   let area = SpherePolygonArea(Colorado);
+  // let area1 = PlanePolygonArea(Colorado.toXYArray());
   alert("科罗拉多州面积（计算）：" + area + "平方公里\n" + "科罗拉多州面积（真实）：268,627平方公里");
 }
 

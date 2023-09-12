@@ -23,6 +23,7 @@ export function convexHull(points: Point[]): Point[] {
             lowestPoint = pointsXY[i];
         }
     }
+    
     /** 
     let points be the list of points
     let stack = empty_stack()
@@ -37,6 +38,7 @@ export function convexHull(points: Point[]): Point[] {
         push point to stack
     end
     */
+
     // 按照极角排序
     pointsXY.sort((a, b) => {
         // let angleA = getAngle(lowestPoint, a);

@@ -23,6 +23,14 @@ const RADIUS = sphere.a; // 地球半径
  * @returns {number} - 距离
  */
 export function haversine(from: Point | [lon1 : number ,lat1 : number] ,to: Point | [lon2 : number ,lat2 : number] ,unit: Units = "kilometers"): number {
+    // 若输入是数组则复制一份
+    if (Array.isArray(from)) {
+        from = [...from];
+    }
+    if (Array.isArray(to)) {
+        to = [...to];
+    }
+
     // 处理输入参数
     const coordinates1 = Array.isArray(from) ? from : from.to2DArray();
     const coordinates2 = Array.isArray(to) ? to : to.to2DArray();
@@ -111,23 +119,25 @@ export function SpherePolygonArea(
             coordinates[index] = item.to2DArray();
         });
     }
-
     // 计算球面多边形的面积
     let area = 0;
     let len = coordinates.length;
+    let radiusArr = [];
 
-    // 将经纬度转换为弧度
-    coordinates.forEach((item, index) => {
-        item.forEach((item2, index2) => {
-            coordinates[index][index2] = degreesToRadians(item2);
-        });
-    });
-    console.log(coordinates);
+    // 将经纬度转换为弧度 不使用 forEach 是因为需要将经纬度转换为弧度后再计算
+    for (let i = 0; i < len; i++) {
+        radiusArr.push([]);
+        for (let j = 0; j < 2; j++) {
+            radiusArr[i].push(degreesToRadians(coordinates[i][j]));
+        }
+    }
+
     for (let i = 0; i < len; i++) {
         let j = (i + 1) % len;
         let k = (i + 2) % len;
-        area += (coordinates[i][0] - coordinates[k][0]) * Math.sin(coordinates[j][1]);
+        area += (radiusArr[i][0] - radiusArr[k][0]) * Math.sin(radiusArr[j][1]);
     }
+
     area = (area * RADIUS * RADIUS) / 2;
     // 转换为指定单位
     area = area * areaFactors[unit];

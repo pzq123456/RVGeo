@@ -6,7 +6,6 @@
 // 平面 计算几何 部分
 
 
-import { orient2d } from "robust-predicates";
 import { MBR, mbrToPolygon } from "./Geometry";
 import { convertToMercator, convertToWgs84 } from "./Referencing";
 import { ccw } from "./constants/Utils";
@@ -33,13 +32,14 @@ export function dot(a: [number,number], b: [number,number]): number {
 
 
 /**
- * （默认求交）内含投影的线段求交函数（计算开销大）
+ * （默认线段求交）内含投影的线段求交函数（计算开销大）
  * @param p1 - 二维向量(x1,y1) 默认认为`经纬度坐标`
  * @param p2 - 二维向量(x2,y2) 默认认为`经纬度坐标`
  * @param p3 - 二维向量(x3,y3) 默认认为`经纬度坐标`
  * @param p4 - 二维向量(x4,y4) 默认认为`经纬度坐标`
  * @param projectionFrom - 投影函数 （在求交之前对输入点投影） 默认为 convertToMercator
  * @param projectionTo - 投影函数 (在求交之后对输出点投影) 默认为 convertToWgs84
+ * @param isInfine - 是否视作无穷线段 默认为 false 有限线段
  * @returns {[number,number] | null} - 交点 或 null
  */
 export function intersection(
@@ -50,7 +50,7 @@ export function intersection(
     projectionFrom = convertToMercator, // 投影函数 （在求交之前对输入点投影）
     projectionTo  = convertToWgs84, // 投影函数 (在求交之后对输出点投影)
     isInfine = false, // 是否视作无穷线段 默认为 false 有限线段
-): [number,number] {
+): [number,number]{
 
     // 若有投影函数，则对输入点进行投影
     if (projectionFrom) {
@@ -62,8 +62,9 @@ export function intersection(
 
 
     // 首先计算两条线段的向量
-    let v1 = [p2[0] - p1[0], p2[1] - p1[1]];
-    let v2 = [p4[0] - p3[0], p4[1] - p3[1]];
+    let v1 = [p2[0] - p1[0], p2[1] - p1[1]] as [number,number];
+    let v2 = [p4[0] - p3[0], p4[1] - p3[1]] as [number,number];
+    // 将 v1 声明为 []
     // 计算向量叉积
     let det = cross(v1, v2);
 
@@ -163,6 +164,12 @@ export function intersectionPolygon(clipPolygon: [number,number][], subjectPolyg
 
 
 
+/**
+ * 判断点是否在简单多边形内部（平面与经纬度坐标通用，多边形边界算作在内）
+ * @param point - [lon,lat]
+ * @param polygon - [[lon,lat],[lon,lat],...] （不含空洞）
+ * @returns - true if the point is inside the polygon
+ */
 export function PointInsidePolygon(point: [number,number], polygon: [number,number][]): boolean {
     let inside = false;
     for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {

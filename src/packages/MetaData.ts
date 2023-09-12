@@ -1,7 +1,7 @@
 /**
  * 该模块负责处理 GeoJSON 等文件的读取并将其转化为内部对象
  */
-import { Point } from "./Geometry";
+import { MultiPoint, Point } from "./Geometry";
 /**
  * 从数组创建点(代表坐标的数组元素需要是数字类型)
  * - [lon, lat]
@@ -38,4 +38,9 @@ export function createPointListFromArr(arr: any[]) {
         res.push(point);
     }
     return res;
+}
+
+export function createMultiPointFromArr(arr: any[]) {
+    let points = createPointListFromArr(arr);
+    return new MultiPoint(points);
 }

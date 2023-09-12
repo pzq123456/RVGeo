@@ -64,3 +64,25 @@ export function convertToWgs84(xy: number[]) : [number, number]
     (Math.PI * 0.5 - 2.0 * Math.atan(Math.exp(-xy[1] / A))) * R2D,
   ];
 }
+/**
+ * 批量向墨卡托坐标系转换
+ * @param points - 点类型或者经纬度数组
+ * @param unit - 距离单位（默认为米）
+ * @param roundNum - 保留小数位数
+ */
+export function convertToMercators(points: Point[] | [lon : number ,lat : number][] , unit: Units = "meters", roundNum: number = 6): [number, number][] {
+  // 首先判断是否为点类型 若是则批量转换
+  if(points[0] instanceof Point){
+    let res = [];
+    for(let i = 0; i < points.length; i++){
+      res.push(convertToMercator(points[i],unit,roundNum));
+    }
+    return res;
+  }else{
+    let res = [];
+    for(let i = 0; i < points.length; i++){
+      res.push(convertToMercator(points[i],unit,roundNum));
+    }
+    return res;
+  }
+}

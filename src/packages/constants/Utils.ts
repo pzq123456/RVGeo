@@ -267,3 +267,70 @@ export function fillIndexArray(indexArray : any, fillArray : any ) : any{
     return res;
 }
 
+/**
+ * 拼接等长二维数组
+ * @warning 必须为二维数组，必须等长。
+ * @param array1 [ [1,2,3], [4,5,6], [7,8,9] ]
+ * @param array2 [ ['a','b','c'], ['d','e','f'], ['g','h','i'] ]
+ * @returns [ [1,2,3,'a','b','c'], [4,5,6,'d','e','f'], [7,8,9,'g','h','i'] ]
+ */
+export function concatEL2DArray(array1: any[], array2: any[]) : any[] {
+    array1.forEach((item, index) => {
+        array1[index] = item.concat(array2[index]);
+    });
+    return array1;
+}
+
+/**
+ * 抽取二维数组的某一列（或某几列）
+ * @param array - 二维数组
+ * @param indexArray - 索引数组(或索引)
+ */
+export function subColumnInEL2DArray(
+    array: any[],
+    indexArray: number[] | number
+) : any[] {
+    // 首先判断 indexArray 是不是数组 及其有效性
+    if (!Array.isArray(indexArray)) {
+        indexArray = [indexArray];
+    }
+    // 判断 indexArray 是否合法
+    indexArray.forEach((item) => {
+        if (item < 0 || item >= array[0].length) {
+            throw new Error("indexArray is illegal!");
+        }
+    });
+    // 根据 indexArray 中的顺序抽取 array 中的元素并组成新的数组
+    let res = [];
+    array.forEach((item) => {
+        let tmp = [];
+        indexArray.forEach((index) => {
+            tmp.push(item[index]);
+        });
+        res.push(tmp);
+    });
+    return res;
+}
+/**
+ * 生成随机索引数组（不重复）
+ * @param length - 数组长度（自然数）
+ * @param num - 随机索引个数（自然数）
+ * @returns {number[]} - 随机索引数组
+ */
+export function randomIndexArray(
+    length: number,
+    num : number
+){
+    if (num > length) {
+        throw new Error("num must be less than length!");
+    }
+    
+    let res = [];
+    while(res.length < num) {
+        let tmp = Math.floor(Math.random() * length);
+        if (!res.includes(tmp)) {
+            res.push(tmp);
+        }
+    }
+    return res;
+}
