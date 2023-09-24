@@ -145,7 +145,7 @@ export function drawTriangleEdge2BLMap(triangleEdge: any[][], map: any, style: O
 }
 
 export function drawEdgeMap2BLMap(edgeMap: Map<number, number[][]>, map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5},close:boolean = false) {
-    for (let [key, value] of edgeMap) {
+    for (let [, value] of edgeMap) {
         drawLineString2BLMap(value, map, style,close);
     }
 }

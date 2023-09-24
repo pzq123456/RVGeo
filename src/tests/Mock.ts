@@ -2,7 +2,6 @@
  * 用于生成mock数据
  */
 import { Point, LineString } from "../packages/Geometry";
-import { MBR } from '../packages/Geometry.ts';
 
 function mockLon(
     maxLon: number = 180,

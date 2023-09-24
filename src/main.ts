@@ -1,13 +1,13 @@
 import { createToolBar } from './helpers/toolBar.ts'
-import { Point, MultiPoint, LineString, MultiLineString, Polygon, mbrToPolygon } from './packages/Geometry.ts'
-import { mockPoints, mockLineString } from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap, drawMultiLineString2BLMap, drawPolygon2BLMap, innerIcon, drawPolygonArray2BLMap, drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap } from './helpers/BLDraw.ts';
+import { Point, MultiPoint, LineString, Polygon, mbrToPolygon } from './packages/Geometry.ts'
+import { mockPoints} from './tests/Mock.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
 import { convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
-import { PlanePolygonArea, SpherePolygonArea } from './packages/Distance.ts';
-import { cutPolygonByMBR, intersection, intersectionPolygon, pointInEdge } from './packages/CGUtils.ts';
+import { SpherePolygonArea } from './packages/Distance.ts';
+import { intersection, intersectionPolygon, pointInEdge } from './packages/CGUtils.ts';
 
 declare const BMapGL: any;
 declare const BMapGLLib: any;
@@ -97,10 +97,10 @@ function example6(){ // 多边形求交
   removeAllOverlay(map);
   let rect1 = [
     [-108.43658107534337,  40.29976780112503],[-108.43658107534337,  38.55075512778069],[-105.67716914258902,  38.55075512778069],[-105.67716914258902,  40.29976780112503]
-  ];
+  ] as [number, number][];
   let rect2 = [
     [-107.34797321677699,  39.68665076371036],[-107.34797321677699,  37.315553928222414],[-103.90893321662871,  37.315553928222414],[-103.90893321662871,  39.68665076371036]
-  ];
+  ] as [number, number][];
   // draw rectangle
   drawLineString2BLMap(rect1, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   drawLineString2BLMap(rect2, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
@@ -121,7 +121,7 @@ function example7(){ // 线段求交
       -102.29819316274084,
       37.2873641721976
     ]
-  ];
+  ] as [number, number][];
   let line2 = [
     [
       -107.97399126074589,
@@ -131,7 +131,7 @@ function example7(){ // 线段求交
       -102.641058204481,
       40.664014824200905
     ]
-  ];
+  ] as [number, number][];
   let line3 =[
     [
       -102.3965685720985,
@@ -141,13 +141,12 @@ function example7(){ // 线段求交
       -101.58822187178613,
       37.428342894987836
     ]
-  ];
+  ] as [number, number][];
 
   drawLineString2BLMap(line1, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   drawLineString2BLMap(line2, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   drawLineString2BLMap(line3, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
-  let insPoi = intersection(line1[0], line1[1], line2[0], line2[1]);
-  let insPoi2 = intersection(line1[0], line1[1], line3[0], line3[1]); // null
+  let insPoi = intersection(line1[0], line1[1], line2[0], line2[1]) as [number, number];
   drawPoint2BLMap(insPoi, map);
 }
 
@@ -163,19 +162,19 @@ function example8(){
       -105.98171384883719,
       37.38228706395721
     ]
-  ];
+  ] as [number, number][];
 
   let myIcon1 = innerIcon(0);
   let outPoi = [
     -107.11904390129598,
     39.05128102775606
-  ];
+  ] as [number, number];
 
   let myIcon2 = innerIcon(1);
   let inPoi = [
     -104.51534491327676,
     38.97346949562407
-  ];
+  ] as [number, number];
   let res1 = pointInEdge(outPoi, line[0], line[1]);
   let res2 = pointInEdge(inPoi, line[0], line[1]);
 
@@ -198,15 +197,6 @@ function draw(type: string) {
     strokeWeight: 2, // 边线宽度，以像素为单位
     strokeOpacity: 1, // 边线透明度，取值范围0-1
     fillOpacity: 0.2, // 填充透明度，取值范围0-1
-  };
-  const labelOptions = {
-    borderRadius: "2px",
-    background: "#FFFBCC",
-    border: "1px solid #E1E1E1",
-    color: "#703A04",
-    fontSize: "12px",
-    letterSpacing: "0",
-    padding: "5px",
   };
   // 实例化鼠标绘制工具
   const drawingManager = new BMapGLLib.DrawingManager(map, {

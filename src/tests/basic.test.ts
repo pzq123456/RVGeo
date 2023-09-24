@@ -1,3 +1,6 @@
+// 禁用 TS2304 检查器，因为我们将使用 require 语句
+// @ts-nocheck
+
 import { assert, expect, test } from 'vitest'
 
 import { round,ccw,ccwRobust,inCircleRobust, inCircle, fillIndexArray, calculateArrayShape } from '../packages/constants/Utils'
