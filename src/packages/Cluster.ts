@@ -2,6 +2,7 @@
  * 用于实现聚类算法
  */
 import { haversine } from "./Distance";
+import { Point } from "./Geometry";
 import { randomIndexArray } from "./constants/Utils";
 
 /**
@@ -51,7 +52,7 @@ export function K_means(
 
 
     // 1.从样本中选择 K 个点作为初始质心（完全随机）
-    let centroids = [];
+    let centroids: number[][] | (Point | [lon1: number, lat1: number])[] = [];
     let len = points.length;
     if(len < k){
         console.log("样本数量小于分类数量");
@@ -59,7 +60,8 @@ export function K_means(
     }
     let indexArray = randomIndexArray(len,k);
     indexArray.forEach((item) => {
-        centroids.push(points[item]);
+        let tmp = points[item] as number[] & (Point | [lon1: number, lat1: number])
+        centroids.push(tmp);
         }
     );
     
@@ -76,14 +78,17 @@ export function K_means(
         for(let i = 0 ; i < len ; i++){
             let min = Infinity;
             let min_index = 0;
+            let tmp = points[i] as never;
             for(let j = 0 ; j < k ; j++){
-                let dis = haversine(points[i],centroids[j]);
+                let tmp1 = points[i] as number[] & (Point | [lon1: number, lat1: number]);
+                let tmp2 = centroids[j] as number[] & (Point | [lon1: number, lat1: number]);
+                let dis = haversine(tmp1,tmp2);
                 if(dis < min){
                     min = dis;
                     min_index = j;
                 }
             }
-            groups[min_index].push(points[i]);
+            groups[min_index].push(tmp);
         }
 
         // 3.计算每个簇内所有样本的均值，并使用该均值更新簇的质心
@@ -99,7 +104,9 @@ export function K_means(
         // 将最大类间距离视作质心变化距离
         dc = 0;
         for(let i = 0 ; i < k ; i++){
-            let dis = haversine(centroids[i],new_centroids[i]);
+            let tmp1 = centroids[i] as number[] & (Point | [lon1: number, lat1: number]);
+            let tmp2 = new_centroids[i] as number[] & (Point | [lon1: number, lat1: number]);
+            let dis = haversine(tmp1,tmp2);
             if(dis > dc){
                 dc = dis;
             }

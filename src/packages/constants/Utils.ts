@@ -301,12 +301,16 @@ export function subColumnInEL2DArray(
         }
     });
     // 根据 indexArray 中的顺序抽取 array 中的元素并组成新的数组
-    let res = [];
+    let res: any[] = [];
     array.forEach((item) => {
-        let tmp = [];
-        indexArray.forEach((index) => {
-            tmp.push(item[index]);
-        });
+        let tmp: any[] = [];
+        if (Array.isArray(indexArray)) {
+            indexArray.forEach((index) => {
+                tmp.push(item[index]);
+            });
+        } else {
+            tmp.push(item[indexArray]);
+        }
         res.push(tmp);
     });
     return res;
@@ -317,17 +321,23 @@ export function subColumnInEL2DArray(
  * @param num - 随机索引个数（自然数）
  * @returns {number[]} - 随机索引数组
  */
+/**
+ * 生成随机索引数组（不重复）
+ * @param length - 数组长度（自然数）
+ * @param num - 随机索引个数（自然数）
+ * @returns {number[]} - 随机索引数组
+ */
 export function randomIndexArray(
     length: number,
-    num : number
-){
+    num: number
+): number[] {
     if (num > length) {
         throw new Error("num must be less than length!");
     }
-    
-    let res = [];
-    while(res.length < num) {
-        let tmp = Math.floor(Math.random() * length);
+
+    const res: number[] = [];
+    while (res.length < num) {
+        const tmp = Math.floor(Math.random() * length);
         if (!res.includes(tmp)) {
             res.push(tmp);
         }

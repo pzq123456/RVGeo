@@ -28,7 +28,7 @@ const Colors = [
  * @param colors 
  * @returns 
  */
-export function N2C(value:number, values:number[], colors:string[] = Color){
+export function N2C(value:number, values:number[], colors:string[] = Colors){
     let {max,min} = getMaxMin(values);
     let index = Math.floor(normalize(value,min,max) * (colors.length - 1));
     return colors[index];

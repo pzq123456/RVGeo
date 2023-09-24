@@ -57,7 +57,7 @@ export function getPointsMBR(
  * @warning 这里的coordinates是一个数组，数组中的元素是包装了坐标的对象，而 GeoJSON 中的 coordinates 是一个数组，数组中的元素是坐标
  */
 abstract class Geometry{
-    type: string; // 类型
+    type: string; // 类型 将其声明为公共属性 以便调用
     properties: any[]; // 属性信息
     MBR: [number, number, number, number]; // 最小外包矩形 (Minimum Bounding Rectangle)
     coordinates: any[]; // 注意这里的coordinates与 GeoJSON 中的意义不同
@@ -200,6 +200,8 @@ export class MultiPoint extends Geometry{
     constructor(points: Point[] | number[][], ...args: any[]){
         // 若传入的是二维数组 则转换为 Point 类型
         if(points[0] instanceof Array){
+            // 声明类型 以便调用二维数组的方法
+            points = points as number[][];
             let tmp = [];
             for(let i = 0; i < points.length; i++){
                 tmp.push(new Point(points[i][0], points[i][1]));
@@ -361,7 +363,7 @@ export class LineString extends MultiPoint{
      */
     constructor(points: Point[], ...args: any[]){
         super(points, ...args);
-        super.type = "LineString";
+        this.type = "LineString";
     }
 
     static isLineString(lineString: any): lineString is LineString{
@@ -433,7 +435,7 @@ export class MultiLineString extends Geometry{
 export class Polygon extends MultiLineString{
     constructor(lines: LineString[], ...args: any[]){
         super(lines, ...args);
-        super.type = "Polygon";
+        this.type = "Polygon";
     }
     static isPolygon(polygon: any): polygon is Polygon{
         return polygon.type === "Polygon";

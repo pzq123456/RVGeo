@@ -50,7 +50,7 @@ export function intersection(
     projectionFrom = convertToMercator, // 投影函数 （在求交之前对输入点投影）
     projectionTo  = convertToWgs84, // 投影函数 (在求交之后对输出点投影)
     isInfine = false, // 是否视作无穷线段 默认为 false 有限线段
-): [number,number]{
+): [number,number] | null {
 
     // 若有投影函数，则对输入点进行投影
     if (projectionFrom) {
@@ -147,13 +147,17 @@ export function intersectionPolygon(clipPolygon: [number,number][], subjectPolyg
             e = inputList[j];
             if(pointInEdge(e, cp1, cp2)) {
                 if(!pointInEdge(s, cp1, cp2)) {
-                    outputList.push(intersection(s, e, cp1, cp2,
-                        convertToMercator,convertToWgs84,true));
+                    let tmp  = intersection(s, e, cp1, cp2,
+                        convertToMercator,convertToWgs84,true) as [number,number];
+                    // 声明 
+                    outputList.push(tmp);
                 }
                 outputList.push(e);
             } else if(pointInEdge(s, cp1, cp2)) {
-                outputList.push(intersection(s, e, cp1, cp2
-                    ,convertToMercator,convertToWgs84,true));
+                let tmp  = intersection(s, e, cp1, cp2,
+                    convertToMercator,convertToWgs84,true) as [number,number];
+                // 声明
+                outputList.push(tmp);
             }
             s = e;
         }

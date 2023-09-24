@@ -72,17 +72,21 @@ export function PlanePolygonArea(
 ) : number{
     // 处理输入参数
     // 首先统一为二维数组
-    let coordinates = LineString.isLineString(points) ? points.toXYArray() : points as number[][];
+    let coordinates = LineString.isLineString(points) ? points.toXYArray() : points as number[][] | Point[];
     // 判断数组长度
     if (coordinates.length < 3) {
         return 0;
     }
     // 判断元素类型 若为 Point 则转换为二维数组
     if (Point.isPoint(coordinates[0])) {
+        // 声明类型 以便调用 Point 类型的方法
+        coordinates = coordinates as Point[];
         coordinates.map((item, index) => {
             coordinates[index] = item.toXY();
         });
     }
+    // 声明为二维数组
+    coordinates = coordinates as number[][];
     // 用 Shoelace Theorem 计算面积
     let area = 0;
     let j = coordinates.length - 1;
@@ -108,17 +112,20 @@ export function SpherePolygonArea(
     unit: AreaUnits = "kilometers"
 ) : number{
     // 首先统一为二维数组
-    let coordinates = LineString.isLineString(points) ? points.toArray() : points as number[][];
+    let coordinates = LineString.isLineString(points) ? points.toArray() : points as number[][] | Point[];
     // 判断数组长度
     if (coordinates.length < 3) {
         return 0;
     }
     // 判断元素类型 若为 Point 则转换为二维数组
     if (Point.isPoint(coordinates[0])) {
+        // 声明类型 以便调用 Point 类型的方法
+        coordinates = coordinates as Point[];
         coordinates.map((item, index) => {
             coordinates[index] = item.to2DArray();
         });
     }
+    coordinates = coordinates as number[][];
     // 计算球面多边形的面积
     let area = 0;
     let len = coordinates.length;
@@ -128,7 +135,8 @@ export function SpherePolygonArea(
     for (let i = 0; i < len; i++) {
         radiusArr.push([]);
         for (let j = 0; j < 2; j++) {
-            radiusArr[i].push(degreesToRadians(coordinates[i][j]));
+            let tmp = degreesToRadians(coordinates[i][j]) as never;
+            radiusArr[i].push(tmp);
         }
     }
 

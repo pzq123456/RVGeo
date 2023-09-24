@@ -18,17 +18,17 @@ export class Dijkstra {
      * @param target ：number|string：目标点
      * @returns [paths,length]——源点到目标点的路径和距离(总权重)
      */
-    dijkstra = (target) => {
+    dijkstra = (target: any) => {
         // 存放未访问的顶点
-        const Q = new Set(),
+        const Q = new Set() as Set<number>,
         // 存放访问点的前所有点——即源点到某点的途径点
-            prev = {},
+            prev = {} as { [x: string]: number },
             // 存放所有起点到其他点的权重
-            dist = {},
+            dist = {} as { [x: string]: number },
             // 存放邻居节点
-            adj = {}
+            adj = {} as { [x: string]: { [x: string]: number } }
 
-        const vertex_with_min_dist = (Q, dist) => {
+        const vertex_with_min_dist = (Q: Set<number>, dist: { [x: string]: number }) => {
             let min_distance = Infinity,
                 // u为源到其他未访问的最小权重的点
                 u = null
@@ -66,7 +66,7 @@ export class Dijkstra {
 
         while (Q.size) {
             // u
-            let u = vertex_with_min_dist(Q, dist),
+            let u = vertex_with_min_dist(Q, dist) as number,
                 // 找到当前点的邻接点
                 // neighbors = Object.keys(adj[u]).filter(v => Q.has(v)) //Neighbor still in Q 
                 neighbors = Object.keys(adj[u]).map(v => parseInt(v)).filter(v => Q.has(v))
