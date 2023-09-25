@@ -1,3 +1,6 @@
+/**
+ * @description Dijkstra算法
+ */
 export class Dijkstra {
     edges: any[][]
     source: number | string

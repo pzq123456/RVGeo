@@ -10,13 +10,20 @@
   </head>
   <style>
     body{
-      background: linear-gradient(90deg, #0a4d50 0%, #047047 100%);
+      background: linear-gradient(90deg, #104c4f 0%, #0468428d 100%);
     }
     .title{
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      height: 60px;
+      width: 200px;
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
+      background: linear-gradient(90deg, #fa05ee86 0%, #06ffa06b 100%);
+      border-radius: 10px;
     }
     #title{
       color: #ffffff;
@@ -24,13 +31,12 @@
     }
 
     #toolBar{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: #ffffff38;
-      border-bottom: solid 1px #ffffff;
-      color: #ffffff;
+      height: 60px;
+      width: 100%;
+      /* 自动滚动 */
+      overflow-x: auto;
+      overflow-y: auto;
+      border-bottom: solid 1px #033604;
     }
     .toolBarRow{
       display: flex;
@@ -38,21 +44,21 @@
       align-items: center;
       justify-content: center;
       gap : 10px;
+      padding-top: 10px;
     }
 
     button{
-      border: solid 2px #ffffff;
+      border: solid 1px #04371e;
       border-radius: 5px;
-      background-color: #288b2a;
-      color: white;
+      color: rgb(26, 24, 24);
       text-align: center;
       font-size: 20px;
     }
 
     button:hover{
-      border: solid 2px #051d33;
-      background-color: #94e298;
-      color : #051d33;
+      border: solid 1px #051d33;
+      background-color: #192219a5;
+      color : #fefeff;
     }
 
     .github{
@@ -63,16 +69,16 @@
       width: 32px;
     }
     footer{
+      height: 30px;
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      background-color: #ffffff38;
-      border-top: solid 1px #ffffff;
       color: #ffffff;
+      border-top: solid 1px #1c0c0c;
     }
     .map{
-      height: 1030px;
+      height: 830px;
       width: 100%;
     }
     /* 隐藏版权信息 */
@@ -109,9 +115,9 @@
       <div class="map" id="allmap">
       </div>
       <footer>
-        <h3>
+        <p>
           Powed by RVGeo &copy; 2023
-        </h3>
+        </p>
       </footer>
     <script type="module" src="/src/main.ts"></script>
     <script src="./src/helpers/DrawingManager.min.js"></script>

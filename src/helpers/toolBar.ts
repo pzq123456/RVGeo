@@ -8,7 +8,7 @@
 export function createToolBar(
   element: HTMLDivElement,
   tools: Array<{ name: string; action: () => void }>,
-  itemsPerRow : number = 20
+  itemsPerRow : number = 14
   ) {
     const toolBar = element;
 

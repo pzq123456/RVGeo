@@ -106,3 +106,4 @@ export function showIconLegend(
     html += `</div>`;
     fatherContainer.innerHTML = html;
 }
+

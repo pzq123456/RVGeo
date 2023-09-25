@@ -24,11 +24,11 @@ const myMBR1 = [
 var map = new BMapGL.Map("allmap");    // 创建Map实例
 
 createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
-  { name: 'Point', action: () =>  draw('marker')},
-  { name: 'Polyline', action: () =>  draw('polyline')},
-  { name: 'rectangle', action: () =>  draw('rectangle')},
-  { name: 'polygon', action: () =>  draw('polygon')},
-  { name: 'circle', action: () =>  draw('circle')},
+  // { name: 'Point', action: () =>  draw('marker')},
+  // { name: 'Polyline', action: () =>  draw('polyline')},
+  // { name: 'rectangle', action: () =>  draw('rectangle')},
+  // { name: 'polygon', action: () =>  draw('polygon')},
+  // { name: 'circle', action: () =>  draw('circle')},
   { name: '绘制多点及其重心', action: () =>  example1()},
   { name: '绘制三角网', action: () =>  example2()},
   { name: '绘制凸包', action: () =>  example3()},
@@ -38,7 +38,6 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '线段求交', action: () =>  example7()},
   { name: '点线关系', action: () =>  example8()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
-  { name: 'update', action: () =>  {mps = updateData();}}
 ])
 
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
@@ -190,28 +189,28 @@ function updateData() {
   return mps;
 }
 
-function draw(type: string) {
-  const styleOptions = {
-    strokeColor: "#5E87DB", // 边线颜色
-    fillColor: "#5E87DB", // 填充颜色。当参数为空时，圆形没有填充颜色
-    strokeWeight: 2, // 边线宽度，以像素为单位
-    strokeOpacity: 1, // 边线透明度，取值范围0-1
-    fillOpacity: 0.2, // 填充透明度，取值范围0-1
-  };
-  // 实例化鼠标绘制工具
-  const drawingManager = new BMapGLLib.DrawingManager(map, {
-    // isOpen: true,        // 是否开启绘制模式
-    enableCalculate: false, // 绘制是否进行测距测面
-    enableSorption: true, // 是否开启边界吸附功能
-    sorptiondistance: 20, // 边界吸附距离
-    rectangleOptions: styleOptions, // 矩形的样式
-  });
-  if (drawingManager.isOpen_ && drawingManager.getDrawingMode() === type) {
-    drawingManager.close();
-  } else {
-    drawingManager.setDrawingMode(type);
-    drawingManager.open();
-  }
-}
+// function draw(type: string) {
+//   const styleOptions = {
+//     strokeColor: "#5E87DB", // 边线颜色
+//     fillColor: "#5E87DB", // 填充颜色。当参数为空时，圆形没有填充颜色
+//     strokeWeight: 2, // 边线宽度，以像素为单位
+//     strokeOpacity: 1, // 边线透明度，取值范围0-1
+//     fillOpacity: 0.2, // 填充透明度，取值范围0-1
+//   };
+//   // 实例化鼠标绘制工具
+//   const drawingManager = new BMapGLLib.DrawingManager(map, {
+//     // isOpen: true,        // 是否开启绘制模式
+//     enableCalculate: false, // 绘制是否进行测距测面
+//     enableSorption: true, // 是否开启边界吸附功能
+//     sorptiondistance: 20, // 边界吸附距离
+//     rectangleOptions: styleOptions, // 矩形的样式
+//   });
+//   if (drawingManager.isOpen_ && drawingManager.getDrawingMode() === type) {
+//     drawingManager.close();
+//   } else {
+//     drawingManager.setDrawingMode(type);
+//     drawingManager.open();
+//   }
+// }
 
 
