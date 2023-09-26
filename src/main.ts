@@ -9,8 +9,8 @@ import { fillIndexArray } from './packages/constants/Utils.ts';
 import { SpherePolygonArea } from './packages/Distance.ts';
 import { intersection, intersectionPolygon, pointInEdge } from './packages/CGUtils.ts';
 
-declare const BMapGL: any;
-declare const BMapGLLib: any;
+import * as RVGeo from './packages/index.ts';
+import axios from 'axios';
 
 const myMBR1 = [
   -109.07111505279033,
@@ -19,16 +19,17 @@ const myMBR1 = [
   40.981780653665425
 ] as [number, number, number, number];
 
+
+// Init Map and ToolBar
+
+declare const BMapGL: any;
 // GL版命名空间为BMapGL
 // 按住鼠标右键，修改倾斜角和角度
-var map = new BMapGL.Map("allmap");    // 创建Map实例
-
+let map = new BMapGL.Map("allmap");    // 创建Map实例
+map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
+map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+// 注册工具条
 createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
-  // { name: 'Point', action: () =>  draw('marker')},
-  // { name: 'Polyline', action: () =>  draw('polyline')},
-  // { name: 'rectangle', action: () =>  draw('rectangle')},
-  // { name: 'polygon', action: () =>  draw('polygon')},
-  // { name: 'circle', action: () =>  draw('circle')},
   { name: '绘制多点及其重心', action: () =>  example1()},
   { name: '绘制三角网', action: () =>  example2()},
   { name: '绘制凸包', action: () =>  example3()},
@@ -37,12 +38,11 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '多边形求交', action: () =>  example6()},
   { name: '线段求交', action: () =>  example7()},
   { name: '点线关系', action: () =>  example8()},
+  { name: '栅格', action: () =>  example9()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
 ])
 
-map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
-map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-// test data
+// 全局模拟数据（点集合）
 let ps = mockPoints(50, myMBR1);
 let mps = new MultiPoint(ps);
 
@@ -79,7 +79,6 @@ function example3(){ // 绘制凸包
 function example4(){ // 计算面积
   let Colorado = new LineString(mbrToPolygon(myMBR1).map((p) => new Point(p[0],p[1])) as Point[]); // 科罗拉多州边界（粗略）
   let area = SpherePolygonArea(Colorado);
-  // let area1 = PlanePolygonArea(Colorado.toXYArray());
   alert("科罗拉多州面积（计算）：" + area + "平方公里\n" + "科罗拉多州面积（真实）：268,627平方公里");
 }
 
@@ -152,6 +151,7 @@ function example7(){ // 线段求交
 
 function example8(){
   removeAllOverlay(map);
+
   let line = [
     [
       -105.84580648407761,
@@ -183,34 +183,59 @@ function example8(){
   alert("outPoi: " + res1 + "\n" + "inPoi: " + res2);
 }
 
+function example9(){
+  let matrix = [ // 测试用的三维数组
+    [
+      [1,2,3],
+      [4,5,6],
+      [7,8,9]
+    ],
+    [
+      [1,2,3],
+      [4,5,6],
+      [7,8,9]
+    ],
+    [
+      [1,2,3],
+      [4,5,6],
+      [7,8,9]
+    ],
+  ];
+  // let grid = new RVGeo.Coverage.Grid(myMBR1,matrix);
+  // console.log(grid);
+  axios.get('dem.csv').then((res)=>{
+    let data = parseData(res.data);
+    // console.log(data);
+    let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
+    console.log(grid);
+  });
+
+  function parseData(data:string){
+      let lines = data.split('\n');
+      let result = [];
+      for(let line of lines){
+          let nums = line.split(',');
+          let row = [];
+          for(let num of nums){
+              // 读取整型 若有 NAN 则替换为 0
+              let n = parseInt(num);
+              if(isNaN(n)){
+                  n = 0;
+              }
+              row.push(n);
+          }
+          result.push(row);
+      }
+      // 去掉最后一行
+      result.pop();
+      return result;
+  }
+}
+
+
 function updateData() {
   let ps = mockPoints(50, myMBR1);
   let mps = new MultiPoint(ps);
   return mps;
 }
-
-// function draw(type: string) {
-//   const styleOptions = {
-//     strokeColor: "#5E87DB", // 边线颜色
-//     fillColor: "#5E87DB", // 填充颜色。当参数为空时，圆形没有填充颜色
-//     strokeWeight: 2, // 边线宽度，以像素为单位
-//     strokeOpacity: 1, // 边线透明度，取值范围0-1
-//     fillOpacity: 0.2, // 填充透明度，取值范围0-1
-//   };
-//   // 实例化鼠标绘制工具
-//   const drawingManager = new BMapGLLib.DrawingManager(map, {
-//     // isOpen: true,        // 是否开启绘制模式
-//     enableCalculate: false, // 绘制是否进行测距测面
-//     enableSorption: true, // 是否开启边界吸附功能
-//     sorptiondistance: 20, // 边界吸附距离
-//     rectangleOptions: styleOptions, // 矩形的样式
-//   });
-//   if (drawingManager.isOpen_ && drawingManager.getDrawingMode() === type) {
-//     drawingManager.close();
-//   } else {
-//     drawingManager.setDrawingMode(type);
-//     drawingManager.open();
-//   }
-// }
-
 

@@ -8,10 +8,12 @@ import * as Shell from './Shell';
 import * as Reference from './Referencing';
 import * as Meta from './MetaData';
 import * as Unit from './constants/Units';
+import * as Coverage from './Coverage';
 
 export {
     Geometry,
     Measuration,
+    Coverage,
     Delaunay,
     Shell,
     Reference,

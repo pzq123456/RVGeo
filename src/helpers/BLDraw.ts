@@ -8,7 +8,6 @@
  */
 
 import { Point, MultiPoint, LineString, MultiLineString, Polygon } from '../packages/Geometry.ts';
-
 // disable ts error
 declare var BMapGL: any;
 
@@ -18,7 +17,7 @@ export function createIcon(url: string, size: [number, number], offset: [number,
     });
 }
 
-const myicons = ['greenStar.svg','bluePoint.svg','redPoint.svg']
+const myicons = ['Pink.svg','Blue.svg','Yellow.svg']
 
 
 export function innerIcon(index: number, icons: string[] = myicons) {
