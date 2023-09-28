@@ -1,7 +1,7 @@
 import { createToolBar } from './helpers/toolBar.ts'
 import { Point, MultiPoint, LineString, Polygon, mbrToPolygon } from './packages/Geometry.ts'
 import { mockPoints} from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
 import { convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
@@ -49,6 +49,7 @@ let mps = new MultiPoint(ps);
 function example1(){ // 绘制多点及其重心
   removeAllOverlay(map)
   let icon = innerIcon(0);
+  console.log(mps.calculateCentroid());
   drawPoint2BLMap(mps.calculateCentroid(), map);
   drawMultiPoint2BLMap(mps, map, icon);
 }
@@ -204,10 +205,22 @@ function example9(){
   // let grid = new RVGeo.Coverage.Grid(myMBR1,matrix);
   // console.log(grid);
   axios.get('dem.csv').then((res)=>{
+    let innerMBR = [
+        -107.19241981061282,
+        37.96392802178495,
+        -104.23896455039352,
+        39.75362886925538
+    ] as [number, number, number, number];
     let data = parseData(res.data);
     // console.log(data);
     let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
-    console.log(grid);
+    let testPoi = [-105.723781221762,38.87054575208597] as [number, number];
+    console.log(grid.ConvertToGridMBR(innerMBR));
+    drawLineString2BLMap(mbrToPolygon(myMBR1), map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+    drawLineString2BLMap(mbrToPolygon(innerMBR), map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
+    drawPoint2BLMap(testPoi, map);
+    drawLabel(testPoi, `${grid.getGridCoord(testPoi)}` ,map);
+    drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   });
 
   function parseData(data:string){

@@ -8,6 +8,9 @@ import { convertToMercator } from "./Referencing";
 import { Units } from "./constants/Units";
 
 // define MBR type
+/**
+ * [minLon, minLat, maxLon, maxLat]
+ */
 export type MBR = [number, number, number, number]; // [minLon, minLat, maxLon, maxLat]
 /**
  * 将 MBR 转化为 逆时针方向的（简单）多边形数组
