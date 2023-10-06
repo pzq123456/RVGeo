@@ -2,9 +2,8 @@
  * Coverage 栅格数据模块
  */
 import { MBR } from "./Geometry";
-// import { convertToWgs84, convertToMercator } from "./Referencing";
 import { PointOutsideMBR } from "./CGUtils";
-// import {mbrToPolygon} from "./Geometry";
+
 
 /**
  * 网格类（本质是三维数组）:

@@ -39,6 +39,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '线段求交', action: () =>  example7()},
   { name: '点线关系', action: () =>  example8()},
   { name: '栅格', action: () =>  example9()},
+  { name: '四叉树', action: () =>  example10()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
 ])
 
@@ -184,7 +185,7 @@ function example8(){
   alert("outPoi: " + res1 + "\n" + "inPoi: " + res2);
 }
 
-function example9(){
+function example9(){ // 栅格
   // let matrix = [ // 测试用的三维数组
   //   [
   //     [1,2,3],
@@ -249,6 +250,11 @@ function example9(){
       return result;
   }
 }
+
+function example10(){ // 四叉树
+  alert("example10");
+}
+
 
 
 function updateData() {

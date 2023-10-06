@@ -9,7 +9,10 @@ import { Units } from "./constants/Units";
 
 // define MBR type
 /**
- * [minLon, minLat, maxLon, maxLat]
+ * 最小外包矩形 (Minimum Bounding Rectangle)
+ * - [minLon, minLat, maxLon, maxLat]
+ * - 坐标出现的顺序是强制规定的，即 minLon, minLat, maxLon, maxLat 或 minX, minY, maxX, maxY
+ * - 并没有严格规定必须为经纬度坐标，也可以是平面坐标
  */
 export type MBR = [number, number, number, number]; // [minLon, minLat, maxLon, maxLat]
 /**
