@@ -2,7 +2,9 @@
  * Coverage 栅格数据模块
  */
 import { MBR } from "./Geometry";
+// import { convertToWgs84, convertToMercator } from "./Referencing";
 import { PointOutsideMBR } from "./CGUtils";
+// import {mbrToPolygon} from "./Geometry";
 
 /**
  * 网格类（本质是三维数组）:
@@ -30,16 +32,36 @@ export class Grid{
 
     /**
      * 获取指定范围，指定波段的网格数据
+     * - 建议：先使用 `ConvertToGridMBR` 方法获取网格范围，再使用本方法获取网格数据（为简化代码，没有将这两个方法合并）
      * @param GridMBR - 网格范围 行列号索引表示
-     * @param band - 波段号
+     * @param band - 波段号数组
+     * @returns - 返回网格数据，格式为：[band][row][col]
      */
-    getSubGrid(GridMBR: MBR, band: number = 0){
+    getSubGrid(GridMBR: MBR, band: number[] = [0]): number[][][]{
+        // 由输入的行列号范围提取网格数据，可以指定行列号范围及波段号
+        let minRow = GridMBR[0];
+        let minCol = GridMBR[1];
+        let maxRow = GridMBR[2];
+        let maxCol = GridMBR[3];
+        let subGrid = [];
+        for(let b of band){
+            let bandData = [];
+            for(let row = minRow; row <= maxRow; row++){
+                let rowData = [];
+                for(let col = minCol; col <= maxCol; col++){
+                    rowData.push(this.data[b][row][col]);
+                }
+                bandData.push(rowData);
+            }
+            subGrid.push(bandData);
+        }
+        return subGrid;
     }
 
     /**
      * 由外部经纬度坐标获取网格范围，行列号索引表示（只有全部在栅格范围内才会正常得到结果）
      * - 若外部坐标不全部在网格范围内，则返回 null
-     * @param MBR - 外部经纬度坐标
+     * @param MBR - 网格行列号范围
      */
     ConvertToGridMBR(MBR: MBR): MBR | null{
         // 将四个角点计算行列号索引
@@ -51,7 +73,7 @@ export class Grid{
         let maxCoord = this.getGridCoord([maxLon, maxLat]);
         // 判断是否全部在网格范围内
         if(minCoord === null || maxCoord === null){
-            return null;
+            return null; // 不在网格范围内 则返回 null
         }else{
             // 计算网格范围
             let minRow = minCoord[0];
@@ -102,3 +124,4 @@ export class Grid{
         return [lon, lat];
     }
 }
+

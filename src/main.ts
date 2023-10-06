@@ -1,5 +1,5 @@
 import { createToolBar } from './helpers/toolBar.ts'
-import { Point, MultiPoint, LineString, Polygon, mbrToPolygon } from './packages/Geometry.ts'
+import { Point, MultiPoint, LineString, Polygon, mbrToPolygon, MBR } from './packages/Geometry.ts'
 import { mockPoints} from './tests/Mock.ts';
 import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
@@ -185,23 +185,23 @@ function example8(){
 }
 
 function example9(){
-  let matrix = [ // 测试用的三维数组
-    [
-      [1,2,3],
-      [4,5,6],
-      [7,8,9]
-    ],
-    [
-      [1,2,3],
-      [4,5,6],
-      [7,8,9]
-    ],
-    [
-      [1,2,3],
-      [4,5,6],
-      [7,8,9]
-    ],
-  ];
+  // let matrix = [ // 测试用的三维数组
+  //   [
+  //     [1,2,3],
+  //     [4,5,6],
+  //     [7,8,9]
+  //   ],
+  //   [
+  //     [1,2,3],
+  //     [4,5,6],
+  //     [7,8,9]
+  //   ],
+  //   [
+  //     [1,2,3],
+  //     [4,5,6],
+  //     [7,8,9]
+  //   ],
+  // ];
   // let grid = new RVGeo.Coverage.Grid(myMBR1,matrix);
   // console.log(grid);
   axios.get('dem.csv').then((res)=>{
@@ -215,12 +215,17 @@ function example9(){
     // console.log(data);
     let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
     let testPoi = [-105.723781221762,38.87054575208597] as [number, number];
-    console.log(grid.ConvertToGridMBR(innerMBR));
+    let inMBR = grid.ConvertToGridMBR(innerMBR) as MBR;
+    let subdrid = grid.getSubGrid(inMBR);
+
+    let grid2 = new RVGeo.Coverage.Grid(innerMBR,subdrid);
+    console.log(grid2);
+
+    drawGridLines2BLMap(grid2.MBR, grid2.rows, grid2.cols, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 });
     drawLineString2BLMap(mbrToPolygon(myMBR1), map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
-    drawLineString2BLMap(mbrToPolygon(innerMBR), map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
     drawPoint2BLMap(testPoi, map);
     drawLabel(testPoi, `${grid.getGridCoord(testPoi)}` ,map);
-    drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+    drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
   });
 
   function parseData(data:string){
