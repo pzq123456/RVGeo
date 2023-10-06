@@ -116,6 +116,20 @@ export function PointOutsideMBR(point: [number,number], mbr: MBR): boolean {
 }
 
 /**
+ * 判断两个 MBR 是否相交 返回 true 或 false
+ * @param mbr1 - [minx,miny,maxx,maxy]
+ * @param mbr2 - [minx,miny,maxx,maxy]
+ * @returns {boolean} - true if the two MBRs intersect
+ * - 如果两个 MBR 相交，返回 true
+ * - 如果两个 MBR 相离，返回 false
+ */
+export function MBRIntersectMBR(mbr1: MBR, mbr2: MBR): boolean {
+    return !(mbr1[0] > mbr2[2] || mbr1[2] < mbr2[0] || mbr1[1] > mbr2[3] || mbr1[3] < mbr2[1]);
+}
+
+
+
+/**
  * 使用 MBR 裁剪多边形
  * @param polygon - 多边形 [[x1,y1],[x2,y2],...
  * @param mbr - MBR [minx,miny,maxx,maxy]

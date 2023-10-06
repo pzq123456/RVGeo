@@ -50,10 +50,20 @@ export function getPointsMBR(
     return [minLon, minLat, maxLon, maxLat];
 }
 
-
-
-
-
+/**
+ * 判断点是否在 MBR 内
+ * @param point - 点
+ * @param mbr - 最小外包矩形
+ * @returns {boolean} 返回是否在 MBR 内 在则返回 true 不在则返回 false
+ */
+export function pointInMBR(
+    point: [number, number],
+    mbr: MBR) : boolean
+{
+    let minLon = mbr[0], minLat = mbr[1], maxLon = mbr[2], maxLat = mbr[3];
+    let lon = point[0], lat = point[1];
+    return lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat;
+}
 
 /**
  * 图形基类（抽象类）
@@ -234,7 +244,7 @@ export class MultiPoint extends Geometry{
      * - (仅包含坐标不包含属性)以数列形式返回内部点列表
      * - return array which wrappers all of the points in it
      */
-    toArray(): number[][] {
+    toArray(): [number,number][] {
         let res = [];
         for(let i = 0; i  < this.coordinates.length; i++){
             let tmp = this.coordinates[i].to2DArray();

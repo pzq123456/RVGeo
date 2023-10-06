@@ -1,13 +1,14 @@
 import { createToolBar } from './helpers/toolBar.ts'
 import { Point, MultiPoint, LineString, Polygon, mbrToPolygon, MBR } from './packages/Geometry.ts'
 import { mockPoints} from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawQuadTree2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
 import { convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
 import { SpherePolygonArea } from './packages/Distance.ts';
 import { intersection, intersectionPolygon, pointInEdge } from './packages/CGUtils.ts';
+import { QuadTree } from './packages/QuadTree.ts'
 
 import * as RVGeo from './packages/index.ts';
 import axios from 'axios';
@@ -252,7 +253,19 @@ function example9(){ // 栅格
 }
 
 function example10(){ // 四叉树
-  alert("example10");
+  // alert("example10");
+  removeAllOverlay(map);
+  // QuadTree
+  let icon = innerIcon(0);
+  drawMultiPoint2BLMap(mps, map, icon);
+  // create a quadtree
+  let boundary = myMBR1;
+  let capacity = 4;
+  let qtree = new QuadTree(boundary, capacity);
+  // insert points into the quadtree
+  mps.toArray().forEach((p) => qtree.insert(p));
+  console.log(qtree);
+  drawQuadTree2BLMap(qtree, map);
 }
 
 

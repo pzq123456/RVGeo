@@ -9,6 +9,7 @@
 
 import { Point, MultiPoint, LineString, MultiLineString, Polygon, MBR } from '../packages/Geometry.ts';
 import { fillIndexArray } from '../packages/constants/Utils.ts';
+import { QuadTree } from '../packages/QuadTree.ts';
 // disable ts error
 declare var BMapGL: any;
 
@@ -311,6 +312,36 @@ export function drawGridLines2BLMap (GridMBR: MBR, rows: number, cols: number, m
 
 }
 
+/**
+ * 递归绘制四叉树边界矩形
+ */
+export function drawQuadTree2BLMap(quadTree: QuadTree, map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}) {
+    let boundary = quadTree.boundary;
+    let minLon = boundary[0];
+    let minLat = boundary[1];
+    let maxLon = boundary[2];
+    let maxLat = boundary[3];
+    let rect = [
+        [minLon, minLat],
+        [maxLon, minLat],
+        [maxLon, maxLat],
+        [minLon, maxLat],
+        [minLon, minLat]
+    ];
+    drawLineString2BLMap(rect, map, style);
+    if (quadTree.northWest) {
+        drawQuadTree2BLMap(quadTree.northWest, map, style);
+    }
+    if (quadTree.northEast) {
+        drawQuadTree2BLMap(quadTree.northEast, map, style);
+    }
+    if (quadTree.southWest) {
+        drawQuadTree2BLMap(quadTree.southWest, map, style);
+    }
+    if (quadTree.southEast) {
+        drawQuadTree2BLMap(quadTree.southEast, map, style);
+    }
+}
 
 
 
