@@ -45,7 +45,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
 ])
 
 // 全局模拟数据（点集合）
-let ps = mockPoints(50, myMBR1);
+let ps = mockPoints(5, myMBR1);
 let mps = new MultiPoint(ps);
 
 function example1(){ // 绘制多点及其重心
@@ -253,25 +253,30 @@ function example9(){ // 栅格
 }
 
 function example10(){ // 四叉树
+  // update
+  mps = updateData();
+  // let mpss = [[-107.68090845026995, 38.18280626026963], [-107.12892826589372, 39.52547695328886], [-106.8660300986527, 39.724206165604926], [-103.09133641866016, 37.715511013258755], [-106.24822622094348, 39.07522082607949], [-107.46836828802742, 39.786086086217324], [-105.93927074951284, 40.45576855204775], [-105.15238080462689, 37.47579447815946]] as [number, number][];
   // alert("example10");
   removeAllOverlay(map);
   // QuadTree
   let icon = innerIcon(0);
   drawMultiPoint2BLMap(mps, map, icon);
+  // mpss.forEach((p) => drawPoint2BLMap(p, map, icon));
   // create a quadtree
   let boundary = myMBR1;
   let capacity = 4;
   let qtree = new QuadTree(boundary, capacity);
   // insert points into the quadtree
   mps.toArray().forEach((p) => qtree.insert(p));
-  console.log(qtree);
+  // mpss.forEach((p) => qtree.insert(p));
+  // console.log(mps.toArray());
   drawQuadTree2BLMap(qtree, map);
 }
 
 
 
 function updateData() {
-  let ps = mockPoints(50, myMBR1);
+  let ps = mockPoints(180, myMBR1);
   let mps = new MultiPoint(ps);
   return mps;
 }

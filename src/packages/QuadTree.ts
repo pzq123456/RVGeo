@@ -1,5 +1,9 @@
+/**
+ * Point quadtree O(nlogn)
+ */
 // https://www.youtube.com/watch?v=OJxEcs0w_kE
 // https://en.wikipedia.org/wiki/Quadtree
+
 /**
  * 四叉树模块（用于支持简单的空间索引，加速计算）
  */
@@ -15,8 +19,11 @@ export class QuadTree{
     southWest: QuadTree | null;
     southEast: QuadTree | null;
     private isDivided: boolean;
+    depth: number;
+    maxDepth: number = 10;
 
-    constructor(boundary: MBR, capacity: number){
+    
+    constructor(boundary: MBR, capacity: number, maxDepth: number = 10){
         this.capacity = capacity;
         this.boundary = boundary;
         this.points = [];
@@ -26,6 +33,8 @@ export class QuadTree{
         this.northEast = null;
         this.southWest = null;
         this.southEast = null;
+        this.depth = 0;
+        this.maxDepth = maxDepth;
     }
     /**
      * 插入一个点
@@ -33,29 +42,35 @@ export class QuadTree{
      * @returns {boolean} - 是否插入成功
      */
     insert(point: [number,number]): boolean{
-        if(PointOutsideMBR(point,this.boundary)){
+        if(PointOutsideMBR(point,this.boundary,true)){
             return false;
         }
-        if(this.points.length < this.capacity && !this.isDivided){
+
+        if(this.points.length < this.capacity && this.depth < this.maxDepth){
             this.points.push(point);
             return true;
-        }
-        if(!this.isDivided){
-            this.subdivide();
-        }
-        if(this.northWest!.insert(point)){
+        }else {
+            if(!this.isDivided){
+                this.subdivide();
+            }
+            this.northEast!.insert(point);
+            this.northWest!.insert(point);
+            this.southEast!.insert(point);
+            this.southWest!.insert(point);
+
             return true;
         }
-        if(this.northEast!.insert(point)){
-            return true;
+    }
+
+    /**
+     * 获取当前节点的所有点(若长度为 0 则返回 null)
+     */
+    get pointsList(){
+        if(this.points.length === 0){
+            return null;
+        }else{
+            return this.points;
         }
-        if(this.southWest!.insert(point)){
-            return true;
-        }
-        if(this.southEast!.insert(point)){
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -66,15 +81,16 @@ export class QuadTree{
         let y = this.boundary[1];
         let w = this.boundary[2] - x;
         let h = this.boundary[3] - y;
-        let nw = new QuadTree([x,y,x+w/2,y+h/2],this.capacity);
-        let ne = new QuadTree([x+w/2,y,x+w,y+h/2],this.capacity);
-        let sw = new QuadTree([x,y+h/2,x+w/2,y+h],this.capacity);
-        let se = new QuadTree([x+w/2,y+h/2,x+w,y+h],this.capacity);
+        let nw = new QuadTree([x,y+h/2,x+w/2,y+h],this.capacity);
+        let ne = new QuadTree([x+w/2,y+h/2,x+w,y+h],this.capacity);
+        let sw = new QuadTree([x,y,x+w/2,y+h/2],this.capacity);
+        let se = new QuadTree([x+w/2,y,x+w,y+h/2],this.capacity);
         this.northWest = nw;
         this.northEast = ne;
         this.southWest = sw;
         this.southEast = se;
         this.isDivided = true;
+        this.depth++;
     }
     queryRange(range: MBR){
         let pointsInRange: [number,number][] = [];        

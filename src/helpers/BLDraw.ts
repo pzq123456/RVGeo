@@ -19,7 +19,7 @@ export function createIcon(url: string, size: [number, number], offset: [number,
     });
 }
 
-const myicons = ['Pink.svg','Blue.svg','Yellow.svg']
+const myicons = ['Pink.svg','Blue.svg','Yellow.svg','Green.svg']
 
 
 export function innerIcon(index: number, icons: string[] = myicons) {
@@ -92,7 +92,7 @@ export function removeAllOverlay(map: any) {
  * @param multiPoint - 多点
  * @param map - 百度地图实例
  */
-export function drawMultiPoint2BLMap(multiPoint: MultiPoint | Point[], map: any, icon?: any) {
+export function drawMultiPoint2BLMap(multiPoint: MultiPoint | Point[] , map: any, icon?: any) {
     let points = MultiPoint.isMultiPoint(multiPoint) ? multiPoint.coordinates : multiPoint;
     for (let i = 0; i < points.length; i++) {
         let point = points[i];
@@ -315,7 +315,7 @@ export function drawGridLines2BLMap (GridMBR: MBR, rows: number, cols: number, m
 /**
  * 递归绘制四叉树边界矩形
  */
-export function drawQuadTree2BLMap(quadTree: QuadTree, map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}) {
+export function drawQuadTree2BLMap(quadTree: QuadTree, map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.4}) {
     let boundary = quadTree.boundary;
     let minLon = boundary[0];
     let minLat = boundary[1];
@@ -330,15 +330,37 @@ export function drawQuadTree2BLMap(quadTree: QuadTree, map: any, style: Object =
     ];
     drawLineString2BLMap(rect, map, style);
     if (quadTree.northWest) {
+        // let style = { strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5}
         drawQuadTree2BLMap(quadTree.northWest, map, style);
+        // // draw point for test
+        // let pol = quadTree.northWest.pointsList;
+        // // console.log(pol);
+        // if(pol){
+        //     for(let i = 0; i < pol.length; i++){
+        //         // console.log(pol[i]);
+        //         drawPoint2BLMap(pol[i],map,innerIcon(1));
+        //     }
+        // }
     }
     if (quadTree.northEast) {
+        // let style = { strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5}
         drawQuadTree2BLMap(quadTree.northEast, map, style);
+        // // draw point for test
+        // let pol = quadTree.northEast.pointsList;
+        // // console.log(pol);
+        // if(pol){
+        //     for(let i = 0; i < pol.length; i++){
+        //         // console.log(pol[i]);
+        //         drawPoint2BLMap(pol[i],map,innerIcon(3));
+        //     }
+        // }
     }
     if (quadTree.southWest) {
+        // let style = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}
         drawQuadTree2BLMap(quadTree.southWest, map, style);
     }
     if (quadTree.southEast) {
+        // let style = { strokeColor: "yellow", strokeWeight: 2, strokeOpacity: 0.5}
         drawQuadTree2BLMap(quadTree.southEast, map, style);
     }
 }

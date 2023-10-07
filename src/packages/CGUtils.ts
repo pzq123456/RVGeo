@@ -7,7 +7,7 @@
 
 
 import { MBR, mbrToPolygon } from "./Geometry";
-import { convertToMercator, convertToWgs84 } from "./Referencing";
+import { convertToMercator, convertToMercators, convertToWgs84 } from "./Referencing";
 import { ccw } from "./constants/Utils";
 
 /**
@@ -94,26 +94,94 @@ export function intersection(
     return [p1[0] + v1[0] * t1, p1[1] + v1[1] * t1];
 }
 
+
+
+/**
+ * 
+public static boolean isInArea(double latitue,double longitude,double areaLatitude1,double areaLatitude2,double areaLongitude1,double areaLongitude2){
+    if(isInRange(latitue, areaLatitude1, areaLatitude2)){//如果在纬度的范围内
+        if(areaLongitude1*areaLongitude2>0){//如果都在东半球或者都在西半球
+            if(isInRange(longitude, areaLongitude1, areaLongitude2)){
+                return true;
+            }else {
+                return false;
+            }
+        }else {//如果一个在东半球，一个在西半球
+            if(Math.abs(areaLongitude1)+Math.abs(areaLongitude2)<180){//如果跨越0度经线在半圆的范围内
+                if(isInRange(longitude, areaLongitude1, areaLongitude2)){
+                    return true;
+                }else {
+                    return false;
+                }
+            }else{//如果跨越180度经线在半圆范围内
+                double left = Math.max(areaLongitude1, areaLongitude2);//东半球的经度范围left-180
+                double right = Math.min(areaLongitude1, areaLongitude2);//西半球的经度范围right-（-180）
+                if(isInRange(longitude, left, 180)||isInRange(longitude, right，-180)){
+                    return true;
+                }else {
+                    return false;
+                }
+            }
+        }
+    }else{
+        return false;
+    }
+}
+
+public static boolean isInRange(double point, double left,double right){
+        if(point>=Math.min(left, right)&&point<=Math.max(left, right)){
+            return true;
+        }else {
+            return false;
+        }
+    
+}
+ */
+
 /**
  * 判断点是否在 MBR 外（平面与经纬度坐标通用，多边形边界算作在内）
  * determine if a point is outside of a MBR (polygon boundary is considered inside)
  * @param point - [x,y]
  * @param mbr - [minx,miny,maxx,maxy]
+ * @param isPlane - 是否为平面坐标系(默认为 false)
  * @returns {boolean} - true if the point is outside of the MBR
  * - 如果点在 MBR 外，返回 true
  */
-export function PointOutsideMBR(point: [number,number], mbr: MBR): boolean {
-    let minx = mbr[0];
-    let miny = mbr[1];
-    let maxx = mbr[2];
-    let maxy = mbr[3];
+export function PointOutsideMBR(point: [number,number], mbr: MBR, isPlane=false): boolean {
+    if(isPlane){
+        // convertToMercators()
+        let merPoint = convertToMercator(point);
+        let minx = mbr[0];
+        let miny = mbr[1];
+        let maxx = mbr[2];
+        let maxy = mbr[3];
 
-    if (point[0] < minx || point[0] > maxx || point[1] < miny || point[1] > maxy) {
-        return true;
+        [minx,miny] = convertToMercator([minx,miny]);
+        [maxx,maxy] = convertToMercator([maxx,maxy]);
+
+        if (merPoint[0] < minx || merPoint[0] > maxx || merPoint[1] < miny || merPoint[1] > maxy) {
+            return true;
+        }
+        return false;
+    }else{
+        let minx = mbr[0];
+        let miny = mbr[1];
+        let maxx = mbr[2];
+        let maxy = mbr[3];
+    
+        if (point[0] < minx || point[0] > maxx || point[1] < miny || point[1] > maxy) {
+            return true;
+        }
+        return false;
     }
-
-    return false;
 }
+
+
+
+
+
+
+
 
 /**
  * 判断两个 MBR 是否相交 返回 true 或 false
