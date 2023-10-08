@@ -253,24 +253,44 @@ function example9(){ // 栅格
 }
 
 function example10(){ // 四叉树
-  // update
+
   mps = updateData();
-  // let mpss = [[-107.68090845026995, 38.18280626026963], [-107.12892826589372, 39.52547695328886], [-106.8660300986527, 39.724206165604926], [-103.09133641866016, 37.715511013258755], [-106.24822622094348, 39.07522082607949], [-107.46836828802742, 39.786086086217324], [-105.93927074951284, 40.45576855204775], [-105.15238080462689, 37.47579447815946]] as [number, number][];
-  // alert("example10");
+
+  let queryMBR = [
+    -107.68090845026995,
+    37.315553928222414,
+    -106.90893321662871,
+    38.664014824200905
+  ] as MBR;
   removeAllOverlay(map);
-  // QuadTree
+
+
+
   let icon = innerIcon(0);
   drawMultiPoint2BLMap(mps, map, icon);
-  // mpss.forEach((p) => drawPoint2BLMap(p, map, icon));
-  // create a quadtree
+
   let boundary = myMBR1;
-  let capacity = 4;
+  let capacity = 2;
   let qtree = new QuadTree(boundary, capacity);
-  // insert points into the quadtree
+
   mps.toArray().forEach((p) => qtree.insert(p));
-  // mpss.forEach((p) => qtree.insert(p));
-  // console.log(mps.toArray());
+
+  // query points
+  let queryPoints = qtree.queryRange(queryMBR);
+  console.log(queryPoints);
+  // draw query points
+  drawMultiPoint2BLMap(createPointListFromArr(queryPoints), map, innerIcon(1));
+
   drawQuadTree2BLMap(qtree, map);
+
+  // draw mbr
+  drawRectangle2BLMap(queryMBR, map,{
+    strokeColor: "green",
+    strokeWeight: 2,
+    strokeOpacity: 0.5,
+    fillColor: 'green',
+    fillOpacity: 0.2
+  });
 }
 
 
