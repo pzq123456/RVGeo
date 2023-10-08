@@ -3,7 +3,7 @@ import { Point, MultiPoint, LineString, Polygon, mbrToPolygon, MBR } from './pac
 import { mockPoints} from './tests/Mock.ts';
 import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawQuadTree2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
-import { convexHull } from './packages/Shell.ts';
+import { alphaShape, convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
 import { SpherePolygonArea } from './packages/Distance.ts';
@@ -41,11 +41,12 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '点线关系', action: () =>  example8()},
   { name: '栅格', action: () =>  example9()},
   { name: '四叉树', action: () =>  example10()},
+  { name: 'Alpha Shape', action: () =>  example11()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
 ])
 
 // 全局模拟数据（点集合）
-let ps = mockPoints(5, myMBR1);
+let ps = mockPoints(50, myMBR1);
 let mps = new MultiPoint(ps);
 
 function example1(){ // 绘制多点及其重心
@@ -293,10 +294,31 @@ function example10(){ // 四叉树
   });
 }
 
+function example11(){ // Alpha Shape 算法 凹包
+  removeAllOverlay(map);
+
+  let alpha = 0.1;
+  let alphaShapes = alphaShape(ps, alpha);
+  console.log(alphaShapes);
+
+
+
+  // let del = Delaunator.from(mps.toXYArray());
+  // let trs = fillIndexArray(del.getTriangleIndices(), mps.toArray());
+  // let trc = triangleCenter(mps.toXYArray(),del, 0);
+  // drawPoint2BLMap(trc, map);
+  // drawTriangleEdge2BLMap(trs, map, {strokeColor: 'blue'});
+  // let res = fillIndexArray(del.getHull(), mps.toArray());
+  // drawPolygon2BLMap([res],map, {fillColor: 'gray'});
+  // drawMultiPoint2BLMap(mps, map);
+  // console.log(del.getHull());
+
+}
+
 
 
 function updateData() {
-  let ps = mockPoints(180, myMBR1);
+  let ps = mockPoints(50, myMBR1);
   let mps = new MultiPoint(ps);
   return mps;
 }

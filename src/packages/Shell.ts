@@ -2,7 +2,8 @@
  * 凸包及凸壳算法
  */
 import { Point } from './Geometry.ts';
-import { ccw, getAngle } from './constants/Utils';
+import { ccw, fillIndexArray, getAngle } from './constants/Utils';
+import { Delaunator } from './Delaunay.ts';
 
 /**
  * 凸包算法
@@ -84,4 +85,100 @@ export function convexHull(points: Point[]): Point[] {
         res.push(points[index]);
     }
     return res;
+}
+
+// 基于 Delauney 三角剖分的 Alpha Shape 算法 也叫凹包
+// https://graphics.stanford.edu/courses/cs268-11-spring/handouts/AlphaShapes/as_fisher.pdf
+
+/**
+ * Alpha Shape 算法
+ * @param points - 点数组(可以为二维数组，二维数组需要为平面坐标)
+ * @param alpha - alpha 值
+ * @returns {Point[]} - alpha shape 点数组
+ */
+export function alphaShape(points: Point[] , alpha: number): Point[] {
+    /**
+     * 1. Compute the Delaunay triangulation of S, knowing that the boundary of
+        our-shape is contained in it.
+        2. Then we determine C by inspecting all simplices T in DT(S): If the
+        T-ball around T is empty and T < ( this is the alpha test ) we
+        accept T as a member of C , together with all its faces.
+        3. All d-simplices of C make up the interior of S . All simplices on the
+        boundary C form S .
+     */
+    // 首先转化为平面坐标
+    let pointsXY = points.map((item) => {
+        return item.toXY();
+    }); // 得到一个平面坐标及原始索引的数组
+    console.log(pointsXY);
+
+    // 1. Compute the Delaunay triangulation of S
+    let delaunay = Delaunator.from(pointsXY);
+    let triangleIndices = delaunay.getTriangleIndices(); // 得到三角形的索引 [[0,1,2],[1,2,3],...]
+    let triangles = fillIndexArray(triangleIndices, pointsXY); // 得到三角形的点数组 [[p1,p2,p3],[p2,p3,p4],...]
+    console.log(triangles);
+    // 2. Then we determine C by inspecting all simplices T in DT(S)
+    let c = [];
+    for (let i = 0; i < triangles.length; i++) {
+        let t = triangles[i];
+        // 2.1 If the T-ball around T is empty
+        if (tBallIsEmpty(t, alpha)) {
+            // 2.2 T < ( this is the alpha test )
+            c.push(t);
+        }
+    }
+
+    // 3. All d-simplices of C make up the interior of S . All simplices on the boundary C form S .
+    let res = [];
+    for (let i = 0; i < c.length; i++) {
+        let t = c[i];
+        res.push(t[0]);
+        res.push(t[1]);
+        res.push(t[2]);
+    }
+
+    // 去重
+    let hash = {} as any;
+    let res2 = [];
+    for (let i = 0; i < res.length; i++) {
+        let key = res[i].join(',');
+        if (!hash[key]) {
+            res2.push(res[i]);
+            hash[key] = true;
+        }
+    }
+
+    // 根据res2 中的点，找到原始的点
+    let res3 = [];
+    for (let i = 0; i < res2.length; i++) {
+        let index = pointsXY.indexOf(res2[i]);
+        res3.push(points[index]);
+    }
+    return res3;
+
+    // helper function: a test to check whether or not the T-ball is empty
+    function tBallIsEmpty(t: number[], alpha: number) {
+        // 三角形的三个顶点
+        let p1 = t[0];
+        let p2 = t[1];
+        let p3 = t[2];
+        // 三角形的外接圆的圆心
+        let center = circumcenter(p1, p2, p3);
+        // 三角形的外接圆的半径
+        let radius = Math.sqrt(Math.pow(p1[0] - center[0], 2) + Math.pow(p1[1] - center[1], 2));
+        // 判断三角形外接圆的半径是否小于 alpha
+        if (radius < alpha) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function circumcenter(p1: number[], p2: number[], p3: number[]) {
+        // 三角形的外接圆的圆心
+        let x = (p1[0] + p2[0] + p3[0]) / 3;
+        let y = (p1[1] + p2[1] + p3[1]) / 3;
+        return [x, y];
+    }
 }
