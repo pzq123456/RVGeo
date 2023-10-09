@@ -7,7 +7,7 @@
 
 
 import { MBR, mbrToPolygon } from "./Geometry";
-import { convertToMercator, convertToMercators, convertToWgs84 } from "./Referencing";
+import { convertToMercator, convertToWgs84 } from "./Referencing";
 import { ccw } from "./constants/Utils";
 
 /**

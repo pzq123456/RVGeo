@@ -157,7 +157,7 @@ export function alphaShape(points: Point[] , alpha: number): Point[] {
     return res3;
 
     // helper function: a test to check whether or not the T-ball is empty
-    function tBallIsEmpty(t: number[], alpha: number) {
+    function tBallIsEmpty(t: [number,number][], alpha: number) {
         // 三角形的三个顶点
         let p1 = t[0];
         let p2 = t[1];

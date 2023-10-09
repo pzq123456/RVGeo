@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Voronoi | rvgeo</title><meta name="description" content="Documentation for rvgeo"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>QuadTree | rvgeo</title><meta name="description" content="Documentation for rvgeo"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -13,15 +13,15 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../modules.html">rvgeo</a></li>
-<li><a href="../modules/Delaunay.html">Delaunay</a></li>
-<li><a href="Delaunay.Voronoi.html">Voronoi</a></li></ul>
-<h1>Class Voronoi</h1></div>
+<li><a href="../modules/QuadTree.html">QuadTree</a></li>
+<li><a href="QuadTree.QuadTree.html">QuadTree</a></li></ul>
+<h1>Class QuadTree</h1></div>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
-<li><span class="target">Voronoi</span></li></ul></section><aside class="tsd-sources">
+<li><span class="target">QuadTree</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:623</li></ul></aside>
+<li>Defined in src/packages/QuadTree.ts:13</li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -29,157 +29,163 @@
 <div class="tsd-accordion-details">
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Constructors</h3>
-<div class="tsd-index-list"><a href="Delaunay.Voronoi.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a>
+<div class="tsd-index-list"><a href="QuadTree.QuadTree.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Properties</h3>
-<div class="tsd-index-list"><a href="Delaunay.Voronoi.html#delaunay" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>delaunay</span></a>
-<a href="Delaunay.Voronoi.html#points" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>points</span></a>
+<div class="tsd-index-list"><a href="QuadTree.QuadTree.html#boundary" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>boundary</span></a>
+<a href="QuadTree.QuadTree.html#capacity" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>capacity</span></a>
+<a href="QuadTree.QuadTree.html#depth" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>depth</span></a>
+<a href="QuadTree.QuadTree.html#isDivided" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>is<wbr/>Divided</span></a>
+<a href="QuadTree.QuadTree.html#maxDepth" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>max<wbr/>Depth</span></a>
+<a href="QuadTree.QuadTree.html#northEast" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>north<wbr/>East</span></a>
+<a href="QuadTree.QuadTree.html#northWest" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>north<wbr/>West</span></a>
+<a href="QuadTree.QuadTree.html#points" class="tsd-index-link tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>points</span></a>
+<a href="QuadTree.QuadTree.html#southEast" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>south<wbr/>East</span></a>
+<a href="QuadTree.QuadTree.html#southWest" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>south<wbr/>West</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading">Accessors</h3>
+<div class="tsd-index-list"><a href="QuadTree.QuadTree.html#pointsList" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-262144"></use></svg><span>points<wbr/>List</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Methods</h3>
-<div class="tsd-index-list"><a href="Delaunay.Voronoi.html#cutVoronoiByMBR" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>cut<wbr/>Voronoi<wbr/>ByMBR</span></a>
-<a href="Delaunay.Voronoi.html#getVoronoi" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Voronoi</span></a>
-<a href="Delaunay.Voronoi.html#isInsideMBR" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>InsideMBR</span></a>
-<a href="Delaunay.Voronoi.html#robustVoronoi" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>robust<wbr/>Voronoi</span></a>
+<div class="tsd-index-list"><a href="QuadTree.QuadTree.html#insert" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>insert</span></a>
+<a href="QuadTree.QuadTree.html#queryRange" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>query<wbr/>Range</span></a>
+<a href="QuadTree.QuadTree.html#subdivide" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>subdivide</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
 <section class="tsd-panel tsd-member"><a id="constructor" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="constructor.new_Voronoi"><span class="tsd-kind-constructor-signature">new <wbr/>Voronoi</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">params</span><span class="tsd-signature-symbol">?</span>, <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">?</span>, <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Delaunay.Voronoi.html" class="tsd-signature-type tsd-kind-class">Voronoi</a><a href="#constructor.new_Voronoi" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
-<li class="tsd-description">
-<div class="tsd-comment tsd-typography"><ul>
-<li>从点数组构造 Voronoi 图或包装 Delaunator</li>
-<li>Construct Voronoi diagram from points array or wrap Delaunator</li>
-</ul>
-</div>
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
-<li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">params</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><a href="Delaunay.Delaunator.html" class="tsd-signature-type tsd-kind-class">Delaunator</a></h5>
-<div class="tsd-comment tsd-typography"><p>点数组或 Delaunator 对象： [[x1, y1], [x2, y2], ... 或 Delaunator 对象</p>
-</div>
-<div class="tsd-comment tsd-typography"></div></li>
-<li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">p</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> = defaultGetX</span></h5>
-<div class="tsd-comment tsd-typography"><p>若 params 为点数组，则为获取 x 坐标的函数（默认规则，取表示点的二维数组中首位）</p>
-</div>
-<div class="tsd-comment tsd-typography"></div>
-<ul class="tsd-parameters">
-<li class="tsd-parameter-signature">
-<ul class="tsd-signatures">
-<li class="tsd-signature"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">p</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_QuadTree"><span class="tsd-kind-constructor-signature">new <wbr/>Quad<wbr/>Tree</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">boundary</span>, <span class="tsd-kind-parameter">capacity</span>, <span class="tsd-kind-parameter">maxDepth</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="QuadTree.QuadTree.html" class="tsd-signature-type tsd-kind-class">QuadTree</a><a href="#constructor.new_QuadTree" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">p</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4></li></ul></li></ul></li>
+<h5><span class="tsd-kind-parameter">boundary</span>: <a href="../types/Geometry.MBR.html" class="tsd-signature-type tsd-kind-type-alias">MBR</a></h5></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">p</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> = defaultGetY</span></h5>
-<div class="tsd-comment tsd-typography"><p>若 params 为点数组，则为获取 y 坐标的函数（有默认规则，取表示点的二维数组中末位）</p>
-</div>
-<div class="tsd-comment tsd-typography"></div>
-<ul class="tsd-parameters">
-<li class="tsd-parameter-signature">
-<ul class="tsd-signatures">
-<li class="tsd-signature"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">p</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
-<li class="tsd-description">
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
+<h5><span class="tsd-kind-parameter">capacity</span>: <span class="tsd-signature-type">number</span></h5></li>
 <li>
-<h5><span class="tsd-kind-parameter">p</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4></li></ul></li></ul></li></ul></div>
-<h4 class="tsd-returns-title">Returns <a href="Delaunay.Voronoi.html" class="tsd-signature-type tsd-kind-class">Voronoi</a></h4>
-<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<h5><span class="tsd-kind-parameter">maxDepth</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 10</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="QuadTree.QuadTree.html" class="tsd-signature-type tsd-kind-class">QuadTree</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:634</li></ul></aside></li></ul></section></section>
+<li>Defined in src/packages/QuadTree.ts:26</li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
-<section class="tsd-panel tsd-member"><a id="delaunay" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>delaunay</span><a href="#delaunay" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">delaunay</span><span class="tsd-signature-symbol">:</span> <a href="Delaunay.Delaunator.html" class="tsd-signature-type tsd-kind-class">Delaunator</a></div><aside class="tsd-sources">
+<section class="tsd-panel tsd-member"><a id="boundary" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>boundary</span><a href="#boundary" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">boundary</span><span class="tsd-signature-symbol">:</span> <a href="../types/Geometry.MBR.html" class="tsd-signature-type tsd-kind-type-alias">MBR</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:624</li></ul></aside></section>
-<section class="tsd-panel tsd-member"><a id="points" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>points</span><a href="#points" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">points</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></div><aside class="tsd-sources">
+<li>Defined in src/packages/QuadTree.ts:15</li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-is-private"><a id="capacity" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>capacity</span><a href="#capacity" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">capacity</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:625</li></ul></aside></section></section>
+<li>Defined in src/packages/QuadTree.ts:14</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="depth" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>depth</span><a href="#depth" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">depth</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/QuadTree.ts:22</li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-is-private"><a id="isDivided" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>is<wbr/>Divided</span><a href="#isDivided" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">is<wbr/>Divided</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/QuadTree.ts:21</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="maxDepth" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>max<wbr/>Depth</span><a href="#maxDepth" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">max<wbr/>Depth</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 10</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/QuadTree.ts:23</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="northEast" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>north<wbr/>East</span><a href="#northEast" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">north<wbr/>East</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="QuadTree.QuadTree.html" class="tsd-signature-type tsd-kind-class">QuadTree</a></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/QuadTree.ts:18</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="northWest" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>north<wbr/>West</span><a href="#northWest" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">north<wbr/>West</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="QuadTree.QuadTree.html" class="tsd-signature-type tsd-kind-class">QuadTree</a></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/QuadTree.ts:17</li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-is-private"><a id="points" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>points</span><a href="#points" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">points</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/QuadTree.ts:16</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="southEast" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>south<wbr/>East</span><a href="#southEast" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">south<wbr/>East</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="QuadTree.QuadTree.html" class="tsd-signature-type tsd-kind-class">QuadTree</a></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/QuadTree.ts:20</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="southWest" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>south<wbr/>West</span><a href="#southWest" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">south<wbr/>West</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="QuadTree.QuadTree.html" class="tsd-signature-type tsd-kind-class">QuadTree</a></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/QuadTree.ts:19</li></ul></aside></section></section>
+<section class="tsd-panel-group tsd-member-group">
+<h2>Accessors</h2>
+<section class="tsd-panel tsd-member"><a id="pointsList" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>points<wbr/>List</span><a href="#pointsList" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature" id="pointsList.pointsList-1"><span class="tsd-signature-symbol">get</span> pointsList<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>获取当前节点的所有点(若长度为 0 则返回 null)</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/QuadTree.ts:68</li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
-<section class="tsd-panel tsd-member"><a id="cutVoronoiByMBR" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>cut<wbr/>Voronoi<wbr/>ByMBR</span><a href="#cutVoronoiByMBR" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<section class="tsd-panel tsd-member"><a id="insert" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>insert</span><a href="#insert" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="cutVoronoiByMBR.cutVoronoiByMBR-1"><span class="tsd-kind-call-signature">cut<wbr/>Voronoi<wbr/>ByMBR</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">MBR</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#cutVoronoiByMBR.cutVoronoiByMBR-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="insert.insert-1"><span class="tsd-kind-call-signature">insert</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">point</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#insert.insert-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>使用 MBR 对 Voronoi 图进行裁剪（由于精度问题，极端情况下不可靠）</p>
+<div class="tsd-comment tsd-typography"><p>插入一个点</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">MBR</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
-<div class="tsd-comment tsd-typography"></div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
-<ul>
-<li>Defined in src/packages/Delaunay.ts:665</li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="getVoronoi" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>get<wbr/>Voronoi</span><a href="#getVoronoi" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="getVoronoi.getVoronoi-1"><span class="tsd-kind-call-signature">get<wbr/>Voronoi</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><a href="#getVoronoi.getVoronoi-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
-<li class="tsd-description">
-<div class="tsd-comment tsd-typography"><ul>
-<li>获取 Voronoi cell 的顶点数组</li>
-</ul>
+<h5><span class="tsd-kind-parameter">point</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+<div class="tsd-comment tsd-typography"><p>点的坐标</p>
 </div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><ul>
-<li>Map&lt;编号, 顶点数组&gt;</li>
+<div class="tsd-comment tsd-typography"></div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><ul>
+<li>是否插入成功</li>
 </ul>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:651</li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="isInsideMBR" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>is<wbr/>InsideMBR</span><a href="#isInsideMBR" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<li>Defined in src/packages/QuadTree.ts:44</li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="queryRange" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>query<wbr/>Range</span><a href="#queryRange" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="isInsideMBR.isInsideMBR-1"><span class="tsd-kind-call-signature">is<wbr/>InsideMBR</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">points</span>, <span class="tsd-kind-parameter">MBR</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#isInsideMBR.isInsideMBR-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="queryRange.queryRange-1"><span class="tsd-kind-call-signature">query<wbr/>Range</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">range</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><a href="#queryRange.queryRange-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">points</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h5></li>
-<li>
-<h5><span class="tsd-kind-parameter">MBR</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
+<h5><span class="tsd-kind-parameter">range</span>: <a href="../types/Geometry.MBR.html" class="tsd-signature-type tsd-kind-type-alias">MBR</a></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:697</li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="robustVoronoi" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>robust<wbr/>Voronoi</span><a href="#robustVoronoi" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<li>Defined in src/packages/QuadTree.ts:95</li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="subdivide" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>subdivide</span><a href="#subdivide" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="robustVoronoi.robustVoronoi-1"><span class="tsd-kind-call-signature">robust<wbr/>Voronoi</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">MBR</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#robustVoronoi.robustVoronoi-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="subdivide.subdivide-1"><span class="tsd-kind-call-signature">subdivide</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#subdivide.subdivide-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><ul>
-<li>更加健壮的 Voronoi 图（将超出 MBR 部分都删去）</li>
-</ul>
+<div class="tsd-comment tsd-typography"><p>剖分当前节点</p>
 </div>
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
-<li>
-<h5><span class="tsd-kind-parameter">MBR</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
-<div class="tsd-comment tsd-typography"></div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:685</li></ul></aside></li></ul></section></section></div>
+<li>Defined in src/packages/QuadTree.ts:79</li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -200,12 +206,20 @@
 <div class="tsd-accordion-details">
 <ul>
 <li><a href="#constructor" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a></li>
-<li><a href="#delaunay" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>delaunay</span></a></li>
-<li><a href="#points" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>points</span></a></li>
-<li><a href="#cutVoronoiByMBR" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>cut<wbr/>Voronoi<wbr/>ByMBR</span></a></li>
-<li><a href="#getVoronoi" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Voronoi</span></a></li>
-<li><a href="#isInsideMBR" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>InsideMBR</span></a></li>
-<li><a href="#robustVoronoi" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>robust<wbr/>Voronoi</span></a></li></ul></div></details></div>
+<li><a href="#boundary" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>boundary</span></a></li>
+<li><a href="#capacity" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>capacity</span></a></li>
+<li><a href="#depth" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>depth</span></a></li>
+<li><a href="#isDivided" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>is<wbr/>Divided</span></a></li>
+<li><a href="#maxDepth" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>max<wbr/>Depth</span></a></li>
+<li><a href="#northEast" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>north<wbr/>East</span></a></li>
+<li><a href="#northWest" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>north<wbr/>West</span></a></li>
+<li><a href="#points" class="tsd-is-private"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>points</span></a></li>
+<li><a href="#southEast" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>south<wbr/>East</span></a></li>
+<li><a href="#southWest" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>south<wbr/>West</span></a></li>
+<li><a href="#pointsList" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-262144"></use></svg><span>points<wbr/>List</span></a></li>
+<li><a href="#insert" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>insert</span></a></li>
+<li><a href="#queryRange" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>query<wbr/>Range</span></a></li>
+<li><a href="#subdivide" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>subdivide</span></a></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="../modules.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1"></use></svg><span>rvgeo</span></a>
 <ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="..">

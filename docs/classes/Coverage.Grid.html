@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Voronoi | rvgeo</title><meta name="description" content="Documentation for rvgeo"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Grid | rvgeo</title><meta name="description" content="Documentation for rvgeo"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -13,15 +13,24 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../modules.html">rvgeo</a></li>
-<li><a href="../modules/Delaunay.html">Delaunay</a></li>
-<li><a href="Delaunay.Voronoi.html">Voronoi</a></li></ul>
-<h1>Class Voronoi</h1></div>
+<li><a href="../modules/Coverage.html">Coverage</a></li>
+<li><a href="Coverage.Grid.html">Grid</a></li></ul>
+<h1>Class Grid</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>网格类（本质是三维数组）:</p>
+<ul>
+<li>三维数组的每一层代表一个波段</li>
+<li>其中一层为一个二维数组，代表一个波段的值，并与对应的 MBR 对象关联用于挂接地图上的位置</li>
+<li>MBR 统一使用 <code>WGS84</code> 坐标系</li>
+</ul>
+</div>
+<div class="tsd-comment tsd-typography"></div></section>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
-<li><span class="target">Voronoi</span></li></ul></section><aside class="tsd-sources">
+<li><span class="target">Grid</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:623</li></ul></aside>
+<li>Defined in src/packages/Coverage.ts:15</li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -29,157 +38,180 @@
 <div class="tsd-accordion-details">
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Constructors</h3>
-<div class="tsd-index-list"><a href="Delaunay.Voronoi.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a>
+<div class="tsd-index-list"><a href="Coverage.Grid.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Properties</h3>
-<div class="tsd-index-list"><a href="Delaunay.Voronoi.html#delaunay" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>delaunay</span></a>
-<a href="Delaunay.Voronoi.html#points" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>points</span></a>
+<div class="tsd-index-list"><a href="Coverage.Grid.html#MBR" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>MBR</span></a>
+<a href="Coverage.Grid.html#bands" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>bands</span></a>
+<a href="Coverage.Grid.html#cols" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>cols</span></a>
+<a href="Coverage.Grid.html#data" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>data</span></a>
+<a href="Coverage.Grid.html#rows" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>rows</span></a>
+<a href="Coverage.Grid.html#shape" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>shape</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Methods</h3>
-<div class="tsd-index-list"><a href="Delaunay.Voronoi.html#cutVoronoiByMBR" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>cut<wbr/>Voronoi<wbr/>ByMBR</span></a>
-<a href="Delaunay.Voronoi.html#getVoronoi" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Voronoi</span></a>
-<a href="Delaunay.Voronoi.html#isInsideMBR" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>InsideMBR</span></a>
-<a href="Delaunay.Voronoi.html#robustVoronoi" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>robust<wbr/>Voronoi</span></a>
+<div class="tsd-index-list"><a href="Coverage.Grid.html#ConvertToGridMBR" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>Convert<wbr/>To<wbr/>GridMBR</span></a>
+<a href="Coverage.Grid.html#getCoordByGridCoord" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Coord<wbr/>By<wbr/>Grid<wbr/>Coord</span></a>
+<a href="Coverage.Grid.html#getGridCoord" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Grid<wbr/>Coord</span></a>
+<a href="Coverage.Grid.html#getShape" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Shape</span></a>
+<a href="Coverage.Grid.html#getSubGrid" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Sub<wbr/>Grid</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
 <section class="tsd-panel tsd-member"><a id="constructor" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="constructor.new_Voronoi"><span class="tsd-kind-constructor-signature">new <wbr/>Voronoi</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">params</span><span class="tsd-signature-symbol">?</span>, <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">?</span>, <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Delaunay.Voronoi.html" class="tsd-signature-type tsd-kind-class">Voronoi</a><a href="#constructor.new_Voronoi" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
-<li class="tsd-description">
-<div class="tsd-comment tsd-typography"><ul>
-<li>从点数组构造 Voronoi 图或包装 Delaunator</li>
-<li>Construct Voronoi diagram from points array or wrap Delaunator</li>
-</ul>
-</div>
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
-<li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">params</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><a href="Delaunay.Delaunator.html" class="tsd-signature-type tsd-kind-class">Delaunator</a></h5>
-<div class="tsd-comment tsd-typography"><p>点数组或 Delaunator 对象： [[x1, y1], [x2, y2], ... 或 Delaunator 对象</p>
-</div>
-<div class="tsd-comment tsd-typography"></div></li>
-<li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">p</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> = defaultGetX</span></h5>
-<div class="tsd-comment tsd-typography"><p>若 params 为点数组，则为获取 x 坐标的函数（默认规则，取表示点的二维数组中首位）</p>
-</div>
-<div class="tsd-comment tsd-typography"></div>
-<ul class="tsd-parameters">
-<li class="tsd-parameter-signature">
-<ul class="tsd-signatures">
-<li class="tsd-signature"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">p</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_Grid"><span class="tsd-kind-constructor-signature">new <wbr/>Grid</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">MBR</span>, <span class="tsd-kind-parameter">data</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Coverage.Grid.html" class="tsd-signature-type tsd-kind-class">Grid</a><a href="#constructor.new_Grid" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">p</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4></li></ul></li></ul></li>
+<h5><span class="tsd-kind-parameter">MBR</span>: <a href="../types/Geometry.MBR.html" class="tsd-signature-type tsd-kind-type-alias">MBR</a></h5></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">p</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> = defaultGetY</span></h5>
-<div class="tsd-comment tsd-typography"><p>若 params 为点数组，则为获取 y 坐标的函数（有默认规则，取表示点的二维数组中末位）</p>
-</div>
-<div class="tsd-comment tsd-typography"></div>
-<ul class="tsd-parameters">
-<li class="tsd-parameter-signature">
-<ul class="tsd-signatures">
-<li class="tsd-signature"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">p</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
-<li class="tsd-description">
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
-<li>
-<h5><span class="tsd-kind-parameter">p</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4></li></ul></li></ul></li></ul></div>
-<h4 class="tsd-returns-title">Returns <a href="Delaunay.Voronoi.html" class="tsd-signature-type tsd-kind-class">Voronoi</a></h4>
-<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<h5><span class="tsd-kind-parameter">data</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Coverage.Grid.html" class="tsd-signature-type tsd-kind-class">Grid</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:634</li></ul></aside></li></ul></section></section>
+<li>Defined in src/packages/Coverage.ts:22</li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
-<section class="tsd-panel tsd-member"><a id="delaunay" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>delaunay</span><a href="#delaunay" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">delaunay</span><span class="tsd-signature-symbol">:</span> <a href="Delaunay.Delaunator.html" class="tsd-signature-type tsd-kind-class">Delaunator</a></div><aside class="tsd-sources">
+<section class="tsd-panel tsd-member"><a id="MBR" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>MBR</span><a href="#MBR" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">MBR</span><span class="tsd-signature-symbol">:</span> <a href="../types/Geometry.MBR.html" class="tsd-signature-type tsd-kind-type-alias">MBR</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:624</li></ul></aside></section>
-<section class="tsd-panel tsd-member"><a id="points" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>points</span><a href="#points" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">points</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></div><aside class="tsd-sources">
+<li>Defined in src/packages/Coverage.ts:16</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="bands" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>bands</span><a href="#bands" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">bands</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:625</li></ul></aside></section></section>
+<li>Defined in src/packages/Coverage.ts:21</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="cols" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>cols</span><a href="#cols" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">cols</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/Coverage.ts:20</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="data" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>data</span><a href="#data" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">data</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/Coverage.ts:17</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="rows" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>rows</span><a href="#rows" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">rows</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/Coverage.ts:19</li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="shape" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>shape</span><a href="#shape" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">shape</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/Coverage.ts:18</li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
-<section class="tsd-panel tsd-member"><a id="cutVoronoiByMBR" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>cut<wbr/>Voronoi<wbr/>ByMBR</span><a href="#cutVoronoiByMBR" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<section class="tsd-panel tsd-member"><a id="ConvertToGridMBR" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>Convert<wbr/>To<wbr/>GridMBR</span><a href="#ConvertToGridMBR" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="cutVoronoiByMBR.cutVoronoiByMBR-1"><span class="tsd-kind-call-signature">cut<wbr/>Voronoi<wbr/>ByMBR</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">MBR</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#cutVoronoiByMBR.cutVoronoiByMBR-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="ConvertToGridMBR.ConvertToGridMBR-1"><span class="tsd-kind-call-signature">Convert<wbr/>To<wbr/>GridMBR</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">MBR</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../types/Geometry.MBR.html" class="tsd-signature-type tsd-kind-type-alias">MBR</a><a href="#ConvertToGridMBR.ConvertToGridMBR-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>使用 MBR 对 Voronoi 图进行裁剪（由于精度问题，极端情况下不可靠）</p>
+<div class="tsd-comment tsd-typography"><p>由外部经纬度坐标获取网格范围，行列号索引表示（只有全部在栅格范围内才会正常得到结果）</p>
+<ul>
+<li>若外部坐标不全部在网格范围内，则返回 null</li>
+</ul>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">MBR</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+<h5><span class="tsd-kind-parameter">MBR</span>: <a href="../types/Geometry.MBR.html" class="tsd-signature-type tsd-kind-type-alias">MBR</a></h5>
+<div class="tsd-comment tsd-typography"><p>网格行列号范围</p>
+</div>
 <div class="tsd-comment tsd-typography"></div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../types/Geometry.MBR.html" class="tsd-signature-type tsd-kind-type-alias">MBR</a></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:665</li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="getVoronoi" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>get<wbr/>Voronoi</span><a href="#getVoronoi" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<li>Defined in src/packages/Coverage.ts:65</li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="getCoordByGridCoord" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>get<wbr/>Coord<wbr/>By<wbr/>Grid<wbr/>Coord</span><a href="#getCoordByGridCoord" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="getVoronoi.getVoronoi-1"><span class="tsd-kind-call-signature">get<wbr/>Voronoi</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><a href="#getVoronoi.getVoronoi-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getCoordByGridCoord.getCoordByGridCoord-1"><span class="tsd-kind-call-signature">get<wbr/>Coord<wbr/>By<wbr/>Grid<wbr/>Coord</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">GridCoord</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><a href="#getCoordByGridCoord.getCoordByGridCoord-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><ul>
-<li>获取 Voronoi cell 的顶点数组</li>
-</ul>
+<div class="tsd-comment tsd-typography"><p>由行列号反算经纬度坐标（栅格中心点）</p>
 </div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4><ul>
-<li>Map&lt;编号, 顶点数组&gt;</li>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">GridCoord</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+<div class="tsd-comment tsd-typography"><p>网格坐标，格式为：[row, col]</p>
+</div>
+<div class="tsd-comment tsd-typography"></div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h4><ul>
+<li>返回经纬度坐标，格式为：[lon, lat]</li>
 </ul>
 
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:651</li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="isInsideMBR" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>is<wbr/>InsideMBR</span><a href="#isInsideMBR" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<li>Defined in src/packages/Coverage.ts:114</li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="getGridCoord" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>get<wbr/>Grid<wbr/>Coord</span><a href="#getGridCoord" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="isInsideMBR.isInsideMBR-1"><span class="tsd-kind-call-signature">is<wbr/>InsideMBR</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">points</span>, <span class="tsd-kind-parameter">MBR</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#isInsideMBR.isInsideMBR-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getGridCoord.getGridCoord-1"><span class="tsd-kind-call-signature">get<wbr/>Grid<wbr/>Coord</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">Point</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><a href="#getGridCoord.getGridCoord-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>计算输入点的网格坐标（整数行列号坐标）</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">points</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h5></li>
-<li>
-<h5><span class="tsd-kind-parameter">MBR</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
+<h5><span class="tsd-kind-parameter">Point</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+<div class="tsd-comment tsd-typography"><p>输入点坐标，格式为：[lon, lat]</p>
+</div>
+<div class="tsd-comment tsd-typography"></div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h4><ul>
+<li>返回网格坐标，格式为：[row, col] 若输入点不在网格范围内，则返回 null</li>
+</ul>
+
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:697</li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member"><a id="robustVoronoi" class="tsd-anchor"></a>
-<h3 class="tsd-anchor-link"><span>robust<wbr/>Voronoi</span><a href="#robustVoronoi" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<li>Defined in src/packages/Coverage.ts:91</li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="getShape" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>get<wbr/>Shape</span><a href="#getShape" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="robustVoronoi.robustVoronoi-1"><span class="tsd-kind-call-signature">robust<wbr/>Voronoi</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">MBR</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><a href="#robustVoronoi.robustVoronoi-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getShape.getShape-1"><span class="tsd-kind-call-signature">get<wbr/>Shape</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><a href="#getShape.getShape-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><ul>
-<li>更加健壮的 Voronoi 图（将超出 MBR 部分都删去）</li>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/Coverage.ts:28</li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="getSubGrid" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>get<wbr/>Sub<wbr/>Grid</span><a href="#getSubGrid" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="getSubGrid.getSubGrid-1"><span class="tsd-kind-call-signature">get<wbr/>Sub<wbr/>Grid</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">GridMBR</span>, <span class="tsd-kind-parameter">band</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><a href="#getSubGrid.getSubGrid-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>获取指定范围，指定波段的网格数据</p>
+<ul>
+<li>建议：先使用 <code>ConvertToGridMBR</code> 方法获取网格范围，再使用本方法获取网格数据（为简化代码，没有将这两个方法合并）</li>
 </ul>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">MBR</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+<h5><span class="tsd-kind-parameter">GridMBR</span>: <a href="../types/Geometry.MBR.html" class="tsd-signature-type tsd-kind-type-alias">MBR</a></h5>
+<div class="tsd-comment tsd-typography"><p>网格范围 行列号索引表示</p>
+</div>
+<div class="tsd-comment tsd-typography"></div></li>
+<li>
+<h5><span class="tsd-kind-parameter">band</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></h5>
+<div class="tsd-comment tsd-typography"><p>波段号数组</p>
+</div>
 <div class="tsd-comment tsd-typography"></div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h4><ul>
+<li>返回网格数据，格式为：[band][row][col]</li>
+</ul>
+
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:685</li></ul></aside></li></ul></section></section></div>
+<li>Defined in src/packages/Coverage.ts:39</li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -200,12 +232,17 @@
 <div class="tsd-accordion-details">
 <ul>
 <li><a href="#constructor" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a></li>
-<li><a href="#delaunay" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>delaunay</span></a></li>
-<li><a href="#points" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>points</span></a></li>
-<li><a href="#cutVoronoiByMBR" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>cut<wbr/>Voronoi<wbr/>ByMBR</span></a></li>
-<li><a href="#getVoronoi" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Voronoi</span></a></li>
-<li><a href="#isInsideMBR" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>is<wbr/>InsideMBR</span></a></li>
-<li><a href="#robustVoronoi" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>robust<wbr/>Voronoi</span></a></li></ul></div></details></div>
+<li><a href="#MBR" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>MBR</span></a></li>
+<li><a href="#bands" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>bands</span></a></li>
+<li><a href="#cols" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>cols</span></a></li>
+<li><a href="#data" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>data</span></a></li>
+<li><a href="#rows" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>rows</span></a></li>
+<li><a href="#shape" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>shape</span></a></li>
+<li><a href="#ConvertToGridMBR" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>Convert<wbr/>To<wbr/>GridMBR</span></a></li>
+<li><a href="#getCoordByGridCoord" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Coord<wbr/>By<wbr/>Grid<wbr/>Coord</span></a></li>
+<li><a href="#getGridCoord" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Grid<wbr/>Coord</span></a></li>
+<li><a href="#getShape" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Shape</span></a></li>
+<li><a href="#getSubGrid" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Sub<wbr/>Grid</span></a></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="../modules.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1"></use></svg><span>rvgeo</span></a>
 <ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="..">

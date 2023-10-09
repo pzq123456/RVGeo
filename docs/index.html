@@ -12,6 +12,7 @@
 <div class="col-content">
 <div class="tsd-page-title">
 <h2>rvgeo</h2></div>
+
 <div class="Example" 
 style="
     background: linear-gradient(90deg, #0c5e62 0%, #08b372 100%);
@@ -23,15 +24,12 @@ style="
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-">
+    justify-content: center;">
     <a href="/RVGeo/dist/index.html" 
     style="
         color: #ffffff;
         font-size: 20px;
-        text-decoration: none;
-    "
-    >
+        text-decoration: none;">
         (click) Example Page | RVGeo 示例页面 （点此访问）
     </a>
 </div>
@@ -59,37 +57,70 @@ style="
             npm Page | RVGeo npm 页面
         </a>
 </div>
-
-<div class="tsd-panel tsd-typography"><a id="md:rvgeo-重构分支：-next" class="tsd-anchor"></a><h1><a href="#md:rvgeo-重构分支：-next">RVGeo 重构分支： <code>next</code></a></h1><blockquote>
-<p>该分支用于暂时存放重构代码。</p>
+<div class="tsd-panel tsd-typography"><a id="md:rvgeo-v-20" class="tsd-anchor"></a><h1><a href="#md:rvgeo-v-20">RVGeo V 2.0</a></h1><a id="md:本包的潜在优势--potential-advantages" class="tsd-anchor"></a><h2><a href="#md:本包的潜在优势--potential-advantages">本包的潜在优势 | Potential Advantages</a></h2><ul>
+<li>便捷快速地引入基础空间分析算法</li>
+<li>跨地图服务商的一致性开发体验</li>
+</ul>
+<a id="md:定位" class="tsd-anchor"></a><h2><a href="#md:定位">定位</a></h2><ul>
+<li>赋予前端地图以基础空间分析及计算能力。当前一些前端地图库，重视觉效果，轻空间分析，使用者往往需要自己编写冗长的业务代码才能实现一些在桌面应用中极容易实现的功能（例如空间插值、空间求交、投影等）。我希望参考一些经典的 GIS 系统的底层包（AO、AE、GeoTools等）的设计，结合时下流行的前端地图及数据可视化包，使用 TypeScript 语言构建一款功能强大的前端 GIS 工具库。</li>
+<li>探索：在按部就班地实现基础空间分析功能的同时，我希望继续围绕“好用”这一中心探索新的功能。目前已经确定要实现的功能大致包括，时空立方体，地形的三维渲染等。这一块的代码将单独组织，等建立起社区后再逐步集成。</li>
+</ul>
+<a id="md:总览--overview" class="tsd-anchor"></a><h2><a href="#md:总览--overview">总览 | Overview</a></h2><blockquote>
 <ul>
-<li>开始遵守 <a href="https://semver.org/lang/zh-CN/">语义化版本号</a> 规范。</li>
+<li>以下内容为暂定设计稿件。打 “*” 的模块处于待定状态，有可能会并入其他模块。</li>
+</ul>
+</blockquote>
+<p><img src="/tutorials/DrawIO/module.svg" alt=""></p>
+<blockquote>
+<p>图片说明：</p>
+<ul>
+<li>虚线框中代表尚未实现（或正在实现）的模块</li>
+<li>模块在纵向存在依赖（一定的）关系，且左侧部分为矢量数据提供支持，右侧为栅格数据</li>
+<li>核心包与插件系统：紫色实线矩形代表 RVGeo 2.0 的核心包，蓝色虚线矩形代表数据 I/O 插件（设计用于解析和生成不同格式的数据），顶部灰色虚线矩形代表渲染引擎</li>
+<li>Renderer Engine 模块：该模块采用类似于 UNIX 的插件思想，将封装不同的地图服务提供商的API以实现一套统一的基础图形绘制方法，以获得跨地图服务的一致开发体验。另外，该模块还将集成三维地形渲染与基础图表渲染。现考虑将其作为独立于 RVGeo 核心包的插件库发布。</li>
+<li>开发阶段架构可能会有所出入，预计（从现在起）一年左右完成全部开发计划</li>
+</ul>
+</blockquote>
+<a id="md:1-data-io-module" class="tsd-anchor"></a><h3><a href="#md:1-data-io-module">1. Data I/O Module</a></h3><p>该模块封装了 <code>axios</code> 包用以获取数据，暂时实现了 <code>GeoJSON</code> 及 <code>CSV</code> 数据格式的读取与转换。该模块一般将数据解析为多维数组（中间格式），并传递给 <code>Meta</code> 模块用以产生内置 <code>Geometry</code> 或 <code>Coverage</code> 对象。</p>
+<a id="md:2-meta-module" class="tsd-anchor"></a><h3><a href="#md:2-meta-module">2. Meta Module</a></h3><p>该模块类似于工厂函数，用于生成基于 <code>GeoJSON</code> 标准的内置几何对象（栅格对象采用另外的格式，待定）。</p>
+<a id="md:3-geometry-moudle" class="tsd-anchor"></a><h3><a href="#md:3-geometry-moudle">3. Geometry Moudle</a></h3><p>基于 <code>GeoJSON</code> 标准，该模块内部维护了对应的几何对象，主要包括：</p>
+<ul>
+<li><code>Point</code></li>
+<li><code>MultiPoint</code></li>
+<li><code>LineString</code></li>
+<li><code>MultiLineString</code></li>
+<li><code>Polygon</code><blockquote>
+<p>注意：出于易用性的考虑，这些几何类仅包含最基础的数据操作，复杂的空间算法并未封装进这些类中。</p>
+</blockquote>
+</li>
+</ul>
+<a id="md:4-coverage-module-（实现中）" class="tsd-anchor"></a><h3><a href="#md:4-coverage-module-（实现中）">4. Coverage Module （实现中...）</a></h3><p>该模块的数据结构由两部分组成：代表栅格数据的多维数组和代表（矢量）地理覆盖的矩形对象。可通过简单的分割算法将栅格多维数组均匀地分配到地理覆盖矩形的各个格网中。该数据结构可以尽量做到与 <code>GeoJSON</code> 中的 <code>Polygon</code> 相兼容。</p>
+<a id="md:5-unit" class="tsd-anchor"></a><h3><a href="#md:5-unit">5. Unit</a></h3><p>该模块主要用于处理单位换算问题，支持多种单位的互相转换，转换参数以常数的形式记录并提供一些工具函数方便用户进行快速单位换算。（精度仅与一般 <code>JavaScript</code> 计算精度保持一致）</p>
+<a id="md:6-reference" class="tsd-anchor"></a><h3><a href="#md:6-reference">6. Reference</a></h3><p>该模块主要用于坐标系转换，目前仅实现了 <code>WGS84</code> 与 Web 墨卡托坐标系的互相转换。(epsg:4326 &lt;---&gt; epsg:3857) 也就是（椭）球面坐标系与平面坐标系之间的（部分）相互转换。</p>
+<a id="md:7-colors" class="tsd-anchor"></a><h3><a href="#md:7-colors">7*. Colors</a></h3><p>该模块的本质是数值到颜色的映射函数，矢量与栅格都要用到。本应该置于可视化层级（渲染层），但是考虑到 <code>数值-颜色</code> 映射功能在 <code>GIS</code> 中十分基础，且想要尝试一些颜色方面的计算（实验性功能）故把它也放在整个架构的最底层。</p>
+<blockquote>
+<ul>
+<li>以上就是 RVGeo 的基础模块，这些简单的模块是下一步更加复杂模块的基础。另外，我们也将 <code>GeoJSON</code> 的规则使用 <code>TypeScript</code> 中的类部分实现，这些基础模块是维持包接口稳定、规范的重要部分。</li>
+</ul>
+</blockquote>
+<a id="md:8-measuration-module" class="tsd-anchor"></a><h3><a href="#md:8-measuration-module">8. Measuration Module</a></h3><p>量测模块，该模块主要用于距离、面积等参数的量测，属于相对基础的功能（但是又需要依赖几何对象）所以位于第二层级。目前主要提供球面与平面两种坐标系下的数值量测功能接口，一般情况下，认为球面量测较为准确（平面量测受到纬度投影变形的影响），也推荐使用球面量测算法。</p>
+<a id="md:9-spatial-computing-module" class="tsd-anchor"></a><h3><a href="#md:9-spatial-computing-module">9. Spatial computing Module</a></h3><p>空间计算模块，主要是二维的计算几何，日后也会整合三维几何计算的相关算法。目前仅实现了直线求交及（简单）多边形求交。</p>
+<a id="md:10-grid-statistic（实现中）" class="tsd-anchor"></a><h3><a href="#md:10-grid-statistic（实现中）">10*. (Grid) Statistic（实现中...）</a></h3><p>栅格（格网）统计模块，该模块是进行栅格计算与渲染的基础模块。该模块可能会集成在 Grid 类中，视实现情况而定。</p>
+<blockquote>
+<ul>
+<li>以上是第二层级模块，这些模块为更复杂的功能模块提供了功能基础，同时避免了对底层模块对象的直接操作。</li>
+</ul>
+</blockquote>
+<a id="md:11-delaunay-module" class="tsd-anchor"></a><h3><a href="#md:11-delaunay-module">11. Delaunay Module</a></h3><p>（二维）狄罗妮三角网模块，该模块依赖底层基础模块提供的空间量测与计算能力并为更加复杂的功能模块提供数据结构方面的支持。<code>Voronoi</code> 图作为狄罗妮三角网的对偶图也顺带提供。</p>
+<a id="md:12-shell-module" class="tsd-anchor"></a><h3><a href="#md:12-shell-module">12. Shell Module</a></h3><p>壳模块，包括凸包和凸壳（尚未实现），其中凸包可以直接构建，凸壳的构建需要借助三角网。</p>
+<blockquote>
+<ul>
 <li>可以使用以下命令克隆该分支代码：</li>
 </ul>
 </blockquote>
 <pre><code class="language-bash"><span class="hl-0">git</span><span class="hl-1"> </span><span class="hl-2">clone</span><span class="hl-1"> </span><span class="hl-3">--branch</span><span class="hl-1"> </span><span class="hl-2">next</span><span class="hl-1"> </span><span class="hl-3">--single-branch</span><span class="hl-1"> </span><span class="hl-2">https://github.com/pzq123456/RVGeo.git</span>
 </code><button>Copy</button></pre>
-<a id="md:定位" class="tsd-anchor"></a><h2><a href="#md:定位">定位</a></h2><ul>
-<li>赋予前端地图以基础空间分析及计算能力。当前一些前端地图库，重视觉效果，轻空间分析，使用者往往需要自己编写冗长的业务代码才能实现一些在桌面应用中极容易实现的功能（例如空间插值、空间求交、投影等）。我希望参考一些经典的 GIS 系统的底层包（AO、AE、GeoTools等）的设计，结合时下流行的前端地图及数据可视化包，使用 TypeScript 语言构建一款功能强大的前端 GIS 工具库。</li>
-<li>探索：在按部就班地实现基础空间分析功能的同时，我希望继续围绕“好用”这一中心探索新的功能。目前已经确定要实现的功能大致包括，时空立方体，地形的三维渲染等。这一块的代码将单独组织，等建立起社区后再逐步集成。</li>
-</ul>
-<a id="md:概念及设计" class="tsd-anchor"></a><h2><a href="#md:概念及设计">概念及设计</a></h2><a id="md:坐标系系统-referencing" class="tsd-anchor"></a><h3><a href="#md:坐标系系统-referencing">坐标系系统 Referencing</a></h3><a id="md:大地坐标系-gcs-及基准面-datum" class="tsd-anchor"></a><h4><a href="#md:大地坐标系-gcs-及基准面-datum">大地坐标系 (GCS) 及基准面 (Datum)</a></h4><a id="md:投影坐标系-pcs" class="tsd-anchor"></a><h4><a href="#md:投影坐标系-pcs">投影坐标系 (PCS)</a></h4><a id="md:reference" class="tsd-anchor"></a><h2><a href="#md:reference">Reference</a></h2><blockquote>
-<ul>
-<li>版本格式：主版本号.次版本号.修订号，版本号递增规则如下：<ul>
-<li>主版本号：当你做了不兼容的 API 修改，</li>
-<li>次版本号：当你做了向下兼容的功能性新增，</li>
-<li>修订号：当你做了向下兼容的问题修正。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<ul>
-<li>参考 GeoRools 重构 RVGeo</li>
-<li>标准化代码</li>
-<li>引入测试框架</li>
-<li>引入文档生成工具</li>
-</ul>
-<a id="md:一些设想" class="tsd-anchor"></a><h2><a href="#md:一些设想">一些设想</a></h2><blockquote>
+<a id="md:概念及设计" class="tsd-anchor"></a><h2><a href="#md:概念及设计">概念及设计</a></h2><a id="md:坐标系系统-referencing" class="tsd-anchor"></a><h3><a href="#md:坐标系系统-referencing">坐标系系统 Referencing</a></h3><a id="md:大地坐标系-gcs-及基准面-datum" class="tsd-anchor"></a><h4><a href="#md:大地坐标系-gcs-及基准面-datum">大地坐标系 (GCS) 及基准面 (Datum)</a></h4><a id="md:投影坐标系-pcs" class="tsd-anchor"></a><h4><a href="#md:投影坐标系-pcs">投影坐标系 (PCS)</a></h4><a id="md:一些设想" class="tsd-anchor"></a><h2><a href="#md:一些设想">一些设想</a></h2><blockquote>
 <p>若有使用者对于该代码仓库有任何想法，欢迎与我联系。（issue 或者 email）</p>
 </blockquote>
 <p>总的来说 RVGeo 未来的渲染能力有三个大的分支： 二维 Canvas 上下文、三维 WebGL 上下文、依附现有的 WGS84 地图渲染库（百度地图、高德地图、MapBox等）。数据模型依旧分为栅格和矢量，其中二维渲染器主要渲染数据结构，三维及地图渲染器负责渲染具有实际意义的地理目标。 RVGeo 内部数据组织使用多维数组来维护，对外提供 GeoJSON 对象。</p>
@@ -150,10 +181,26 @@ style="
 <ul>
 <li>
 <ul>
-<li><a href="#md:rvgeo-重构分支：-next"><span>RVGeo 重构分支： next</span></a></li>
+<li><a href="#md:rvgeo-v-20"><span>RVGeo <wbr/>V 2.0</span></a></li>
 <li>
 <ul>
+<li><a href="#md:本包的潜在优势--potential-advantages"><span>本包的潜在优势 | <wbr/>Potential <wbr/>Advantages</span></a></li>
 <li><a href="#md:定位"><span>定位</span></a></li>
+<li><a href="#md:总览--overview"><span>总览 | <wbr/>Overview</span></a></li>
+<li>
+<ul>
+<li><a href="#md:1-data-io-module"><span>1. <wbr/>Data <wbr/>I/<wbr/>O <wbr/>Module</span></a></li>
+<li><a href="#md:2-meta-module"><span>2. <wbr/>Meta <wbr/>Module</span></a></li>
+<li><a href="#md:3-geometry-moudle"><span>3. <wbr/>Geometry <wbr/>Moudle</span></a></li>
+<li><a href="#md:4-coverage-module-（实现中）"><span>4. <wbr/>Coverage <wbr/>Module （实现中...）</span></a></li>
+<li><a href="#md:5-unit"><span>5. <wbr/>Unit</span></a></li>
+<li><a href="#md:6-reference"><span>6. <wbr/>Reference</span></a></li>
+<li><a href="#md:7-colors"><span>7*. <wbr/>Colors</span></a></li>
+<li><a href="#md:8-measuration-module"><span>8. <wbr/>Measuration <wbr/>Module</span></a></li>
+<li><a href="#md:9-spatial-computing-module"><span>9. <wbr/>Spatial computing <wbr/>Module</span></a></li>
+<li><a href="#md:10-grid-statistic（实现中）"><span>10*. (<wbr/>Grid) <wbr/>Statistic（实现中...）</span></a></li>
+<li><a href="#md:11-delaunay-module"><span>11. <wbr/>Delaunay <wbr/>Module</span></a></li>
+<li><a href="#md:12-shell-module"><span>12. <wbr/>Shell <wbr/>Module</span></a></li></ul></li>
 <li><a href="#md:概念及设计"><span>概念及设计</span></a></li>
 <li>
 <ul>
@@ -162,7 +209,6 @@ style="
 <ul>
 <li><a href="#md:大地坐标系-gcs-及基准面-datum"><span>大地坐标系 (GCS) 及基准面 (<wbr/>Datum)</span></a></li>
 <li><a href="#md:投影坐标系-pcs"><span>投影坐标系 (PCS)</span></a></li></ul></li></ul></li>
-<li><a href="#md:reference"><span>Reference</span></a></li>
 <li><a href="#md:一些设想"><span>一些设想</span></a></li>
 <li><a href="#md:具体实现简要记录"><span>具体实现简要记录</span></a></li>
 <li>
@@ -172,10 +218,12 @@ style="
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="modules.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1"></use></svg><span>rvgeo</span></a>
 <ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base=".">
+<li><a href="modules/Coverage.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Coverage</a></li>
 <li><a href="modules/Delaunay.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Delaunay</a></li>
 <li><a href="modules/Geometry.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Geometry</a></li>
 <li><a href="modules/Measuration.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Measuration</a></li>
 <li><a href="modules/Meta.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Meta</a></li>
+<li><a href="modules/QuadTree.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>QuadTree</a></li>
 <li><a href="modules/Reference.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Reference</a></li>
 <li><a href="modules/Shell.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Shell</a></li>
 <li><a href="modules/Unit.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Unit</a></li></ul></nav></div></div></div>

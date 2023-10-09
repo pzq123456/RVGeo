@@ -9,6 +9,7 @@ import * as Reference from './Referencing';
 import * as Meta from './MetaData';
 import * as Unit from './constants/Units';
 import * as Coverage from './Coverage';
+import * as QuadTree from './QuadTree';
 
 export {
     Geometry,
@@ -17,6 +18,7 @@ export {
     Delaunay,
     Shell,
     Reference,
+    QuadTree,
     Meta,
     Unit
 };
