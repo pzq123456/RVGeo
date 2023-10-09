@@ -297,21 +297,24 @@ function example10(){ // 四叉树
 function example11(){ // Alpha Shape 算法 凹包
   removeAllOverlay(map);
 
-  let alpha = 0.1;
+  let alpha = 10000000000000;
   let alphaShapes = alphaShape(ps, alpha);
   console.log(alphaShapes);
 
+  let ls = new LineString(alphaShapes);
+  ls.sortPoints();
+  let polygon = new Polygon([ls]);
+  drawPolygon2BLMap(polygon, map);
 
+  // 绘制所有点
+  let icon = innerIcon(0);
+  drawMultiPoint2BLMap(mps, map, icon);
 
-  // let del = Delaunator.from(mps.toXYArray());
-  // let trs = fillIndexArray(del.getTriangleIndices(), mps.toArray());
-  // let trc = triangleCenter(mps.toXYArray(),del, 0);
-  // drawPoint2BLMap(trc, map);
-  // drawTriangleEdge2BLMap(trs, map, {strokeColor: 'blue'});
-  // let res = fillIndexArray(del.getHull(), mps.toArray());
-  // drawPolygon2BLMap([res],map, {fillColor: 'gray'});
-  // drawMultiPoint2BLMap(mps, map);
-  // console.log(del.getHull());
+  // 用红色绘制凸包
+  let ps2 = convexHull(ps);
+  let ls2 = new LineString(ps2);
+  let polygon2 = new Polygon([ls2]);
+  drawPolygon2BLMap(polygon2, map, {fillColor: 'red', fillOpacity: 0.1, strokeColor: 'red', strokeOpacity: 0.5});
 
 }
 

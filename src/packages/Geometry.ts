@@ -6,6 +6,7 @@
  */
 import { convertToMercator } from "./Referencing";
 import { Units } from "./constants/Units";
+import { getAngle } from "./constants/Utils";
 
 // define MBR type
 /**
@@ -384,6 +385,25 @@ export class LineString extends MultiPoint{
 
     static isLineString(lineString: any): lineString is LineString{
         return lineString.type === "LineString";
+    }
+
+    /**
+     * 按照逆时针方向排序点
+     */
+    sortPoints(){
+        let centroid = this.calculateCentroid();
+        let centroidXY = centroid.toXY();
+        this.coordinates.sort((a, b) => {
+            let angleA = getAngle(centroidXY, a.toXY());
+            let angleB = getAngle(centroidXY, b.toXY());
+            if(angleA < angleB){
+                return -1;
+            }else if(angleA > angleB){
+                return 1;
+            }else{
+                return 0;
+            }
+        });
     }
 }
 
