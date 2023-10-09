@@ -11,7 +11,6 @@ import { PointOutsideMBR } from "./CGUtils";
  * - 其中一层为一个二维数组，代表一个波段的值，并与对应的 MBR 对象关联用于挂接地图上的位置
  * - MBR 统一使用 `WGS84` 坐标系
  */
-
 export class Grid{
     MBR: MBR; // [minLon, minLat, maxLon, maxLat]
     data: number[][][]; // 三维数组

@@ -17,6 +17,12 @@ import { getAngle } from "./constants/Utils";
  */
 export type MBR = [number, number, number, number]; // [minLon, minLat, maxLon, maxLat]
 /**
+ * 快速点类型
+ * - 用于点类型的信息交换
+ */
+export type quickPoint = [number, number]; // 快速点类型
+
+/**
  * 将 MBR 转化为 逆时针方向的（简单）多边形数组
  * @param mbr 
  */

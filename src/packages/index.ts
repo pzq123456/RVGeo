@@ -10,6 +10,7 @@ import * as Meta from './MetaData';
 import * as Unit from './constants/Units';
 import * as Coverage from './Coverage';
 import * as QuadTree from './QuadTree';
+import * as Noise from './Noise';
 
 export {
     Geometry,
@@ -20,5 +21,6 @@ export {
     Reference,
     QuadTree,
     Meta,
+    Noise,
     Unit
 };
