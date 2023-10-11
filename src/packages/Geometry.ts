@@ -16,6 +16,33 @@ import { getAngle } from "./constants/Utils";
  * - 并没有严格规定必须为经纬度坐标，也可以是平面坐标
  */
 export type MBR = [number, number, number, number]; // [minLon, minLat, maxLon, maxLat]
+type Rectangle = {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+}
+
+// MBR 转换为 Rectangle
+export function mbrToRectangle(mbr: MBR): Rectangle {
+    return {
+        x: mbr[0],
+        y: mbr[1],
+        w: mbr[2] - mbr[0],
+        h: mbr[3] - mbr[1]
+    }
+}
+
+// Rectangle 转换为 MBR
+export function rectangleToMBR(rectangle: Rectangle): MBR {
+    return [
+        rectangle.x,
+        rectangle.y,
+        rectangle.x + rectangle.w,
+        rectangle.y + rectangle.h
+    ]
+}
+
 /**
  * 快速点类型
  * - 用于点类型的信息交换
@@ -484,4 +511,72 @@ export class Polygon extends MultiLineString{
     }
 
 }
+
+/**
+ * 平面图形：圆形
+ */
+export class Circle {
+    x: number;
+    y: number;
+    r: number;
+    rSquared: number;
+    /**
+     * 构造函数
+     * @param x - 圆心 x 坐标 
+     * @param y - 圆心 y 坐标
+     * @param r - 半径
+     */
+    constructor(x: number, y: number, r: number) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.rSquared = this.r * this.r;
+    }
+
+    /**
+     * 判断点是否在圆内
+     * @param point - 点坐标
+     * @returns {boolean} - true if the point is inside the circle
+     */
+    contains(point:quickPoint) : boolean{
+        // check if the point is in the circle by checking if the euclidean distance of
+        // the point and the center of the circle if smaller or equal to the radius of
+        // the circle
+        let d = Math.pow((point[0] - this.x), 2) + Math.pow((point[1] - this.y), 2);
+        return d <= this.rSquared;
+    }
+
+    /**
+     * （仅平面下保证有效）判断圆是否与 MBR 相交
+     * @param range - MBR
+     * @returns {boolean} - true if the circle intersects the MBR
+     */
+    intersects(range: MBR): boolean {
+        // convert MBR to Rectangle
+        let rect = mbrToRectangle(range);
+
+        let xDist = Math.abs(rect.x - this.x);
+        let yDist = Math.abs(rect.y - this.y);
+
+        // radius of the circle
+        let r = this.r;
+
+        let w = rect.w / 2;
+        let h = rect.h / 2;
+
+        let edges = Math.pow((xDist - w), 2) + Math.pow((yDist - h), 2);
+
+        // no intersection
+        if (xDist > (r + w) || yDist > (r + h))
+        return false;
+
+        // intersection within the circle
+        if (xDist <= w || yDist <= h)
+        return true;
+
+        // intersection on the edge of the circle
+        return edges <= this.rSquared;
+    }
+}
+  
 

@@ -10,6 +10,11 @@
 import { MBR, pointInMBR } from "./Geometry"; 
 import { MBRIntersectMBR, PointOutsideMBR } from "./CGUtils";
 // 支持不同坐标系的关键点： contains 函数，该函数负责判断一个点是否在当前节点的范围内，将其设计为插件形式，方便扩展
+
+/**
+ * 四叉树支持经纬度坐标系（边界会有 Bug， 后续会修复）
+ * - 圆形区域查询仅支持平面坐标系
+ */
 export class QuadTree{
     private capacity: number;
     boundary: MBR;
@@ -92,7 +97,30 @@ export class QuadTree{
         this.isDivided = true;
         this.depth++;
     }
-    queryRange(range: MBR){
+    /**
+     * 四叉树范围查询
+     * - 输入一个矩形范围，返回范围内的所有点
+     * - 同时支持平面坐标系和经纬度坐标系（跨界线、边界、大范围区域会有 BUG）
+     * @param range{MBR} - 查询范围矩形
+     * @returns {Array<[number,number]>}
+     * @example
+     * ```ts
+     * // 平面坐标系下
+     * let quadTree = new QuadTree([0,0,100,100],4);
+     * quadTree.insert([10,10]);
+     * quadTree.insert([20,20]);
+     * quadTree.insert([30,30]);
+     * quadTree.insert([40,40]);
+     * quadTree.insert([50,50]);
+     * quadTree.insert([60,60]);
+     * 
+     * let range = [0,0,50,50];
+     * let pointsInRange = quadTree.queryRange(range);
+     * console.log(pointsInRange);
+     * // [[10,10],[20,20],[30,30],[40,40],[50,50]]
+     * ```
+     */
+    queryRange(range: MBR): [number,number][]{
         let pointsInRange: [number,number][] = [];        
         if(!MBRIntersectMBR(this.boundary,range)){
             return pointsInRange;
@@ -110,5 +138,9 @@ export class QuadTree{
         pointsInRange.push(...this.southWest!.queryRange(range));
         pointsInRange.push(...this.southEast!.queryRange(range));
         return pointsInRange;
+    }
+
+    queryCircle(center: [number,number],radius: number): [number,number][]{
+        
     }
 }

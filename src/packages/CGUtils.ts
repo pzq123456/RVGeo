@@ -176,13 +176,6 @@ export function PointOutsideMBR(point: [number,number], mbr: MBR, isPlane=false)
     }
 }
 
-
-
-
-
-
-
-
 /**
  * 判断两个 MBR 是否相交 返回 true 或 false
  * @param mbr1 - [minx,miny,maxx,maxy]

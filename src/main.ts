@@ -46,7 +46,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
 ])
 
 // 全局模拟数据（点集合）
-let ps = mockPoints(50, myMBR1);
+let ps = mockPoints(10, myMBR1);
 let mps = new MultiPoint(ps);
 
 function example1(){ // 绘制多点及其重心
@@ -294,17 +294,9 @@ function example10(){ // 四叉树
   });
 }
 
-function example11(){ // Alpha Shape 算法 凹包
+function example11(){ // Alpha Shape 算法
+  // 存在问题
   removeAllOverlay(map);
-
-  let alpha = 10000000000000;
-  let alphaShapes = alphaShape(ps, alpha);
-  console.log(alphaShapes);
-
-  let ls = new LineString(alphaShapes);
-  ls.sortPoints();
-  let polygon = new Polygon([ls]);
-  drawPolygon2BLMap(polygon, map);
 
   // 绘制所有点
   let icon = innerIcon(0);
