@@ -381,3 +381,13 @@ export function drawQuadTree2BLMap(quadTree: QuadTree, map: any, style: Object =
 //     let polyline = new BMapGL.Polyline(blPoints, style);   //创建折线
 //     map.addOverlay(polyline);   //增加折线
 // }
+
+// 绘制圆形
+/**
+ * 	var circle = new BMapGL.Circle(point,500,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5}); //创建圆
+ */
+export function drawCircle2BLMap(center: Point | [lon: number, lat: number], radius: number, map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}) {
+    let blPoint = Point.isPoint(center) ? new BMapGL.Point(center.lon, center.lat) : new BMapGL.Point(center[0], center[1]);
+    let circle = new BMapGL.Circle(blPoint, radius, style); //创建圆
+    map.addOverlay(circle);   //增加圆
+}

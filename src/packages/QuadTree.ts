@@ -7,7 +7,7 @@
 /**
  * 四叉树模块（用于支持简单的空间索引，加速计算）
  */
-import { MBR, pointInMBR } from "./Geometry"; 
+import { Circle, MBR, pointInMBR } from "./Geometry"; 
 import { MBRIntersectMBR, PointOutsideMBR } from "./CGUtils";
 // 支持不同坐标系的关键点： contains 函数，该函数负责判断一个点是否在当前节点的范围内，将其设计为插件形式，方便扩展
 
@@ -140,7 +140,32 @@ export class QuadTree{
         return pointsInRange;
     }
 
-    queryCircle(center: [number,number],radius: number): [number,number][]{
-        
+    /**
+     * 四叉树圆形范围查询
+     * @param range - 查询范围
+     * @param found - 查询结果
+     * @returns 
+     */
+    queryCircle(range: Circle, found: any): [number,number][]{
+        if(!found){
+            found = [];
+        }
+        if(!range.intersects(this.boundary)){
+            return found;
+        }
+        if(this.isDivided){
+            this.northWest!.queryCircle(range,found);
+            this.northEast!.queryCircle(range,found);
+            this.southWest!.queryCircle(range,found);
+            this.southEast!.queryCircle(range,found);
+            return found;
+        }
+        for(let i = 0; i < this.points.length; i++){
+            if(range.contains(this.points[i])){
+                found.push(this.points[i]);
+            }
+        }
+        return found;
+
     }
 }

@@ -1,17 +1,18 @@
 import { createToolBar } from './helpers/toolBar.ts'
-import { Point, MultiPoint, LineString, Polygon, mbrToPolygon, MBR } from './packages/Geometry.ts'
+import { Point, MultiPoint, LineString, Polygon, mbrToPolygon, MBR, Circle } from './packages/Geometry.ts'
 import { mockPoints} from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawQuadTree2BLMap } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawQuadTree2BLMap, drawCircle2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
 import { alphaShape, convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
-import { SpherePolygonArea } from './packages/Distance.ts';
+import { SpherePolygonArea, haversine } from './packages/Distance.ts';
 import { intersection, intersectionPolygon, pointInEdge } from './packages/CGUtils.ts';
 import { QuadTree } from './packages/QuadTree.ts'
 
 import * as RVGeo from './packages/index.ts';
 import axios from 'axios';
+import { MBR2Plane, convertToMercator } from './packages/Referencing.ts';
 
 const myMBR1 = [
   -109.07111505279033,
@@ -254,8 +255,9 @@ function example9(){ // 栅格
 }
 
 function example10(){ // 四叉树
-
+  removeAllOverlay(map);
   mps = updateData();
+
 
   let queryMBR = [
     -107.68090845026995,
@@ -263,9 +265,20 @@ function example10(){ // 四叉树
     -106.90893321662871,
     38.664014824200905
   ] as MBR;
-  removeAllOverlay(map);
+
+  let planeMBR = MBR2Plane(queryMBR);
+
+  // 计算对角线距离
+  let diagonal = haversine([queryMBR[0],queryMBR[1]],[queryMBR[2],queryMBR[3]],"meters");
+  // console.log(diagonal);
+  // 164679.81258015073
 
 
+  // circle [-11711030.562217, 4718665.659068] 164679.81258015073 / 4
+  let center = [-11711030.562217, 4718665.659068];
+  let queryCircle = new Circle(center[0],center[1], 164679.81258015073 / 4);
+
+  drawCircle2BLMap(mps.calculateCentroid(), 164679.81258015073, map, {strokeColor: 'red', strokeOpacity: 0.5, fillColor: 'red', fillOpacity: 0.1});
 
   let icon = innerIcon(0);
   drawMultiPoint2BLMap(mps, map, icon);
@@ -273,12 +286,14 @@ function example10(){ // 四叉树
   let boundary = myMBR1;
   let capacity = 2;
   let qtree = new QuadTree(boundary, capacity);
+  let planeTree = new QuadTree(planeMBR, capacity);
 
   mps.toArray().forEach((p) => qtree.insert(p));
+  mps.toXYArray().forEach((p) => planeTree.insert(p));
 
   // query points
   let queryPoints = qtree.queryRange(queryMBR);
-  console.log(queryPoints);
+  // console.log(queryPoints);
   // draw query points
   drawMultiPoint2BLMap(createPointListFromArr(queryPoints), map, innerIcon(1));
 

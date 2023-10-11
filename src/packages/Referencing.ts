@@ -86,3 +86,13 @@ export function convertToMercators(points: Point[] | [lon : number ,lat : number
     return res;
   }
 }
+
+export function MBR2Plane(mbr: [number,number,number,number],unit: Units = "meters", roundNum: number = 6): [number,number,number,number]{
+  let res = [];
+
+  let plane0 = convertToMercator([mbr[0],mbr[1]],unit,roundNum);
+  let plane1 = convertToMercator([mbr[2],mbr[3]],unit,roundNum);
+
+  res = [plane0[0],plane0[1],plane1[0],plane1[1]] as [number,number,number,number];
+  return res;
+}

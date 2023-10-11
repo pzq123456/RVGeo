@@ -292,7 +292,7 @@ export class MultiPoint extends Geometry{
      * - get Mercator coordinate
      * @returns 返回墨卡托坐标数组 [[x1, y1], [x2, y2], ...]
      */
-    toXYArray(): number[][] {
+    toXYArray(): [number,number][] {
         let res = [];
         for(let i = 0; i  < this.coordinates.length; i++){
             let tmp = this.coordinates[i].toXY();
