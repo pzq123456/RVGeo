@@ -149,26 +149,23 @@ export class QuadTree{
      * @param found - 查询结果
      * @returns 
      */
-    queryCircle(range: Circle, found: any): [number,number][]{
-        if(!found){
-            found = [];
-        }
+    queryCircle(range: Circle): [number,number][]{
+        let pointsInRange: [number,number][] = [];        
         if(!range.intersects(this.boundary)){
-            return found;
-        }
-        if(this.isDivided){
-            this.northWest!.queryCircle(range,found);
-            this.northEast!.queryCircle(range,found);
-            this.southWest!.queryCircle(range,found);
-            this.southEast!.queryCircle(range,found);
-            return found;
+            return pointsInRange;
         }
         for(let i = 0; i < this.points.length; i++){
             if(range.contains(this.points[i])){
-                found.push(this.points[i]);
+                pointsInRange.push(this.points[i]);
             }
         }
-        return found;
-
+        if(this.northWest === null){
+            return pointsInRange;
+        }
+        pointsInRange.push(...this.northWest.queryCircle(range));
+        pointsInRange.push(...this.northEast!.queryCircle(range));
+        pointsInRange.push(...this.southWest!.queryCircle(range));
+        pointsInRange.push(...this.southEast!.queryCircle(range));
+        return pointsInRange;
     }
 }

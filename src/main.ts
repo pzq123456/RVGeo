@@ -295,7 +295,7 @@ function example10(){ // 四叉树
 
   // query points
   // let queryPoints = qtree.queryRange(queryMBR);
-  let queryPoints2 = planeTree.queryCircle(queryCircle,[]);
+  let queryPoints2 = planeTree.queryCircle(queryCircle);
   console.log(queryPoints2);
   drawPlaneMPS2BLMap(queryPoints2, map);
 
