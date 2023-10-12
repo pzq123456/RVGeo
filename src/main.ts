@@ -1,9 +1,9 @@
 import { createToolBar } from './helpers/toolBar.ts'
 import { Point, MultiPoint, LineString, Polygon, mbrToPolygon, MBR, Circle } from './packages/Geometry.ts'
 import { mockPoints} from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawQuadTree2BLMap, drawCircle2BLMap, drawPlaneMPS2BLMap } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawQuadTree2BLMap, drawCircle2BLMap, drawPlaneMPS2BLMap, drawPlaneMBR2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
-import { alphaShape, convexHull } from './packages/Shell.ts';
+import { alphaComplex, alphaShape, convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
 import { SpherePolygonArea, haversine } from './packages/Distance.ts';
@@ -42,12 +42,12 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '点线关系', action: () =>  example8()},
   { name: '栅格', action: () =>  example9()},
   { name: '四叉树', action: () =>  example10()},
-  { name: 'Alpha Shape', action: () =>  example11()},
+  { name: 'Alpha Complex', action: () =>  example11()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
 ])
 
 // 全局模拟数据（点集合）
-let ps = mockPoints(10, myMBR1);
+let ps = mockPoints(30, myMBR1);
 let mps = new MultiPoint(ps);
 
 function example1(){ // 绘制多点及其重心
@@ -60,7 +60,7 @@ function example1(){ // 绘制多点及其重心
 
 function example2(){ // 绘制三角网
   removeAllOverlay(map)
-  let del = Delaunator.from(mps.toXYArray());
+  let del = Delaunator.from(mps.toXYArray()); // 传入平面坐标！
   let trs = fillIndexArray(del.getTriangleIndices(), mps.toArray());
   let trc = triangleCenter(mps.toXYArray(),del, 0);
   drawPoint2BLMap(trc, map);
@@ -258,7 +258,6 @@ function example10(){ // 四叉树
   removeAllOverlay(map);
   mps = updateData();
 
-
   let queryMBR = [
     -107.68090845026995,
     37.315553928222414,
@@ -266,22 +265,20 @@ function example10(){ // 四叉树
     38.664014824200905
   ] as MBR;
 
+  // 平面四叉树矩形范围
   let planeMBR = MBR2Plane(myMBR1);
-  console.log(plane2MBR(planeMBR));
-  // console.log(queryMBR);
-
   // 计算对角线距离
   let diagonal = haversine([queryMBR[0],queryMBR[1]],[queryMBR[2],queryMBR[3]],"meters");
- 
-  let center = [-11711030.562217, 4718665.659068];
-  let queryCircle = new Circle(center[0],center[1], Math.round(diagonal));
+  let center = convertToMercator(mps.calculateCentroid(),"meters",6);
+  // 查询的圆形范围
+  let queryCircle = new Circle(center[0],center[1], Math.round(diagonal)/2);
 
-  // let boundary = myMBR1;
+  let boundary = myMBR1;
   let capacity = 2;
-  // let qtree = new QuadTree(boundary, capacity);
+  let qtree = new QuadTree(boundary, capacity);
   let planeTree = new QuadTree(planeMBR, capacity);
 
-  // mps.toArray().forEach((p) => qtree.insert(p));
+  mps.toArray().forEach((p) => qtree.insert(p));
   mps.toXYArray().forEach((p) => {
     planeTree.insert(p);
   });
@@ -289,38 +286,44 @@ function example10(){ // 四叉树
   // mps.coordinates.forEach((p) => {
   //   drawLabel(p, `${p.to2DArray()}` ,map)
   // });
-  drawQuadTree2BLMap(planeTree, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
-
-  console.log(planeTree);
+  drawQuadTree2BLMap(planeTree, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.1 },true);
 
   // query points
   // let queryPoints = qtree.queryRange(queryMBR);
-  let queryPoints2 = planeTree.queryCircle(queryCircle);
-  console.log(queryPoints2);
+  let increcs = [] as MBR[];
+  let queryPoints2 = planeTree.queryCircle(queryCircle,increcs);
+ 
+  let queryPoints = qtree.queryRange(queryMBR);
   drawPlaneMPS2BLMap(queryPoints2, map);
-
-  drawCircle2BLMap(mps.calculateCentroid(), Math.round(diagonal), map, {strokeColor: 'red', strokeOpacity: 0.5, fillColor: 'red', fillOpacity: 0.1});
+  for(let i = 0; i < increcs.length; i++){
+    drawPlaneMBR2BLMap(increcs[i], map, {strokeColor: 'blue', strokeOpacity: 0.5,});
+  }
+  drawCircle2BLMap(mps.calculateCentroid(), Math.round(diagonal)/2, map, {strokeColor: 'red', strokeOpacity: 0.5, fillColor: 'red', fillOpacity: 0.2});
 
   let icon = innerIcon(0);
   drawMultiPoint2BLMap(mps, map, icon);
   // draw query points
-  // drawMultiPoint2BLMap(createPointListFromArr(queryPoints), map, innerIcon(1));
-
-  // drawQuadTree2BLMap(qtree, map);
-
+  drawMultiPoint2BLMap(createPointListFromArr(queryPoints), map, innerIcon(1));
   // draw mbr
-  // drawRectangle2BLMap(queryMBR, map,{
-  //   strokeColor: "green",
-  //   strokeWeight: 2,
-  //   strokeOpacity: 0.5,
-  //   fillColor: 'green',
-  //   fillOpacity: 0.2
-  // });
+  drawRectangle2BLMap(queryMBR, map,{
+    strokeColor: "green",
+    strokeWeight: 2,
+    strokeOpacity: 0.5,
+    fillColor: 'green',
+    fillOpacity: 0.2
+  });
+
 }
 
 function example11(){ // Alpha Shape 算法
   // 存在问题
   removeAllOverlay(map);
+  let alpha = 1/15000000000;
+  let alphacomplex = alphaComplex(ps, alpha);
+  console.log(alphacomplex);
+  let trs = fillIndexArray(alphacomplex, mps.toArray());
+ 
+  drawTriangleEdge2BLMap(trs, map, {strokeColor: 'blue'});
 
   // 绘制所有点
   let icon = innerIcon(0);

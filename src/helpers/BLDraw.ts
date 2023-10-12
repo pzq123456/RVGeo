@@ -409,3 +409,8 @@ export function drawPlaneMPS2BLMap(points: [X: number, Y: number][], map: any,ic
         drawPlanePoint2BLMap(points[i],map,icon);
     }
 }
+
+export function drawPlaneMBR2BLMap(MBR: [minX: number, minY: number, maxX: number, maxY: number], map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5}) {
+    let points = plane2MBR(MBR);
+    drawRectangle2BLMap(points, map, style);
+}

@@ -110,13 +110,13 @@ export function alphaShape(points: Point[] , alpha: number): Point[] {
     let pointsXY = points.map((item) => {
         return item.toXY();
     }); // 得到一个平面坐标及原始索引的数组
-    console.log(pointsXY);
+
 
     // 1. Compute the Delaunay triangulation of S
     let delaunay = Delaunator.from(pointsXY);
     let triangleIndices = delaunay.getTriangleIndices(); // 得到三角形的索引 [[0,1,2],[1,2,3],...]
     let triangles = fillIndexArray(triangleIndices, pointsXY); // 得到三角形的点数组 [[p1,p2,p3],[p2,p3,p4],...]
-    console.log(triangles);
+
     // 2. Then we determine C by inspecting all simplices T in DT(S)
     let c = [];
     for (let i = 0; i < triangles.length; i++) {
@@ -127,6 +127,7 @@ export function alphaShape(points: Point[] , alpha: number): Point[] {
             c.push(t);
         }
     }
+    
 
     // 3. All d-simplices of C make up the interior of S . All simplices on the boundary C form S .
     let res = [];
@@ -181,4 +182,33 @@ export function alphaShape(points: Point[] , alpha: number): Point[] {
         let y = (p1[1] + p2[1] + p3[1]) / 3;
         return [x, y];
     }
+}
+
+/**
+ * Alpha Complex 算法
+ * - Alpha shapes are a generalization of Delaunay triangulations. 
+ * - Given a parameter alpha and a point set, they compute a simplicial complex which covers the point set in simplices whose circum radii are less than 1/alpha.
+ * @param points - 点数组
+ * @param alpha - alpha 值
+ */
+export function alphaComplex(
+    points: Point[],
+    alpha: number,
+)
+{
+    // 首先转化为平面坐标
+    let pointsXY = points.map((item) => {
+        return item.toXY();
+    }); // 得到一个平面坐标及原始索引的数组
+
+    // 1. Compute the Delaunay triangulation of S
+    let delaunay = Delaunator.from(pointsXY);
+    let triangleIndices = delaunay.getTriangleIndices() as [number,number,number][]; // 得到三角形的索引 [[0,1,2],[1,2,3],...
+    // console.log(triangleIndices);
+    let res = triangleIndices.filter((cell: [number,number,number]) => { 
+        let triangle = [pointsXY[cell[0]], pointsXY[cell[1]], pointsXY[cell[2]]];
+        // console.log(Delaunator.circumRadius(triangle[0], triangle[1], triangle[2]) * alpha < 1);
+        return Delaunator.circumRadius(triangle[0], triangle[1], triangle[2]) * alpha < 1;
+    });
+    return res;
 }

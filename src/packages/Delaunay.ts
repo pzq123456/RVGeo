@@ -399,7 +399,7 @@ export class Delaunator {
      * - 获得三角形的索引，以3个元素的数组的数组的形式
      * @returns {[number,number,number]}
      */
-    getTriangleIndices(): [number, number, number] {
+    getTriangleIndices(): [number, number, number][] {
         let res = [];
         for (let i = 0; i < this.triangles.length; i += 3) {
             res.push([
@@ -409,6 +409,29 @@ export class Delaunator {
             ]);
         }
         return res;
+    }
+
+    /**
+     * 计算三点外接圆的半径
+     * @param p1 
+     * @param p2 
+     * @param p3 
+     * @returns 
+     */
+    static circumRadius(p1:[number, number], p2:[number, number], p3:[number, number]) {
+        const dx = p2[0] - p1[0];
+        const dy = p2[1] - p1[1];
+        const ex = p3[0] - p1[0];
+        const ey = p3[1] - p1[1];
+
+        const bl = dx * dx + dy * dy;
+        const cl = ex * ex + ey * ey;
+        const d = 0.5 / (dx * ey - dy * ex);
+
+        const x = (ey * bl - dy * cl) * d;
+        const y = (dx * cl - ex * bl) * d;
+
+        return x * x + y * y;
     }
 
     circumcenter(ax, ay, bx, by, cx, cy) {
@@ -620,6 +643,7 @@ function forEachVoronoiCell(points, delaunay, callback) {
         }
     }
 }
+
 export class Voronoi{
     delaunay: Delaunator; // Delaunay triangulation
     points: number[][]; // points array

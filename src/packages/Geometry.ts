@@ -25,9 +25,11 @@ type Rectangle = {
 
 // MBR 转换为 Rectangle
 export function mbrToRectangle(mbr: MBR): Rectangle {
+    // x,y 为中心
+    // w,h 为宽高
     return {
-        x: mbr[0],
-        y: mbr[1],
+        x: (mbr[0] + mbr[2]) / 2,
+        y: (mbr[1] + mbr[3]) / 2,
         w: mbr[2] - mbr[0],
         h: mbr[3] - mbr[1]
     }
@@ -35,11 +37,13 @@ export function mbrToRectangle(mbr: MBR): Rectangle {
 
 // Rectangle 转换为 MBR
 export function rectangleToMBR(rectangle: Rectangle): MBR {
+    // x,y 为中心
+    // w,h 为宽高
     return [
-        rectangle.x,
-        rectangle.y,
-        rectangle.x + rectangle.w,
-        rectangle.y + rectangle.h
+        rectangle.x - rectangle.w / 2,
+        rectangle.y - rectangle.h / 2,
+        rectangle.x + rectangle.w / 2,
+        rectangle.y + rectangle.h / 2
     ]
 }
 
@@ -536,14 +540,14 @@ export class Circle {
     /**
      * 判断点是否在圆内
      * @param point - 点坐标
+     * @param threshold - （默认为0）容差（用于修正计算误差）*建议根据实际情况手动调整
      * @returns {boolean} - true if the point is inside the circle
      */
-    contains(point:quickPoint) : boolean{
-        // check if the point is in the circle by checking if the euclidean distance of
-        // the point and the center of the circle if smaller or equal to the radius of
-        // the circle
-        let d = Math.pow(point[0] - this.x, 2) + Math.pow(point[1] - this.y, 2);
-        return d <= this.rSquared;
+    contains(point:quickPoint,threshold:number = 0) : boolean{
+        // make it more robust
+        let x = point[0];
+        let y = point[1];
+        return Math.pow((x - this.x), 2) + Math.pow((y - this.y), 2) - this.rSquared <= threshold;
     }
 
     /**
