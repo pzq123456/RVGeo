@@ -542,7 +542,7 @@ export class Circle {
         // check if the point is in the circle by checking if the euclidean distance of
         // the point and the center of the circle if smaller or equal to the radius of
         // the circle
-        let d = Math.pow((point[0] - this.x), 2) + Math.pow((point[1] - this.y), 2);
+        let d = Math.pow(point[0] - this.x, 2) + Math.pow(point[1] - this.y, 2);
         return d <= this.rSquared;
     }
 

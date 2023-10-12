@@ -96,3 +96,13 @@ export function MBR2Plane(mbr: [number,number,number,number],unit: Units = "mete
   res = [plane0[0],plane0[1],plane1[0],plane1[1]] as [number,number,number,number];
   return res;
 }
+
+export function plane2MBR(plane: [number,number,number,number],unit: Units = "meters", roundNum: number = 6): [number,number,number,number]{
+  let res = [];
+
+  let mbr0 = convertToWgs84([plane[0],plane[1]]);
+  let mbr1 = convertToWgs84([plane[2],plane[3]]);
+
+  res = [mbr0[0],mbr0[1],mbr1[0],mbr1[1]] as [number,number,number,number];
+  return res;
+}

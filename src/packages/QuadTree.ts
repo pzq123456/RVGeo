@@ -47,7 +47,10 @@ export class QuadTree{
      * @returns {boolean} - 是否插入成功
      */
     insert(point: [number,number]): boolean{
-        if(PointOutsideMBR(point,this.boundary,true)){
+        if(PointOutsideMBR(point,this.boundary)){
+            // console.log("Point outside of the boundary");
+            // console.log(point);
+            // console.log(this.boundary);
             return false;
         }
 

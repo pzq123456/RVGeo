@@ -143,7 +143,7 @@ public static boolean isInRange(double point, double left,double right){
  * determine if a point is outside of a MBR (polygon boundary is considered inside)
  * @param point - [x,y]
  * @param mbr - [minx,miny,maxx,maxy]
- * @param isPlane - 是否为平面坐标系(默认为 false)
+ * @param isPlane - 是否需要转换成平面坐标系再进行判断
  * @returns {boolean} - true if the point is outside of the MBR
  * - 如果点在 MBR 外，返回 true
  */

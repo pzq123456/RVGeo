@@ -1,7 +1,7 @@
 import { createToolBar } from './helpers/toolBar.ts'
 import { Point, MultiPoint, LineString, Polygon, mbrToPolygon, MBR, Circle } from './packages/Geometry.ts'
 import { mockPoints} from './tests/Mock.ts';
-import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawQuadTree2BLMap, drawCircle2BLMap } from './helpers/BLDraw.ts';
+import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawQuadTree2BLMap, drawCircle2BLMap, drawPlaneMPS2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
 import { alphaShape, convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
@@ -12,7 +12,7 @@ import { QuadTree } from './packages/QuadTree.ts'
 
 import * as RVGeo from './packages/index.ts';
 import axios from 'axios';
-import { MBR2Plane, convertToMercator } from './packages/Referencing.ts';
+import { MBR2Plane, convertToMercator, plane2MBR } from './packages/Referencing.ts';
 
 const myMBR1 = [
   -109.07111505279033,
@@ -266,47 +266,56 @@ function example10(){ // 四叉树
     38.664014824200905
   ] as MBR;
 
-  let planeMBR = MBR2Plane(queryMBR);
+  let planeMBR = MBR2Plane(myMBR1);
+  console.log(plane2MBR(planeMBR));
+  // console.log(queryMBR);
 
   // 计算对角线距离
   let diagonal = haversine([queryMBR[0],queryMBR[1]],[queryMBR[2],queryMBR[3]],"meters");
-  // console.log(diagonal);
-  // 164679.81258015073
-
-
-  // circle [-11711030.562217, 4718665.659068] 164679.81258015073 / 4
+ 
   let center = [-11711030.562217, 4718665.659068];
-  let queryCircle = new Circle(center[0],center[1], 164679.81258015073 / 4);
+  let queryCircle = new Circle(center[0],center[1], Math.round(diagonal));
 
-  drawCircle2BLMap(mps.calculateCentroid(), 164679.81258015073, map, {strokeColor: 'red', strokeOpacity: 0.5, fillColor: 'red', fillOpacity: 0.1});
+  // let boundary = myMBR1;
+  let capacity = 2;
+  // let qtree = new QuadTree(boundary, capacity);
+  let planeTree = new QuadTree(planeMBR, capacity);
+
+  // mps.toArray().forEach((p) => qtree.insert(p));
+  mps.toXYArray().forEach((p) => {
+    planeTree.insert(p);
+  });
+
+  // mps.coordinates.forEach((p) => {
+  //   drawLabel(p, `${p.to2DArray()}` ,map)
+  // });
+  drawQuadTree2BLMap(planeTree, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+
+  console.log(planeTree);
+
+  // query points
+  // let queryPoints = qtree.queryRange(queryMBR);
+  let queryPoints2 = planeTree.queryCircle(queryCircle,[]);
+  console.log(queryPoints2);
+  drawPlaneMPS2BLMap(queryPoints2, map);
+
+  drawCircle2BLMap(mps.calculateCentroid(), Math.round(diagonal), map, {strokeColor: 'red', strokeOpacity: 0.5, fillColor: 'red', fillOpacity: 0.1});
 
   let icon = innerIcon(0);
   drawMultiPoint2BLMap(mps, map, icon);
-
-  let boundary = myMBR1;
-  let capacity = 2;
-  let qtree = new QuadTree(boundary, capacity);
-  let planeTree = new QuadTree(planeMBR, capacity);
-
-  mps.toArray().forEach((p) => qtree.insert(p));
-  mps.toXYArray().forEach((p) => planeTree.insert(p));
-
-  // query points
-  let queryPoints = qtree.queryRange(queryMBR);
-  // console.log(queryPoints);
   // draw query points
-  drawMultiPoint2BLMap(createPointListFromArr(queryPoints), map, innerIcon(1));
+  // drawMultiPoint2BLMap(createPointListFromArr(queryPoints), map, innerIcon(1));
 
-  drawQuadTree2BLMap(qtree, map);
+  // drawQuadTree2BLMap(qtree, map);
 
   // draw mbr
-  drawRectangle2BLMap(queryMBR, map,{
-    strokeColor: "green",
-    strokeWeight: 2,
-    strokeOpacity: 0.5,
-    fillColor: 'green',
-    fillOpacity: 0.2
-  });
+  // drawRectangle2BLMap(queryMBR, map,{
+  //   strokeColor: "green",
+  //   strokeWeight: 2,
+  //   strokeOpacity: 0.5,
+  //   fillColor: 'green',
+  //   fillOpacity: 0.2
+  // });
 }
 
 function example11(){ // Alpha Shape 算法

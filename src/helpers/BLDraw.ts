@@ -10,6 +10,7 @@
 import { Point, MultiPoint, LineString, MultiLineString, Polygon, MBR } from '../packages/Geometry.ts';
 import { fillIndexArray } from '../packages/constants/Utils.ts';
 import { QuadTree } from '../packages/QuadTree.ts';
+import { convertToWgs84, plane2MBR } from '../packages/Referencing.ts';
 // disable ts error
 declare var BMapGL: any;
 
@@ -315,8 +316,12 @@ export function drawGridLines2BLMap (GridMBR: MBR, rows: number, cols: number, m
 /**
  * 递归绘制四叉树边界矩形
  */
-export function drawQuadTree2BLMap(quadTree: QuadTree, map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.4}) {
-    let boundary = quadTree.boundary;
+export function drawQuadTree2BLMap(quadTree: QuadTree, map: any, style: Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.4},IsPlane:boolean = false) {
+    // 若需要绘制平面坐标系的四叉树
+
+    // let boundary = quadTree.boundary;
+    let boundary = IsPlane ? quadTree.boundary : plane2MBR(quadTree.boundary)
+
     let minLon = boundary[0];
     let minLat = boundary[1];
     let maxLon = boundary[2];
@@ -327,7 +332,8 @@ export function drawQuadTree2BLMap(quadTree: QuadTree, map: any, style: Object =
         [maxLon, maxLat],
         [minLon, maxLat],
         [minLon, minLat]
-    ];
+    ] as [number, number][];
+
     drawLineString2BLMap(rect, map, style);
     if (quadTree.northWest) {
         // let style = { strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5}
@@ -390,4 +396,16 @@ export function drawCircle2BLMap(center: Point | [lon: number, lat: number], rad
     let blPoint = Point.isPoint(center) ? new BMapGL.Point(center.lon, center.lat) : new BMapGL.Point(center[0], center[1]);
     let circle = new BMapGL.Circle(blPoint, radius, style); //创建圆
     map.addOverlay(circle);   //增加圆
+}
+
+export function drawPlanePoint2BLMap(point: [X: number, Y: number], map: any, icon?: any) {
+    // 首先转换回经纬度坐标
+    let lonlat = convertToWgs84(point);
+    drawPoint2BLMap(lonlat, map, icon);
+}
+
+export function drawPlaneMPS2BLMap(points: [X: number, Y: number][], map: any,icon?: any) {
+    for(let i = 0; i < points.length; i++){
+        drawPlanePoint2BLMap(points[i],map,icon);
+    }
 }
