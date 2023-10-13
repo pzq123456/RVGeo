@@ -256,7 +256,7 @@ function example9(){ // 栅格
 
 function example10(){ // 四叉树
   removeAllOverlay(map);
-  mps = updateData();
+  // mps = updateData();
 
   let queryMBR = [
     -107.68090845026995,

@@ -4,8 +4,6 @@
  */
 
 // 平面 计算几何 部分
-
-
 import { MBR, mbrToPolygon } from "./Geometry";
 import { convertToMercator, convertToWgs84 } from "./Referencing";
 import { ccw } from "./constants/Utils";
@@ -93,50 +91,6 @@ export function intersection(
     // 返回交点
     return [p1[0] + v1[0] * t1, p1[1] + v1[1] * t1];
 }
-
-
-
-/**
- * 
-public static boolean isInArea(double latitue,double longitude,double areaLatitude1,double areaLatitude2,double areaLongitude1,double areaLongitude2){
-    if(isInRange(latitue, areaLatitude1, areaLatitude2)){//如果在纬度的范围内
-        if(areaLongitude1*areaLongitude2>0){//如果都在东半球或者都在西半球
-            if(isInRange(longitude, areaLongitude1, areaLongitude2)){
-                return true;
-            }else {
-                return false;
-            }
-        }else {//如果一个在东半球，一个在西半球
-            if(Math.abs(areaLongitude1)+Math.abs(areaLongitude2)<180){//如果跨越0度经线在半圆的范围内
-                if(isInRange(longitude, areaLongitude1, areaLongitude2)){
-                    return true;
-                }else {
-                    return false;
-                }
-            }else{//如果跨越180度经线在半圆范围内
-                double left = Math.max(areaLongitude1, areaLongitude2);//东半球的经度范围left-180
-                double right = Math.min(areaLongitude1, areaLongitude2);//西半球的经度范围right-（-180）
-                if(isInRange(longitude, left, 180)||isInRange(longitude, right，-180)){
-                    return true;
-                }else {
-                    return false;
-                }
-            }
-        }
-    }else{
-        return false;
-    }
-}
-
-public static boolean isInRange(double point, double left,double right){
-        if(point>=Math.min(left, right)&&point<=Math.max(left, right)){
-            return true;
-        }else {
-            return false;
-        }
-    
-}
- */
 
 /**
  * 判断点是否在 MBR 外（平面与经纬度坐标通用，多边形边界算作在内）
@@ -240,8 +194,6 @@ export function intersectionPolygon(clipPolygon: [number,number][], subjectPolyg
     }
     return outputList;
 }
-
-
 
 /**
  * 判断点是否在简单多边形内部（平面与经纬度坐标通用，多边形边界算作在内）

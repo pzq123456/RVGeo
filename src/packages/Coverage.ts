@@ -3,8 +3,6 @@
  */
 import { MBR } from "./Geometry";
 import { PointOutsideMBR } from "./CGUtils";
-
-
 /**
  * 网格类（本质是三维数组）:
  * - 三维数组的每一层代表一个波段
