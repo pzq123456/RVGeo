@@ -1,14 +1,20 @@
 // 禁用 TS2304 检查器，因为我们将使用 require 语句
 // @ts-nocheck
-function addScript2Page(yourAK: string) {
-  const script = document.createElement('script');
+
+// 读取 myConfig.json 文件
+import * as config from '../myConfig.json'
+// @ts-nocheck
+export function addScript2Page(yourAK: string) {
+  let script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = `http://api.map.baidu.com/api?v=1.0&&type=webgl&ak=${yourAK}&callback=init`;
+  console.log(yourAK);
+  script.src = `https://api.map.baidu.com/api?v=1.0&type=webgl&ak=${yourAK}&callback=initialize`;
   document.body.appendChild(script);
 }
 
 
-const ak = 'zsuRD8fmHkCdmWzC84NDbsvwAiWBdCce' // 百度的地图密钥
+
+const ak = config.BMapAK;
 
 /**
  * 异步加载百度地图（向页面异步写入脚本标签）
@@ -57,3 +63,6 @@ export function initMap() {
   map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
   })
 }
+
+
+

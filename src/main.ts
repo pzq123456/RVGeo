@@ -1,9 +1,10 @@
 import { createToolBar } from './helpers/toolBar.ts'
+
 import { Point, MultiPoint, LineString, Polygon, mbrToPolygon, MBR, Circle } from './packages/Geometry.ts'
 import { mockPoints} from './tests/Mock.ts';
 import { drawMultiPoint2BLMap, removeAllOverlay, drawRectangle2BLMap, drawLineString2BLMap,drawPolygon2BLMap, innerIcon,drawTriangleEdge2BLMap, drawPoint2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawQuadTree2BLMap, drawCircle2BLMap, drawPlaneMPS2BLMap, drawPlaneMBR2BLMap } from './helpers/BLDraw.ts';
 import { createPointListFromArr } from './packages/MetaData.ts';
-import { alphaComplex, alphaShape, convexHull } from './packages/Shell.ts';
+import { alphaComplex, convexHull } from './packages/Shell.ts';
 import { Delaunator, triangleCenter, Voronoi } from "./packages/Delaunay.ts"
 import { fillIndexArray } from './packages/constants/Utils.ts';
 import { SpherePolygonArea, haversine } from './packages/Distance.ts';
@@ -22,7 +23,12 @@ const myMBR1 = [
 ] as [number, number, number, number];
 
 
-// Init Map and ToolBar
+// 获取 canvas 标签并绘制蓝色底色
+const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
+const ctx = canvas.getContext('2d')!;
+ctx.fillStyle = 'blue';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
 
 declare const BMapGL: any;
 // GL版命名空间为BMapGL
