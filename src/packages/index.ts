@@ -13,11 +13,14 @@ import * as QuadTree from './QuadTree';
 import * as Noise from './Noise';
 import * as Colors from './Colors';
 import * as Renderer from './Renderer';
+import * as Utils from './constants/Utils'
+import * as CGUtils from './CGUtils'
 
 export {
     Geometry,
     Measuration,
     Coverage,
+    CGUtils,
     Delaunay,
     Shell,
     Reference,
@@ -26,5 +29,6 @@ export {
     QuadTree,
     Meta,
     Noise,
-    Unit
+    Unit,
+    Utils
 };
