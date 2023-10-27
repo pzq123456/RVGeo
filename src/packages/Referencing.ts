@@ -1,3 +1,5 @@
+// 禁用 TS2304 检查器，因为我们将使用 require 语句
+// @ts-nocheck
 /**
  * - Provides a set of functions for reference coordinate system conversion.
  * - 提供一组用于（管理）参考坐标系转换的函数

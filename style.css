@@ -80,14 +80,14 @@ body{
   .Docs{
   position: absolute;
   left: 0px;
-  top: 0px;
+  top: 10px;
   color: #ffffff;
-  font-size: 10px;
+  font-size: 20px;
   background-color: #ffffff38;
   border-radius: 5px;
   padding: 5px;
   border: solid 1px #ffffff;
-  height: 40px;
+  height: 30px;
   }
   .Docs:hover{
       background-color: #0d0c0c4b;
@@ -102,9 +102,10 @@ body{
   }
 
 .content{
-  /* 横向布局 撑满页面 */
-  display: flex;
-  flex-direction: row;
   height: 100%;
   width: 100%;
+  /* 元素横向不拉伸 */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

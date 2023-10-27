@@ -11,6 +11,8 @@ import * as Unit from './constants/Units';
 import * as Coverage from './Coverage';
 import * as QuadTree from './QuadTree';
 import * as Noise from './Noise';
+import * as Colors from './Colors';
+import * as Renderer from './Renderer';
 
 export {
     Geometry,
@@ -19,6 +21,8 @@ export {
     Delaunay,
     Shell,
     Reference,
+    Colors,
+    Renderer,
     QuadTree,
     Meta,
     Noise,

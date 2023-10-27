@@ -16,7 +16,7 @@ import { getAngle } from "./constants/Utils";
  * - 并没有严格规定必须为经纬度坐标，也可以是平面坐标
  */
 export type MBR = [number, number, number, number]; // [minLon, minLat, maxLon, maxLat]
-type Rectangle = {
+export type Rectangle = {
     x: number;
     y: number;
     w: number;

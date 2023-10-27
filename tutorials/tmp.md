@@ -1,6 +1,12 @@
 # 自动页面生成后需要添加的内容
 ## dist/index.html
 ```html
+    <script type="module" crossorigin src="/RVGeo/dist/assets/index-0ae89fe2.js"></script>
+    <link rel="stylesheet" href="/RVGeo/dist/assets/index-9b682530.css">
+```
+
+
+```html
 <div class="Docs">
     <a href="/RVGeo/"> 
         RVGeo Docs | 查看文档

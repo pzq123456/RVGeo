@@ -119,5 +119,34 @@ export class Grid{
         let lat = (row + 0.5) / this.rows * (maxLat - minLat) + minLat;
         return [lon, lat];
     }
+
+    /**
+     * 获取指定波段的最大值、最小值、平均值
+     * @param band - 波段号
+     */
+    getBandStatistics(band: number): {max: number, min: number, mean: number}{
+        let bandData = this.data[band];
+        let max = bandData[0][0];
+        let min = bandData[0][0];
+        let sum = 0;
+        for(let row = 0; row < this.rows; row++){
+            for(let col = 0; col < this.cols; col++){
+                let value = bandData[row][col];
+                if(value > max){
+                    max = value;
+                }
+                if(value < min){
+                    min = value;
+                }
+                sum += value;
+            }
+        }
+        let mean = sum / (this.rows * this.cols);
+        return {
+            max,
+            min,
+            mean
+        };
+    }
 }
 

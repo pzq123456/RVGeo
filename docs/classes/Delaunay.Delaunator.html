@@ -44,6 +44,7 @@
 <a href="Delaunay.Delaunator.html#getTriangleIndices" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Triangle<wbr/>Indices</span></a>
 <a href="Delaunay.Delaunator.html#getTriangles" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Triangles</span></a>
 <a href="Delaunay.Delaunator.html#update" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>update</span></a>
+<a href="Delaunay.Delaunator.html#circumRadius" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>circum<wbr/>Radius</span></a>
 <a href="Delaunay.Delaunator.html#from" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>from</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
@@ -156,7 +157,7 @@
 <li class="tsd-parameter">
 <h5><span class="tsd-kind-property">y</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5></li></ul><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Delaunay.ts:414</li></ul></aside></li></ul></section>
+<li>Defined in src/packages/Delaunay.ts:437</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getHalfedges" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Halfedges</span><a href="#getHalfedges" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -184,14 +185,14 @@
 <section class="tsd-panel tsd-member"><a id="getTriangleIndices" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Triangle<wbr/>Indices</span><a href="#getTriangleIndices" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="getTriangleIndices.getTriangleIndices-1"><span class="tsd-kind-call-signature">get<wbr/>Triangle<wbr/>Indices</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><a href="#getTriangleIndices.getTriangleIndices-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="getTriangleIndices.getTriangleIndices-1"><span class="tsd-kind-call-signature">get<wbr/>Triangle<wbr/>Indices</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span><a href="#getTriangleIndices.getTriangleIndices-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><ul>
 <li>get the indices of triangles as array of array of 3 elements</li>
 <li>获得三角形的索引，以3个元素的数组的数组的形式</li>
 </ul>
 </div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h4>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
 <li>Defined in src/packages/Delaunay.ts:402</li></ul></aside></li></ul></section>
@@ -211,6 +212,29 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
 <li>Defined in src/packages/Delaunay.ts:54</li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member"><a id="circumRadius" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>circum<wbr/>Radius</span><a href="#circumRadius" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="tsd-signature tsd-anchor-link" id="circumRadius.circumRadius-1"><span class="tsd-kind-call-signature">circum<wbr/>Radius</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">p1</span>, <span class="tsd-kind-parameter">p2</span>, <span class="tsd-kind-parameter">p3</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><a href="#circumRadius.circumRadius-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>计算三点外接圆的半径</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">p1</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+<div class="tsd-comment tsd-typography"></div></li>
+<li>
+<h5><span class="tsd-kind-parameter">p2</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+<div class="tsd-comment tsd-typography"></div></li>
+<li>
+<h5><span class="tsd-kind-parameter">p3</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+<div class="tsd-comment tsd-typography"></div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<ul>
+<li>Defined in src/packages/Delaunay.ts:421</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="from" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>from</span><a href="#from" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -281,17 +305,21 @@
 <li><a href="#getTriangleIndices" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Triangle<wbr/>Indices</span></a></li>
 <li><a href="#getTriangles" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>get<wbr/>Triangles</span></a></li>
 <li><a href="#update" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>update</span></a></li>
+<li><a href="#circumRadius" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>circum<wbr/>Radius</span></a></li>
 <li><a href="#from" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>from</span></a></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="../modules.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1"></use></svg><span>rvgeo</span></a>
 <ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="..">
+<li><a href="../modules/Colors.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Colors</a></li>
 <li><a href="../modules/Coverage.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Coverage</a></li>
 <li><a href="../modules/Delaunay.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Delaunay</a></li>
 <li><a href="../modules/Geometry.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Geometry</a></li>
 <li><a href="../modules/Measuration.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Measuration</a></li>
 <li><a href="../modules/Meta.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Meta</a></li>
+<li><a href="../modules/Noise.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Noise</a></li>
 <li><a href="../modules/QuadTree.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>QuadTree</a></li>
 <li><a href="../modules/Reference.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Reference</a></li>
+<li><a href="../modules/Renderer.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Renderer</a></li>
 <li><a href="../modules/Shell.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Shell</a></li>
 <li><a href="../modules/Unit.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Unit</a></li></ul></nav></div></div></div>
 <div class="tsd-generator">

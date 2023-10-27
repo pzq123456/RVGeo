@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>alphaShape | rvgeo</title><meta name="description" content="Documentation for rvgeo"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>MBR2Plane | rvgeo</title><meta name="description" content="Documentation for rvgeo"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -13,35 +13,25 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../modules.html">rvgeo</a></li>
-<li><a href="../modules/Shell.html">Shell</a></li>
-<li><a href="Shell.alphaShape.html">alphaShape</a></li></ul>
-<h1>Function alphaShape</h1></div>
+<li><a href="../modules/Reference.html">Reference</a></li>
+<li><a href="Reference.MBR2Plane.html">MBR2Plane</a></li></ul>
+<h1>Function MBR2Plane</h1></div>
 <section class="tsd-panel">
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="alphaShape"><span class="tsd-kind-call-signature">alpha<wbr/>Shape</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">points</span>, <span class="tsd-kind-parameter">alpha</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/Geometry.Point.html" class="tsd-signature-type tsd-kind-class">Point</a><span class="tsd-signature-symbol">[]</span><a href="#alphaShape" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="MBR2Plane"><span class="tsd-kind-call-signature">MBR2<wbr/>Plane</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">mbr</span>, <span class="tsd-kind-parameter">unit</span><span class="tsd-signature-symbol">?</span>, <span class="tsd-kind-parameter">roundNum</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><a href="#MBR2Plane" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Alpha Shape 算法</p>
-</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5><span class="tsd-kind-parameter">points</span>: <a href="../classes/Geometry.Point.html" class="tsd-signature-type tsd-kind-class">Point</a><span class="tsd-signature-symbol">[]</span></h5>
-<div class="tsd-comment tsd-typography"><p>点数组(可以为二维数组，二维数组需要为平面坐标)</p>
-</div>
-<div class="tsd-comment tsd-typography"></div></li>
+<h5><span class="tsd-kind-parameter">mbr</span>: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5></li>
 <li>
-<h5><span class="tsd-kind-parameter">alpha</span>: <span class="tsd-signature-type">number</span></h5>
-<div class="tsd-comment tsd-typography"><p>alpha 值</p>
-</div>
-<div class="tsd-comment tsd-typography"></div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <a href="../classes/Geometry.Point.html" class="tsd-signature-type tsd-kind-class">Point</a><span class="tsd-signature-symbol">[]</span></h4><ul>
-<li>alpha shape 点数组</li>
-</ul>
-
-<div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
+<h5><span class="tsd-kind-parameter">unit</span>: <a href="../types/Unit.Units.html" class="tsd-signature-type tsd-kind-type-alias">Units</a><span class="tsd-signature-symbol"> = &quot;meters&quot;</span></h5></li>
+<li>
+<h5><span class="tsd-kind-parameter">roundNum</span>: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 6</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in src/packages/Shell.ts:99</li></ul></aside></li></ul></section></div>
+<li>Defined in src/packages/Referencing.ts:92</li></ul></aside></li></ul></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -60,13 +50,16 @@
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="../modules.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1"></use></svg><span>rvgeo</span></a>
 <ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="..">
+<li><a href="../modules/Colors.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Colors</a></li>
 <li><a href="../modules/Coverage.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Coverage</a></li>
 <li><a href="../modules/Delaunay.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Delaunay</a></li>
 <li><a href="../modules/Geometry.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Geometry</a></li>
 <li><a href="../modules/Measuration.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Measuration</a></li>
 <li><a href="../modules/Meta.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Meta</a></li>
+<li><a href="../modules/Noise.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Noise</a></li>
 <li><a href="../modules/QuadTree.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>QuadTree</a></li>
 <li><a href="../modules/Reference.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Reference</a></li>
+<li><a href="../modules/Renderer.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Renderer</a></li>
 <li><a href="../modules/Shell.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Shell</a></li>
 <li><a href="../modules/Unit.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-4"></use></svg>Unit</a></li></ul></nav></div></div></div>
 <div class="tsd-generator">

@@ -2,7 +2,7 @@
  * 凸包及凸壳算法
  */
 import { Point } from './Geometry.ts';
-import { ccw, fillIndexArray, getAngle } from './constants/Utils';
+import { ccw, getAngle } from './constants/Utils';
 import { Delaunator } from './Delaunay.ts';
 
 /**

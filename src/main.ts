@@ -13,7 +13,8 @@ import { QuadTree } from './packages/QuadTree.ts'
 
 import * as RVGeo from './packages/index.ts';
 import axios from 'axios';
-import { MBR2Plane, convertToMercator, plane2MBR } from './packages/Referencing.ts';
+import { MBR2Plane, convertToMercator,} from './packages/Referencing.ts';
+import { drawGrid2d } from './packages/Renderer.ts';
 
 const myMBR1 = [
   -109.07111505279033,
@@ -26,7 +27,7 @@ const myMBR1 = [
 // 获取 canvas 标签并绘制蓝色底色
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
 const ctx = canvas.getContext('2d')!;
-ctx.fillStyle = 'blue';
+ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
@@ -95,7 +96,7 @@ function example4(){ // 计算面积
 
 function example5(){ // 绘制Voronoi
   removeAllOverlay(map);
-  mps = updateData();
+  // mps = updateData();
   let del = Delaunator.from(mps.toXYArray());
   let vor = new Voronoi(del);
   let voi = vor.cutVoronoiByMBR(myMBR1);
@@ -203,7 +204,7 @@ function example9(){ // 栅格
   //   ],
   //   [
   //     [1,2,3],
-  //     [4,5,6],
+  //     [4,3,6],
   //     [7,8,9]
   //   ],
   //   [
@@ -213,7 +214,11 @@ function example9(){ // 栅格
   //   ],
   // ];
   // let grid = new RVGeo.Coverage.Grid(myMBR1,matrix);
-  // console.log(grid);
+  // console.log(grid.getBandStatistics(0));
+  // drawGrid2d(canvas, matrix[0], {x: 0, y: 0, w: 100, h: 100}, grid.getBandStatistics(0));
+
+
+
   axios.get('dem.csv').then((res)=>{
     let innerMBR = [
         -107.19241981061282,
@@ -236,6 +241,9 @@ function example9(){ // 栅格
     drawPoint2BLMap(testPoi, map);
     drawLabel(testPoi, `${grid.getGridCoord(testPoi)}` ,map);
     drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
+
+    // 向 canvas 绘制栅格
+    drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0));
   });
 
   function parseData(data:string){
@@ -342,12 +350,3 @@ function example11(){ // Alpha Shape 算法
   drawPolygon2BLMap(polygon2, map, {fillColor: 'red', fillOpacity: 0.1, strokeColor: 'red', strokeOpacity: 0.5});
 
 }
-
-
-
-function updateData() {
-  let ps = mockPoints(50, myMBR1);
-  let mps = new MultiPoint(ps);
-  return mps;
-}
-

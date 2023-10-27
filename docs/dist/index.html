@@ -5,116 +5,12 @@
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RVGeo: Base Example</title>
+    
     <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&&type=webgl&ak=zsuRD8fmHkCdmWzC84NDbsvwAiWBdCce">
     </script>
-    <script type="module" crossorigin src="/RVGeo/dist/assets/index-0ae89fe2.js"></script>
-    <link rel="stylesheet" href="/RVGeo/dist/assets/index-9b682530.css">
+    <script type="module" crossorigin src="/RVGeo/dist/assets/index-5a91aa9c.js"></script>
+    <link rel="stylesheet" href="/RVGeo/dist/assets/index-7626c34a.css">
   </head>
-  <style>
-    body{
-      background: linear-gradient(90deg, #104c4f 0%, #0468428d 100%);
-    }
-    .title{
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      height: 60px;
-      width: 200px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(90deg, #fa05ee86 0%, #06ffa06b 100%);
-      border-radius: 10px;
-    }
-    #title{
-      color: #ffffff;
-      margin-left: 10px;
-    }
-
-    #toolBar{
-      height: 60px;
-      width: 100%;
-      /* 自动滚动 */
-      overflow-x: auto;
-      overflow-y: auto;
-      border-bottom: solid 1px #033604;
-    }
-    .toolBarRow{
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      gap : 10px;
-      padding-top: 10px;
-    }
-
-    button{
-      border: solid 1px #04371e;
-      border-radius: 5px;
-      color: rgb(26, 24, 24);
-      text-align: center;
-      font-size: 20px;
-    }
-
-    button:hover{
-      border: solid 1px #051d33;
-      background-color: #192219a5;
-      color : #fefeff;
-    }
-
-    .github{
-      background: linear-gradient(90deg, #fa05ee 0%, #06ffa0 100%);
-      border-radius: 50%;
-      border: solid 1px #ffffff;
-      height: 32px;
-      width: 32px;
-    }
-    footer{
-      height: 30px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      border-top: solid 1px #1c0c0c;
-    }
-    .map{
-      height: 830px;
-      width: 100%;
-    }
-    /* 隐藏版权信息 */
-    .BMap_cpyCtrl {
-      display: none;
-    }  
-    .anchorBL img {
-      display: none;
-    }
-    .Docs{
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    color: #ffffff;
-    font-size: 10px;
-    background-color: #ffffff38;
-    border-radius: 5px;
-    padding: 5px;
-    border: solid 1px #ffffff;
-    height: 40px;
-    }
-    .Docs:hover{
-        background-color: #0d0c0c4b;
-        border: solid 1px #94e5f1;
-    }
-    .Docs a{
-        text-decoration: none;
-        color: #ffffff;
-    }
-    .Docs a:hover{
-        color: #8bc5d2;
-    }
-  </style>
-  <!-- <style src="./src/helpers/DrawingManager.min.css"></style> -->
   
   <body>
     <div class="title">
@@ -129,15 +25,16 @@
       </div>
         <div id="toolBar">
       </div>
+
       <div class="Docs">
-        <a href="/RVGeo/"> 
-            RVGeo Docs  <br>
-            ------------- <br>
-            查看文档
-        </a>
+        <a href="/RVGeo/">Docs</a>
       </div>
-      <div class="map" id="allmap">
+
+      <div class="content">
+        <div class="map" id="allmap"></div>
+        <canvas width="512" height="1024"></canvas>
       </div>
+
       <footer>
         <p>
           Powered by RVGeo &copy; 2023
