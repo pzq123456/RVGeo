@@ -253,14 +253,14 @@ const mdStyle = {
     'color': 'white',
 }; // style for the markdown content
 
-fileToHtml('/tutorials/README.md',document.getElementById('content'), mdStyle);
+fileToHtml('/RVGeo/tutorials/README.md',document.getElementById('content'), mdStyle);
 
 fillNavBar(document.getElementById('navBar'),
 [
     {
         "text": "Home",
         "action": function(){
-            fileToHtml('/tutorials/README.md',document.getElementById('content'), mdStyle);
+            fileToHtml('/RVGeo/tutorials/README.md',document.getElementById('content'), mdStyle);
         }
     },{
         'text':'toggleTerminal',
