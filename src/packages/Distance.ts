@@ -95,8 +95,8 @@ export function PlanePolygonArea(
         j = i;
     }
     // 转换为指定单位
-    area = area * areaFactors[unit];
-    return Math.abs(area/2);
+    area = area * areaFactors[unit] / 2;
+    return Math.abs(area);
 }
 
 /**

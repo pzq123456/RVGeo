@@ -7,10 +7,10 @@ import axios from 'axios';
 import { drawGrid2d } from './packages/Renderer.ts';
 
 const myMBR1 = [
-  -109.07111505279033,
-  36.990057191562045,
-  -102.06399125241506,
-  40.981780653665425
+  -109.04885344551185,
+  36.988099165319085,
+  -102.05550147177286,
+  41.01069002801907
 ] as [number, number, number, number];
 
 
@@ -84,7 +84,7 @@ function example4(){ // 计算面积
   let Colorado = new RVGeo.Geometry.LineString(RVGeo.Geometry.mbrToPolygon(myMBR1).map((p) => new RVGeo.Geometry.Point(p[0],p[1])) as RVGeo.Geometry.Point[]); // 科罗拉多州边界（粗略）
   let area = RVGeo.Measuration.SpherePolygonArea(Colorado);
   let area2 = RVGeo.Measuration.PlanePolygonArea(Colorado);
-  alert("Colorado area (on sphere): " + area + " km2\n" + "Colorado area (real): 268,627 km2\n" + "Colorado area (in plane): " + area2 + " km2\n");
+  alert("Colorado area (on sphere): " + area + " km2\n" + "Colorado area (in plane): " + area2 + " km2\n" + "Colorado area (real): 268,627 km2\n");
 }
 
 function example5(){ // 绘制Voronoi
