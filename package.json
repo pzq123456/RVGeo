@@ -1,6 +1,6 @@
 {
   "name": "rvgeo",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "RVGeo is a frontend TypeScript library for simple special data computation and rendering.",
   "main": "./dist/rvgeo.umd.cjs",
   "module": "./dist/rvgeo.js",
@@ -23,7 +23,7 @@
     "type": "git",
     "url": "https://github.com/pzq123456/RVGeo"
   },
-  "files": ["dist"],
+  "files": ["dist","index.js"],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
