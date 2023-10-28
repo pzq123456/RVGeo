@@ -1,32 +1,44 @@
 {
   "name": "rvgeo",
-  "version": "1.0.24",
-  "description": "RVGeo is a JavaScript library for rendering geographic data in raster format.",
-  "main": "./index.js",
+  "version": "2.0.0",
+  "description": "RVGeo is a frontend TypeScript library for simple special data computation and rendering.",
+  "main": "./dist/rvgeo.umd.cjs",
+  "module": "./dist/rvgeo.js",
+  "exports":{
+    ".":{
+      "import":"./dist/rvgeo.js",
+      "require":"./dist/rvgeo.umd.cjs"
+    }
+  },
   "type": "module",
   "keywords": [
     "Raster",
     "Graphics",
     "Geographic"
   ],
-  "author": "PQ",
+  "author": "PZQ",
   "license": "MIT",
-  "homepage": "https://github.com/pzq123456/RVGeo",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^4.3.2"
-  },
+  "homepage": "https://pzq123456.github.io/RVGeo/",
   "repository": {
     "type": "git",
     "url": "https://github.com/pzq123456/RVGeo"
   },
-  "files": [
-    "index.js",
-    "src",
-    "dist"
-  ]
+  "files": ["dist"],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "typedoc": "^0.25.1",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.0",
+    "vitest": "^0.33.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "robust-predicates": "^3.0.2"
+  }
 }

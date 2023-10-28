@@ -1,0 +1,111 @@
+body{
+    background: linear-gradient(90deg, #104c4f 0%, #0468428d 100%);
+  }
+  .title{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 60px;
+    width: 200px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, #fa05ee86 0%, #06ffa06b 100%);
+    border-radius: 10px;
+  }
+  #title{
+    color: #ffffff;
+    margin-left: 10px;
+  }
+
+  #toolBar{
+    height: 60px;
+    width: 100%;
+    /* 自动滚动 */
+    overflow-x: auto;
+    overflow-y: auto;
+    border-bottom: solid 1px #033604;
+  }
+  .toolBarRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap : 10px;
+    padding-top: 10px;
+  }
+
+  button{
+    border: solid 1px #04371e;
+    border-radius: 5px;
+    color: rgb(26, 24, 24);
+    text-align: center;
+    font-size: 20px;
+  }
+
+  button:hover{
+    border: solid 1px #051d33;
+    background-color: #192219a5;
+    color : #fefeff;
+  }
+
+  .github{
+    background: linear-gradient(90deg, #fa05ee 0%, #06ffa0 100%);
+    border-radius: 50%;
+    border: solid 1px #ffffff;
+    height: 32px;
+    width: 32px;
+  }
+  footer{
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    border-top: solid 1px #1c0c0c;
+  }
+  .map{
+    height: 1024px;
+    width: 80%;
+  }
+  /* 隐藏版权信息 */
+  .BMap_cpyCtrl {
+    display: none;
+  }  
+  .anchorBL img {
+    display: none;
+  }
+  .Docs{
+  position: absolute;
+  left: 0px;
+  top: 10px;
+  color: #ffffff;
+  font-size: 20px;
+  background-color: #ffffff38;
+  border-radius: 5px;
+  padding: 5px;
+  border: solid 1px #ffffff;
+  height: 30px;
+  }
+  .Docs:hover{
+      background-color: #0d0c0c4b;
+      border: solid 1px #94e5f1;
+  }
+  .Docs a{
+      text-decoration: none;
+      color: #ffffff;
+  }
+  .Docs a:hover{
+      color: #8bc5d2;
+  }
+
+.content{
+  height: 100%;
+  width: 100%;
+  /* 元素横向不拉伸 */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
