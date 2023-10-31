@@ -41,6 +41,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '栅格', action: () =>  example9()},
   { name: '四叉树', action: () =>  example10()},
   { name: 'Alpha Complex', action: () =>  example11()},
+  { name: 'Perlin Noise', action: () =>  example12()},
   { name: 'clear', action: () =>  removeAllOverlay(map)},
 ])
 
@@ -234,8 +235,23 @@ function example9(){ // 栅格
     drawLabel(testPoi, `${grid.getGridCoord(testPoi)}` ,map);
     drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
 
-    // 向 canvas 绘制栅格
-    drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0));
+    let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear); // ["red", "yellow", "green","white"];
+    drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0), myPseudoColorBand);
+    
+    const stretchType = RVGeo.Colors.stretchType;
+    let postions = [
+      [0,0],
+      [0,1],
+      [1,0],
+      [1,1]
+    ]
+    // 遍历枚举类型
+    for(let type in stretchType){
+      let colorband = RVGeo.Colors.simpleColorBandFactory(parseInt(type));
+      let postion = postions[parseInt(type)];
+      drawGrid2d(canvas, data, {x: postion[0]*256, y: postion[1]*256 + 256*2, w: 256, h: 256}, grid.getBandStatistics(0), colorband);
+    }
+
   });
 
   function parseData(data:string){
@@ -340,4 +356,28 @@ function example11(){ // Alpha Shape 算法
   let ls2 = new RVGeo.Geometry.LineString(ps2);
   let polygon2 = new RVGeo.Geometry.Polygon([ls2]);
   drawPolygon2BLMap(polygon2, map, {fillColor: 'red', fillOpacity: 0.1, strokeColor: 'red', strokeOpacity: 0.5});
+}
+
+function example12(){
+  const Perlin = RVGeo.Noise.Perlin; // Perlin 噪声生成器
+  const Grid = RVGeo.Coverage.Grid; // 栅格类
+  console.log(Perlin(5, 5));
+  const size = 128;
+  const blocksize = 32;
+
+  let data = [];
+  for(let i = 0; i < size; i++){
+    let tmp = [];
+    for(let j = 0; j < size; j++){
+      let noise = Perlin(i/blocksize, j/blocksize)*0.5 + 0.5; // 生成噪声0-1
+      tmp.push(noise);
+    }
+    data.push(tmp);
+  }
+  let grid = new Grid(myMBR1, [data]);
+  console.log(data);
+  drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0));
+  let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear); // ["red", "yellow", "green","white"];
+  drawGrid2d(canvas, data, {x: 0, y: 512, w: 512, h: 512}, grid.getBandStatistics(0), myPseudoColorBand);
+    
 }
