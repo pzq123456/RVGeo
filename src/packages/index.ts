@@ -15,6 +15,7 @@ import * as Colors from './Colors';
 import * as Renderer from './Renderer';
 import * as Utils from './constants/Utils'
 import * as CGUtils from './CGUtils'
+import * as BMAPDraw from '../helpers/BLDraw'
 
 export {
     Geometry,
@@ -30,5 +31,6 @@ export {
     Meta,
     Noise,
     Unit,
-    Utils
+    Utils,
+    BMAPDraw
 };

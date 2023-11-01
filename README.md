@@ -3,6 +3,11 @@
 > - You could get some tutorials from this [site](https://pzq123456.github.io/RVGeo/tutorials/index.html)
 > - [more information](https://pzq123456.github.io/RVGeo/)
 
+> - 现在可以在 `RVGeo.BMAPDraw` 中访问到百度地图的绘制工具，该工具基于百度地图的绘制工具，但是对于绘制的图形进行了封装，使得其可以与 RVGeo 的其他图形进行交互。
+> - Now you can access the drawing tool of Baidu Map in `RVGeo.BMAPDraw`. The tool is based on the drawing tool of Baidu Map, but the drawn graphics are encapsulated so that they can interact with other graphics of RVGeo.
+
+
+
 ## 项目说明 | Project Description
 - `main` 分支为稳定（npm 发布）版本，`next` 分支为开发版本。文档及示例网站均基于 `next` 分支。
 - `main` branch is the stable version (npm release), `next` branch is the development version. The documentation and example website are based on the `next` branch.
