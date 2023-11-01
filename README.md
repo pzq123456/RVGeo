@@ -2,6 +2,28 @@
 > - RVGeo (V2.0.0) is now available on [npm](https://www.npmjs.com/package/rvgeo).
 > - You could get some tutorials from this [site](https://pzq123456.github.io/RVGeo/tutorials/index.html)
 > - [more information](https://pzq123456.github.io/RVGeo/)
+
+## 项目说明 | Project Description
+- `main` 分支为稳定（npm 发布）版本，`next` 分支为开发版本。文档及示例网站均基于 `next` 分支。
+- `main` branch is the stable version (npm release), `next` branch is the development version. The documentation and example website are based on the `next` branch.
+- `main` 分支不含除了库本身以外的任何文件，`next` 分支包含文档、示例网站、示例代码等。
+- `api reference`  https://pzq123456.github.io/RVGeo/
+- `Usage` https://pzq123456.github.io/RVGeo/tutorials/index.html
+
+## Example
+```js
+let ps = mockPoints(30, myMBR1);
+let mps = new RVGeo.Geometry.MultiPoint(ps);
+
+function example1(){ // 绘制多点及其重心
+  removeAllOverlay(map);
+  let icon = innerIcon(0);
+  // console.log(mps.calculateCentroid());
+  drawPoint2BLMap(mps.calculateCentroid(), map);
+  drawMultiPoint2BLMap(mps, map, icon);
+}
+```
+
 ## 本包的潜在优势 | Potential Advantages
 - 便捷快速地引入基础空间分析算法
 - Conviniently import basic spatial analysis algorithms
