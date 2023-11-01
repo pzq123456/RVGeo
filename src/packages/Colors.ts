@@ -80,7 +80,7 @@ export function simpleColorBandFactory(type: stretchType) : (statistics: {max: n
     return (statistics: {max: number, min: number, mean: number},value: number) => simpleColorBand(statistics, value, stretchFactory(type));
 }
 
-const defaultColorList = ["darkblue","brown","green","white"];
+const defaultColorList = ["#163544","#495a45","#767d58","#76a477","#d7bd7f","#d7221f"];
 
 /**
  * 伪彩色带渲染

@@ -42,8 +42,20 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '四叉树', action: () =>  example10()},
   { name: 'Alpha Complex', action: () =>  example11()},
   { name: 'Perlin Noise', action: () =>  example12()},
-  { name: 'clear', action: () =>  removeAllOverlay(map)},
+  { name: 'clear', action: () =>  clear()},
 ])
+
+function clear(){
+  removeAllOverlay(map);
+  // 找到所有的canvas标签并清空
+  let ctx = canvas.getContext('2d')!;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // 填充白色
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+
 
 // 全局模拟数据（点集合）
 let ps = mockPoints(30, myMBR1);
@@ -247,6 +259,7 @@ function example9(){ // 栅格
     ]
     // 遍历枚举类型
     for(let type in stretchType){
+      if(isNaN(parseInt(type))) continue;
       let colorband = RVGeo.Colors.simpleColorBandFactory(parseInt(type));
       let postion = postions[parseInt(type)];
       drawGrid2d(canvas, data, {x: postion[0]*256, y: postion[1]*256 + 256*2, w: 256, h: 256}, grid.getBandStatistics(0), colorband);
@@ -368,13 +381,24 @@ function example12(){
 
   let data = [];
   // sample by Perlin, dampedSin3D, Sin3D
-  data.push(sample(size,0,0,Perlin));
-  data.push(sample(size,0,0,dampedSin3D));
-  data.push(sample(size,0,0,Sin3D));
+  data.push(sample(size,0.05,0.05,Perlin));
+  data.push(sample(size,1,1,dampedSin3D));
+  data.push(sample(size,1,1,Sin3D));
 
   // draw grid
-  let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.log);
-  let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.log);
+  let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear);
+  let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear);
+
+  let grid = [] as RVGeo.Coverage.Grid[];
+  data.forEach((d) => {
+    grid.push(new Grid(myMBR1, [d]));
+  });
+
+  for(let i = 0; i < 3; i++){
+    drawGrid2d(canvas, data[i], {x: 0, y: i*blocksize, w: blocksize, h: blocksize}, grid[i].getBandStatistics(0), mySimpleColorBand);
+    drawGrid2d(canvas, data[i], {x: blocksize, y: i*blocksize, w: blocksize, h: blocksize}, grid[i].getBandStatistics(0), myPseudoColorBand);
+  }
+
 
     
   function sample(size: number,x: number,y: number, sampleFunc: (x: number, y: number) => number){
@@ -390,8 +414,4 @@ function example12(){
     return data;
   }
 
-  function drawGrid(data: number[][], x: number, y: number, w: number, h: number, colorband: (statistics: {max: number, min: number, mean: number},value: number) => string){
-    let grid = new Grid(myMBR1, [data]);
-    drawGrid2d(canvas, data, {x: x, y: y, w: w, h: h}, grid.getBandStatistics(0), colorband);
-  }
 }

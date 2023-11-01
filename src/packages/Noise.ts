@@ -1,7 +1,7 @@
 /**
  * Noise 模块 用于生成噪声
  */
-const PI = Math.PI;
+// const PI = Math.PI;
 const e = Math.E;
 
 /**
