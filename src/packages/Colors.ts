@@ -31,7 +31,7 @@ function squareStretch(value: number, statistics: {max: number, min: number, mea
 
 function logStretch(value: number, statistics: {max: number, min: number, mean: number}) : number
 {
-    return Math.log((value - statistics.min) / (statistics.max - statistics.min));
+    return Math.log((value - statistics.min) / (statistics.max - statistics.min) + 1);
 }
 
 function powerStretch(value: number, statistics: {max: number, min: number, mean: number}) : number

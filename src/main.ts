@@ -360,24 +360,38 @@ function example11(){ // Alpha Shape 算法
 
 function example12(){
   const Perlin = RVGeo.Noise.Perlin; // Perlin 噪声生成器
+  const dampedSin3D = RVGeo.Noise.dampedSin3D; // 3D阻尼正弦波噪声生成器
+  const Sin3D = RVGeo.Noise.Sin3D; // 3D正弦波噪声生成器
   const Grid = RVGeo.Coverage.Grid; // 栅格类
-  console.log(Perlin(5, 5));
-  const size = 128;
-  const blocksize = 32;
+  const size = 64;
+  const blocksize = 256;
 
   let data = [];
-  for(let i = 0; i < size; i++){
-    let tmp = [];
-    for(let j = 0; j < size; j++){
-      let noise = Perlin(i/blocksize, j/blocksize)*0.5 + 0.5; // 生成噪声0-1
-      tmp.push(noise);
-    }
-    data.push(tmp);
-  }
-  let grid = new Grid(myMBR1, [data]);
-  console.log(data);
-  drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0));
-  let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear); // ["red", "yellow", "green","white"];
-  drawGrid2d(canvas, data, {x: 0, y: 512, w: 512, h: 512}, grid.getBandStatistics(0), myPseudoColorBand);
+  // sample by Perlin, dampedSin3D, Sin3D
+  data.push(sample(size,0,0,Perlin));
+  data.push(sample(size,0,0,dampedSin3D));
+  data.push(sample(size,0,0,Sin3D));
+
+  // draw grid
+  let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.log);
+  let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.log);
+
     
+  function sample(size: number,x: number,y: number, sampleFunc: (x: number, y: number) => number){
+    let data = [];
+    for(let i = 0; i < size; i++){
+      let tmp = [];
+      for(let j = 0; j < size; j++){
+        let noise = sampleFunc(i*x - size/2, j*y - size/2); // 生成噪声0-1
+        tmp.push(noise);
+      }
+      data.push(tmp);
+    }
+    return data;
+  }
+
+  function drawGrid(data: number[][], x: number, y: number, w: number, h: number, colorband: (statistics: {max: number, min: number, mean: number},value: number) => string){
+    let grid = new Grid(myMBR1, [data]);
+    drawGrid2d(canvas, data, {x: x, y: y, w: w, h: h}, grid.getBandStatistics(0), colorband);
+  }
 }
