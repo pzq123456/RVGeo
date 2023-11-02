@@ -1,4 +1,4 @@
-# Example12 
+# Example12 （二维）噪声生成器及噪声可视化 Noise Generator and visualization
 
 ```ts
   const Perlin = RVGeo.Noise.Perlin; // Perlin 噪声生成器

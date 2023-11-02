@@ -10,6 +10,29 @@
 </div>
 
 > - Attention: You need to click the Terminal first to focus it before you can input commands.
+> - click left buttons to check the examples. -- 点击左侧按钮查看示例。 -->
+
+| Example | 说明 | Description |
+| :--- | :--- | :--- |
+| example1 | 绘制多点及质心 | Draw MultiPoint and its Centroid |
+| example2 | 绘制三角网 | Draw Triangulation |
+| example3 | 绘制凸包 | Draw Convex Hull |
+| example4 | 计算面积 | Measuration.SpherePolygonArea |
+| example5 | 绘制Voronoi Diagram | Draw Voronoi Diagram |
+| example6 | 多边形求交 | Polygon Intersection |
+| example7 | 线段求交 | line intersection |
+| example8 | 点线关系 | The topology relationship between point and line |
+| example9 | 栅格 | Coverage |
+| example10 | 四叉树 | QuadTree |
+| example11 | Alpha Shape 算法 | Alpha Shape Algorithm |
+| example12 | （二维）噪声生成器及噪声可视化 | Noise Generator and visualization |
+
+
+
+
+
+
+
 
 ## About this site
 > 网站布局简介：
