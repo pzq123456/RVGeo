@@ -1,6 +1,8 @@
 /**
  * Noise 模块 用于生成噪声
  */
+// const PI = Math.PI;
+const e = Math.E;
 
 /**
  * 二维向量 内部使用
@@ -22,7 +24,9 @@ type vector2 = {
  * @returns {number} - 
  */
 function interpolate(a0: number, a1: number, w: number) : number {
-    return (a1 - a0) * w + a0;
+    // return (a1 - a0) * w + a0; // sharp edge
+    return (a1 - a0) * (3.0 - w * 2.0) * w * w + a0; // smooth edge
+    // return (a1 - a0) * ((w * (w * 6.0 - 15.0) + 10.0) * w * w * w) + a0; // smoother edge
 }
 /**
  * 随机梯度
@@ -62,8 +66,8 @@ function dotGridGradient(ix: number, iy: number, x: number, y: number) : number 
 
 /**
  * 2D [Perlin](https://en.wikipedia.org/wiki/Perlin_noise) 噪声
- * @param X - X 坐标
- * @param Y - Y 坐标
+ * @param X - X 坐标 (范围 [0, 1] )
+ * @param Y - Y 坐标 (范围 [0, 1] )
  * @returns {number} - 返回值范围在 [-1, 1] 之间
  * @example
  * ```ts
@@ -71,7 +75,7 @@ function dotGridGradient(ix: number, iy: number, x: number, y: number) : number 
  * console.log(noise);
  * ```
  */
-export function Perlin(X: number,Y: number,) : number {
+export function Perlin(X: number,Y: number) : number {
     // Determine grid cell coordinates
     const x0 = Math.floor(X);
     const x1 = x0 + 1;
@@ -94,4 +98,19 @@ export function Perlin(X: number,Y: number,) : number {
 
     const value = interpolate(ix0, ix1, sy);
     return value; // Will return in range -1 to 1. To make it in range 0 to 1, multiply by 0.5 and add 0.5
+}
+
+/**
+ * https://en.m.wikipedia.org/wiki/Damping#Damped_sine_wave
+ * @param x 
+ * @param y 
+ * @returns 
+ */
+export function dampedSin3D(x: number, y: number) : number {
+    return Math.pow(e,-Math.pow(Math.sqrt(x*x+y*y),1/2)) * Math.sin(Math.sqrt(x*x+y*y));
+}
+
+// z = sin(sqrt(x2+y2))
+export function Sin3D(x: number, y: number) : number {
+    return Math.sin(Math.sqrt(x*x+y*y));
 }
