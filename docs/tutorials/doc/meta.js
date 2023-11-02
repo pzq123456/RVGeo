@@ -76,4 +76,11 @@ export const metalist = [
         "tag" : "info",
         "command": "cd"
     },
+    {
+        "title" : "Example12",
+        "path" : "doc/example12.md",
+        "date" : "2023-11-2",
+        "tag" : "info",
+        "command": "cd"
+    },
 ]

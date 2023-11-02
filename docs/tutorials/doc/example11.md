@@ -1,7 +1,6 @@
 # Example11 Alpha Shape 算法
 ```js
 function example11(){ // Alpha Shape 算法
-  // 存在问题
   removeAllOverlay(map);
   let alpha = 1/15000000000;
   let alphacomplex = RVGeo.Shell.alphaComplex(ps, alpha);
