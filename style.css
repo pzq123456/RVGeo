@@ -3,7 +3,7 @@ body{
   }
   .title{
     position: absolute;
-    top: 0px;
+    bottom: 10px;
     right: 0px;
     height: 60px;
     width: 200px;
@@ -14,9 +14,11 @@ body{
     background: linear-gradient(90deg, #fa05ee86 0%, #06ffa06b 100%);
     border-radius: 10px;
   }
+
   #title{
     color: #ffffff;
-    margin-left: 10px;
+    font-size: 30px;
+    font-weight: bold;
   }
 
   #toolBar{
@@ -56,6 +58,7 @@ body{
     border: solid 1px #ffffff;
     height: 32px;
     width: 32px;
+
   }
   footer{
     height: 30px;

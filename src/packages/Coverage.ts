@@ -148,5 +148,33 @@ export class Grid{
             mean
         };
     }
+
+    // Binarization a certain band of the grid; get a value, less than which is 0, greater than which is 1
+    // 二值化网格数据，返回二值化后的网格数据
+    // - threshold: 二值化阈值
+
+    /**
+     * 二值化网格数据，返回二值化后的网格数据
+     * @param band - 波段号
+     * @param threshold - 二值化阈值
+     */
+    binarization(band: number, threshold: number): number[][]{
+        let bandData = this.data[band];
+        let binarizationData = [];
+        for(let row = 0; row < this.rows; row++){
+            let rowData = [];
+            for(let col = 0; col < this.cols; col++){
+                let value = bandData[row][col];
+                if(value < threshold){
+                    rowData.push(0);
+                }else{
+                    rowData.push(1);
+                }
+            }
+            binarizationData.push(rowData);
+        }
+        return binarizationData;
+    }
+    
 }
 

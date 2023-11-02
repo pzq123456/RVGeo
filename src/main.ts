@@ -13,6 +13,31 @@ const myMBR1 = [
   41.01069002801907
 ] as [number, number, number, number];
 
+/**
+ * parse csv data
+ * @param data 
+ * @returns 
+ */
+function parseData(data:string){
+  let lines = data.split('\n');
+  let result = [];
+  for(let line of lines){
+      let nums = line.split(',');
+      let row = [];
+      for(let num of nums){
+          // 读取整型 若有 NAN 则替换为 0
+          let n = parseInt(num);
+          if(isNaN(n)){
+              n = 0;
+          }
+          row.push(n);
+      }
+      result.push(row);
+  }
+  // 去掉最后一行
+  result.pop();
+  return result;
+}
 
 // 获取 canvas 标签并绘制蓝色底色
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
@@ -42,6 +67,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '四叉树', action: () =>  example10()},
   { name: 'Alpha Complex', action: () =>  example11()},
   { name: 'Perlin Noise', action: () =>  example12()},
+  { name: 'Countour', action: () =>  example13()},
   { name: 'clear', action: () =>  clear()},
 ])
 
@@ -266,27 +292,6 @@ function example9(){ // 栅格
     }
 
   });
-
-  function parseData(data:string){
-      let lines = data.split('\n');
-      let result = [];
-      for(let line of lines){
-          let nums = line.split(',');
-          let row = [];
-          for(let num of nums){
-              // 读取整型 若有 NAN 则替换为 0
-              let n = parseInt(num);
-              if(isNaN(n)){
-                  n = 0;
-              }
-              row.push(n);
-          }
-          result.push(row);
-      }
-      // 去掉最后一行
-      result.pop();
-      return result;
-  }
 }
 
 function example10(){ // 四叉树
@@ -397,9 +402,6 @@ function example12(){
     drawGrid2d(canvas, data[i], {x: 0, y: i*blocksize, w: blocksize, h: blocksize}, grid[i].getBandStatistics(0), mySimpleColorBand);
     drawGrid2d(canvas, data[i], {x: blocksize, y: i*blocksize, w: blocksize, h: blocksize}, grid[i].getBandStatistics(0), myPseudoColorBand);
   }
-
-
-    
   function sample(size: number,x: number,y: number, sampleFunc: (x: number, y: number) => number){
     let data = [];
     for(let i = 0; i < size; i++){
@@ -413,4 +415,15 @@ function example12(){
     return data;
   }
 
+}
+
+function example13(){
+  const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
+  axios.get('dem.csv').then((res)=>{
+    let data = parseData(res.data);
+    let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
+    console.log(grid.getBandStatistics(0));
+    let grid2 = grid.binarization(0, 2);
+    binDrawGrid2d(canvas, grid2, {x: 0, y: 0, w: 1024, h: 1024});
+  })
 }
