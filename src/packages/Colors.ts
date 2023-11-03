@@ -83,10 +83,10 @@ export function simpleColorBandFactory(type: stretchType) : (statistics: {max: n
 const defaultColorList = ["#163544","#495a45","#767d58","#76a477","#d7bd7f","#d7221f"];
 
 const CountourColorList = [
-    "#ff165d","#ff9a00","#3ec1d3","#6c5b7b",
+    "#ffffff00","#ff9a00","#3ec1d3","#6c5b7b",
     "#355c7d","#f8b500","#119da4","#ff165d",
-    "#ff9a00","#3ec1d3","#6c5b7b","#355c7d",
-    "#f8b500","#119da4","#ff165d","#ff9a00",
+    "#8ECFC9","#FFBE7A","#82B0D2","#BEB8DC",
+    "#E7DAD2","#119da4","#ff165d","#ffffff00",
 ];
 
 /**
