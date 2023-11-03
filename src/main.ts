@@ -420,10 +420,13 @@ function example12(){
 function example13(){
   const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
   axios.get('dem.csv').then((res)=>{
+    const subReagion = [64,64,128,128] as [number, number, number, number];
     let data = parseData(res.data);
     let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
-    console.log(grid.getBandStatistics(0));
-    let grid2 = grid.binarization(0, 2);
-    binDrawGrid2d(canvas, grid2, {x: 0, y: 0, w: 1024, h: 1024});
-  })
+    let grid2 = grid.getSubGridObj(subReagion,[0]).getCoutourCode(0,2);
+    binDrawGrid2d(canvas, grid2, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.Colors.simplePseudoColorBand);
+    drawGrid2d(canvas, data, {x: 0, y: 0, w: 256, h: 256}, grid.getBandStatistics(0), 
+      RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.power),
+      subReagion);
+    })
 }

@@ -54,6 +54,35 @@ export class Grid{
         return subGrid;
     }
 
+
+    /**
+     * 与 `getSubGrid` 方法类似，但返回的是一个 Grid 对象
+     * @param GridMBR - 网格范围 行列号索引表示
+     * @param band - 波段号数组
+     * @returns - 返回网格数据，格式为：[band][row][col]
+     */
+    getSubGridObj(GridMBR: MBR, band: number[] = [0]): Grid{
+        // 由输入的行列号范围提取网格数据，可以指定行列号范围及波段号
+        let minRow = GridMBR[0];
+        let minCol = GridMBR[1];
+        let maxRow = GridMBR[2];
+        let maxCol = GridMBR[3];
+        let subGridData = [];
+        for(let b of band){
+            let bandData = [];
+            for(let row = minRow; row <= maxRow; row++){
+                let rowData = [];
+                for(let col = minCol; col <= maxCol; col++){
+                    rowData.push(this.data[b][row][col]);
+                }
+                bandData.push(rowData);
+            }
+            subGridData.push(bandData);
+        }
+        let subGrid = new Grid(GridMBR, subGridData);
+        return subGrid;
+    }
+
     /**
      * 由外部经纬度坐标获取网格范围，行列号索引表示（只有全部在栅格范围内才会正常得到结果）
      * - 若外部坐标不全部在网格范围内，则返回 null
@@ -175,6 +204,50 @@ export class Grid{
         }
         return binarizationData;
     }
+
+    getCoutourCode(band: number, threshold: number): number[][]{
+        // 二值化后，依次逆时针拾取相邻四个格网的值，组成四位二进制数，转换为十进制数，即为等值线编码
+        let binarizationData = this.binarization(band, threshold);
+        let contourCode = [];
+        for(let row = 0; row < this.rows - 1; row++){
+            let rowData = [];
+            for(let col = 0; col < this.cols - 1; col++){
+                let code = 0;
+                code += binarizationData[row][col] * 8;
+                code += binarizationData[row][col + 1] * 4;
+                code += binarizationData[row + 1][col + 1] * 2;
+                code += binarizationData[row + 1][col] * 1;
+                rowData.push(code);
+            }
+            contourCode.push(rowData);
+        }
+        return contourCode;
+    }
     
 }
 
+
+/**
+ * 二值化网格数据，返回二值化后的网格数据
+ * @param grid - grid 对象
+ * @param band - 波段号
+ * @param threshold - 二值化阈值
+ * @returns {number[][]} - 返回二值化后的网格数据
+ */
+export function binarization(grid: Grid, band: number, threshold: number): number[][]{
+    let bandData = grid.data[band];
+    let binarizationData = [];
+    for(let row = 0; row < grid.rows; row++){
+        let rowData = [];
+        for(let col = 0; col < grid.cols; col++){
+            let value = bandData[row][col];
+            if(value < threshold){
+                rowData.push(0);
+            }else{
+                rowData.push(1);
+            }
+        }
+        binarizationData.push(rowData);
+    }
+    return binarizationData;
+}

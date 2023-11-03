@@ -18,7 +18,8 @@ export function drawGrid2d(
     grid2D: number[][],
     Rect: Rect, // {x, y, w, h}
     statistics: {max: number, min: number, mean: number},
-    colorBand: (statistics: {max: number, min: number, mean: number},value: number) => string = simpleColorBand
+    colorBand: (statistics: {max: number, min: number, mean: number},value: number) => string = simpleColorBand,
+    GridMBR? : [number,number,number,number] // [minX index ,minY index,maxX index,maxY index]
 ){
     // 首先分割 rect 为小格子
     let cellWidth = Rect.w / grid2D[0].length;
@@ -37,6 +38,13 @@ export function drawGrid2d(
             ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
         }
     }
+    // 若有 GridMBR 则绘制
+    if(GridMBR){
+        let [minX,minY,maxX,maxY] = GridMBR;
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(Rect.x + minX * cellWidth, Rect.y + minY * cellHeight, (maxX - minX) * cellWidth, (maxY - minY) * cellHeight);
+    }
 
     // 绘制中心
     ctx.fillStyle = "red";
@@ -52,10 +60,30 @@ export function binDrawGrid2d(
     // 首先分割 rect 为小格子
     let cellWidth = Rect.w / grid2D[0].length;
     let cellHeight = Rect.h / grid2D.length;
+
     let ctx = canavs.getContext("2d");
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
+    // background gray
+    // ctx.fillStyle = "gray";
+    // ctx.fillRect(Rect.x, Rect.y, Rect.w, Rect.h);
+
+    // 绘制格网
+    // ctx.strokeStyle = "white";
+    // ctx.lineWidth = 1;
+    // for(let row = 0; row < grid2D.length; row++){
+    //     ctx.beginPath();
+    //     ctx.moveTo(Rect.x, Rect.y + row * cellHeight);
+    //     ctx.lineTo(Rect.x + Rect.w, Rect.y + row * cellHeight);
+    //     ctx.stroke();
+    // }
+    // for(let col = 0; col < grid2D[0].length; col++){
+    //     ctx.beginPath();
+    //     ctx.moveTo(Rect.x + col * cellWidth, Rect.y);
+    //     ctx.lineTo(Rect.x + col * cellWidth, Rect.y + Rect.h);
+    //     ctx.stroke();
+    // }
 
     // 绘制矩形
     for(let row = 0; row < grid2D.length; row++){
@@ -63,14 +91,12 @@ export function binDrawGrid2d(
             let value = grid2D[row][col];
             let color = colorBand(value);
             ctx.fillStyle = color;
-            // 改为绘制圆 半径为 cellWidth / 2
-            ctx.beginPath();
-            ctx.arc(Rect.x + col * cellWidth + cellWidth / 2, Rect.y + row * cellHeight + cellHeight / 2, cellWidth / 2, 0, 2 * Math.PI);
-            ctx.fill();
+            // 在每个格网中心绘制一个 2px 的小矩形
+            ctx.fillRect(Rect.x + col * cellWidth + cellWidth / 2 - 1, Rect.y + row * cellHeight + cellHeight / 2 - 1, cellWidth / 2, cellHeight / 2);
         }
     }
 
-    // 绘制中心
-    ctx.fillStyle = "red";
-    ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
+    // // 绘制中心
+    // ctx.fillStyle = "red";
+    // ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
 }
