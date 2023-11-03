@@ -100,6 +100,7 @@ export function drawCountour(
     canavs: HTMLCanvasElement,
     countourCodeGrid: number[][],
     Rect: Rect, // {x, y, w, h}
+    strokeColor: string = "white"
 ){
     // 首先分割 rect 为小格子
     let cellWidth = Rect.w / countourCodeGrid[0].length;
@@ -113,7 +114,7 @@ export function drawCountour(
     for(let row = 0; row < countourCodeGrid.length; row++){
         for(let col = 0; col < countourCodeGrid[0].length; col++){
             let value = countourCodeGrid[row][col];
-            countourCase(value, {x: Rect.x + col * cellWidth, y: Rect.y + row * cellHeight, w: cellWidth, h: cellHeight}, ctx);
+            countourCase(value, {x: Rect.x + col * cellWidth, y: Rect.y + row * cellHeight, w: cellWidth, h: cellHeight}, ctx, strokeColor);
         }
     }
 
@@ -140,6 +141,7 @@ export function drawCountour(
  * @param countourCode - 0-15
  * @param cell - 格网
  * @param ctx - canvas 上下文
+ * @param strokeColor - 线条颜色
  */
 function countourCase(
     countourCode: number,

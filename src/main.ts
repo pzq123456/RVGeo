@@ -421,17 +421,21 @@ function example13(){
   const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
   const drawCountour = RVGeo.Renderer.drawCountour;
   axios.get('dem.csv').then((res)=>{
-    const subReagion = [64,64,128,128] as [number, number, number, number];
     let data = parseData(res.data);
     let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
-    let grid2 = grid.getCoutourCode(0,2);
-    // console.log(grid.getSubGridObj(subReagion,[0]).getShape());
-    // console.log(grid2);
+
+    let countour1 = grid.getCoutourCode(0,1);
+    let countour2 = grid.getCoutourCode(0,2);
+    let countour3 = grid.getCoutourCode(0,3);
+    let countour4 = grid.getCoutourCode(0,4);
+
     drawGrid2d(canvas, data, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), 
-      RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear),);//subReagion
-    binDrawGrid2d(canvas, grid2, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.Colors.simplePseudoColorBand);
-    drawCountour(canvas, grid2, {x: 0, y: 0, w: 1024, h: 1024})
+      RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
 
-
-    })
+    // binDrawGrid2d(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.Colors.simplePseudoColorBand);
+    drawCountour(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},"red");
+    drawCountour(canvas, countour2, {x: 0, y: 0, w: 1024, h: 1024},"green");
+    drawCountour(canvas, countour3, {x: 0, y: 0, w: 1024, h: 1024},"blue");
+    drawCountour(canvas, countour4, {x: 0, y: 0, w: 1024, h: 1024},"yellow");
+  })
 }
