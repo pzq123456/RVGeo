@@ -82,6 +82,13 @@ export function simpleColorBandFactory(type: stretchType) : (statistics: {max: n
 
 const defaultColorList = ["#163544","#495a45","#767d58","#76a477","#d7bd7f","#d7221f"];
 
+const CountourColorList = [
+    "#ffffff00","#ff9a00","#3ec1d3","#6c5b7b",
+    "#355c7d","#f8b500","#119da4","#ff165d",
+    "#8ECFC9","#FFBE7A","#82B0D2","#BEB8DC",
+    "#E7DAD2","#119da4","#ff165d","#ffffff00",
+];
+
 /**
  * 伪彩色带渲染
  * @param statistics - 波段统计信息
@@ -122,4 +129,33 @@ strachFunc: (value:number, statistics: {max: number, min: number, mean: number})
  */
 export function pseudoColorBandFactory(type: stretchType, level?: number[], colorList: string[] = defaultColorList){
     return (statistics: {max: number, min: number, mean: number},value: number) => pseudoColorBand(statistics, value, level, colorList, stretchFactory(type));
+}
+
+
+// binary color band render
+export function binaryColorBand(
+    value: number,
+    colorList: string[] = ["#000000", "#ffffff"]
+): string{
+    if(value === 0){
+        return colorList[0];
+    }
+    else{
+        return colorList[1];
+    }
+}
+
+/**
+ * 简单离散值颜色计算函数
+ * - 离散值范围为整数
+ * - 默认与色带索引一一对应
+ * @param value 
+ * @param colorList 
+ */
+export function simplePseudoColorBand(
+    value: number,
+    colorList: string[] = CountourColorList
+) : string
+{
+    return colorList[value];
 }

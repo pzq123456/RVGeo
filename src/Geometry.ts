@@ -401,7 +401,10 @@ export class MultiPoint extends Geometry{
         this.MBR = this.calculateMBR();
     }
 
-
+    popPoint(){
+        this.coordinates.pop();
+        this.MBR = this.calculateMBR();
+    }
 
     // 判断是否为多点类型
     static isMultiPoint(multiPoint: any): multiPoint is MultiPoint{

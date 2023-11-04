@@ -4,6 +4,22 @@
 > - [more information](https://pzq123456.github.io/RVGeo/)
 
 ## Release Notes
+### 2023-11-4 V2.0.5
+- 新增等值线计算与渲染（基于 Marching Squares 方法）
+- Contour calculation and rendering (based on Marching Squares method)
+- You can use `RVGeo.Renderer.drawCountour` to draw contour lines, after you get the contour code from `RVGeo.Coverage.Grid.getCoutourCode`
+```ts
+  const drawCountour = RVGeo.Renderer.drawCountour;
+
+  axios.get('dem.csv').then((res)=>{
+    let data = parseData(res.data);
+    let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
+    let countour1 = grid.getCoutourCode(0,0.6);
+    drawCountour(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},"red");
+  })
+```
+
+
 ### 2023-11-2 V2.0.4
 - 栅格数据新增伪彩色渲染器
 - New pseudocolor renderer for raster data
@@ -67,7 +83,7 @@ function example1(){ // 绘制多点及其重心
 > - 以下内容为暂定设计稿件。打 “*” 的模块处于待定状态，有可能会并入其他模块。
 > - The following content is a tentative design draft. The modules marked with "*" are in a pending state and may be merged into other modules.
 
-![](/tutorials/DrawIO/module.svg)
+![](/DrawIO/module.svg)
 > 图片说明：
 >  - 虚线框中代表尚未实现（或正在实现）的模块
 > - The dashed box represents the module that has not been implemented (or is being implemented)
