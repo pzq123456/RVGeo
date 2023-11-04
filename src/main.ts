@@ -459,18 +459,24 @@ function example13(){
     let data = parseData(res.data);
     let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
 
-    let countour1 = grid.getCoutourCode(0,1);
-    let countour2 = grid.getCoutourCode(0,2);
-    let countour3 = grid.getCoutourCode(0,3);
-    let countour4 = grid.getCoutourCode(0,4);
+    let countour1 = grid.getCoutourCode(0,0.6);
+    let countour2 = grid.getCoutourCode(0,1.2);
+    let countour3 = grid.getCoutourCode(0,1.8);
+    let countour4 = grid.getCoutourCode(0,2.4);
+    let countour5 = grid.getCoutourCode(0,3.6);
+    let countour6 = grid.getCoutourCode(0,4.8);
 
-    // drawGrid2d(canvas, data, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), 
-    //   RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
 
-    // binDrawGrid2d(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.Colors.simplePseudoColorBand);
+    drawGrid2d(canvas, data, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), 
+      RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+
+    binDrawGrid2d(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.Colors.simplePseudoColorBand);
     drawCountour(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},"red");
     drawCountour(canvas, countour2, {x: 0, y: 0, w: 1024, h: 1024},"green");
     drawCountour(canvas, countour3, {x: 0, y: 0, w: 1024, h: 1024},"blue");
     drawCountour(canvas, countour4, {x: 0, y: 0, w: 1024, h: 1024},"orange");
+    drawCountour(canvas, countour5, {x: 0, y: 0, w: 1024, h: 1024},"purple");
+    drawCountour(canvas, countour6, {x: 0, y: 0, w: 1024, h: 1024},"black");
+
   })
 }
