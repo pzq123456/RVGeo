@@ -6,7 +6,7 @@
 ![example13](/RVGeo/tutorials/doc/imgs/e13-1.jpg)
 
 ```ts
-const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
+  const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
   const drawCountour = RVGeo.Renderer.drawCountour;
   axios.get('dem.csv').then((res)=>{
     let data = parseData(res.data);
@@ -34,4 +34,4 @@ const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
   })
 ```
 
-![example13](/RVGeo/tutorials/doc/imgs/e13-1.jpg)
+![example13](/RVGeo/tutorials/doc/imgs/e13-2.jpg)
