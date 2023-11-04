@@ -47,8 +47,8 @@ export function drawGrid2d(
     }
 
     // 绘制中心
-    ctx.fillStyle = "red";
-    ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
+    // ctx.fillStyle = "red";
+    // ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
 }
 
 export function binDrawGrid2d(

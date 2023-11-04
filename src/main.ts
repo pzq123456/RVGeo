@@ -63,9 +63,9 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '多边形求交', action: () =>  example6()},
   { name: '线段求交', action: () =>  example7()},
   { name: '点线关系', action: () =>  example8()},
-  { name: '栅格', action: () =>  example9()},
   { name: '四叉树', action: () =>  example10()},
   { name: 'Alpha Complex', action: () =>  example11()},
+  { name: '栅格', action: () =>  example9()},
   { name: 'Perlin Noise', action: () =>  example12()},
   { name: 'Countour', action: () =>  example13()},
   { name: 'clear', action: () =>  clear()},
@@ -128,7 +128,33 @@ function example4(){ // 计算面积
 
 function example5(){ // 绘制Voronoi
   removeAllOverlay(map);
-  let del = RVGeo.Delaunay.Delaunator.from(mps.toXYArray());
+  let points = [
+    [
+      -112.2941812737089,
+      42.98773501092674
+    ],
+    [
+      -112.2941812737089,
+      34.07077082095674
+    ],
+    [
+      -98.06343559228408,
+      34.07077082095674
+    ],
+    [
+      -98.06343559228408,
+      42.98773501092674
+    ],
+    [
+      -112.2941812737089,
+      42.98773501092674
+    ]
+  ] as [number, number][];
+
+  let myMps = new RVGeo.Geometry.MultiPoint(points);
+
+
+  let del = RVGeo.Delaunay.Delaunator.from(mps.toXYArray().concat(myMps.toXYArray())); // 传入平面坐标！
   let vor = new RVGeo.Delaunay.Voronoi(del);
   let voi = vor.cutVoronoiByMBR(myMBR1);
   drawEdgeMap2BLMap(voi, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
@@ -380,6 +406,7 @@ function example12(){
   const dampedSin3D = RVGeo.Noise.dampedSin3D; // 3D阻尼正弦波噪声生成器
   const Sin3D = RVGeo.Noise.Sin3D; // 3D正弦波噪声生成器
   const Grid = RVGeo.Coverage.Grid; // 栅格类
+  const drawCountour = RVGeo.Renderer.drawCountour; // 绘制等值线
   const size = 64;
   const blocksize = 256;
 
@@ -401,7 +428,15 @@ function example12(){
   for(let i = 0; i < 3; i++){
     drawGrid2d(canvas, data[i], {x: 0, y: i*blocksize, w: blocksize, h: blocksize}, grid[i].getBandStatistics(0), mySimpleColorBand);
     drawGrid2d(canvas, data[i], {x: blocksize, y: i*blocksize, w: blocksize, h: blocksize}, grid[i].getBandStatistics(0), myPseudoColorBand);
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.1), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#163544");
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.15), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#495a45");
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.2), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#767d58");
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.25), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#76a477");
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.3), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#d7bd7f");
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.35), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#d7221f");
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.4), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#119da4");
   }
+
   function sample(size: number,x: number,y: number, sampleFunc: (x: number, y: number) => number){
     let data = [];
     for(let i = 0; i < size; i++){
@@ -429,13 +464,13 @@ function example13(){
     let countour3 = grid.getCoutourCode(0,3);
     let countour4 = grid.getCoutourCode(0,4);
 
-    drawGrid2d(canvas, data, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), 
-      RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+    // drawGrid2d(canvas, data, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), 
+    //   RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
 
     // binDrawGrid2d(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.Colors.simplePseudoColorBand);
     drawCountour(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},"red");
     drawCountour(canvas, countour2, {x: 0, y: 0, w: 1024, h: 1024},"green");
     drawCountour(canvas, countour3, {x: 0, y: 0, w: 1024, h: 1024},"blue");
-    drawCountour(canvas, countour4, {x: 0, y: 0, w: 1024, h: 1024},"yellow");
+    drawCountour(canvas, countour4, {x: 0, y: 0, w: 1024, h: 1024},"orange");
   })
 }
