@@ -405,6 +405,9 @@ function example12(){
   const Perlin = RVGeo.Noise.Perlin; // Perlin 噪声生成器
   const dampedSin3D = RVGeo.Noise.dampedSin3D; // 3D阻尼正弦波噪声生成器
   const Sin3D = RVGeo.Noise.Sin3D; // 3D正弦波噪声生成器
+  const worleyNoise = RVGeo.Noise.worleyNoise; // Worley 噪声生成器
+  const CountourColorList = RVGeo.Colors.CountourColorList; // 等值线颜色列表
+
   const Grid = RVGeo.Coverage.Grid; // 栅格类
   const drawCountour = RVGeo.Renderer.drawCountour; // 绘制等值线
   const size = 64;
@@ -418,6 +421,7 @@ function example12(){
 
   // draw grid
   let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear);
+  let rmySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear,true); // reverse color band
   let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear);
 
   let grid = [] as RVGeo.Coverage.Grid[];
@@ -428,14 +432,30 @@ function example12(){
   for(let i = 0; i < 3; i++){
     drawGrid2d(canvas, data[i], {x: 0, y: i*blocksize, w: blocksize, h: blocksize}, grid[i].getBandStatistics(0), mySimpleColorBand);
     drawGrid2d(canvas, data[i], {x: blocksize, y: i*blocksize, w: blocksize, h: blocksize}, grid[i].getBandStatistics(0), myPseudoColorBand);
-    drawCountour(canvas, grid[i].getCoutourCode(0,0.1), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#163544");
+    drawCountour(canvas, grid[i].getCoutourCode(0,- 0.35), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#163544");
+    drawCountour(canvas, grid[i].getCoutourCode(0,- 0.3), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#163544");
+    drawCountour(canvas, grid[i].getCoutourCode(0,- 0.2), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#163544");
+    drawCountour(canvas, grid[i].getCoutourCode(0,- 0.1), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#163544");
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.001), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#163544");
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.002), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#163544");
     drawCountour(canvas, grid[i].getCoutourCode(0,0.15), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#495a45");
     drawCountour(canvas, grid[i].getCoutourCode(0,0.2), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#767d58");
     drawCountour(canvas, grid[i].getCoutourCode(0,0.25), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#76a477");
     drawCountour(canvas, grid[i].getCoutourCode(0,0.3), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#d7bd7f");
     drawCountour(canvas, grid[i].getCoutourCode(0,0.35), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#d7221f");
-    drawCountour(canvas, grid[i].getCoutourCode(0,0.4), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#119da4");
+    drawCountour(canvas, grid[i].getCoutourCode(0,0.5), {x: 2*blocksize, y: i*blocksize, w: blocksize, h: blocksize},"#119da4");
+    drawGrid2d(canvas, data[i], {x: 3*blocksize, y: i*blocksize, w: blocksize, h: blocksize}, grid[i].getBandStatistics(0), rmySimpleColorBand);
   }
+
+  let worleygrid = new Grid(myMBR1,[worleyNoise(256,256,16)]);
+  // let mySimpleColorBand2 = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear,true);
+  drawGrid2d(canvas, worleygrid.data[0], {x: 0, y: 3*blocksize, w: blocksize, h: blocksize}, worleygrid.getBandStatistics(0), mySimpleColorBand);
+  drawGrid2d(canvas, worleygrid.data[0], {x: blocksize, y: 3*blocksize, w: blocksize, h: blocksize}, worleygrid.getBandStatistics(0), myPseudoColorBand);
+  for(let i = 0; i < 30; i++){
+    let index = i % CountourColorList.length;
+    drawCountour(canvas, worleygrid.getCoutourCode(0,i * 5), {x: 2*blocksize, y: 3*blocksize, w: blocksize, h: blocksize},CountourColorList[index]);
+  }
+  drawGrid2d(canvas, worleygrid.data[0], {x: 3*blocksize, y: 3*blocksize, w: blocksize, h: blocksize}, worleygrid.getBandStatistics(0), rmySimpleColorBand);
 
   function sample(size: number,x: number,y: number, sampleFunc: (x: number, y: number) => number){
     let data = [];
@@ -468,9 +488,9 @@ function example13(){
 
 
     drawGrid2d(canvas, data, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), 
-      RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+      RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.power,true));
 
-    binDrawGrid2d(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.Colors.simplePseudoColorBand);
+    // binDrawGrid2d(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.Colors.simplePseudoColorBand);
     drawCountour(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},"red");
     drawCountour(canvas, countour2, {x: 0, y: 0, w: 1024, h: 1024},"green");
     drawCountour(canvas, countour3, {x: 0, y: 0, w: 1024, h: 1024},"blue");
