@@ -269,3 +269,76 @@ export function binarization(grid: Grid, band: number, threshold: number): numbe
     }
     return binarizationData;
 }
+
+export function subdivide2QTree(
+    grid: Grid,
+    band: number,
+    maxDepth: number,
+): QTNode
+{
+    let boundary = [0, 0, grid.rows - 1, grid.cols - 1] as MBR;
+    let depth = 0;
+    let root = getQTNode(grid, band, boundary, maxDepth, depth);
+    return root;
+}
+
+function getQTNode(
+    grid: Grid,
+    band: number,
+    boundary: MBR,
+    maxDepth: number,
+    depth: number
+): QTNode{
+    let node: QTNode = {
+        boundary,
+        value: 0,
+        children: [],
+        depth,
+        maxDepth,
+        isLeaf: false
+    };
+    node.value = grid.getSubGridObj(boundary, [band]).getBandStatistics(band).mean;
+    if(depth === maxDepth){
+        node.isLeaf = true;
+        return node;
+    }else{
+        let [minRow, minCol, maxRow, maxCol] = boundary;
+        let midRow = Math.floor((minRow + maxRow) / 2);
+        let midCol = Math.floor((minCol + maxCol) / 2);
+        let northWestBoundary: MBR = [minRow, minCol, midRow, midCol];
+        let northEastBoundary: MBR = [minRow, midCol, midRow, maxCol];
+        let southWestBoundary: MBR = [midRow, minCol, maxRow, midCol];
+        let southEastBoundary: MBR = [midRow, midCol, maxRow, maxCol];
+        node.children.push(getQTNode(grid, band, northWestBoundary, maxDepth, depth + 1));
+        node.children.push(getQTNode(grid, band, northEastBoundary, maxDepth, depth + 1));
+        node.children.push(getQTNode(grid, band, southWestBoundary, maxDepth, depth + 1));
+        node.children.push(getQTNode(grid, band, southEastBoundary, maxDepth, depth + 1));
+        return node;
+    }
+}
+
+/**
+ * 寻找四的幂次方
+ */
+function findMaxDepth(
+    n: number
+){
+    let maxDepth = 0;
+    while(n > 1){
+        n = n / 4;
+        maxDepth += 1;
+    }
+    return maxDepth;
+}
+
+/**
+ * 由网格数据生成四叉树(节点)
+ */
+type QTNode = {
+    boundary: MBR,
+    value: number,
+    children: QTNode[],
+    depth: number,
+    maxDepth: number,
+    isLeaf: boolean
+}

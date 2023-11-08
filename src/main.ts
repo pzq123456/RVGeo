@@ -68,6 +68,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '栅格', action: () =>  example9()},
   { name: 'Perlin Noise', action: () =>  example12()},
   { name: 'Countour', action: () =>  example13()},
+  { name: 'Subdivide', action: () =>  example14()},
   { name: 'clear', action: () =>  clear()},
 ])
 
@@ -499,4 +500,16 @@ function example13(){
     drawCountour(canvas, countour6, {x: 0, y: 0, w: 1024, h: 1024},"black");
 
   })
+}
+
+function example14(){
+  const subdivide2QTree = RVGeo.Coverage.subdivide2QTree;
+  const Grid = RVGeo.Coverage.Grid;
+  axios.get('dem.csv').then((res)=>{
+    let data = parseData(res.data);
+    let grid = new Grid(myMBR1,[data]);
+    console.log(grid);
+    let subgrid = subdivide2QTree(grid,0,4);
+    console.log(subgrid);
+  });
 }
