@@ -505,11 +505,14 @@ function example13(){
 function example14(){
   const subdivide2QTree = RVGeo.Coverage.subdivide2QTree;
   const Grid = RVGeo.Coverage.Grid;
+  const drawQTree2d = RVGeo.Renderer.drawQTree2d;
   axios.get('dem.csv').then((res)=>{
     let data = parseData(res.data);
     let grid = new Grid(myMBR1,[data]);
-    console.log(grid);
-    let subgrid = subdivide2QTree(grid,0,4);
+    // console.log(grid);
+    let subgrid = subdivide2QTree(grid,4);
     console.log(subgrid);
+    drawQTree2d(canvas,{x: 0, y: 0, w: 1024, h: 1024},subgrid);
   });
+
 }

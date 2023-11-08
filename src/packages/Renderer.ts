@@ -3,6 +3,7 @@
  */
 
 import { simpleColorBand,binaryColorBand } from "./Colors";
+import { QTNode } from './Coverage';
 
 type Rect = {
     x: number,
@@ -248,3 +249,47 @@ function countourCase(
             break;
     }
 }
+
+
+/**
+ * 绘制栅格四叉树
+ * @param consvas - canvas
+ * @param rect - 绘制范围
+ * @param QTree - 四叉树
+ */
+export function drawQTree2d(
+    consvas: HTMLCanvasElement,
+    rect: Rect,
+    QTree: QTNode,
+    style: {strokeStyle: string, lineWidth: number} = {strokeStyle: "black", lineWidth: 1}
+){
+    let styles = [
+        {strokeStyle: "orange", lineWidth: 1},
+        {strokeStyle: "red", lineWidth: 1},
+        {strokeStyle: "blue", lineWidth: 1},
+        {strokeStyle: "green", lineWidth: 1},
+    ]
+    
+
+    if(!QTree){
+        return;
+    }
+    let ctx = consvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    ctx.strokeStyle = style.strokeStyle;
+    ctx.lineWidth = 1;
+
+    // 绘制矩形
+    ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
+    // 绘制中心
+    ctx.fillStyle = style.strokeStyle;
+    ctx.fillRect(rect.x + rect.w / 2 - 2, rect.y + rect.h / 2 - 2, 5*(QTree.depth + 1), 5*(QTree.depth + 1));
+    // 绘制子节点
+    drawQTree2d(consvas, {x: rect.x, y: rect.y, w: rect.w / 2, h: rect.h / 2}, QTree.children[0], styles[0]);
+    drawQTree2d(consvas, {x: rect.x + rect.w / 2, y: rect.y, w: rect.w / 2, h: rect.h / 2}, QTree.children[1], styles[1]);
+    drawQTree2d(consvas, {x: rect.x, y: rect.y + rect.h / 2, w: rect.w / 2, h: rect.h / 2}, QTree.children[2], styles[2]);
+    drawQTree2d(consvas, {x: rect.x + rect.w / 2, y: rect.y + rect.h / 2, w: rect.w / 2, h: rect.h / 2}, QTree.children[3], styles[3]);
+}
+

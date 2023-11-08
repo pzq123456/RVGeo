@@ -3,6 +3,7 @@
  */
 import { MBR } from "./Geometry";
 import { PointOutsideMBR } from "./CGUtils";
+
 /**
  * 网格类（本质是三维数组）:
  * - 三维数组的每一层代表一个波段
@@ -270,51 +271,81 @@ export function binarization(grid: Grid, band: number, threshold: number): numbe
     return binarizationData;
 }
 
+/**
+ * （简易四叉树）创建一个 gridMBR 层面的四叉树
+ * @param grid 
+ * @param band 
+ * @param maxDepth 
+ */
 export function subdivide2QTree(
     grid: Grid,
-    band: number,
     maxDepth: number,
 ): QTNode
-{
-    let boundary = [0, 0, grid.rows - 1, grid.cols - 1] as MBR;
-    let depth = 0;
-    let root = getQTNode(grid, band, boundary, maxDepth, depth);
-    return root;
+{   
+    let num = grid.rows * grid.cols;
+    let maxDepth2 = findMaxDepth(num);
+    
+    if(maxDepth > maxDepth2){
+        maxDepth = maxDepth2;
+    }
+
+    let boundary = [0,0,grid.rows - 1, grid.cols - 1] as MBR;
+    return getQTNode(boundary, 0, maxDepth);
 }
 
 function getQTNode(
-    grid: Grid,
-    band: number,
     boundary: MBR,
+    depth: number,
     maxDepth: number,
-    depth: number
-): QTNode{
+): QTNode
+{
     let node: QTNode = {
         boundary,
-        value: 0,
         children: [],
         depth,
         maxDepth,
         isLeaf: false
     };
-    node.value = grid.getSubGridObj(boundary, [band]).getBandStatistics(band).mean;
     if(depth === maxDepth){
         node.isLeaf = true;
         return node;
     }else{
-        let [minRow, minCol, maxRow, maxCol] = boundary;
-        let midRow = Math.floor((minRow + maxRow) / 2);
-        let midCol = Math.floor((minCol + maxCol) / 2);
-        let northWestBoundary: MBR = [minRow, minCol, midRow, midCol];
-        let northEastBoundary: MBR = [minRow, midCol, midRow, maxCol];
-        let southWestBoundary: MBR = [midRow, minCol, maxRow, midCol];
-        let southEastBoundary: MBR = [midRow, midCol, maxRow, maxCol];
-        node.children.push(getQTNode(grid, band, northWestBoundary, maxDepth, depth + 1));
-        node.children.push(getQTNode(grid, band, northEastBoundary, maxDepth, depth + 1));
-        node.children.push(getQTNode(grid, band, southWestBoundary, maxDepth, depth + 1));
-        node.children.push(getQTNode(grid, band, southEastBoundary, maxDepth, depth + 1));
+        let minLon = boundary[0];
+        let minLat = boundary[1];
+        let maxLon = boundary[2];
+        let maxLat = boundary[3];
+        let midLon =(minLon + maxLon) / 2;
+        // 取整
+        midLon = Math.floor(midLon);
+        let midLat = (minLat + maxLat) / 2;
+        // 取整
+        midLat = Math.floor(midLat);
+        let topLeftMBR = [minLon, midLat, midLon, maxLat] as MBR;
+        let topRightMBR = [midLon, midLat, maxLon, maxLat] as MBR;
+        let bottomLeftMBR = [minLon, minLat, midLon, midLat] as MBR;
+        let bottomRightMBR = [midLon, minLat, maxLon, midLat] as MBR;
+        let topLeftNode = getQTNode(topLeftMBR, depth + 1, maxDepth);
+        let topRightNode = getQTNode(topRightMBR, depth + 1, maxDepth);
+        let bottomLeftNode = getQTNode(bottomLeftMBR, depth + 1, maxDepth);
+        let bottomRightNode = getQTNode(bottomRightMBR, depth + 1, maxDepth);
+        node.children.push(topLeftNode);
+        node.children.push(topRightNode);
+        node.children.push(bottomLeftNode);
+        node.children.push(bottomRightNode);
         return node;
     }
+
+}
+
+/**
+ * 由网格数据生成四叉树(节点)
+ */
+export type QTNode = {
+    boundary: MBR,
+    children: QTNode[],
+    depth: number,
+    maxDepth: number,
+    isLeaf: boolean
 }
 
 /**
@@ -329,16 +360,4 @@ function findMaxDepth(
         maxDepth += 1;
     }
     return maxDepth;
-}
-
-/**
- * 由网格数据生成四叉树(节点)
- */
-type QTNode = {
-    boundary: MBR,
-    value: number,
-    children: QTNode[],
-    depth: number,
-    maxDepth: number,
-    isLeaf: boolean
 }

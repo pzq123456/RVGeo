@@ -3,7 +3,7 @@ body{
   }
   .title{
     position: absolute;
-    bottom: 10px;
+    bottom: 0px;
     right: 0px;
     height: 60px;
     width: 200px;
@@ -22,7 +22,7 @@ body{
   }
 
   #toolBar{
-    height: 60px;
+    height: 80px;
     width: 100%;
     /* 自动滚动 */
     overflow-x: auto;
