@@ -473,7 +473,7 @@ function example12(){
 }
 
 function example13(){
-  const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
+  // const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
   const drawCountour = RVGeo.Renderer.drawCountour;
   axios.get('dem.csv').then((res)=>{
     let data = parseData(res.data);
