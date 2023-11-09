@@ -26,13 +26,9 @@
 | example10 | 四叉树 | QuadTree |
 | example11 | Alpha Shape 算法 | Alpha Shape Algorithm |
 | example12 | （二维）噪声生成器及噪声可视化 | Noise Generator and visualization |
-
-
-
-
-
-
-
+| example13 |  绘制等高线 | draw contour |
+| example14 | 栅格金字塔 | Grid Pyramid |
+| example15 | 二维傅里叶变换 | FFT on 2D Grid |
 
 ## About this site
 > 网站布局简介：

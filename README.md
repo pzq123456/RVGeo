@@ -1,4 +1,6 @@
-# RVGeo V 2.0
+# RVGeo V 2.0 `Dev Branch`
+> - current version: 2.0.5
+> - next version: 2.0.6 (working...)
 ## 本包的潜在优势 | Potential Advantages
 - 便捷快速地引入基础空间分析算法
 - 跨地图服务商的一致性开发体验

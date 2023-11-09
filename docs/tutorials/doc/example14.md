@@ -1,4 +1,4 @@
-# Example14 栅格金字塔 (Raster Pyramid)
+# Example14 栅格金字塔 (Grid Pyramid)
 ![example13](/RVGeo/tutorials/doc/imgs/e14-1.gif)
 ```ts
     const subdivide2QTree = RVGeo.Coverage.subdivide2QTree;
@@ -10,9 +10,7 @@
     let data = parseData(res.data);
     let grid = new Grid(myMBR1,[data]);
     let subgrid = subdivide2QTree(grid,10);
-    drawQTree2d(
-        canvas,{x: 0, y: 0, w: 1024, h: 1024},subgrid,grid,mySimpleColorBand
-    )
+    drawQTree2d(canvas,{x: 0, y: 0, w: 1024, h: 1024},subgrid,grid,mySimpleColorBand)
     drawGrid2d(canvas, data, {x: 1024, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), mySimpleColorBand);
     });
 ```

@@ -92,7 +92,14 @@ export const metalist = [
     },
     {
         "title" : "Example14",
-        "path" : "doc/example13.md",
+        "path" : "doc/example14.md",
+        "date" : "2023-11-9",
+        "tag" : "info",
+        "command": "cd"
+    },
+    {
+        "title" : "Example14",
+        "path" : "doc/example15.md",
         "date" : "2023-11-9",
         "tag" : "info",
         "command": "cd"
