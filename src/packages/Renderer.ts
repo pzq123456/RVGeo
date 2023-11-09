@@ -294,8 +294,9 @@ export function drawQTree2d(
     let color = colorBand(statistics, tmpvalue);
     ctx.fillStyle = color;
     ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+    // let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear);
     // 暂停 1 秒
-    setTimeout(() => {
+    requestAnimationFrame(() => {
         if(QTree.isDivided){
             // draw sub node
             let subRect = [
@@ -311,9 +312,7 @@ export function drawQTree2d(
             drawQTree2d(canvas, subRect[2], QTree.children[2], grid, colorBand,value, statistics);
             drawQTree2d(canvas, subRect[3], QTree.children[3], grid, colorBand,value, statistics);
     
-        }
-    }, 1000);
-
-    
+        } 
+    });
 }
 
