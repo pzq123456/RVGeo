@@ -242,6 +242,17 @@ export class Grid{
         }
         return contourCode;
     }
+
+    getMean(band: number): number{
+        let bandData = this.data[band];
+        let sum = 0;
+        for(let row = 0; row < this.rows; row++){
+            for(let col = 0; col < this.cols; col++){
+                sum += bandData[row][col];
+            }
+        }
+        return sum / (this.rows * this.cols);
+    }
     
 }
 
@@ -276,6 +287,13 @@ export function binarization(grid: Grid, band: number, threshold: number): numbe
  * @param grid 
  * @param band 
  * @param maxDepth 
+ * 
+ * |---------->x
+ * | 2 | 3 |
+ * |--------
+ * | 0 | 1 |
+ * |
+ * y
  */
 export function subdivide2QTree(
     grid: Grid,
@@ -283,9 +301,9 @@ export function subdivide2QTree(
 ): QTNode
 {   
     let num = grid.rows * grid.cols;
-    let maxDepth2 = findMaxDepth(num);
+    let maxDepth2 = findMaxDepth(num) + 3;
     
-    if(maxDepth > maxDepth2){
+    if(maxDepth > maxDepth2 || maxDepth < 0){
         maxDepth = maxDepth2;
     }
 
@@ -304,26 +322,28 @@ function getQTNode(
         children: [],
         depth,
         maxDepth,
-        isLeaf: false
+        isLeaf: false,
+        isDivided: false,
     };
-    if(depth === maxDepth){
+    if(depth === maxDepth - 1){
         node.isLeaf = true;
         return node;
     }else{
-        let minLon = boundary[0];
-        let minLat = boundary[1];
-        let maxLon = boundary[2];
-        let maxLat = boundary[3];
-        let midLon =(minLon + maxLon) / 2;
+        node.isDivided = true;
+        let minRow = boundary[0];
+        let minCol = boundary[1];
+        let maxRow = boundary[2];
+        let maxCol = boundary[3];
+        let midRow =(minRow + maxRow) / 2;
         // 取整
-        midLon = Math.floor(midLon);
-        let midLat = (minLat + maxLat) / 2;
+        midRow = Math.floor(midRow);
+        let midCol = (minCol + maxCol) / 2;
         // 取整
-        midLat = Math.floor(midLat);
-        let topLeftMBR = [minLon, midLat, midLon, maxLat] as MBR;
-        let topRightMBR = [midLon, midLat, maxLon, maxLat] as MBR;
-        let bottomLeftMBR = [minLon, minLat, midLon, midLat] as MBR;
-        let bottomRightMBR = [midLon, minLat, maxLon, midLat] as MBR;
+        midCol = Math.floor(midCol);
+        let topLeftMBR = [minRow, midCol, midRow, maxCol] as MBR;
+        let topRightMBR = [midRow, midCol, maxRow, maxCol] as MBR;
+        let bottomLeftMBR = [minRow, minCol, midRow, midCol] as MBR;
+        let bottomRightMBR = [midRow, minCol, maxRow, midCol] as MBR;
         let topLeftNode = getQTNode(topLeftMBR, depth + 1, maxDepth);
         let topRightNode = getQTNode(topRightMBR, depth + 1, maxDepth);
         let bottomLeftNode = getQTNode(bottomLeftMBR, depth + 1, maxDepth);
@@ -345,7 +365,8 @@ export type QTNode = {
     children: QTNode[],
     depth: number,
     maxDepth: number,
-    isLeaf: boolean
+    isLeaf: boolean,
+    isDivided: boolean,
 }
 
 /**
@@ -354,10 +375,12 @@ export type QTNode = {
 function findMaxDepth(
     n: number
 ){
+    // 寻找距离 n 最近的 4 的幂次方
     let maxDepth = 0;
-    while(n > 1){
-        n = n / 4;
-        maxDepth += 1;
+    let num = 1;
+    while(num < n){
+        num *= 4;
+        maxDepth++;
     }
     return maxDepth;
 }

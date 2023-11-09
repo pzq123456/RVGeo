@@ -2,8 +2,8 @@
  * 渲染器类 将所有涉及绘制数据的逻辑集中在这里
  */
 
-import { simpleColorBand,binaryColorBand } from "./Colors";
-import { QTNode } from './Coverage';
+import { simpleColorBand,binaryColorBand} from "./Colors";
+import { Grid, QTNode } from './Coverage';
 
 type Rect = {
     x: number,
@@ -252,44 +252,68 @@ function countourCase(
 
 
 /**
- * 绘制栅格四叉树
- * @param consvas - canvas
- * @param rect - 绘制范围
- * @param QTree - 四叉树
+ * 绘制四叉树
+ * @param canvas 
+ * @param rect 
+ * @param QTree 
+ * @param grid 
+ * @param colorBand 
+ * @param value 
+ * @param statistics 
  */
 export function drawQTree2d(
-    consvas: HTMLCanvasElement,
+    canvas: HTMLCanvasElement,
     rect: Rect,
     QTree: QTNode,
-    style: {strokeStyle: string, lineWidth: number} = {strokeStyle: "black", lineWidth: 1}
+    grid: Grid,
+    colorBand: (statistics: {max: number, min: number, mean: number},value: number) => string = simpleColorBand,
+    value?: number,
+    statistics?: {max: number, min: number, mean: number},
 ){
-    let styles = [
-        {strokeStyle: "orange", lineWidth: 1},
-        {strokeStyle: "red", lineWidth: 1},
-        {strokeStyle: "blue", lineWidth: 1},
-        {strokeStyle: "green", lineWidth: 1},
-    ]
-    
 
-    if(!QTree){
-        return;
-    }
-    let ctx = consvas.getContext("2d");
+    let ctx = canvas.getContext("2d");
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
-    ctx.strokeStyle = style.strokeStyle;
-    ctx.lineWidth = 1;
 
-    // 绘制矩形
-    ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
-    // 绘制中心
-    ctx.fillStyle = style.strokeStyle;
-    ctx.fillRect(rect.x + rect.w / 2 - 2, rect.y + rect.h / 2 - 2, 5*(QTree.depth + 1), 5*(QTree.depth + 1));
-    // 绘制子节点
-    drawQTree2d(consvas, {x: rect.x, y: rect.y, w: rect.w / 2, h: rect.h / 2}, QTree.children[0], styles[0]);
-    drawQTree2d(consvas, {x: rect.x + rect.w / 2, y: rect.y, w: rect.w / 2, h: rect.h / 2}, QTree.children[1], styles[1]);
-    drawQTree2d(consvas, {x: rect.x, y: rect.y + rect.h / 2, w: rect.w / 2, h: rect.h / 2}, QTree.children[2], styles[2]);
-    drawQTree2d(consvas, {x: rect.x + rect.w / 2, y: rect.y + rect.h / 2, w: rect.w / 2, h: rect.h / 2}, QTree.children[3], styles[3]);
+    let tmpgrid = grid.getSubGridObj(QTree.boundary);
+    let tmpstatistics = tmpgrid.getBandStatistics(0);
+    let tmpvalue = tmpstatistics.mean;
+    if(!statistics){
+        statistics = tmpstatistics;
+    }else{ // 更新统计量
+        statistics.max = Math.max(statistics.max, tmpstatistics.max);
+        statistics.min = Math.min(statistics.min, tmpstatistics.min);
+        statistics.mean = (statistics.mean + tmpstatistics.mean) / 2;
+    }
+
+    if(!value){
+        value = tmpvalue;
+    }
+
+    let color = colorBand(statistics, tmpvalue);
+    ctx.fillStyle = color;
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+    // 暂停 1 秒
+    setTimeout(() => {
+        if(QTree.isDivided){
+            // draw sub node
+            let subRect = [
+                {x: rect.x + rect.w / 2, y: rect.y, w: rect.w / 2, h: rect.h / 2},
+                {x: rect.x + rect.w / 2, y: rect.y + rect.h / 2, w: rect.w / 2, h: rect.h / 2},
+                {x: rect.x, y: rect.y, w: rect.w / 2, h: rect.h / 2},
+                {x: rect.x, y: rect.y + rect.h / 2, w: rect.w / 2, h: rect.h / 2},
+            ];
+            // 递归绘制
+    
+            drawQTree2d(canvas, subRect[0], QTree.children[0], grid, colorBand,value, statistics);
+            drawQTree2d(canvas, subRect[1], QTree.children[1], grid, colorBand,value, statistics);
+            drawQTree2d(canvas, subRect[2], QTree.children[2], grid, colorBand,value, statistics);
+            drawQTree2d(canvas, subRect[3], QTree.children[3], grid, colorBand,value, statistics);
+    
+        }
+    }, 1000);
+
+    
 }
 

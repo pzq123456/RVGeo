@@ -4,7 +4,7 @@ import { mockPoints } from './tests/Mock.ts';
 
 import * as RVGeo from './packages/index.ts';
 import axios from 'axios';
-import { drawGrid2d } from './packages/Renderer.ts';
+
 
 const myMBR1 = [
   -109.04885344551185,
@@ -68,7 +68,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: '栅格', action: () =>  example9()},
   { name: 'Perlin Noise', action: () =>  example12()},
   { name: 'Countour', action: () =>  example13()},
-  { name: 'Subdivide', action: () =>  example14()},
+  { name: 'Pyramid', action: () =>  example14()},
   { name: 'clear', action: () =>  clear()},
 ])
 
@@ -274,7 +274,7 @@ function example9(){ // 栅格
   // let grid = new RVGeo.Coverage.Grid(myMBR1,matrix);
   // console.log(grid.getBandStatistics(0));
   // drawGrid2d(canvas, matrix[0], {x: 0, y: 0, w: 100, h: 100}, grid.getBandStatistics(0));
-
+  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
 
 
   axios.get('dem.csv').then((res)=>{
@@ -408,6 +408,7 @@ function example12(){
   const Sin3D = RVGeo.Noise.Sin3D; // 3D正弦波噪声生成器
   const worleyNoise = RVGeo.Noise.worleyNoise; // Worley 噪声生成器
   const CountourColorList = RVGeo.Colors.CountourColorList; // 等值线颜色列表
+  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
 
   const Grid = RVGeo.Coverage.Grid; // 栅格类
   const drawCountour = RVGeo.Renderer.drawCountour; // 绘制等值线
@@ -476,6 +477,7 @@ function example12(){
 function example13(){
   // const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
   const drawCountour = RVGeo.Renderer.drawCountour;
+  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
   axios.get('dem.csv').then((res)=>{
     let data = parseData(res.data);
     let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
@@ -506,13 +508,15 @@ function example14(){
   const subdivide2QTree = RVGeo.Coverage.subdivide2QTree;
   const Grid = RVGeo.Coverage.Grid;
   const drawQTree2d = RVGeo.Renderer.drawQTree2d;
+  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
+  let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear);
   axios.get('dem.csv').then((res)=>{
     let data = parseData(res.data);
     let grid = new Grid(myMBR1,[data]);
-    // console.log(grid);
-    let subgrid = subdivide2QTree(grid,4);
-    console.log(subgrid);
-    drawQTree2d(canvas,{x: 0, y: 0, w: 1024, h: 1024},subgrid);
+    let subgrid = subdivide2QTree(grid,10);
+    drawQTree2d(
+      canvas,{x: 0, y: 0, w: 1024, h: 1024},subgrid,grid,mySimpleColorBand
+    )
+    drawGrid2d(canvas, data, {x: 1024, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), mySimpleColorBand);
   });
-
 }
