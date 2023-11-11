@@ -316,3 +316,59 @@ export function drawQTree2d(
     });
 }
 
+
+export function drawSample(
+    canvas: HTMLCanvasElement,
+    rect: Rect,
+    sample: number[],
+    style: {color: string, width: number, backgroundColor: string} = {color: "black", width: 4, backgroundColor: "white"},
+    statistics?: {max: number, min: number, mean: number},
+){
+    let ctx = canvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    if(!statistics){
+        statistics = {
+            max: Math.max(...sample),
+            min: Math.min(...sample),
+            mean: sample.reduce((a, b) => a + b) / sample.length
+        };
+    }
+    ctx.fillStyle = style.backgroundColor;
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+
+    // draw sample points 
+    // circle color and r
+    ctx.fillStyle = style.color;
+    ctx.lineWidth = style.width / 2;
+    let r = style.width / 2;
+    for(let i = 0; i < sample.length; i++){
+        let x = rect.x + rect.w * i / sample.length;
+        let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+
+    // draw sample line
+    ctx.beginPath();
+    ctx.moveTo(rect.x, rect.y + rect.h * (1 - (sample[0] - statistics.min) / (statistics.max - statistics.min)));
+    for(let i = 0; i < sample.length; i++){
+        let x = rect.x + rect.w * i / sample.length;
+        let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
+        ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // annotate value for 1/3 of sample points
+    ctx.fillStyle = "green";
+    ctx.font = "12px serif";
+    for(let i = 0; i < sample.length; i += 16){
+        let x = rect.x + rect.w * i / sample.length;
+        let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
+        ctx.fillText(sample[i].toFixed(2), x, y);
+    }
+
+
+}

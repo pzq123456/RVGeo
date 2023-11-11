@@ -39,7 +39,6 @@ function parseData(data:string){
   return result;
 }
 
-// 获取 canvas 标签并绘制蓝色底色
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
 const ctx = canvas.getContext('2d')!;
 ctx.fillStyle = 'white';
@@ -55,20 +54,21 @@ map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 
 // 注册工具条
 createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
-  { name: '绘制多点及其重心', action: () =>  example1()},
-  { name: '绘制三角网', action: () =>  example2()},
-  { name: '绘制凸包', action: () =>  example3()},
-  { name: '计算面积', action: () =>  example4()},
-  { name: '绘制Voronoi', action: () =>  example5()},
-  { name: '多边形求交', action: () =>  example6()},
-  { name: '线段求交', action: () =>  example7()},
-  { name: '点线关系', action: () =>  example8()},
-  { name: '四叉树', action: () =>  example10()},
-  { name: 'Alpha Complex', action: () =>  example11()},
-  { name: '栅格', action: () =>  example9()},
-  { name: 'Perlin Noise', action: () =>  example12()},
-  { name: 'Countour', action: () =>  example13()},
+  // { name: '绘制多点及其重心', action: () =>  example1()},
+  // { name: '绘制三角网', action: () =>  example2()},
+  // { name: '绘制凸包', action: () =>  example3()},
+  // { name: '计算面积', action: () =>  example4()},
+  // { name: '绘制Voronoi', action: () =>  example5()},
+  // { name: '多边形求交', action: () =>  example6()},
+  // { name: '线段求交', action: () =>  example7()},
+  // { name: '点线关系', action: () =>  example8()},
+  // { name: '四叉树', action: () =>  example10()},
+  // { name: 'Alpha Complex', action: () =>  example11()},
+  // { name: '栅格', action: () =>  example9()},
+  // { name: 'Perlin Noise', action: () =>  example12()},
+  // { name: 'Countour', action: () =>  example13()},
   { name: 'Pyramid', action: () =>  example14()},
+  { name: 'FFT', action: () =>  example15()},
   { name: 'clear', action: () =>  clear()},
 ])
 
@@ -519,4 +519,24 @@ function example14(){
     )
     drawGrid2d(canvas, data, {x: 1024, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), mySimpleColorBand);
   });
+}
+
+function example15(){
+  const drawSample = RVGeo.Renderer.drawSample;
+  const sample = RVGeo.Fourier.sample;
+  const FFT  = RVGeo.Fourier.FFT;
+
+  let data = sample(Math.sin, 128, 0, 2*Math.PI);
+  // sample another function and add them together
+  let data3 = sample(Math.cos, 128, 0, 2*Math.PI);
+  // data + data3
+  for(let i = 0; i < data.length; i++){
+    data[i] += 4 * data3[i];
+  }
+  drawSample(canvas, {x: 0, y: 0, w: 1024, h: 512},data);
+
+  let data2 = FFT(data);
+  // console.log(data2);
+  drawSample(canvas, {x: 0, y: 512, w: 1024, h: 512},data2);
+
 }
