@@ -525,18 +525,48 @@ function example15(){
   const drawSample = RVGeo.Renderer.drawSample;
   const sample = RVGeo.Fourier.sample;
   const FFT  = RVGeo.Fourier.FFT;
+  const IFFT = RVGeo.Fourier.IFFT;
 
-  let data = sample(Math.sin, 128, 0, 2*Math.PI);
-  // sample another function and add them together
-  let data3 = sample(Math.cos, 128, 0, 2*Math.PI);
-  // data + data3
-  for(let i = 0; i < data.length; i++){
-    data[i] += 4 * data3[i];
-  }
+  let data = sample(Math.sin, 128, 0, 1,1,3);
+  let data4 = sample(Math.sin, 128, 0, 1,4);
+  let data7 = sample(Math.sin, 128, 0, 1,7,0.5);
+
+  data.forEach((d,i) => {
+    data[i] = d + data4[i] + data7[i];
+  });
+  // 扩大十倍
   drawSample(canvas, {x: 0, y: 0, w: 1024, h: 512},data);
 
-  let data2 = FFT(data);
-  // console.log(data2);
-  drawSample(canvas, {x: 0, y: 512, w: 1024, h: 512},data2);
+  // FFT
+  // data = data.map((d) => d*10e15);
+  let fft = FFT(data);
+  console.log(fft);
+  let ifft = IFFT(fft);
+  console.log(ifft);
+  // // abs fft
+  // let absfft = fft.map((c) => Math.abs(c));
+  // drawSample(canvas, {x: 0, y: 512, w: 1024, h: 512},absfft);
 
+  // // // IFFT
+  // let ifft = IFFT(fft);
+  // console.log(ifft);
+  // // drawSample(canvas, {x: 0, y: 512, w: 1024, h: 512},ifft);
 }
+
+/**
+ * 
+# sampling rate
+sr = 128
+# sampling interval
+ts = 1.0/sr
+t = np.arange(0,1,ts)
+
+freq = 1.
+x = 3*np.sin(2*np.pi*freq*t)
+
+freq = 4
+x += np.sin(2*np.pi*freq*t)
+
+freq = 7   
+x += 0.5* np.sin(2*np.pi*freq*t)
+ */
