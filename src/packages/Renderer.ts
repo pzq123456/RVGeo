@@ -4,6 +4,7 @@
 
 import { simpleColorBand,binaryColorBand} from "./Colors";
 import { Grid, QTNode } from './Coverage';
+import { Complex } from "./Fourier";
 
 type Rect = {
     x: number,
@@ -321,7 +322,7 @@ export function drawSample(
     canvas: HTMLCanvasElement,
     rect: Rect,
     sample: number[],
-    style: {color: string, width: number, backgroundColor: string} = {color: "black", width: 4, backgroundColor: "white"},
+    style: {color: string, width: number, backgroundColor: string} = {color: "black", width: 4, backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
     statistics?: {max: number, min: number, mean: number},
 ){
     let ctx = canvas.getContext("2d");
@@ -350,7 +351,7 @@ export function drawSample(
         ctx.arc(x, y, r, 0, 2 * Math.PI);
         ctx.fill();
     }
-
+    ctx.strokeStyle = style.color;
     // draw sample line
     ctx.beginPath();
     ctx.moveTo(rect.x, rect.y + rect.h * (1 - (sample[0] - statistics.min) / (statistics.max - statistics.min)));
@@ -369,6 +370,76 @@ export function drawSample(
         let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
         ctx.fillText(sample[i].toFixed(2), x, y);
     }
+}
+
+export function drawSample2(
+    canvas: HTMLCanvasElement,
+    rect: Rect,
+    sample: number[],
+    style: {color: string, width: number, backgroundColor: string} = {color: "black", width: 4, backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
+    statistics?: {max: number, min: number, mean: number},
+){
+    let ctx = canvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    if(!statistics){
+        statistics = {
+            max: Math.max(...sample),
+            min: Math.min(...sample),
+            mean: sample.reduce((a, b) => a + b) / sample.length
+        };
+    }
+    // 绘制柱状图，柱子的宽度为rect.w / sample.length
+    ctx.fillStyle = style.backgroundColor;
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+
+    // draw sample bars
+    ctx.fillStyle = style.color;
+    let barWidth = rect.w / sample.length;
+    for(let i = 0; i < sample.length; i++){
+        let x = rect.x + barWidth * i;
+        let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
+        ctx.fillRect(x, y, barWidth, rect.h - y + rect.y);
+    }
+
+    // annotate y axis 
+    ctx.fillStyle = "green";
+    ctx.font = "12px serif";
+    ctx.fillText(statistics.max.toFixed(2), rect.x, rect.y + 12);
+    ctx.fillText(statistics.min.toFixed(2), rect.x, rect.y + rect.h);
+    ctx.fillText(statistics.mean.toFixed(2), rect.x, rect.y + rect.h / 2);
+
+    // draw line to annotate the three line ablove
+    ctx.strokeStyle = "green";
+    ctx.beginPath();
+    ctx.moveTo(rect.x, rect.y + 12);
+    ctx.lineTo(rect.x + rect.w, rect.y + 12);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(rect.x, rect.y + rect.h);
+    ctx.lineTo(rect.x + rect.w, rect.y + rect.h);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(rect.x, rect.y + rect.h / 2);
+    ctx.lineTo(rect.x + rect.w, rect.y + rect.h / 2);
+    ctx.stroke();
 
 
+}
+
+
+export function drawText(
+    canvas: HTMLCanvasElement,
+    rect: Rect,
+    text: string,
+    style: {color: string, font: string} = {color: "black", font: "12px serif"},
+){
+    let ctx = canvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    ctx.fillStyle = style.color;
+    ctx.font = style.font;
+    ctx.fillText(text, rect.x, rect.y);
 }

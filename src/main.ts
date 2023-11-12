@@ -517,56 +517,24 @@ function example14(){
     drawQTree2d(
       canvas,{x: 0, y: 0, w: 1024, h: 1024},subgrid,grid,mySimpleColorBand
     )
-    drawGrid2d(canvas, data, {x: 1024, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), mySimpleColorBand);
+    // drawGrid2d(canvas, data, {x: 1024, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), mySimpleColorBand);
   });
 }
 
 function example15(){
-  const drawSample = RVGeo.Renderer.drawSample;
-  const sample = RVGeo.Fourier.sample;
-  const FFT  = RVGeo.Fourier.FFT;
-  const IFFT = RVGeo.Fourier.IFFT;
+  const FFT2 = RVGeo.Fourier.FFT2;
+  const FFTImag2 = RVGeo.Fourier.FFTImag2;
+  const FFTShift = RVGeo.Fourier.FFTShift;
+  // const FFTReal2 = RVGeo.Fourier.FFTReal2;
+  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
+  axios.get('dem.csv').then((res)=>{
+    let data = parseData(res.data);
+    let fft = FFT2(data);
+    let fft2 = FFTImag2(fft,"row");
+    let fft3 = FFTShift(FFT2(fft2,"column"));
+    let fft4 = fft3.map((row) => row.map((c) => Math.sqrt(c.real*c.real + c.imag*c.imag)));
 
-  let data = sample(Math.sin, 128, 0, 1,1,3);
-  let data4 = sample(Math.sin, 128, 0, 1,4);
-  let data7 = sample(Math.sin, 128, 0, 1,7,0.5);
-
-  data.forEach((d,i) => {
-    data[i] = d + data4[i] + data7[i];
-  });
-  // 扩大十倍
-  drawSample(canvas, {x: 0, y: 0, w: 1024, h: 512},data);
-
-  // FFT
-  // data = data.map((d) => d*10e15);
-  let fft = FFT(data);
-  console.log(fft);
-  let ifft = IFFT(fft);
-  console.log(ifft);
-  // // abs fft
-  // let absfft = fft.map((c) => Math.abs(c));
-  // drawSample(canvas, {x: 0, y: 512, w: 1024, h: 512},absfft);
-
-  // // // IFFT
-  // let ifft = IFFT(fft);
-  // console.log(ifft);
-  // // drawSample(canvas, {x: 0, y: 512, w: 1024, h: 512},ifft);
+    let grid = new RVGeo.Coverage.Grid(myMBR1,[fft4]);
+    drawGrid2d(canvas, fft4, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+    });
 }
-
-/**
- * 
-# sampling rate
-sr = 128
-# sampling interval
-ts = 1.0/sr
-t = np.arange(0,1,ts)
-
-freq = 1.
-x = 3*np.sin(2*np.pi*freq*t)
-
-freq = 4
-x += np.sin(2*np.pi*freq*t)
-
-freq = 7   
-x += 0.5* np.sin(2*np.pi*freq*t)
- */

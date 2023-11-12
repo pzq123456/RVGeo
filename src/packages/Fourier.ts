@@ -22,7 +22,7 @@ export function sample(f: (x: number) => number, N: number, a: number, b: number
 /**
  * 复数类型
  */
-type Complex = {real: number, imag: number};
+export type Complex = {real: number, imag: number};
 
 function multiply (a: Complex, b: Complex): Complex {
     return {
@@ -100,7 +100,9 @@ function bitReverse (i: number, n: number): number {
 /**
  * 快速傅里叶变换 real to complex
  * @param X - 采样结果
- * @returns - 傅里叶变换结果
+ * @returns - 傅里叶变换结果,作为复数可同时表示振幅和相位。
+ * - real：相位 phase
+ * - imag：振幅 amplitude
  */
 export function FFT(X: number[]): Complex[]
 {
@@ -125,6 +127,13 @@ export function FFT(X: number[]): Complex[]
     return outputArray;
 }
 
+/**
+ * 快速傅里叶逆变换 complex to real
+ * @param X - 傅里叶变换结果（复数）
+ * @returns - 逆变换结果
+ * - real：函数值
+ * - imag：0
+ */
 export function IFFT(X: Complex[]): Complex[]
 {
     let N = X.length;
@@ -150,3 +159,250 @@ export function IFFT(X: Complex[]): Complex[]
     }
     return outputArray;
 }
+
+// RESULT manipulation
+function FFTImagRow(
+    fftResult: Complex[][]
+): number[][]
+{
+    let N = fftResult.length;
+    let Y = new Array(N);
+    for(let i = 0; i < N; i++){
+        Y[i] = FFTImag(fftResult[i]);
+    }
+    return Y;
+}
+
+/**
+ * 取 IFFT 结果的实部（也就是原函数值）
+ * @param ifftResult 
+ * @returns 
+ */
+export function IFFTReal(
+    ifftResult: Complex[]
+): number[]
+{
+    let N = ifftResult.length;
+    let real = new Array(N);
+    for(let i = 0; i < N; i++){
+        real[i] = ifftResult[i].real;
+    }
+    return real;
+}
+
+export function IFFTReal2(
+    ifftResult: Complex[][],
+    mode: 'row' | 'column' = 'row'
+): number[][]
+{
+    if(mode === 'row'){
+        return IFFTRealRow(ifftResult);
+    }else{
+        return transpose(IFFTRealRow(transposeComplex(ifftResult)));
+    }
+}
+
+function IFFTRealRow(
+    ifftResult: Complex[][]
+): number[][]
+{
+    let N = ifftResult.length;
+    let Y = new Array(N);
+    for(let i = 0; i < N; i++){
+        Y[i] = IFFTReal(ifftResult[i]);
+    }
+    return Y;
+}
+
+
+
+
+export function FFT2(
+    X: number[][],
+    mode: 'row' | 'column' = 'row'
+): Complex[][]{
+    if(mode === 'row'){
+        return FFT2Row(X);
+    }else{
+        return transposeComplex(FFT2Row(transpose(X)));
+    }
+}
+
+function FFT2Row(
+    X: number[][],
+): Complex[][]{
+    // 相对于输入
+    let rowLength = X[0].length; // 行长度
+    let columnLength = X.length; // 列长度
+
+    // 行变换 也就是对每一行进行傅里叶变换
+    // 首先判断行的长度是否为 2 的幂 若不是则补零
+    if(Math.log2(rowLength) % 1 !== 0){
+        let N = Math.pow(2, Math.ceil(Math.log2(rowLength)));
+        for(let i = 0; i < columnLength; i++){
+            X[i] = X[i].concat(new Array(N - rowLength).fill(0));
+        }
+    }
+    // 然后对每一行进行傅里叶变换
+    let Y = new Array(columnLength);
+    for(let i = 0; i < columnLength; i++){
+        Y[i] = FFT(X[i]);
+    }
+    return Y;
+}
+
+export function IFFT2(
+    X: Complex[][],
+    mode: 'row' | 'column' = 'row'
+): Complex[][]{
+    if(mode === 'row'){
+        return IFFT2Row(X);
+    }else{
+        return transposeComplex(IFFT2Row(transposeComplex(X)));
+    }
+}
+
+function IFFT2Row(
+    X: Complex[][],
+): Complex[][]{
+    // 相对于输入
+    let rowLength = X[0].length; // 行长度
+    let columnLength = X.length; // 列长度
+
+    // 行变换 也就是对每一行进行傅里叶变换
+    // 首先判断行的长度是否为 2 的幂 若不是则补零
+    if(Math.log2(rowLength) % 1 !== 0){
+        let N = Math.pow(2, Math.ceil(Math.log2(rowLength)));
+        for(let i = 0; i < columnLength; i++){
+            X[i] = X[i].concat(new Array(N - rowLength).fill({'real': 0, 'imag': 0}));
+        }
+    }
+    // 然后对每一行进行傅里叶变换
+    let Y = new Array(columnLength);
+    for(let i = 0; i < columnLength; i++){
+        Y[i] = IFFT(X[i]);
+    }
+    return Y;
+}
+
+
+
+function transpose(
+    X: number[][]
+): number[][]{
+    let N = X.length;
+    let Y = new Array(N);
+    for(let i = 0; i < N; i++){
+        Y[i] = new Array(N);
+        for(let j = 0; j < N; j++){
+            Y[i][j] = X[j][i];
+        }
+    }
+    return Y;
+}
+
+function transposeComplex(
+    X: Complex[][]
+): Complex[][]{
+    let N = X.length;
+    let Y = new Array(N);
+    for(let i = 0; i < N; i++){
+        Y[i] = new Array(N);
+        for(let j = 0; j < N; j++){
+            Y[i][j] = X[j][i];
+        }
+    }
+    return Y;
+}
+
+
+
+/**
+ * 获取傅里叶变换结果的振幅
+ * @param fftResult 
+ * @returns 
+ */
+export function FFTImag(
+    fftResult: Complex[]
+): number[]
+{
+    let N = fftResult.length;
+    let imag = new Array(N);
+    for(let i = 0; i < N; i++){
+        imag[i] = fftResult[i].imag;
+    }
+    return imag;
+}
+
+export function FFTImag2(
+    fftResult: Complex[][],
+    mode: 'row' | 'column' = 'row'
+): number[][]
+{
+    if(mode === 'row'){
+        return FFTImagRow(fftResult);
+    }else{
+        return transpose(FFTImagRow(transposeComplex(fftResult)));
+    }
+}
+
+/**
+ * 获取傅里叶变换结果的振幅
+ * @param fftResult 
+ * @returns 
+ */
+export function FFTReal(
+    fftResult: Complex[]
+): number[]
+{
+    let N = fftResult.length;
+    let imag = new Array(N);
+    for(let i = 0; i < N; i++){
+        imag[i] = fftResult[i].real;
+    }
+    return imag;
+}
+
+
+function FFTRealRow(
+    fftResult: Complex[][]
+): number[][]
+{
+    let N = fftResult.length;
+    let Y = new Array(N);
+    for(let i = 0; i < N; i++){
+        Y[i] = FFTReal(fftResult[i]);
+    }
+    return Y;
+}
+
+export function FFTReal2(
+    fftResult: Complex[][],
+    mode: 'row' | 'column' = 'row'
+): number[][]
+{
+    if(mode === 'row'){
+        return FFTRealRow(fftResult);
+    }else{
+        return transpose(FFTRealRow(transposeComplex(fftResult)));
+    }
+}
+
+
+// 二维矩阵中心化 
+export function FFTShift(
+    fftResult: Complex[][],
+): Complex[][]
+{
+    // 将四角的值移动到中心 将中心的值移动到四角 以便于频谱分析
+    let N = fftResult.length;
+    let Y = new Array(N);
+    for(let i = 0; i < N; i++){
+        Y[i] = new Array(N);
+        for(let j = 0; j < N; j++){
+            Y[i][j] = fftResult[(i + N / 2) % N][(j + N / 2) % N];
+        }
+    }
+    return Y;
+}
+

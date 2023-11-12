@@ -253,6 +253,18 @@ export class Grid{
         }
         return sum / (this.rows * this.cols);
     }
+
+    getSorted1DArray(band: number): number[]{
+        let bandData = this.data[band];
+        let array = [];
+        for(let row = 0; row < this.rows; row++){
+            for(let col = 0; col < this.cols; col++){
+                array.push(bandData[row][col]);
+            }
+        }
+        array.sort((a,b) => a - b);
+        return array;
+    }
     
 }
 
@@ -384,3 +396,32 @@ function findMaxDepth(
     }
     return maxDepth;
 }
+
+/**
+ * 去除最大最小值
+ * @param fft - 二维数组
+ */
+function deMaxMin(
+    fft : number[][],
+  ){
+    let max = -Infinity;
+    let min = Infinity;
+    for(let i = 0; i < fft.length; i++){
+      for(let j = 0; j < fft[0].length; j++){
+        if(fft[i][j] > max){
+          max = fft[i][j];
+        }
+        if(fft[i][j] < min){
+          min = fft[i][j];
+        }
+      }
+    }
+    // 去除最大最小值
+    for(let i = 0; i < fft.length; i++){
+      for(let j = 0; j < fft[0].length; j++){
+        if(fft[i][j] === max || fft[i][j] === min){
+          fft[i][j] = 0;
+        }
+      }
+    }
+  }

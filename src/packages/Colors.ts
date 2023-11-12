@@ -2,7 +2,8 @@ export enum stretchType {
     linear,
     square,
     log,
-    power
+    power,
+    groupStretch
 }
 
 export enum colorListType {
@@ -39,6 +40,17 @@ function powerStretch(value: number, statistics: {max: number, min: number, mean
     return Math.pow((value - statistics.min) / (statistics.max - statistics.min), 2);
 }
 
+function groupStretch(value: number, statistics: {max: number, min: number, mean: number}) : number{
+    // 只绘制 mean 附近 10% 的像素
+    let threshold = 0.1;
+    if(value < statistics.mean - threshold || value > statistics.mean + threshold){
+        return 0;
+    }
+    else{
+        return (value - statistics.min) / (statistics.max - statistics.min);
+    }
+    
+}
 
 
 function stretchFactory(type: stretchType, isReverse?: boolean
@@ -72,6 +84,13 @@ function stretchFactory(type: stretchType, isReverse?: boolean
             }
             else{
                 return powerStretch;
+            }
+        case stretchType.groupStretch:
+            if(isReverse){
+                return (value: number, statistics: {max: number, min: number, mean: number}) => 1 - groupStretch(value, statistics);
+            }
+            else{
+                return groupStretch;
             }
         default:
             throw new Error("未知的拉伸类型");
