@@ -152,3 +152,42 @@ export function worleyNoise(
 
     return grid;
 }
+
+// Noise for testing FFT
+
+/**
+ * 生成 条纹 噪声，可选水平或垂直
+ * @param row - 行数
+ * @param col - 列数
+ * @param n - 条纹数量
+ * @param mode - 模式
+ */
+export function zebraNoise(
+    row: number,
+    col: number,
+    n: number,
+    mode: 'horizontal' | 'vertical' | 'diagonal' | 'all' = 'horizontal',
+):number[][] {
+    const grid = new Array(row).fill(0).map(() => new Array(col).fill(0));
+    const step = Math.floor(row / n);
+    for(let i = 0; i < row; i++) {
+        for(let j = 0; j < col; j++) {
+            if(mode === 'vertical') {
+                grid[i][j] = Math.floor(i / step) % 2 === 0 ? 1 : 0;
+            } else if(mode === 'horizontal') {
+                grid[i][j] = Math.floor(j / step) % 2 === 0 ? 1 : 0;
+            } else if(mode === 'diagonal') {
+                grid[i][j] = Math.floor((i + j) / step) % 2 === 0 ? 1 : 0;
+            } else if(mode === 'all') {
+                // add all
+                grid[i][j] = Math.floor((i + j) / step) % 2 === 0 ? 1 : 0;
+                grid[i][j] += Math.floor(i / step) % 2 === 0 ? 1 : 0;
+                grid[i][j] += Math.floor(j / step) % 2 === 0 ? 1 : 0;
+            }
+        }
+    }
+    return grid;
+}
+
+
+

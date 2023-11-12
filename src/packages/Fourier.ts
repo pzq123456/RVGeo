@@ -65,7 +65,7 @@ function euler(kn: number, N: number){
  * @param a - 复数
  * @returns - 共轭复数
  */
-function conj(a: {real: number, imag: number}){
+export function conj(a: {real: number, imag: number}){
   a.imag *= -1;
   return a;
 }
@@ -126,6 +126,22 @@ export function FFT(X: number[]): Complex[]
     }
     return outputArray;
 }
+
+/**
+ * 快速傅里叶变换 real to complex
+ * - 先对每一行进行傅里叶变换，再对每一列进行傅里叶变换，最后中心化
+ * @param X - 采样结果
+ * @returns - 傅里叶变换结果,作为复数可同时表示振幅和相位。
+ */
+export function fastFFT2(X: number[][]): Complex[][]{
+    let fft = FFT2(X);
+    let fft2 = fft.map((row) => row.map((c) => Math.sqrt(c.real*c.real + c.imag*c.imag)));
+    // let fft2 = FFTImag2(fft,"column");
+    let fft3 = FFTShift(FFT2(fft2,"column")); // 二维矩阵中心化
+    return fft3;
+}
+
+
 
 /**
  * 快速傅里叶逆变换 complex to real

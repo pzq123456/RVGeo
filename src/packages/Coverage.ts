@@ -401,7 +401,7 @@ function findMaxDepth(
  * 去除最大最小值
  * @param fft - 二维数组
  */
-function deMaxMin(
+export function deMaxMin(
     fft : number[][],
   ){
     let max = -Infinity;

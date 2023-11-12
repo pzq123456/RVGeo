@@ -54,19 +54,19 @@ map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 
 // 注册工具条
 createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
-  // { name: '绘制多点及其重心', action: () =>  example1()},
-  // { name: '绘制三角网', action: () =>  example2()},
-  // { name: '绘制凸包', action: () =>  example3()},
-  // { name: '计算面积', action: () =>  example4()},
-  // { name: '绘制Voronoi', action: () =>  example5()},
-  // { name: '多边形求交', action: () =>  example6()},
-  // { name: '线段求交', action: () =>  example7()},
-  // { name: '点线关系', action: () =>  example8()},
-  // { name: '四叉树', action: () =>  example10()},
-  // { name: 'Alpha Complex', action: () =>  example11()},
-  // { name: '栅格', action: () =>  example9()},
-  // { name: 'Perlin Noise', action: () =>  example12()},
-  // { name: 'Countour', action: () =>  example13()},
+  { name: '绘制多点及其重心', action: () =>  example1()},
+  { name: '绘制三角网', action: () =>  example2()},
+  { name: '绘制凸包', action: () =>  example3()},
+  { name: '计算面积', action: () =>  example4()},
+  { name: '绘制Voronoi', action: () =>  example5()},
+  { name: '多边形求交', action: () =>  example6()},
+  { name: '线段求交', action: () =>  example7()},
+  { name: '点线关系', action: () =>  example8()},
+  { name: '四叉树', action: () =>  example10()},
+  { name: 'Alpha Complex', action: () =>  example11()},
+  { name: '栅格', action: () =>  example9()},
+  { name: 'Perlin Noise', action: () =>  example12()},
+  { name: 'Countour', action: () =>  example13()},
   { name: 'Pyramid', action: () =>  example14()},
   { name: 'FFT', action: () =>  example15()},
   { name: 'clear', action: () =>  clear()},
@@ -508,7 +508,7 @@ function example14(){
   const subdivide2QTree = RVGeo.Coverage.subdivide2QTree;
   const Grid = RVGeo.Coverage.Grid;
   const drawQTree2d = RVGeo.Renderer.drawQTree2d;
-  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
+  // const drawGrid2d = RVGeo.Renderer.drawGrid2d;
   let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear);
   axios.get('dem.csv').then((res)=>{
     let data = parseData(res.data);
@@ -522,19 +522,60 @@ function example14(){
 }
 
 function example15(){
-  const FFT2 = RVGeo.Fourier.FFT2;
-  const FFTImag2 = RVGeo.Fourier.FFTImag2;
-  const FFTShift = RVGeo.Fourier.FFTShift;
-  // const FFTReal2 = RVGeo.Fourier.FFTReal2;
+  const fastFFT2 = RVGeo.Fourier.fastFFT2;
   const drawGrid2d = RVGeo.Renderer.drawGrid2d;
-  axios.get('dem.csv').then((res)=>{
-    let data = parseData(res.data);
-    let fft = FFT2(data);
-    let fft2 = FFTImag2(fft,"row");
-    let fft3 = FFTShift(FFT2(fft2,"column"));
-    let fft4 = fft3.map((row) => row.map((c) => Math.sqrt(c.real*c.real + c.imag*c.imag)));
+  const Grid = RVGeo.Coverage.Grid;
+  const Sin3D = RVGeo.Noise.Sin3D; // 3D正弦波噪声生成器
+  const Perlin = RVGeo.Noise.Perlin; // Perlin 噪声生成器
+  const dampedSin3D = RVGeo.Noise.dampedSin3D; // 3D阻尼正弦波噪声生成器
 
-    let grid = new RVGeo.Coverage.Grid(myMBR1,[fft4]);
-    drawGrid2d(canvas, fft4, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
-    });
+  let data = [];
+  data.push(sample(128,0.05,0.05,Perlin));
+  data.push(sample(128,0.05,0.5,Perlin));
+  data.push(sample(128,0.01,0.01,Perlin));
+  data.push(sample(128,0.1,0.1,Sin3D));
+  data.push(sample(128,1,1,Sin3D));
+  data.push(sample(128,0.05,0.01,Sin3D));
+  data.push(sample(128,0.5,0.1,Perlin));
+  data.push(sample(128,1,1,dampedSin3D));
+
+  let fft = [] as number[][][];
+  data.forEach((d) => {
+    let tmp = fastFFT2(d);
+    fft.push(tmp.map((row) => row.map((c) => Math.sqrt(c.real*c.real + c.imag*c.imag)))); // 模值
+  });
+
+  let grid = [] as RVGeo.Coverage.Grid[];
+  data.forEach((d) => {
+    grid.push(new Grid(myMBR1, [d]));
+  });
+
+  let fftGrid = [] as RVGeo.Coverage.Grid[];
+  fft.forEach((d) => {
+    fftGrid.push(new Grid(myMBR1, [d]));
+  });
+
+  // 1024 * 1024
+  for(let i = 0; i < 4; i++){
+    drawGrid2d(canvas, data[i], {x: 0, y: i*256, w: 256, h: 256}, grid[i].getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+    drawGrid2d(canvas, fft[i], {x: 256, y: i*256, w: 256, h: 256}, fftGrid[i].getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+  }
+
+  for(let i = 4; i < 8; i++){
+    drawGrid2d(canvas, data[i], {x: 512, y:(i - 4)*256, w: 256, h: 256}, grid[i].getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+    drawGrid2d(canvas, fft[i], {x: 768, y:(i - 4)*256, w: 256, h: 256}, fftGrid[i].getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+  }
+
+  function sample(size: number,x: number,y: number, sampleFunc: (x: number, y: number) => number){
+    let data = [];
+    for(let i = 0; i < size; i++){
+      let tmp = [];
+      for(let j = 0; j < size; j++){
+        let noise = sampleFunc(i*x - size/2, j*y - size/2); // 生成噪声0-1
+        tmp.push(noise);
+      }
+      data.push(tmp);
+    }
+    return data;
+  }
 }

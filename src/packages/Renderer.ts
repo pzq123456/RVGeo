@@ -4,7 +4,7 @@
 
 import { simpleColorBand,binaryColorBand} from "./Colors";
 import { Grid, QTNode } from './Coverage';
-import { Complex } from "./Fourier";
+// import { Complex } from "./Fourier";
 
 type Rect = {
     x: number,
