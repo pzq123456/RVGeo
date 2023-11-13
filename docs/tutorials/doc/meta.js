@@ -98,9 +98,9 @@ export const metalist = [
         "command": "cd"
     },
     {
-        "title" : "Example14",
+        "title" : "Example15",
         "path" : "doc/example15.md",
-        "date" : "2023-11-9",
+        "date" : "2023-11-12",
         "tag" : "info",
         "command": "cd"
     },
