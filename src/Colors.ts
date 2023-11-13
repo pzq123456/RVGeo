@@ -2,7 +2,8 @@ export enum stretchType {
     linear,
     square,
     log,
-    power
+    power,
+    groupStretch
 }
 
 export enum colorListType {
@@ -39,20 +40,58 @@ function powerStretch(value: number, statistics: {max: number, min: number, mean
     return Math.pow((value - statistics.min) / (statistics.max - statistics.min), 2);
 }
 
+function groupStretch(value: number, statistics: {max: number, min: number, mean: number}) : number{
+    // 只绘制 mean 附近 10% 的像素
+    let threshold = 0.1;
+    if(value < statistics.mean - threshold || value > statistics.mean + threshold){
+        return 0;
+    }
+    else{
+        return (value - statistics.min) / (statistics.max - statistics.min);
+    }
+    
+}
 
 
-function stretchFactory(type: stretchType) : (value: number, statistics: {max: number, min: number, mean: number}) => Number
-{
+function stretchFactory(type: stretchType, isReverse?: boolean
+    ) : (value: number, statistics: {max: number, min: number, mean: number}) => Number
+{   
     switch(type)
     {
         case stretchType.linear:
-            return linearStretch;
+            if(isReverse){
+                return (value: number, statistics: {max: number, min: number, mean: number}) => 1 - linearStretch(value, statistics);
+            }else{
+                return linearStretch;
+            }
         case stretchType.square:
-            return squareStretch;
+            if(isReverse){
+                return (value: number, statistics: {max: number, min: number, mean: number}) => 1 - squareStretch(value, statistics);
+            }
+            else{
+                return squareStretch;
+            }
         case stretchType.log:
-            return logStretch;
+            if(isReverse){
+                return (value: number, statistics: {max: number, min: number, mean: number}) => 1 - logStretch(value, statistics);
+            }
+            else{
+                return logStretch;
+            }
         case stretchType.power:
-            return powerStretch;
+            if(isReverse){
+                return (value: number, statistics: {max: number, min: number, mean: number}) => 1 - powerStretch(value, statistics);
+            }
+            else{
+                return powerStretch;
+            }
+        case stretchType.groupStretch:
+            if(isReverse){
+                return (value: number, statistics: {max: number, min: number, mean: number}) => 1 - groupStretch(value, statistics);
+            }
+            else{
+                return groupStretch;
+            }
         default:
             throw new Error("未知的拉伸类型");
     }
@@ -75,14 +114,14 @@ export function simpleColorBand(
     return `rgb(${colorValue},${colorValue},${colorValue})`;
 }
 
-export function simpleColorBandFactory(type: stretchType) : (statistics: {max: number, min: number, mean: number},value: number) => string
+export function simpleColorBandFactory(type: stretchType, isReverse?: boolean) : (statistics: {max: number, min: number, mean: number},value: number) => string
 {
-    return (statistics: {max: number, min: number, mean: number},value: number) => simpleColorBand(statistics, value, stretchFactory(type));
+    return (statistics: {max: number, min: number, mean: number},value: number) => simpleColorBand(statistics, value, stretchFactory(type, isReverse));
 }
 
 const defaultColorList = ["#163544","#495a45","#767d58","#76a477","#d7bd7f","#d7221f"];
 
-const CountourColorList = [
+export const CountourColorList = [
     "#ffffff00","#ff9a00","#3ec1d3","#6c5b7b",
     "#355c7d","#f8b500","#119da4","#ff165d",
     "#8ECFC9","#FFBE7A","#82B0D2","#BEB8DC",

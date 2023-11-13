@@ -13,8 +13,9 @@ import * as QuadTree from './QuadTree';
 import * as Noise from './Noise';
 import * as Colors from './Colors';
 import * as Renderer from './Renderer';
-import * as Utils from './constants/Utils'
-import * as CGUtils from './CGUtils'
+import * as Utils from './constants/Utils';
+import * as CGUtils from './CGUtils';
+import * as Fourier from './Fourier';
 
 export {
     Geometry,
@@ -30,5 +31,6 @@ export {
     Meta,
     Noise,
     Unit,
-    Utils
+    Utils,
+    Fourier
 };

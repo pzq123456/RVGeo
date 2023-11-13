@@ -3,6 +3,7 @@
  */
 import { MBR } from "./Geometry";
 import { PointOutsideMBR } from "./CGUtils";
+
 /**
  * 网格类（本质是三维数组）:
  * - 三维数组的每一层代表一个波段
@@ -241,6 +242,29 @@ export class Grid{
         }
         return contourCode;
     }
+
+    getMean(band: number): number{
+        let bandData = this.data[band];
+        let sum = 0;
+        for(let row = 0; row < this.rows; row++){
+            for(let col = 0; col < this.cols; col++){
+                sum += bandData[row][col];
+            }
+        }
+        return sum / (this.rows * this.cols);
+    }
+
+    getSorted1DArray(band: number): number[]{
+        let bandData = this.data[band];
+        let array = [];
+        for(let row = 0; row < this.rows; row++){
+            for(let col = 0; col < this.cols; col++){
+                array.push(bandData[row][col]);
+            }
+        }
+        array.sort((a,b) => a - b);
+        return array;
+    }
     
 }
 
@@ -269,3 +293,135 @@ export function binarization(grid: Grid, band: number, threshold: number): numbe
     }
     return binarizationData;
 }
+
+/**
+ * （简易四叉树）创建一个 gridMBR 层面的四叉树
+ * @param grid 
+ * @param band 
+ * @param maxDepth 
+ * 
+ * |---------->x
+ * | 2 | 3 |
+ * |--------
+ * | 0 | 1 |
+ * |
+ * y
+ */
+export function subdivide2QTree(
+    grid: Grid,
+    maxDepth: number,
+): QTNode
+{   
+    let num = grid.rows * grid.cols;
+    let maxDepth2 = findMaxDepth(num) + 3;
+    
+    if(maxDepth > maxDepth2 || maxDepth < 0){
+        maxDepth = maxDepth2;
+    }
+
+    let boundary = [0,0,grid.rows - 1, grid.cols - 1] as MBR;
+    return getQTNode(boundary, 0, maxDepth);
+}
+
+function getQTNode(
+    boundary: MBR,
+    depth: number,
+    maxDepth: number,
+): QTNode
+{
+    let node: QTNode = {
+        boundary,
+        children: [],
+        depth,
+        maxDepth,
+        isLeaf: false,
+        isDivided: false,
+    };
+    if(depth === maxDepth - 1){
+        node.isLeaf = true;
+        return node;
+    }else{
+        node.isDivided = true;
+        let minRow = boundary[0];
+        let minCol = boundary[1];
+        let maxRow = boundary[2];
+        let maxCol = boundary[3];
+        let midRow =(minRow + maxRow) / 2;
+        // 取整
+        midRow = Math.floor(midRow);
+        let midCol = (minCol + maxCol) / 2;
+        // 取整
+        midCol = Math.floor(midCol);
+        let topLeftMBR = [minRow, midCol, midRow, maxCol] as MBR;
+        let topRightMBR = [midRow, midCol, maxRow, maxCol] as MBR;
+        let bottomLeftMBR = [minRow, minCol, midRow, midCol] as MBR;
+        let bottomRightMBR = [midRow, minCol, maxRow, midCol] as MBR;
+        let topLeftNode = getQTNode(topLeftMBR, depth + 1, maxDepth);
+        let topRightNode = getQTNode(topRightMBR, depth + 1, maxDepth);
+        let bottomLeftNode = getQTNode(bottomLeftMBR, depth + 1, maxDepth);
+        let bottomRightNode = getQTNode(bottomRightMBR, depth + 1, maxDepth);
+        node.children.push(topLeftNode);
+        node.children.push(topRightNode);
+        node.children.push(bottomLeftNode);
+        node.children.push(bottomRightNode);
+        return node;
+    }
+
+}
+
+/**
+ * 由网格数据生成四叉树(节点)
+ */
+export type QTNode = {
+    boundary: MBR,
+    children: QTNode[],
+    depth: number,
+    maxDepth: number,
+    isLeaf: boolean,
+    isDivided: boolean,
+}
+
+/**
+ * 寻找四的幂次方
+ */
+function findMaxDepth(
+    n: number
+){
+    // 寻找距离 n 最近的 4 的幂次方
+    let maxDepth = 0;
+    let num = 1;
+    while(num < n){
+        num *= 4;
+        maxDepth++;
+    }
+    return maxDepth;
+}
+
+/**
+ * 去除最大最小值
+ * @param fft - 二维数组
+ */
+export function deMaxMin(
+    fft : number[][],
+  ){
+    let max = -Infinity;
+    let min = Infinity;
+    for(let i = 0; i < fft.length; i++){
+      for(let j = 0; j < fft[0].length; j++){
+        if(fft[i][j] > max){
+          max = fft[i][j];
+        }
+        if(fft[i][j] < min){
+          min = fft[i][j];
+        }
+      }
+    }
+    // 去除最大最小值
+    for(let i = 0; i < fft.length; i++){
+      for(let j = 0; j < fft[0].length; j++){
+        if(fft[i][j] === max || fft[i][j] === min){
+          fft[i][j] = 0;
+        }
+      }
+    }
+  }

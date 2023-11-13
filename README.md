@@ -1,9 +1,125 @@
 # RVGeo V 2.0
+> get the test DEM data from this link: https://pzq123456.github.io/RVGeo/dist/dem.csv
+<div class="Example" 
+style="
+    background: linear-gradient(90deg, #0c5e62 0%, #08b372 100%);
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 1px #ffffff;
+    margin-bottom: 10px;
+    /* 居中内部元素 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;">
+    <a href="/RVGeo/dist/index.html" 
+    style="
+        color: #ffffff;
+        font-size: 20px;
+        text-decoration: none;">
+        (click) Example Page | RVGeo 示例页面 （点此访问）
+    </a>
+</div>
+<div class="tutorials" 
+style="
+    background: linear-gradient(90deg, #02101e 0%, #4d5baa 100%);
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 1px #ffffff;
+    margin-bottom: 10px;
+    /* 居中内部元素 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;">
+    <a href="/RVGeo/tutorials/index.html" 
+    style="
+        color: #ffffff;
+        font-size: 20px;
+        text-decoration: none;">
+        (click) Tutorials Page | RVGeo 教程页面 （点此访问）
+    </a>
+</div>
+<div class="npm" 
+        style="
+            background: linear-gradient(90deg, #f6a92d 0%, #ff5d5df9 50%,#941bd4 100%);
+            padding: 10px;
+            border-radius: 5px;
+            border: solid 1px #ffffff;
+            margin-bottom: 10px;
+            /* 居中内部元素 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        "
+    >
+        <a href="https://www.npmjs.com/package/rvgeo"
+        style="
+        color: #ffffff;
+        font-size: 20px;
+        text-decoration: none;
+        "
+        >
+            npm Page | RVGeo npm 页面
+        </a>
+</div>
+
 > - RVGeo (V2.0.0) is now available on [npm](https://www.npmjs.com/package/rvgeo).
 > - You could get some tutorials from this [site](https://pzq123456.github.io/RVGeo/tutorials/index.html)
 > - [more information](https://pzq123456.github.io/RVGeo/)
 
 ## Release Notes
+### 2023-11-12 V2.0.6 
+- 新增影像金字塔（Example14） 图像傅里叶变换（Example15）
+- New image pyramid (Example14) image Fourier transform (Example15)
+- You can use `RVGeo.Coverage.subdivide2QTree` to get the image pyramid, and use `RVGeo.Renderer.drawQTree2d` to draw the image pyramid.
+  ```js
+  const subdivide2QTree = RVGeo.Coverage.subdivide2QTree;
+  const Grid = RVGeo.Coverage.Grid;
+  const drawQTree2d = RVGeo.Renderer.drawQTree2d;
+  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
+  let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear);
+  axios.get('dem.csv').then((res)=>{
+  let data = parseData(res.data);
+  let grid = new Grid(myMBR1,[data]);
+  let subgrid = subdivide2QTree(grid,10); // 10 为金字塔层数
+  drawQTree2d(canvas,{x: 0, y: 0, w: 1024, h: 1024},subgrid,grid,mySimpleColorBand)
+  drawGrid2d(canvas, data, {x: 1024, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), mySimpleColorBand);
+  });
+  ```
+- You can use the following code segment to test 1D FFT and visualize the result.
+  ``` js
+  const subdivide2QTree = RVGeo.Coverage.subdivide2QTree;
+  const Grid = RVGeo.Coverage.Grid;
+  const drawQTree2d = RVGeo.Renderer.drawQTree2d;
+  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
+  let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear);
+  axios.get('dem.csv').then((res)=>{
+  let data = parseData(res.data);
+  let grid = new Grid(myMBR1,[data]);
+  let subgrid = subdivide2QTree(grid,10);
+  drawQTree2d(canvas,{x: 0, y: 0, w: 1024, h: 1024},subgrid,grid,mySimpleColorBand)
+  drawGrid2d(canvas, data, {x: 1024, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), mySimpleColorBand);
+  });
+  ```
+- You can use the following code segment to test 2D FFT and visualize the result.
+  ``` js
+    const subdivide2QTree = RVGeo.Coverage.subdivide2QTree;
+    const Grid = RVGeo.Coverage.Grid;
+    const drawQTree2d = RVGeo.Renderer.drawQTree2d;
+    const drawGrid2d = RVGeo.Renderer.drawGrid2d;
+    let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear);
+    axios.get('dem.csv').then((res)=>{
+    let data = parseData(res.data);
+    let grid = new Grid(myMBR1,[data]);
+    let subgrid = subdivide2QTree(grid,10);
+    drawQTree2d(canvas,{x: 0, y: 0, w: 1024, h: 1024},subgrid,grid,mySimpleColorBand)
+    drawGrid2d(canvas, data, {x: 1024, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), mySimpleColorBand);
+    });
+  ```
+
+
 ### 2023-11-4 V2.0.5
 - 新增等值线计算与渲染（基于 Marching Squares 方法）
 - Contour calculation and rendering (based on Marching Squares method)

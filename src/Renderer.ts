@@ -2,7 +2,9 @@
  * 渲染器类 将所有涉及绘制数据的逻辑集中在这里
  */
 
-import { simpleColorBand,binaryColorBand } from "./Colors";
+import { simpleColorBand,binaryColorBand} from "./Colors";
+import { Grid, QTNode } from './Coverage';
+// import { Complex } from "./Fourier";
 
 type Rect = {
     x: number,
@@ -247,4 +249,197 @@ function countourCase(
         case 15:
             break;
     }
+}
+
+
+/**
+ * 绘制四叉树
+ * @param canvas 
+ * @param rect 
+ * @param QTree 
+ * @param grid 
+ * @param colorBand 
+ * @param value 
+ * @param statistics 
+ */
+export function drawQTree2d(
+    canvas: HTMLCanvasElement,
+    rect: Rect,
+    QTree: QTNode,
+    grid: Grid,
+    colorBand: (statistics: {max: number, min: number, mean: number},value: number) => string = simpleColorBand,
+    value?: number,
+    statistics?: {max: number, min: number, mean: number},
+){
+
+    let ctx = canvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+
+    let tmpgrid = grid.getSubGridObj(QTree.boundary);
+    let tmpstatistics = tmpgrid.getBandStatistics(0);
+    let tmpvalue = tmpstatistics.mean;
+    if(!statistics){
+        statistics = tmpstatistics;
+    }else{ // 更新统计量
+        statistics.max = Math.max(statistics.max, tmpstatistics.max);
+        statistics.min = Math.min(statistics.min, tmpstatistics.min);
+        statistics.mean = (statistics.mean + tmpstatistics.mean) / 2;
+    }
+
+    if(!value){
+        value = tmpvalue;
+    }
+
+    let color = colorBand(statistics, tmpvalue);
+    ctx.fillStyle = color;
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+    // let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear);
+    // 暂停 1 秒
+    requestAnimationFrame(() => {
+        if(QTree.isDivided){
+            // draw sub node
+            let subRect = [
+                {x: rect.x + rect.w / 2, y: rect.y, w: rect.w / 2, h: rect.h / 2},
+                {x: rect.x + rect.w / 2, y: rect.y + rect.h / 2, w: rect.w / 2, h: rect.h / 2},
+                {x: rect.x, y: rect.y, w: rect.w / 2, h: rect.h / 2},
+                {x: rect.x, y: rect.y + rect.h / 2, w: rect.w / 2, h: rect.h / 2},
+            ];
+            // 递归绘制
+    
+            drawQTree2d(canvas, subRect[0], QTree.children[0], grid, colorBand,value, statistics);
+            drawQTree2d(canvas, subRect[1], QTree.children[1], grid, colorBand,value, statistics);
+            drawQTree2d(canvas, subRect[2], QTree.children[2], grid, colorBand,value, statistics);
+            drawQTree2d(canvas, subRect[3], QTree.children[3], grid, colorBand,value, statistics);
+    
+        } 
+    });
+}
+
+
+export function drawSample(
+    canvas: HTMLCanvasElement,
+    rect: Rect,
+    sample: number[],
+    style: {color: string, width: number, backgroundColor: string} = {color: "black", width: 4, backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
+    statistics?: {max: number, min: number, mean: number},
+){
+    let ctx = canvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    if(!statistics){
+        statistics = {
+            max: Math.max(...sample),
+            min: Math.min(...sample),
+            mean: sample.reduce((a, b) => a + b) / sample.length
+        };
+    }
+    ctx.fillStyle = style.backgroundColor;
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+
+    // draw sample points 
+    // circle color and r
+    ctx.fillStyle = style.color;
+    ctx.lineWidth = style.width / 2;
+    let r = style.width / 2;
+    for(let i = 0; i < sample.length; i++){
+        let x = rect.x + rect.w * i / sample.length;
+        let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+    ctx.strokeStyle = style.color;
+    // draw sample line
+    ctx.beginPath();
+    ctx.moveTo(rect.x, rect.y + rect.h * (1 - (sample[0] - statistics.min) / (statistics.max - statistics.min)));
+    for(let i = 0; i < sample.length; i++){
+        let x = rect.x + rect.w * i / sample.length;
+        let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
+        ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // annotate value for 1/3 of sample points
+    ctx.fillStyle = "green";
+    ctx.font = "12px serif";
+    for(let i = 0; i < sample.length; i += 16){
+        let x = rect.x + rect.w * i / sample.length;
+        let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
+        ctx.fillText(sample[i].toFixed(2), x, y);
+    }
+}
+
+export function drawSample2(
+    canvas: HTMLCanvasElement,
+    rect: Rect,
+    sample: number[],
+    style: {color: string, width: number, backgroundColor: string} = {color: "black", width: 4, backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
+    statistics?: {max: number, min: number, mean: number},
+){
+    let ctx = canvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    if(!statistics){
+        statistics = {
+            max: Math.max(...sample),
+            min: Math.min(...sample),
+            mean: sample.reduce((a, b) => a + b) / sample.length
+        };
+    }
+    // 绘制柱状图，柱子的宽度为rect.w / sample.length
+    ctx.fillStyle = style.backgroundColor;
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+
+    // draw sample bars
+    ctx.fillStyle = style.color;
+    let barWidth = rect.w / sample.length;
+    for(let i = 0; i < sample.length; i++){
+        let x = rect.x + barWidth * i;
+        let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
+        ctx.fillRect(x, y, barWidth, rect.h - y + rect.y);
+    }
+
+    // annotate y axis 
+    ctx.fillStyle = "green";
+    ctx.font = "12px serif";
+    ctx.fillText(statistics.max.toFixed(2), rect.x, rect.y + 12);
+    ctx.fillText(statistics.min.toFixed(2), rect.x, rect.y + rect.h);
+    ctx.fillText(statistics.mean.toFixed(2), rect.x, rect.y + rect.h / 2);
+
+    // draw line to annotate the three line ablove
+    ctx.strokeStyle = "green";
+    ctx.beginPath();
+    ctx.moveTo(rect.x, rect.y + 12);
+    ctx.lineTo(rect.x + rect.w, rect.y + 12);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(rect.x, rect.y + rect.h);
+    ctx.lineTo(rect.x + rect.w, rect.y + rect.h);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(rect.x, rect.y + rect.h / 2);
+    ctx.lineTo(rect.x + rect.w, rect.y + rect.h / 2);
+    ctx.stroke();
+
+
+}
+
+
+export function drawText(
+    canvas: HTMLCanvasElement,
+    rect: Rect,
+    text: string,
+    style: {color: string, font: string} = {color: "black", font: "12px serif"},
+){
+    let ctx = canvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    ctx.fillStyle = style.color;
+    ctx.font = style.font;
+    ctx.fillText(text, rect.x, rect.y);
 }

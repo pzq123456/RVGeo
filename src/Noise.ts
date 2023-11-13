@@ -114,3 +114,80 @@ export function dampedSin3D(x: number, y: number) : number {
 export function Sin3D(x: number, y: number) : number {
     return Math.sin(Math.sqrt(x*x+y*y));
 }
+
+
+// worley noise
+// https://thebookofshaders.com/12/?lan=ch
+/**
+ * 生成 Worley 噪声距离场
+ * @param row - 行数
+ * @param col - 列数
+ * @param n - 噪声源数量
+ * @returns {number[][]} - 返回值范围
+ */
+export function worleyNoise(
+    row: number,
+    col: number,
+    n: number,
+):number[][] {
+    const grid = new Array(row).fill(0).map(() => new Array(col).fill(0));
+    const points = new Array(n).fill(0).map(() => ({
+        x: Math.random() * row,
+        y: Math.random() * col,
+    }));
+    for(let i = 0; i < row; i++) {
+        for(let j = 0; j < col; j++) {
+            let min = 100000;
+            for(let k = 0; k < n; k++) {
+                const distance = Math.sqrt(
+                    Math.pow(points[k].x - i, 2) + Math.pow(points[k].y - j, 2)
+                );
+                if(distance < min) {
+                    min = distance;
+                }
+            }
+            grid[i][j] = min;
+        }
+    }
+
+    return grid;
+}
+
+// Noise for testing FFT
+
+/**
+ * 生成 条纹 噪声，可选水平或垂直
+ * @param row - 行数
+ * @param col - 列数
+ * @param n - 条纹数量
+ * @param mode - 模式
+ */
+export function zebraNoise(
+    row: number,
+    col: number,
+    n: number,
+    mode: 'horizontal' | 'vertical' | 'diagonal' | 'all' = 'horizontal',
+):number[][] {
+    const grid = new Array(row).fill(0).map(() => new Array(col).fill(0));
+    const step = Math.floor(row / n);
+    for(let i = 0; i < row; i++) {
+        for(let j = 0; j < col; j++) {
+            if(mode === 'vertical') {
+                grid[i][j] = Math.floor(i / step) % 2 === 0 ? 1 : 0;
+            } else if(mode === 'horizontal') {
+                grid[i][j] = Math.floor(j / step) % 2 === 0 ? 1 : 0;
+            } else if(mode === 'diagonal') {
+                grid[i][j] = Math.floor((i + j) / step) % 2 === 0 ? 1 : 0;
+            } else if(mode === 'all') {
+                // add all
+                grid[i][j] = Math.floor((i + j) / step) % 2 === 0 ? 1 : 0;
+                grid[i][j] += Math.floor(i / step) % 2 === 0 ? 1 : 0;
+                grid[i][j] += Math.floor(j / step) % 2 === 0 ? 1 : 0;
+            }
+        }
+    }
+    return grid;
+}
+
+
+
