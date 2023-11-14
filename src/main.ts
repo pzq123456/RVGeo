@@ -253,72 +253,75 @@ function example8(){ // 点线关系
   alert("outPoi: " + res1 + "\n" + "inPoi: " + res2);
 }
 
-function example9(){ // 栅格
-  // let matrix = [ // 测试用的三维数组
-  //   [
-  //     [1,2,3],
-  //     [4,5,6],
-  //     [7,8,9]
-  //   ],
-  //   [
-  //     [1,2,3],
-  //     [4,3,6],
-  //     [7,8,9]
-  //   ],
-  //   [
-  //     [1,2,3],
-  //     [4,5,6],
-  //     [7,8,9]
-  //   ],
-  // ];
-  // let grid = new RVGeo.Coverage.Grid(myMBR1,matrix);
-  // console.log(grid.getBandStatistics(0));
-  // drawGrid2d(canvas, matrix[0], {x: 0, y: 0, w: 100, h: 100}, grid.getBandStatistics(0));
+
+
+function example9(){ 
   const drawGrid2d = RVGeo.Renderer.drawGrid2d;
-
-
-  axios.get('dem.csv').then((res)=>{
-    let innerMBR = [
-        -107.19241981061282,
-        37.96392802178495,
-        -104.23896455039352,
-        39.75362886925538
-    ] as [number, number, number, number];
-    let data = parseData(res.data);
-    // console.log(data);
-    let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
-    let testPoi = [-105.723781221762,38.87054575208597] as [number, number];
-    let inMBR = grid.ConvertToGridMBR(innerMBR) as RVGeo.Geometry.MBR;
-    let subdrid = grid.getSubGrid(inMBR);
-
-    let grid2 = new RVGeo.Coverage.Grid(innerMBR,subdrid);
-    console.log(grid2);
-
-    drawGridLines2BLMap(grid2.MBR, grid2.rows, grid2.cols, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 });
-    drawLineString2BLMap(RVGeo.Geometry.mbrToPolygon(myMBR1), map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
-    drawPoint2BLMap(testPoi, map);
-    drawLabel(testPoi, `${grid.getGridCoord(testPoi)}` ,map);
-    drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
-
-    let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear); // ["red", "yellow", "green","white"];
-    drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0), myPseudoColorBand);
-    
-    const stretchType = RVGeo.Colors.stretchType;
-    let postions = [
-      [0,0],
-      [0,1],
-      [1,0],
-      [1,1]
-    ]
-    // 遍历枚举类型
-    for(let type in stretchType){
-      if(isNaN(parseInt(type))) continue;
-      let colorband = RVGeo.Colors.simpleColorBandFactory(parseInt(type));
-      let postion = postions[parseInt(type)];
-      drawGrid2d(canvas, data, {x: postion[0]*256, y: postion[1]*256 + 256*2, w: 256, h: 256}, grid.getBandStatistics(0), colorband);
-    }
-
+  axios.get('B2.csv').then((res)=>{
+    ren(1052);
+    function ren(num){    
+      let data = res.data;
+      // ',' 分割 
+      let result = data.split(',').map((d) => parseInt(d));
+  
+      let grid = [];
+      // 遍历 grid 满 2452 就生成一行
+      let counter = 0;
+      for(let i = 0; i < result.length; i += num){
+      // if(counter == 25) break;
+        grid.push(result.slice(i, i + num));
+        counter++;
+      }
+      // 删掉最后一行
+      grid.pop();
+  
+      // 构造栅格并绘制
+      let myGrid = new RVGeo.Coverage.Grid(myMBR1,[grid]);
+      let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear);
+      drawGrid2d(canvas, grid, {x: 0, y: 0, w: 2048, h: 1024}, myGrid.getBandStatistics(0), myPseudoColorBand);}
   });
+  // axios.get('dem.csv').then((res)=>{
+  //   let innerMBR = [
+  //       -107.19241981061282,
+  //       37.96392802178495,
+  //       -104.23896455039352,
+  //       39.75362886925538
+  //   ] as [number, number, number, number];
+  //   let data = parseData(res.data);
+  //   // console.log(data);
+  //   let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
+  //   let testPoi = [-105.723781221762,38.87054575208597] as [number, number];
+  //   let inMBR = grid.ConvertToGridMBR(innerMBR) as RVGeo.Geometry.MBR;
+  //   let subdrid = grid.getSubGrid(inMBR);
+
+  //   let grid2 = new RVGeo.Coverage.Grid(innerMBR,subdrid);
+  //   console.log(grid2);
+
+  //   drawGridLines2BLMap(grid2.MBR, grid2.rows, grid2.cols, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 });
+  //   drawLineString2BLMap(RVGeo.Geometry.mbrToPolygon(myMBR1), map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+  //   drawPoint2BLMap(testPoi, map);
+  //   drawLabel(testPoi, `${grid.getGridCoord(testPoi)}` ,map);
+  //   drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
+
+  //   let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear); // ["red", "yellow", "green","white"];
+  //   drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0), myPseudoColorBand);
+    
+  //   const stretchType = RVGeo.Colors.stretchType;
+  //   let postions = [
+  //     [0,0],
+  //     [0,1],
+  //     [1,0],
+  //     [1,1]
+  //   ]
+  //   // 遍历枚举类型
+  //   for(let type in stretchType){
+  //     if(isNaN(parseInt(type))) continue;
+  //     let colorband = RVGeo.Colors.simpleColorBandFactory(parseInt(type));
+  //     let postion = postions[parseInt(type)];
+  //     drawGrid2d(canvas, data, {x: postion[0]*256, y: postion[1]*256 + 256*2, w: 256, h: 256}, grid.getBandStatistics(0), colorband);
+  //   }
+
+  // });
 }
 
 function example10(){ // 四叉树
