@@ -39,6 +39,29 @@ function parseData(data:string){
   return result;
 }
 
+
+function parseData2(
+  arr1D: number[],
+  width: number,
+  isEqualWidth: boolean = true,
+  fixLength?: number
+): number[][] {
+  let result = [];
+  for(let i = 0; i < arr1D.length; i += width){
+    result.push(arr1D.slice(i, i + width));
+  }
+
+  // 若需要确保每长宽相等则 挑选较小的一边作为长宽
+  if(isEqualWidth){
+    let min = Math.min(result.length, result[0].length);
+    if(fixLength){
+      min = fixLength;
+    }
+    result = result.slice(0, min).map((row) => row.slice(0, min));
+  }
+  return result;
+}
+
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
 const ctx = canvas.getContext('2d')!;
 ctx.fillStyle = 'white';
@@ -257,37 +280,32 @@ function example8(){ // 点线关系
 
 function example9(){ 
   const drawGrid2d = RVGeo.Renderer.drawGrid2d;
-  axios.get('B2.csv').then((res)=>{
-    // ren(1024);
-    let data = res.data;
-    // ',' 分割 
-    let result = data.split(',').map((d) => parseInt(d));
-    
+  const trueColorBandFactory = RVGeo.Colors.trueColorBandFactory;
+  const drawTrueColorGrid2d2 = RVGeo.Renderer.drawTrueColorGrid2d2;
+  GeoTIFF.fromUrl('exa2.tif').then((tif) => {
+    tif.getImage().then((image) => {
+      let width = image.getWidth();
+      let height = image.getHeight();
+      image.readRasters().then((rasters) => {
 
-    // function ren(num){    
-      // let data = res.data;
-      // // ',' 分割 
-      // let result = data.split(',').map((d) => parseInt(d));
+        //  let data =  parseData2(rasters[4], width,true,256);
+        let data = [] as number[][][];
+        // 4、3、2 波段
+        let bands = [4,3,2];
+        bands.forEach((band) => {
+          data.push(parseData2(rasters[band], width,true,256));
+        })
 
-      // console.log(result.length);
-      // let grid = [];
-      // let tmp = [];
-      // for(let i = 0; i < result.length; i++){
-      //   tmp.push(result[i]);
-      //   if(tmp.length === num){
-      //     grid.push(tmp);
-      //     tmp = [];
-      //   }
-      // }
-      // // 删掉最后一行
-      // grid.pop();
-  
-      // // 构造栅格并绘制
-      // let myGrid = new RVGeo.Coverage.Grid(myMBR1,[grid]);
-      // console.log(myGrid.shape);
-      // let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear);
-      // drawGrid2d(canvas, grid, {x: 0, y: 0, w: 1024, h: 1024}, myGrid.getBandStatistics(0), myPseudoColorBand);}
+        console.log(data);
+        let grid = new RVGeo.Coverage.Grid(myMBR1,data);
+        let myTrueColorBand = trueColorBandFactory(RVGeo.Colors.stretchType.linear);
+        drawTrueColorGrid2d2(canvas, grid, [0,1,2], {x: 0, y: 0, w: 1024, h: 1024}, myTrueColorBand);
+      });
+    });
+     
   });
+
+
   // axios.get('dem.csv').then((res)=>{
   //   let innerMBR = [
   //       -107.19241981061282,

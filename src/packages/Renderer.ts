@@ -443,3 +443,52 @@ export function drawText(
     ctx.font = style.font;
     ctx.fillText(text, rect.x, rect.y);
 }
+
+
+
+
+
+export function drawTrueColorGrid2d2(
+    canavs: HTMLCanvasElement,
+    grid: Grid,
+    bands2Draw: number[], // rgb
+    Rect: Rect, 
+    colorBand: (statistics: {max: number, min: number, mean: number}[],value: number[]) => string,
+    GridMBR? : [number,number,number,number] // [minX index ,minY index,maxX index,maxY index]
+){
+    // 首先分割 rect 为小格子
+    let cellWidth = Rect.w / grid.width;
+    let cellHeight = Rect.h / grid.height;
+    let ctx = canavs.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+
+    let bands = [] as number[][][];
+    let statistics = [] as {max: number, min: number, mean: number}[];
+    bands2Draw.forEach(bandIndex => {
+        bands.push(grid.getBand(bandIndex));
+        statistics.push(grid.getBandStatistics(bandIndex));
+    });
+
+    // 绘制矩形
+    for(let row = 0; row < grid.height; row++){
+        for(let col = 0; col < grid.width; col++){
+            let value = bands2Draw.map((bandIndex, index) => bands[index][row][col]);
+            let color = colorBand(statistics, value);
+            ctx.fillStyle = color;
+            ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+        }
+    }
+    // 若有 GridMBR 则绘制
+    if(GridMBR){
+        let [minX,minY,maxX,maxY] = GridMBR;
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(Rect.x + minX * cellWidth, Rect.y + minY * cellHeight, (maxX - minX) * cellWidth, (maxY - minY) * cellHeight);
+    }
+
+    // 绘制中心
+    ctx.fillStyle = "red";
+    ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
+}

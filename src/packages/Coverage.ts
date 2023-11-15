@@ -27,6 +27,22 @@ export class Grid{
         return [this.data.length, this.data[0].length, this.data[0][0].length];
     }
 
+    getBand(band: number): number[][]{
+        return this.data[band];
+    }
+
+    get width(){
+        return this.cols;
+    }
+
+    get height(){
+        return this.rows;
+    }
+
+    get bandCount(){
+        return this.bands;
+    }
+
     /**
      * 获取指定范围，指定波段的网格数据
      * - 建议：先使用 `ConvertToGridMBR` 方法获取网格范围，再使用本方法获取网格数据（为简化代码，没有将这两个方法合并）
