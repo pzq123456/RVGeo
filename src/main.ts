@@ -258,27 +258,35 @@ function example8(){ // 点线关系
 function example9(){ 
   const drawGrid2d = RVGeo.Renderer.drawGrid2d;
   axios.get('B2.csv').then((res)=>{
-    ren(1052);
-    function ren(num){    
-      let data = res.data;
-      // ',' 分割 
-      let result = data.split(',').map((d) => parseInt(d));
+    // ren(1024);
+    let data = res.data;
+    // ',' 分割 
+    let result = data.split(',').map((d) => parseInt(d));
+    
+
+    // function ren(num){    
+      // let data = res.data;
+      // // ',' 分割 
+      // let result = data.split(',').map((d) => parseInt(d));
+
+      // console.log(result.length);
+      // let grid = [];
+      // let tmp = [];
+      // for(let i = 0; i < result.length; i++){
+      //   tmp.push(result[i]);
+      //   if(tmp.length === num){
+      //     grid.push(tmp);
+      //     tmp = [];
+      //   }
+      // }
+      // // 删掉最后一行
+      // grid.pop();
   
-      let grid = [];
-      // 遍历 grid 满 2452 就生成一行
-      let counter = 0;
-      for(let i = 0; i < result.length; i += num){
-      // if(counter == 25) break;
-        grid.push(result.slice(i, i + num));
-        counter++;
-      }
-      // 删掉最后一行
-      grid.pop();
-  
-      // 构造栅格并绘制
-      let myGrid = new RVGeo.Coverage.Grid(myMBR1,[grid]);
-      let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear);
-      drawGrid2d(canvas, grid, {x: 0, y: 0, w: 2048, h: 1024}, myGrid.getBandStatistics(0), myPseudoColorBand);}
+      // // 构造栅格并绘制
+      // let myGrid = new RVGeo.Coverage.Grid(myMBR1,[grid]);
+      // console.log(myGrid.shape);
+      // let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear);
+      // drawGrid2d(canvas, grid, {x: 0, y: 0, w: 1024, h: 1024}, myGrid.getBandStatistics(0), myPseudoColorBand);}
   });
   // axios.get('dem.csv').then((res)=>{
   //   let innerMBR = [
