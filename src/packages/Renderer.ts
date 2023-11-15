@@ -474,7 +474,7 @@ export function drawTrueColorGrid2d2(
     // 绘制矩形
     for(let row = 0; row < grid.height; row++){
         for(let col = 0; col < grid.width; col++){
-            let value = bands2Draw.map((bandIndex, index) => bands[index][row][col]);
+            let value = bands2Draw.map((bandIndex) => bands[bandIndex][row][col]);
             let color = colorBand(statistics, value);
             ctx.fillStyle = color;
             ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
@@ -488,7 +488,50 @@ export function drawTrueColorGrid2d2(
         ctx.strokeRect(Rect.x + minX * cellWidth, Rect.y + minY * cellHeight, (maxX - minX) * cellWidth, (maxY - minY) * cellHeight);
     }
 
-    // 绘制中心
-    ctx.fillStyle = "red";
-    ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
+    // // 绘制中心
+    // ctx.fillStyle = "green";
+    // ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
+    // 绘制十字 10px
+    ctx.strokeStyle = "green";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(Rect.x + Rect.w / 2, Rect.y + Rect.h / 2 - 10);
+    ctx.lineTo(Rect.x + Rect.w / 2, Rect.y + Rect.h / 2 + 10);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(Rect.x + Rect.w / 2 - 10, Rect.y + Rect.h / 2);
+    ctx.lineTo(Rect.x + Rect.w / 2 + 10, Rect.y + Rect.h / 2);
+    ctx.stroke();
+}
+
+// 进度条渲染
+/**
+ * 绘制进度条
+ * @param canvas - canvas 元素 
+ * @param rect - 绘制范围
+ * @param progress - 进度 0-100
+ * @param style - 样式
+ */
+export function drawProgress(
+    canvas: HTMLCanvasElement,
+    rect: Rect,
+    progress: number,
+    style: {color: string, width: number, backgroundColor: string} = {color: "orange", width: 4, backgroundColor: "rgba(0,0,0,1)"}, // {color, width, backgroundColor}
+){
+    let ctx = canvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    // 绘制柱状图，柱子的宽度为rect.w / sample.length
+    ctx.fillStyle = style.backgroundColor;
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+
+    ctx.fillStyle = style.color;
+    let barWidth = rect.w * (progress / 100);
+    ctx.fillRect(rect.x, rect.y, barWidth, rect.h);
+    // // text
+    // ctx.fillStyle = "white";
+    // ctx.font = "20px serif";
+    // ctx.fillText(progress.toFixed(2) + "%", rect.x + rect.w / 2 - 20, rect.y + rect.h / 2 + 6);
+
 }

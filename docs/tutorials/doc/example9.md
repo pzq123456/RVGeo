@@ -1,5 +1,8 @@
 # Example9 栅格 Coverage
-> 具体运行效果参考：https://pzq123456.github.io/RVGeo/
+> 具体运行效果参考：https://pzq123456.github.io/RVGeo/dist
+> * 影像金字塔部分详见 example14
+> * 后续功能：卷积及其余算子的实现
+> * 后续优化：webWorker 加速计算
 ## 栅格数据的渲染方式
 目前栅格数据只支持渲染到二维 Canvas 上，然后调用地图的接口将 Canvas 以图层的方式添加到地图上，后续会根据需求添加更多的渲染方式。但是，我们可以根据栅格数据的地理范围及数据的行列总数，将栅格数据的范围绘制到地图上，以便于我们查看栅格数据的分布情况。
 
@@ -34,7 +37,7 @@ let data = parseData(res.data);
 let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
 ```
 
-### 构架栅格对象
+### 构建栅格对象
 首先解析数据（后续会有专门的数据IO模块来处理，这里只是开发测试用），然后创建栅格对象，栅格对象的构造函数需要传入栅格数据的地理范围和数据。
 > 注意传入数据的形状
 > - data 本身是二维数组，在遥感中代表了一个波段的数据
@@ -70,71 +73,81 @@ drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", 
 
 
 ## Full Example
-```ts
-axios.get('dem.csv').then((res)=>{
+```js
+const drawGrid2d = RVGeo.Renderer.drawGrid2d;
+  const trueColorBandFactory = RVGeo.Colors.trueColorBandFactory;
+  const drawTrueColorGrid2d2 = RVGeo.Renderer.drawTrueColorGrid2d2;
 
-let innerMBR = [
-    -107.19241981061282,
-    37.96392802178495,
-    -104.23896455039352,
-    39.75362886925538
-] as [number, number, number, number];
+  let URL = 'exa2.tif';
+  let URL2 = 'exa.tif';
+  let rect = {x: 512, y: 0, w: 512, h: 512};
+  let rect2 = {x: 512, y: 512, w: 512, h: 512};
+  getShowTif(URL, rect);
+  getShowTif(URL2, rect2);
 
-let data = parseData(res.data);
-
-let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
-let testPoi = [-105.723781221762,38.87054575208597] as [number, number];
-let inMBR = grid.ConvertToGridMBR(innerMBR) as RVGeo.Geometry.MBR;
-let subdrid = grid.getSubGrid(inMBR);
-
-let grid2 = new RVGeo.Coverage.Grid(innerMBR,subdrid);
-
-// 可以把数据映射到地图上（目前只支持将 Canvas 以图层的方式添加到地图上，这里的直接绘制只是标识出栅格数据的范围）
-drawGridLines2BLMap(grid2.MBR, grid2.rows, grid2.cols, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 });
-drawLineString2BLMap(RVGeo.Geometry.mbrToPolygon(myMBR1), map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
-drawPoint2BLMap(testPoi, map);
-drawLabel(testPoi, `${grid.getGridCoord(testPoi)}` ,map);
-drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
-
-// 也可以调用平面栅格的渲染器 将数据渲染到 canvas 上
-let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear); // ["red", "yellow", "green","white"];
-drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0), myPseudoColorBand);
-
-const stretchType = RVGeo.Colors.stretchType;
-let postions = [
-    [0,0],
-    [0,1],
-    [1,0],
-    [1,1]
-]
-// 遍历枚举类型
-for(let type in stretchType){
-    if(isNaN(parseInt(type))) continue;
-    let colorband = RVGeo.Colors.simpleColorBandFactory(parseInt(type));
-    let postion = postions[parseInt(type)];
-    drawGrid2d(canvas, data, {x: postion[0]*256, y: postion[1]*256 + 256*2, w: 256, h: 256}, grid.getBandStatistics(0), colorband);
+function getShowTif(URL: string, rect: {x: number, y: number, w: number, h: number}){
+  GeoTIFF.fromUrl(URL).then((tif:any) => {
+    tif.getImage().then((image:any) => {
+      let width = image.getWidth();
+      // let height = image.getHeight();
+      image.readRasters().then((rasters:any) => {
+        //  let data =  parseData2(rasters[4], width,true,256);
+        let data = [] as number[][][];
+        // 4、3、2 波段
+        let bands = [4,3,2];
+        bands.forEach((band) => {
+          data.push(parseData2(rasters[band], width,true,256));
+        });
+        console.log(data);
+        let grid = new RVGeo.Coverage.Grid(myMBR1,data);
+        let myTrueColorBand = trueColorBandFactory(RVGeo.Colors.stretchType.linear);
+        drawTrueColorGrid2d2(canvas, grid, [0,1,2],rect, myTrueColorBand);
+      });
+    });
+  });
 }
 
-});
 
-function parseData(data:string){
-    let lines = data.split('\n');
-    let result = [];
-    for(let line of lines){
-        let nums = line.split(',');
-        let row = [];
-        for(let num of nums){
-            // 读取整型 若有 NAN 则替换为 0
-            let n = parseInt(num);
-            if(isNaN(n)){
-                n = 0;
-            }
-            row.push(n);
-        }
-        result.push(row);
+  axios.get('dem.csv').then((res)=>{
+    let innerMBR = [
+        -107.19241981061282,
+        37.96392802178495,
+        -104.23896455039352,
+        39.75362886925538
+    ] as [number, number, number, number];
+    let data = parseData(res.data);
+    // console.log(data);
+    let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
+    let testPoi = [-105.723781221762,38.87054575208597] as [number, number];
+    let inMBR = grid.ConvertToGridMBR(innerMBR) as RVGeo.Geometry.MBR;
+    let subdrid = grid.getSubGrid(inMBR);
+
+    let grid2 = new RVGeo.Coverage.Grid(innerMBR,subdrid);
+    console.log(grid2);
+
+    drawGridLines2BLMap(grid2.MBR, grid2.rows, grid2.cols, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 });
+    drawLineString2BLMap(RVGeo.Geometry.mbrToPolygon(myMBR1), map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+    drawPoint2BLMap(testPoi, map);
+    drawLabel(testPoi, `${grid.getGridCoord(testPoi)}` ,map);
+    drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
+
+    let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear); // ["red", "yellow", "green","white"];
+    drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0), myPseudoColorBand);
+    
+    const stretchType = RVGeo.Colors.stretchType;
+    let postions = [
+      [0,0],
+      [0,1],
+      [1,0],
+      [1,1]
+    ]
+    // 遍历枚举类型
+    for(let type in stretchType){
+      if(isNaN(parseInt(type))) continue;
+      let colorband = RVGeo.Colors.simpleColorBandFactory(parseInt(type));
+      let postion = postions[parseInt(type)];
+      drawGrid2d(canvas, data, {x: postion[0]*256, y: postion[1]*256 + 256*2, w: 256, h: 256}, grid.getBandStatistics(0), colorband);
     }
-    // 去掉最后一行
-    result.pop();
-    return result;
-}
+
+  });
 ```
