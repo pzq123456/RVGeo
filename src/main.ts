@@ -92,6 +92,7 @@ createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
   { name: 'Countour', action: () =>  example13()},
   { name: 'Pyramid', action: () =>  example14()},
   { name: 'FFT', action: () =>  example15()},
+  { name: '影像直方图', action: () =>  example16()},
   { name: 'clear', action: () =>  clear()},
 ])
 
@@ -623,4 +624,76 @@ function example15(){
     }
     return data;
   }
+}
+
+/**
+ * 影像直方图
+ */
+function example16(){
+  const drawSample2 = RVGeo.Renderer.drawSample2;
+  const drawProgress = RVGeo.Renderer.drawProgress;
+  const progressBar = {x: 924, y: 1004, w: 100, h: 20};
+  drawProgress(canvas,progressBar,0);
+
+  const trueColorBandFactory = RVGeo.Colors.trueColorBandFactory;
+  const drawTrueColorGrid2d = RVGeo.Renderer.drawTrueColorGrid2d;
+
+  let URL = 'exa2.tif';
+  let URL2 = 'exa.tif';
+  let rect = {x: 0, y: 0, w: 512, h: 512};
+  let rect2 = {x: 0, y: 512, w: 512, h: 512};
+
+  let rect3r = {x: 512, y: 0, w: 512, h: 170};
+  let rect3g = {x: 512, y: 170, w: 512, h: 170};
+  let rect3b = {x: 512, y: 340, w: 512, h: 170};
+  let rect4r = {x: 512, y: 512, w: 512, h: 170};
+  let rect4g = {x: 512, y: 682, w: 512, h: 170};
+  let rect4b = {x: 512, y: 852, w: 512, h: 170};
+
+  getShowTif(URL, rect, [rect3r,rect3g,rect3b]);
+  getShowTif(URL2, rect2, [rect4r,rect4g,rect4b]);
+
+
+function getShowTif(URL: string, rect: {x: number, y: number, w: number, h: number},
+  rect2?: {x: number, y: number, w: number, h: number}[]
+  ){
+  GeoTIFF.fromUrl(URL).then((tif:any) => {
+    tif.getImage().then((image:any) => {
+      let width = image.getWidth();
+      image.readRasters().then((rasters:any) => {
+        let data = [] as number[][][];
+        // 4、3、2 波段 但是数组的索引是从0开始的 所以是3、2、1
+        let bands = [3,2,1];
+        bands.forEach((band) => {
+          data.push(parseData2(rasters[band], width, true, 256));
+        });
+        let grid = new RVGeo.Coverage.Grid(myMBR1,data);
+
+        grid.fillInvalidValue(0);  // 填充无效值
+        grid.fillInvalidValue(1);
+        grid.fillInvalidValue(2);
+
+        // console.log(grid.getBand(0));
+        let myTrueColorBand = trueColorBandFactory(RVGeo.Colors.stretchType.square);
+        drawTrueColorGrid2d(canvas, grid, [0,1,2], rect, myTrueColorBand);
+        drawProgress(canvas,progressBar,50);
+        if(rect2){
+          // drawSample2(canvas,rect2,grid.getSorted1DArray(0),{color: "rgba(255,0,0,0.5)", backgroundColor: "rgba(0,0,0,0)"});
+          // drawSample2(canvas,rect2,grid.getSorted1DArray(1),{color: "rgba(0,255,0,0.5)", backgroundColor: "rgba(0,0,0,0)"});
+          // drawSample2(canvas,rect2,grid.getSorted1DArray(2),{color: "rgba(0,0,255,0.5)", backgroundColor: "rgba(0,0,0,0)"});
+          let styles = [
+            {color: "rgba(255,0,0,1)", backgroundColor: "rgba(0,0,0,1)"},
+            {color: "rgba(0,255,0,1)", backgroundColor: "rgba(0,0,0,1)"},
+            {color: "rgba(0,0,255,1)", backgroundColor: "rgba(0,0,0,1)"}
+          ]
+          for(let i = 0; i < rect2.length; i++){
+            drawSample2(canvas,rect2[i],grid.getSorted1DArray(i),styles[i]);
+          }
+        }
+        drawProgress(canvas,progressBar,100);
+      });
+    });
+  });
+}
+
 }

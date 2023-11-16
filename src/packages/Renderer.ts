@@ -376,8 +376,9 @@ export function drawSample2(
     canvas: HTMLCanvasElement,
     rect: Rect,
     sample: number[],
-    style: {color: string, width: number, backgroundColor: string} = {color: "black", width: 4, backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
+    style: {color: string, backgroundColor: string} = {color: "black", backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
     statistics?: {max: number, min: number, mean: number},
+    isText: boolean = false,
 ){
     let ctx = canvas.getContext("2d");
     if(ctx === null){
@@ -403,13 +404,14 @@ export function drawSample2(
         ctx.fillRect(x, y, barWidth, rect.h - y + rect.y);
     }
 
+    if(isText){
     // annotate y axis 
     ctx.fillStyle = "green";
     ctx.font = "12px serif";
     ctx.fillText(statistics.max.toFixed(2), rect.x, rect.y + 12);
     ctx.fillText(statistics.min.toFixed(2), rect.x, rect.y + rect.h);
     ctx.fillText(statistics.mean.toFixed(2), rect.x, rect.y + rect.h / 2);
-
+    }
     // draw line to annotate the three line ablove
     ctx.strokeStyle = "green";
     ctx.beginPath();
