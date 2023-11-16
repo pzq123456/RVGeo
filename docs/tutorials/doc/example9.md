@@ -7,7 +7,7 @@
 目前栅格数据只支持渲染到二维 Canvas 上，然后调用地图的接口将 Canvas 以图层的方式添加到地图上，后续会根据需求添加更多的渲染方式。但是，我们可以根据栅格数据的地理范围及数据的行列总数，将栅格数据的范围绘制到地图上，以便于我们查看栅格数据的分布情况。
 
 ## 栅格值渲染（Canvas中）
-![栅格值渲染](/RVGeo/tutorials/doc/imgs/e9-2.jpg)
+![栅格值渲染](/RVGeo/tutorials/doc/imgs/e9-1.jpg)
 ```ts
 // 也可以调用平面栅格的渲染器 将数据渲染到 canvas 上
 let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear); // ["red", "yellow", "green","white"];
@@ -31,7 +31,7 @@ drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0)
 
 
 ## 地图栅格范围渲染
-![栅格范围渲染](/RVGeo/tutorials/doc/imgs/e9-1.jpg)
+
 ```ts
 let data = parseData(res.data);
 let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);

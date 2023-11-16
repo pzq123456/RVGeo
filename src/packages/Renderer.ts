@@ -448,7 +448,7 @@ export function drawText(
 
 
 
-export function drawTrueColorGrid2d2(
+export function drawTrueColorGrid2d(
     canavs: HTMLCanvasElement,
     grid: Grid,
     bands2Draw: number[], // rgb
@@ -492,8 +492,8 @@ export function drawTrueColorGrid2d2(
     // ctx.fillStyle = "green";
     // ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
     // 绘制十字 10px
-    ctx.strokeStyle = "green";
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(Rect.x + Rect.w / 2, Rect.y + Rect.h / 2 - 10);
     ctx.lineTo(Rect.x + Rect.w / 2, Rect.y + Rect.h / 2 + 10);
@@ -522,16 +522,44 @@ export function drawProgress(
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
-    // 绘制柱状图，柱子的宽度为rect.w / sample.length
+    // 绘制背景
     ctx.fillStyle = style.backgroundColor;
     ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 
-    ctx.fillStyle = style.color;
-    let barWidth = rect.w * (progress / 100);
-    ctx.fillRect(rect.x, rect.y, barWidth, rect.h);
-    // // text
-    // ctx.fillStyle = "white";
-    // ctx.font = "20px serif";
-    // ctx.fillText(progress.toFixed(2) + "%", rect.x + rect.w / 2 - 20, rect.y + rect.h / 2 + 6);
 
+    // 绘制进度 rect
+    ctx.fillStyle = style.color;
+    ctx.fillRect(rect.x, rect.y, rect.w * progress / 100, rect.h);
+    // 绘制每一格的边框 灰色
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 1;
+    for(let i = 0; i < 10; i++){
+        ctx.beginPath();
+        ctx.moveTo(rect.x + rect.w * i / 10, rect.y);
+        ctx.lineTo(rect.x + rect.w * i / 10, rect.y + rect.h);
+        ctx.stroke();
+    }
+    // 只有当高度大于 20 时才绘制文字 宽度大于 40 时才绘制文字
+    if(rect.h >= 20 && rect.w >= 40){
+        ctx.fillStyle = "white";
+        ctx.font = "20px serif";
+        ctx.fillText(progress.toFixed(2) + "%", rect.x + rect.w / 2 - 20, rect.y + rect.h / 2 + 6);
+    }
+}
+
+// test progress bar
+export function testProgress(){
+    let canvas = document.createElement("canvas");
+    canvas.width = 100;
+    canvas.height = 20;
+    document.body.appendChild(canvas);
+    let rect = {x: 0, y: 0, w: 100, h: 19};
+    let progress = 0;
+    setInterval(() => {
+        drawProgress(canvas, rect, progress);
+        progress += 1;
+        if(progress > 100){
+            progress = 0;
+        }
+    }, 100);
 }

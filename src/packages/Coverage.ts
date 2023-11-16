@@ -71,6 +71,40 @@ export class Grid{
         return subGrid;
     }
 
+    // 在内部修改网格数据 使用均值替换0等无效值
+    // 由于网格数据是三维数组，因此需要指定波段号
+
+    /**
+     * 在内部修改网格数据 使用均值替换0等无效值
+     * @param band - 波段号
+     */
+    fillInvalidValue(band: number){
+        let bandData = this.data[band];
+        let sum = 0;
+        let count = 0;
+        for(let row = 0; row < this.rows; row++){
+            for(let col = 0; col < this.cols; col++){
+                let value = bandData[row][col];
+                if(value === 0){
+                    continue;
+                }else{
+                    sum += value;
+                    count++;
+                }
+            }
+        }
+        let mean = sum / count;
+        for(let row = 0; row < this.rows; row++){
+            for(let col = 0; col < this.cols; col++){
+                let value = bandData[row][col];
+                if(value === 0 || value === -9999 || value === 999999){
+                    bandData[row][col] = mean;
+                }
+            }
+        }
+    }
+
+
 
     /**
      * 与 `getSubGrid` 方法类似，但返回的是一个 Grid 对象
