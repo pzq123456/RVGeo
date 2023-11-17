@@ -1,5 +1,5 @@
 body{
-    background: linear-gradient(90deg, #104c4f 0%, #0468428d 100%);
+    background: linear-gradient(90deg, #798a8cb2 0%, #0b6b468d 100%);
   }
   .title{
     position: absolute;
@@ -27,7 +27,6 @@ body{
     /* 自动滚动 */
     overflow-x: auto;
     overflow-y: auto;
-    border-bottom: solid 1px #033604;
   }
   .toolBarRow{
     display: flex;
@@ -39,25 +38,25 @@ body{
   }
 
   button{
-    border: solid 1px #04371e;
+    background-color: #0d0c0c4b;
     border-radius: 5px;
-    color: rgb(26, 24, 24);
-    text-align: center;
-    font-size: 20px;
+    color : #ffffff;
+    font-size: 15px;
+    font-weight: bold;
   }
 
   button:hover{
-    border: solid 1px #051d33;
-    background-color: #192219a5;
-    color : #fefeff;
+    background: linear-gradient(90deg, rgb(37, 59, 53) 0%, #06ffa0 100%);
+    border-radius: 5px;
+    color : #ffffff;
+    font-size: 15px;
+    font-weight: bold;
   }
 
   .github{
-    background: linear-gradient(90deg, #fa05ee 0%, #06ffa0 100%);
-    border-radius: 50%;
-    border: solid 1px #ffffff;
-    height: 32px;
-    width: 32px;
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
 
   }
   footer{
@@ -67,7 +66,6 @@ body{
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    border-top: solid 1px #1c0c0c;
   }
   .map{
     height: 1024px;
@@ -80,28 +78,34 @@ body{
   .anchorBL img {
     display: none;
   }
-  .Docs{
+  .Docs{ 
+    /* make it more  obvious eye caching*/
   position: absolute;
   left: 0px;
-  top: 10px;
-  color: #ffffff;
-  font-size: 20px;
+  top: 0px;
+  height: 30px;
+  width: 40px;
   background-color: #ffffff38;
   border-radius: 5px;
   padding: 5px;
   border: solid 1px #ffffff;
-  height: 30px;
   }
   .Docs:hover{
-      background-color: #0d0c0c4b;
-      border: solid 1px #94e5f1;
+    background: linear-gradient(90deg, rgb(37, 59, 53) 0%, #06ffa0 100%);
+    border-radius: 5px;
+    color : #ffffff;
+    font-size: 15px;
+    font-weight: bold;
   }
   .Docs a{
-      text-decoration: none;
-      color: #ffffff;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: bold;
   }
   .Docs a:hover{
-      color: #8bc5d2;
+    color: #f4c404;
+    font-size: 15px;
+    font-weight: bold;
   }
 
 .content{

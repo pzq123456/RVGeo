@@ -518,7 +518,7 @@ export function drawProgress(
     canvas: HTMLCanvasElement,
     rect: Rect,
     progress: number,
-    style: {color: string, width: number, backgroundColor: string} = {color: "orange", width: 4, backgroundColor: "rgba(0,0,0,1)"}, // {color, width, backgroundColor}
+    style: {color: string, width: number, backgroundColor: string} = {color: "green", width: 4, backgroundColor: "rgba(0,0,0,1)"}, // {color, width, backgroundColor}
 ){
     let ctx = canvas.getContext("2d");
     if(ctx === null){
@@ -545,17 +545,17 @@ export function drawProgress(
     if(rect.h >= 20 && rect.w >= 40){
         ctx.fillStyle = "white";
         ctx.font = "20px serif";
-        ctx.fillText(progress.toFixed(2) + "%", rect.x + rect.w / 2 - 20, rect.y + rect.h / 2 + 6);
+        ctx.fillText(progress + "%", rect.x + rect.w / 2 - 20, rect.y + rect.h / 2 + 6);
     }
 }
 
 // test progress bar
 export function testProgress(){
     let canvas = document.createElement("canvas");
-    canvas.width = 100;
+    canvas.width = 200;
     canvas.height = 20;
     document.body.appendChild(canvas);
-    let rect = {x: 0, y: 0, w: 100, h: 19};
+    let rect = {x: 0, y: 0, w: 200, h: 20};
     let progress = 0;
     setInterval(() => {
         drawProgress(canvas, rect, progress);

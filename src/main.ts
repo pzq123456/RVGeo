@@ -119,6 +119,9 @@ function example1(){ // 绘制多点及其重心
   console.log(mps.calculateCentroid());
   drawPoint2BLMap(mps.calculateCentroid(), map);
   drawMultiPoint2BLMap(mps, map, icon);
+
+  const testProgress = RVGeo.Renderer.testProgress;
+  testProgress();
 }
 
 function example2(){ // 绘制三角网
