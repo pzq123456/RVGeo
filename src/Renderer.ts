@@ -376,8 +376,9 @@ export function drawSample2(
     canvas: HTMLCanvasElement,
     rect: Rect,
     sample: number[],
-    style: {color: string, width: number, backgroundColor: string} = {color: "black", width: 4, backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
+    style: {color: string, backgroundColor: string} = {color: "black", backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
     statistics?: {max: number, min: number, mean: number},
+    isText: boolean = false,
 ){
     let ctx = canvas.getContext("2d");
     if(ctx === null){
@@ -403,13 +404,14 @@ export function drawSample2(
         ctx.fillRect(x, y, barWidth, rect.h - y + rect.y);
     }
 
+    if(isText){
     // annotate y axis 
     ctx.fillStyle = "green";
     ctx.font = "12px serif";
     ctx.fillText(statistics.max.toFixed(2), rect.x, rect.y + 12);
     ctx.fillText(statistics.min.toFixed(2), rect.x, rect.y + rect.h);
     ctx.fillText(statistics.mean.toFixed(2), rect.x, rect.y + rect.h / 2);
-
+    }
     // draw line to annotate the three line ablove
     ctx.strokeStyle = "green";
     ctx.beginPath();
@@ -442,4 +444,124 @@ export function drawText(
     ctx.fillStyle = style.color;
     ctx.font = style.font;
     ctx.fillText(text, rect.x, rect.y);
+}
+
+
+
+
+
+export function drawTrueColorGrid2d(
+    canavs: HTMLCanvasElement,
+    grid: Grid,
+    bands2Draw: number[], // rgb
+    Rect: Rect, 
+    colorBand: (statistics: {max: number, min: number, mean: number}[],value: number[]) => string,
+    GridMBR? : [number,number,number,number] // [minX index ,minY index,maxX index,maxY index]
+){
+    // 首先分割 rect 为小格子
+    let cellWidth = Rect.w / grid.width;
+    let cellHeight = Rect.h / grid.height;
+    let ctx = canavs.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+
+    let bands = [] as number[][][];
+    let statistics = [] as {max: number, min: number, mean: number}[];
+    bands2Draw.forEach(bandIndex => {
+        bands.push(grid.getBand(bandIndex));
+        statistics.push(grid.getBandStatistics(bandIndex));
+    });
+
+    // 绘制矩形
+    for(let row = 0; row < grid.height; row++){
+        for(let col = 0; col < grid.width; col++){
+            let value = bands2Draw.map((bandIndex) => bands[bandIndex][row][col]);
+            let color = colorBand(statistics, value);
+            ctx.fillStyle = color;
+            ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+        }
+    }
+    // 若有 GridMBR 则绘制
+    if(GridMBR){
+        let [minX,minY,maxX,maxY] = GridMBR;
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(Rect.x + minX * cellWidth, Rect.y + minY * cellHeight, (maxX - minX) * cellWidth, (maxY - minY) * cellHeight);
+    }
+
+    // // 绘制中心
+    // ctx.fillStyle = "green";
+    // ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
+    // 绘制十字 10px
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(Rect.x + Rect.w / 2, Rect.y + Rect.h / 2 - 10);
+    ctx.lineTo(Rect.x + Rect.w / 2, Rect.y + Rect.h / 2 + 10);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(Rect.x + Rect.w / 2 - 10, Rect.y + Rect.h / 2);
+    ctx.lineTo(Rect.x + Rect.w / 2 + 10, Rect.y + Rect.h / 2);
+    ctx.stroke();
+}
+
+// 进度条渲染
+/**
+ * 绘制进度条
+ * @param canvas - canvas 元素 
+ * @param rect - 绘制范围
+ * @param progress - 进度 0-100
+ * @param style - 样式
+ */
+export function drawProgress(
+    canvas: HTMLCanvasElement,
+    rect: Rect,
+    progress: number,
+    style: {color: string, width: number, backgroundColor: string} = {color: "green", width: 4, backgroundColor: "rgba(0,0,0,1)"}, // {color, width, backgroundColor}
+){
+    let ctx = canvas.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    // 绘制背景
+    ctx.fillStyle = style.backgroundColor;
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+
+
+    // 绘制进度 rect
+    ctx.fillStyle = style.color;
+    ctx.fillRect(rect.x, rect.y, rect.w * progress / 100, rect.h);
+    // 绘制每一格的边框 灰色
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 1;
+    for(let i = 0; i < 10; i++){
+        ctx.beginPath();
+        ctx.moveTo(rect.x + rect.w * i / 10, rect.y);
+        ctx.lineTo(rect.x + rect.w * i / 10, rect.y + rect.h);
+        ctx.stroke();
+    }
+    // 只有当高度大于 20 时才绘制文字 宽度大于 40 时才绘制文字
+    if(rect.h >= 20 && rect.w >= 40){
+        ctx.fillStyle = "white";
+        ctx.font = "20px serif";
+        ctx.fillText(progress + "%", rect.x + rect.w / 2 - 20, rect.y + rect.h / 2 + 6);
+    }
+}
+
+// test progress bar
+export function testProgress(){
+    let canvas = document.createElement("canvas");
+    canvas.width = 200;
+    canvas.height = 20;
+    document.body.appendChild(canvas);
+    let rect = {x: 0, y: 0, w: 200, h: 20};
+    let progress = 0;
+    setInterval(() => {
+        drawProgress(canvas, rect, progress);
+        progress += 1;
+        if(progress > 100){
+            progress = 0;
+        }
+    }, 100);
 }

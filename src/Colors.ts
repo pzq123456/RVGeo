@@ -114,6 +114,37 @@ export function simpleColorBand(
     return `rgb(${colorValue},${colorValue},${colorValue})`;
 }
 
+
+/**
+ * 真彩色带渲染
+ * @param statistics - 波段统计信息列表
+ * @param value - 当前像素值
+ * @param strachFunc - 拉伸函数
+ * @returns 
+ */
+export function trueColorBand(
+    statistics: {max: number, min: number, mean: number}[],
+    value: number[],
+    strachFunc: (value:number, statistics: {max: number, min: number, mean: number}) => Number = linearStretch
+) : string
+{
+    let r = Math.floor(strachFunc(value[0], statistics[0]) as number * 255);
+    let g = Math.floor(strachFunc(value[1], statistics[1]) as number * 255);
+    let b = Math.floor(strachFunc(value[2], statistics[2]) as number * 255);
+    return `rgb(${r},${g},${b})`;
+}
+
+/**
+ * 真彩色带渲染工厂函数
+ * @param type - 拉伸类型
+ * @param isReverse - 是否反转
+ * @returns 
+ */
+export function trueColorBandFactory(type: stretchType, isReverse?: boolean) : (statistics: {max: number, min: number, mean: number}[],value: number[]) => string{
+    return (statistics: {max: number, min: number, mean: number}[],value: number[]) => trueColorBand(statistics, value, stretchFactory(type, isReverse));
+}
+
+
 export function simpleColorBandFactory(type: stretchType, isReverse?: boolean) : (statistics: {max: number, min: number, mean: number},value: number) => string
 {
     return (statistics: {max: number, min: number, mean: number},value: number) => simpleColorBand(statistics, value, stretchFactory(type, isReverse));
