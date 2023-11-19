@@ -120,8 +120,8 @@ function example1(){ // 绘制多点及其重心
   drawPoint2BLMap(mps.calculateCentroid(), map);
   drawMultiPoint2BLMap(mps, map, icon);
 
-  const testProgress = RVGeo.Renderer.testProgress;
-  testProgress();
+  // const testProgress = RVGeo.Renderer.testProgress;
+  // testProgress();
 }
 
 function example2(){ // 绘制三角网
@@ -633,8 +633,10 @@ function example15(){
  * 影像直方图
  */
 function example16(){
-  const drawSample2 = RVGeo.Renderer.drawSample2;
+  // const drawSample2 = RVGeo.Renderer.drawSample2;
+  const drawSample = RVGeo.Renderer.drawSample;
   const drawProgress = RVGeo.Renderer.drawProgress;
+  const hist = RVGeo.Colors.hist; // 直方图
   const progressBar = {x: 924, y: 1004, w: 100, h: 20};
   drawProgress(canvas,progressBar,0);
 
@@ -646,12 +648,13 @@ function example16(){
   let rect = {x: 0, y: 0, w: 512, h: 512};
   let rect2 = {x: 0, y: 512, w: 512, h: 512};
 
-  let rect3r = {x: 512, y: 0, w: 512, h: 170};
-  let rect3g = {x: 512, y: 170, w: 512, h: 170};
-  let rect3b = {x: 512, y: 340, w: 512, h: 170};
-  let rect4r = {x: 512, y: 512, w: 512, h: 170};
-  let rect4g = {x: 512, y: 682, w: 512, h: 170};
-  let rect4b = {x: 512, y: 852, w: 512, h: 170};
+  let rect3r = {x: 512, y: 0, w: 512, h: 512};
+  let rect3g = {x: 512, y: 0, w: 512, h: 512};
+  let rect3b = {x: 512, y: 0, w: 512, h: 512};
+
+  let rect4r = {x: 512, y: 512, w: 512, h: 512};
+  let rect4g = {x: 512, y: 512, w: 512, h: 512};
+  let rect4b = {x: 512, y: 512, w: 512, h: 512};
 
   getShowTif(URL, rect, [rect3r,rect3g,rect3b]);
   getShowTif(URL2, rect2, [rect4r,rect4g,rect4b]);
@@ -685,12 +688,15 @@ function getShowTif(URL: string, rect: {x: number, y: number, w: number, h: numb
           // drawSample2(canvas,rect2,grid.getSorted1DArray(1),{color: "rgba(0,255,0,0.5)", backgroundColor: "rgba(0,0,0,0)"});
           // drawSample2(canvas,rect2,grid.getSorted1DArray(2),{color: "rgba(0,0,255,0.5)", backgroundColor: "rgba(0,0,0,0)"});
           let styles = [
-            {color: "rgba(255,0,0,1)", backgroundColor: "rgba(0,0,0,1)"},
-            {color: "rgba(0,255,0,1)", backgroundColor: "rgba(0,0,0,1)"},
-            {color: "rgba(0,0,255,1)", backgroundColor: "rgba(0,0,0,1)"}
+            {color: "rgba(255,0,0,0.3)", backgroundColor: "rgba(0,0,0,0)"},
+            {color: "rgba(0,255,0,0.3)", backgroundColor: "rgba(0,0,0,0)"},
+            {color: "rgba(0,0,255,0.3)", backgroundColor: "rgba(0,0,0,0)"}
           ]
           for(let i = 0; i < rect2.length; i++){
-            drawSample2(canvas,rect2[i],grid.getSorted1DArray(i),styles[i]);
+            // drawSample2(canvas,rect2[i],hist(grid.getBand(i),RVGeo.Colors.stretchType.square,grid.getBandStatistics(i)),styles[i]);
+            drawSample(canvas,rect2[i],hist(grid.getBand(i),RVGeo.Colors.stretchType.square,grid.getBandStatistics(i)),styles[i]);
+            // console.log(hist(grid.getBand(i),RVGeo.Colors.stretchType.linear,grid.getBandStatistics(i)));
+            // console.log(grid.getBand(i));
           }
         }
         drawProgress(canvas,progressBar,100);
