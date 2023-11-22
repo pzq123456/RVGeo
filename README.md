@@ -2,6 +2,7 @@
 > - current version: [2.0.6](https://www.npmjs.com/package/rvgeo)
 > - next version: 2.0.7 (working...)
 
+[![](https://data.jsdelivr.com/v1/package/npm/rvgeo/badge)](https://www.jsdelivr.com/package/npm/rvgeo)
 ## 总览 | Overview
 > - 以下内容为暂定设计稿件。打 “*” 的模块处于待定状态，有可能会并入其他模块。
 
