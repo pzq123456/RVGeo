@@ -1,4 +1,5 @@
 # RVGeo V 2.0
+[![](https://data.jsdelivr.com/v1/package/npm/rvgeo/badge)](https://www.jsdelivr.com/package/npm/rvgeo)
 > get the test DEM data from this link: https://pzq123456.github.io/RVGeo/dist/dem.csv
 <div class="Example" 
 style="
