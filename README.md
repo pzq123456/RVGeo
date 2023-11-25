@@ -11,8 +11,19 @@
 ### Browser
 ``` html
 <script type="module"> 
-  import rvgeo from 'https://cdn.jsdelivr.net/npm/rvgeo@2.0.7/+esm'
+  import * as rvgeo from 'https://cdn.jsdelivr.net/npm/rvgeo@2.0.7/+esm'
 </script>
+```
+- test: 
+```js
+  console.log(rvgeo);
+```
+- result:
+``` bash
+Module
+CGUtils: Module {
+MBRIntersectMBR: function, PointInsidePolygon: function, PointOutsideMBR: function, calculateMBR: function, cross: function, …}
+#...
 ```
 ### npm
 
