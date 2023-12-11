@@ -53,6 +53,12 @@ function groupStretch(value: number, statistics: {max: number, min: number, mean
 }
 
 
+/**
+ * 拉伸函数工厂函数
+ * @param type - 拉伸类型
+ * @param isReverse - 是否反转
+ * @returns {Function} - 拉伸函数
+ */
 function stretchFactory(type: stretchType, isReverse?: boolean
     ) : (value: number, statistics: {max: number, min: number, mean: number}) => Number
 {   
@@ -228,4 +234,42 @@ export function simplePseudoColorBand(
 ) : string
 {
     return colorList[value];
+}
+
+/**
+ * 直方图计算函数
+ * @param grid2D - 二维数组
+ * @param stretch - 拉伸类型
+ * @param statistics - 波段统计信息
+ * @returns {number[]} - 直方图数组，长度为 256，每个元素表示对应灰度值的像素个数
+ */
+export function hist(
+    grid2D: number[][],
+    stretch: stretchType = stretchType.linear,
+    statistics?: {max: number, min: number, mean: number},
+):number[]{
+    let histList = new Array(256).fill(0);
+    let strachFunc = stretchFactory(stretch);
+    if(statistics === undefined){
+        statistics = {
+            max: 0,
+            min: 0,
+            mean: 0
+        }
+        for(let i = 0; i < grid2D.length; i++){
+            for(let j = 0; j < grid2D[0].length; j++){
+                statistics.max = Math.max(statistics.max, grid2D[i][j]);
+                statistics.min = Math.min(statistics.min, grid2D[i][j]);
+                statistics.mean += grid2D[i][j];
+            }
+        }
+    }
+    for(let i = 0; i < grid2D.length; i++){
+        for(let j = 0; j < grid2D[0].length; j++){
+            let stretchValue = strachFunc(grid2D[i][j], statistics) as number;
+            let colorValue = Math.floor(stretchValue * 255);
+            histList[colorValue] += 1;
+        }
+    }
+    return histList;
 }

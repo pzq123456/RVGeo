@@ -322,7 +322,8 @@ export function drawSample(
     canvas: HTMLCanvasElement,
     rect: Rect,
     sample: number[],
-    style: {color: string, width: number, backgroundColor: string} = {color: "black", width: 4, backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
+    style: {color: string, backgroundColor: string} = {color: "black", backgroundColor: "rgba(0,0,0,0)"}, // {color, width, backgroundColor}
+    isText: boolean = false,
     statistics?: {max: number, min: number, mean: number},
 ){
     let ctx = canvas.getContext("2d");
@@ -342,8 +343,8 @@ export function drawSample(
     // draw sample points 
     // circle color and r
     ctx.fillStyle = style.color;
-    ctx.lineWidth = style.width / 2;
-    let r = style.width / 2;
+    ctx.lineWidth = 1;
+    let r = 2;
     for(let i = 0; i < sample.length; i++){
         let x = rect.x + rect.w * i / sample.length;
         let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
@@ -361,7 +362,26 @@ export function drawSample(
         ctx.lineTo(x, y);
     }
     ctx.stroke();
+        // draw line to annotate the three line ablove
+        ctx.strokeStyle = "white";
+        ctx.beginPath();
+        ctx.moveTo(rect.x, rect.y + 12);
+        ctx.lineTo(rect.x + rect.w, rect.y + 12);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(rect.x, rect.y + rect.h);
+        ctx.lineTo(rect.x + rect.w, rect.y + rect.h);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(rect.x, rect.y + rect.h / 2);
+        ctx.lineTo(rect.x + rect.w, rect.y + rect.h / 2);
+        ctx.stroke();
 
+            // annotate y axis
+        ctx.fillText(statistics.max.toFixed(2), rect.x, rect.y + 12);
+        ctx.fillText(statistics.min.toFixed(2), rect.x, rect.y + rect.h);
+        ctx.fillText(statistics.mean.toFixed(2), rect.x, rect.y + rect.h / 2);
+    if(isText){
     // annotate value for 1/3 of sample points
     ctx.fillStyle = "green";
     ctx.font = "12px serif";
@@ -369,6 +389,7 @@ export function drawSample(
         let x = rect.x + rect.w * i / sample.length;
         let y = rect.y + rect.h * (1 - (sample[i] - statistics.min) / (statistics.max - statistics.min));
         ctx.fillText(sample[i].toFixed(2), x, y);
+    }    
     }
 }
 
@@ -413,7 +434,7 @@ export function drawSample2(
     ctx.fillText(statistics.mean.toFixed(2), rect.x, rect.y + rect.h / 2);
     }
     // draw line to annotate the three line ablove
-    ctx.strokeStyle = "green";
+    ctx.strokeStyle = "white";
     ctx.beginPath();
     ctx.moveTo(rect.x, rect.y + 12);
     ctx.lineTo(rect.x + rect.w, rect.y + 12);
