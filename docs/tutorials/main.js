@@ -387,14 +387,14 @@ function getBG(mode){
 }
 
 
-fileToHtml('/README.md',document.getElementById('content'), getMDStyle(mode));
+fileToHtml('./README.md',document.getElementById('content'), getMDStyle(mode));
 
 fillNavBar(document.getElementById('navBar'),
 [
     {
         "text": "Home",
         "action": function(){
-            fileToHtml('/README.md',document.getElementById('content'), getMDStyle(mode));
+            fileToHtml('./README.md',document.getElementById('content'), getMDStyle(mode));
         }
     },{
         'text':'toggleTerminal',
