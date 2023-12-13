@@ -1,244 +1,351 @@
-import { fileToHtml } from './helpers/markdown.js';
+import { fileToHtml, manipulateFile, stringToHtml } from './helpers/markdown.js';
 import { fillNavBar } from './helpers/navBar.js';
-
 import { metalist } from './doc/meta.js'; // metalist is a list of blog metadata
-import { createCanvas, animationEngine, eventEngine} from './src/Terminal/view.js';
-import { drawTData } from './src/Terminal/renderer.js';
-import { Line, TerminalData } from './src/Terminal/data.js';
-import {parseLine, run} from './src/Terminal/interpreter.js';
-import { blockStyle,blockStyle2,blockStyle3,blockStyle4,blockStyle5 } from './src/Terminal/defaultStyle.js';
-import {initPage} from './helpers/init.js';
+import { initPage } from './helpers/init.js';
 initPage();
 
-// Terminal === 部分
-let myCanvas = createCanvas(document.getElementById('terminal'), window.innerWidth * 0.81, 300);
+import * as Terminal from '/src/Terminal/index.js';
 
-// ==== 数据部分
-let myHistory =`pzq123456.github.io%> ls`;
-let Tdata = TerminalData.fromString(myHistory);
-const helpInfo = 
-`help
---Type help to show this help.
---Type clear to clear the screen.
---Type ls to list all the files.
---Type cd <directory> to change the current directory.`;
-const myCommandList = [
-    {
-        name: "cd",
-        description: "change directory",
-        usage: "cd <path>",
-        func: function(path){
-            terminal.style.borderBottom = '1px solid orange';
-            setTimeout(() => {
-                terminal.style.borderBottom = '1px solid white';
-            }, 500);
-            fileToHtml(path,document.getElementById('content'), mdStyle);
-        },
-        manipulate: function(data){
-            let line = Line.fromString('pzq123456.github.io%> ');
-            data.addLine(line);
-            return data.getFullLength() - 1;
-        }
-    },
-    {
-        name: "ls",
-        description: "list files",
-        usage: "ls <path>",
-        func: function(path){
-            terminal.style.borderBottom = '1px solid purple';
-            setTimeout(() => {
-                terminal.style.borderBottom = '1px solid white';
-            }, 500);
-        },
-        manipulate: function(data){
-            // get meta.js and render it
-            // 首先打印表头
-            let head = ['date','command','path', 'tag', 'title'];
-            let miusCount = 0;
-            // 首先打印表头
-            let line = Line.fromString(head.join('--| '));
-            data.addLine(line);
-            miusCount += line.getFullLength();
-            metalist.forEach(item => {
-                let temp = [];
-                head.forEach(key => {
-                    temp.push(item[key]);
-                });
-                let tmpdata = Line.fromString(temp.join(' '));
-                data.addLine(tmpdata);
-                miusCount += tmpdata.getFullLength();
-            });
-            data.addLine(Line.fromString('pzq123456.github.io%> '));
-            return data.getFullLength() - miusCount;
-        }
-    },
-    {
-        name: "clear",
-        description: "clear the terminal",
-        usage: "clear",
-        func: function(){
-            const terminal = document.getElementById('terminal');
-            // 获取terminal元素 改变边框颜色
-            // 一秒后恢复
-            terminal.style.borderBottom = '1px solid blue';
-            setTimeout(() => {
-                terminal.style.borderBottom = '1px solid white';
-            }, 500);
-        },
-        manipulate: function(data){
-            data.clear();
-            data.addLine(Line.fromString('pzq123456.github.io%> '));
-            return data.getFullLength() - 1;
-        }
-    },
-    {
-        name: "help",
-        description: "show help",
-        usage: "help",
-        func: function(){
-            terminal.style.borderBottom = '1px solid pink';
-            setTimeout(() => {
-                terminal.style.borderBottom = '1px solid white';
-            }, 500);
-        },
-        manipulate: function(data){
-            let helpTdata = TerminalData.fromString(helpInfo);
-            data.merge(helpTdata);
-            data.addLine(Line.fromString('pzq123456.github.io%> '));
-            return data.getFullLength() - helpTdata.getFullLength() - 1;
-        }
-    },
-]
+const Data = Terminal.Data.Data;
+const Parser = Terminal.Parser.Parser;
+const tokenization = Terminal.Parser.tokenization;
+const View = Terminal.View.View;
+const animationEngine = Terminal.View.animationEngine;
+const run = Terminal.Strategy.run;
+const chat = Terminal.Strategy.chat;
+const createCanvas = Terminal.View.createCanvas;
+const infoBobble = Terminal.View.infoBobble;
+const isMobile = Terminal.View.isMobile;
 
-/**
- * 自定义样式 根据block的内容
- * @param {Block} block 
- */
-function getStyle(block){
-    if(block.contains("%")){
-        // console.log('pzq');
-        return blockStyle;
-    }else if(block.equals("cd") || block.equals('ls') || block.equals('cat') || block.equals('clear') || block.equals('help')){
-        return blockStyle3;
-    }else if(
-        block.contains('/') ||  block.contains(`path`)
-    ){
-        return blockStyle4;
-    }else if(block.contains('202') || block.contains(`date`)){
-        return blockStyle5;
-    }
-    else{
-        return blockStyle2;
-    }
+// ==== 页面部分 ====
+let darkBG =  "#0d1117";
+let lightBG = "white";
+let mode = 'dark'; // dark or light
+// 获取系统是否处于 dark mode
+const darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+if (darkMode){
+    document.body.style.backgroundColor = darkBG;
+    mode = 'dark';
+}else{
+    document.body.style.backgroundColor = lightBG;
+    mode = 'light';
 }
 
-let wholeStyle = {
+
+// ==== 终端部分 ====
+let isChatMode = false; // 是否处于聊天模式
+
+
+let myCanvas = createCanvas(document.getElementById('terminal'), window.innerWidth * 0.81, 600);
+let testStyle = {
+    'font-family': 'monospace',
+    'font-size': '36px',
+    'color': 'white',
     'background-color': 'black',
-    // 行间距
-    'line-interval': '10px',
-}
+};
 
-// === 必要的全局变量 ===
-let c = 40; // 当前光标位置
-let i = 0; // 用于控制光标闪烁
-let timeInterval = 100; // 动画间隔时间
 
-// 用户自定义的绘制函数
-function draw(){
+
+let data = Data.fromString(`type ' help ' and press enter to get help`);
+
+// console.log(data);
+let c = 0;
+let hc = 0; // history cursor
+let canvasy = 0;
+let scrollMode = false;
+let i = 0;// 用于控制光标闪烁
+let view = new View(data,myCanvas,testStyle);
+
+animationEngine(100/60, () => {
     // clear canvas
-    const ctx = myCanvas.getContext('2d');
-    ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-    i++;
-    // 更具canvas 是否聚焦采用不同的渲染方式
+    myCanvas.getContext('2d').clearRect(0,0,myCanvas.width,myCanvas.height);
+    let y = 0;
+
     if (myCanvas === document.activeElement){
-        // // 若为偶数则绘制光标
-        if (i % 2 === 0){
-            drawTData(myCanvas, Tdata, 0, 40, wholeStyle, getStyle,c);
-        } else {
-            drawTData(myCanvas, Tdata, 0, 40, wholeStyle, getStyle,c,false);
+        if (i % 60 < 30){
+            y = view.render(c,hc,canvasy,true);
+        }else{
+            y = view.render(c,hc,canvasy,false);
         }
     }else{
-        drawTData(myCanvas, Tdata, 0, 40, wholeStyle, getStyle,c);
+        y = view.render(c,hc,canvasy,false);
+    }
+    if (y > myCanvas.height && !scrollMode){
+        canvasy -= y - myCanvas.height;
+    }
+    i++;
+});
+
+// 监听键盘事件输入字母
+myCanvas.addEventListener('keydown',function(e){
+    scrollMode = false;
+    // com + c or ctrl + c
+    if (e.key === 'c' && e.metaKey || e.key === 'c' && e.ctrlKey){
+        // copy cmd + c
+        let text = data._history[hc];
+        if(text){
+            navigator.clipboard.writeText(text).then(function() {
+                let info = new infoBobble('copy success','success',1000);
+                info.render();
+            }, function(err) {
+                console.error('Async: Could not copy text: ', err);
+                let info = new infoBobble('copy failed','error',1000);
+                info.render();
+            });
+        }else{
+            let info = new infoBobble('can not copy undefined','error',1000);
+            info.render();
+        }
+
+    }else if (e.key === 'v' && e.metaKey || e.key === 'v' && e.ctrlKey){
+        // paste cmd + v
+        navigator.clipboard.readText().then(function(text) {
+            if(text === ''){
+                let info = new infoBobble('paste failed: no text in clipboard','error',1000);
+                info.render();
+            }else{
+                let info = new infoBobble('paste success','success',1000);
+                info.render();
+                c = data.paste(c,text);
+            }
+
+        }, function(err) {
+            let info = new infoBobble('paste failed: other error','error',1000);
+            info.render();
+        });
+
+    } else if (e.key.length === 1){
+        // 输入字母
+        c = data.insert(c,e.key);
+    }
+    if (e.key === 'Backspace'){
+        // 删除字母
+        c = data.delete(c);
+    }
+    if (e.key === 'Enter'){
+        if(!isChatMode){
+            let obj = Parser(tokenization(data._current));
+            c = data.enter();
+            run(obj,data,callBackList);
+        }else{
+            let obj = Parser(tokenization(data._current));
+            // only run exit command
+            if (obj.command === 'exit'){
+                c = data.enter();
+                run(obj,data,callBackList);
+            }else{
+                //
+                chat(data,data._current);
+                c = data.enter();
+            }
+
+        }
+    }
+    // 按下左右键
+    if (e.key === 'ArrowLeft'){
+        if (c > 0){
+            c--;
+        }else{
+            c = 0;
+        }
+    }
+    if (e.key === 'ArrowRight'){
+        if (c < data._current.length){
+            c++;
+        }else{
+            c = data._current.length;
+        }
+    }
+
+    // 按下上下键
+    if (e.key === 'ArrowUp'){
+        hc--;
+        if (hc < 0){
+            hc = 0;
+        }
+        scrollMode = true;
+    }
+    if (e.key === 'ArrowDown'){
+        hc++;
+        if (hc > data._history.length - 1){
+            hc = data._history.length - 1;
+        }
+        scrollMode = true;
+    }
+});
+
+
+
+// 监听鼠标滚动事件
+myCanvas.addEventListener('wheel',function(e){
+    scrollMode = true;
+    canvasy -= e.deltaY;
+    if(canvasy > 0){
+        canvasy = 0;
+    }
+});
+
+// 若为移动设备则监听触摸事件
+if (isMobile()){
+    let startY = 0;
+    myCanvas.addEventListener('touchstart',function(e){
+        scrollMode = true;
+        startY = e.touches[0].clientY;
+    });
+    myCanvas.addEventListener('touchmove',function(e){
+        scrollMode = true;
+        canvasy += e.touches[0].clientY - startY;
+        startY = e.touches[0].clientY;
+        if(canvasy > 0){
+            canvasy = 0;
+        }
+    });
+}
+
+
+const callBackList = 
+{
+    "cd": {
+        "callBack": function cd(comObj,terminal){
+            // 判断是否有 path
+            if(comObj.path){
+                // 判断 path 是否在 metalist 中
+                let flag = false;
+                metalist.forEach(item => {
+                    if (item.path === comObj.path){
+                        flag = true;
+                    }
+                });
+                if (flag){
+
+                    fileToHtml(comObj.path,document.getElementById('content'), getMDStyle(mode));
+                    terminal.writeHistory("cd success " + comObj.path + " original file content: ");
+
+                    manipulateFile(comObj.path,function(data){
+                        terminal.writeHistory(data);
+                    });
+
+                }else{
+                    terminal.writeHistory("no such path " + comObj.path);
+                }
+                
+            }else{
+                terminal.writeHistory("no path");
+            }
+        }
+    },
+    "ls": {
+        "callBack": function ls(comObj,terminal){
+            let head = ['date','command','path', 'tag', 'title'];; // 表头
+            // 打印表头
+            terminal.writeHistory(head.join('   '));
+            metalist.forEach(item => {
+                let row = [];
+                row.push(item.date);
+                row.push(item.command);
+                row.push(item.path);
+                row.push(item.tag);
+                row.push(item.title);
+                terminal.writeHistory(row.join(' '));
+            });
+        }
+    },
+    "help": {
+        "callBack": function help(comObj,terminal){
+            let helpInfo = [
+                "-cd : change directory",
+                "-ls : list files",
+                "-help : get help",
+                "-clear : clear terminal options: -all",
+                "-chat : enter chat mode",
+                "-exit : exit chat mode",
+                "-style : change style: style -dark or style -light",
+                "-about : about me",
+                "-mdr : render markdown string to this page",
+            ];
+            helpInfo.forEach(item => {
+                terminal.writeHistory(item);
+            });
+        }
+    },
+    "clear": {
+        "callBack": function clear(comObj,terminal){
+            terminal.clear();
+            canvasy = 0;
+            hc = 0;
+            c = 0;
+
+            // // 清除剪贴板
+            // navigator.clipboard.writeText("");
+            // // 清除 content
+            // document.getElementById('content').innerHTML = '';
+
+            // -all 选项代表清除所有内容
+            if (comObj.options == '-all'){
+                // 清除剪贴板
+                navigator.clipboard.writeText("");
+                // 清除 content
+                document.getElementById('content').innerHTML = '';
+            } 
+        }
+    },
+    "chat":{
+        "callBack": function chat(comObj,terminal){
+            isChatMode = true;
+            terminal.writeHistory("=== chat mode ===");
+            view.cursorColor = "orange";
+            view.currentRectColor = "green";
+            view.currentRectBackgroundColor = "rgba(0,255,0,0.1)";
+        }
+    },
+    "exit":{
+        "callBack": function exit(comObj,terminal){
+            if(isChatMode){
+                isChatMode = false;
+                terminal.writeHistory("=== exit chat mode ===");
+                view.cursorColor = "white";
+                view.currentRectColor = "white";
+                view.currentRectBackgroundColor = "rgba(255,255,255,0.1)";
+            }else{
+                terminal.writeHistory("not in chat mode");
+            }
+        }
+    },
+    "style":{
+        "callBack": function style(comObj,terminal){
+            if (comObj.options == '-dark'){
+                document.body.style.backgroundColor = darkBG;
+                mode = 'dark';
+                terminal.writeHistory("change to dark mode 🌙 ");
+            }else if (comObj.options == '-light'){
+                document.body.style.backgroundColor = lightBG;
+                mode = 'light';
+                terminal.writeHistory("change to light mode 🔆 ");
+            }else{
+                terminal.writeHistory("no such style: " + comObj.options);
+            }
+        }
+    },
+    "about":{
+        "callBack": function about(comObj,terminal){
+            terminal.writeHistory("=== about ===");
+            terminal.writeHistory("-Site Version 2.0.0 (Stable) Powered by PzqCanvasTerminal V2.0.0 (Created by Pzq123456 using vanilla JS from scratch)");
+            terminal.writeHistory("-春江潮水连海平，海上明月共潮生。");
+            terminal.writeHistory("=== end ===");
+        },
+    },
+    "mdr":{
+        "callBack": function mdRender(comObj,terminal){
+            let md = comObj.others;
+            if (md){
+                console.log(md);
+                stringToHtml(md,document.getElementById('content'), getMDStyle(mode));
+            }else{
+                terminal.writeHistory("no md string");
+            }
+        }
     }
 }
-let myEventList = [
-    { eventName: 'keydown',
-        callback: (e) => {
-        if (e.key === 'ArrowRight'){
-            c++;
-            if(c >= Tdata.getFullLength() - 1){
-                c = Tdata.getFullLength() - 1; 
-            }
-        }
-        }
-    },
-    { eventName: 'keydown',
-        callback: (e) => {
-        if (e.key === 'ArrowLeft'){
-            c--;
-            if (c < 0){
-                c = 0;
-            }
-        }
-        }
-    },
-    { eventName: 'keydown',
-        callback: (e) => {
-        //向下
-        if (e.key === 'ArrowDown'){
-            c = Tdata.downIndex(c);
-        }
-        }
-    },
-    { eventName: 'keydown',
-        callback: (e) => {
-        //向上
-        if (e.key === 'ArrowUp'){
-            c = Tdata.upIndex(c);
-        }
-        }
-    },
-    { eventName: 'keydown',
-        callback: (e) => {
-        // 键盘输入
-        if (e.key.length === 1 && e.key !== ' '){
-            c = Tdata.insertChar(c, e.key);
-        }
-        }
-    },
-    { eventName: 'keydown',
-        callback: (e) => {
-        // 删除字符
-        if (e.key === 'Backspace'){
-            c = Tdata.deleteCharBefore(c);
-        }
-        }
-    },
-    { eventName: 'keydown',
-        callback: (e) => {
-        // 空格键则创建空block
-        if (e.key === ' '){
-            c = Tdata.splitBlock(c);
-        }
-        }
-    },
-    { eventName: 'keydown',
-        callback: (e) => {
-        // 检测到回车
-        if (e.key === 'Enter'){
-            let actLine = Tdata.enter(c);
-            let res = parseLine(actLine);
-            console.log(res);
-            c = run(res, Tdata, myCommandList);
-        }
-        }
-    }]
-
-animationEngine(timeInterval, draw); // 启动动画引擎
-eventEngine(myCanvas, myEventList); // 启动事件引擎
-
-
-// ==== 博客部分
 
 
 const mdStyle = {
@@ -253,14 +360,41 @@ const mdStyle = {
     'color': 'white',
 }; // style for the markdown content
 
-fileToHtml('/RVGeo/tutorials/README.md',document.getElementById('content'), mdStyle);
+const mdStyle2 = { // 浅色主体
+    'padding': '20px',
+    'font-family': 'monospace',
+    'font-size': '30px',
+    'overflow': 'auto',
+    'border-bottom': '1px solid black',
+    'border-radius': '5px',
+    'background-color': 'white',
+    'width': '80%',
+    'color': 'black',
+}; // style for the markdown content
+function getMDStyle(mode){
+    if (mode === 'dark'){
+        return mdStyle;
+    }else{
+        return mdStyle2;
+    }
+}
+function getBG(mode){
+    if (mode === 'dark'){
+        return darkBG;
+    }else{
+        return lightBG;
+    }
+}
+
+
+fileToHtml('/README.md',document.getElementById('content'), getMDStyle(mode));
 
 fillNavBar(document.getElementById('navBar'),
 [
     {
         "text": "Home",
         "action": function(){
-            fileToHtml('/RVGeo/tutorials/README.md',document.getElementById('content'), mdStyle);
+            fileToHtml('/README.md',document.getElementById('content'), getMDStyle(mode));
         }
     },{
         'text':'toggleTerminal',
@@ -291,12 +425,11 @@ fillNavBar(document.getElementById('navBar'),
 ],
 {
     'width': '100%',
-    'background-color': '#0d1117',
     'height': 'auto',
     'display': 'flex',
     'flex-direction': 'row',
     'align-items': 'center',
-    'border-bottom':'1px solid white',
+    'border-bottom':'1px solid gray',
 }
 );
 
@@ -305,20 +438,20 @@ fillNavBar(document.getElementById("blogsColumn"),
         return {
             "text": item.title,
             "action": function(){
-                fileToHtml(item.path, document.getElementById('content'), mdStyle);
+                fileToHtml(item.path, document.getElementById('content'), getMDStyle(mode));
             },
             "info": item.date + " " + item.tag + " " + item.title,
         };
     }),
     {
         'width': '100%',
-        'background-color': '#0d1117',
         'height': 'auto',
         'display': 'flex',
         'flex-direction': 'column',
         'align-items': 'center',
-        'border-bottom':'1px solid #8b949e',
+        'border-bottom':'1px solid gray',
         'padding': '10px',
     }
 );
+
 

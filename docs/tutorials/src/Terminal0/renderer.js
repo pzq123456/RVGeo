@@ -11,10 +11,6 @@ const DefaultStyle = {
     'color': 'green',
     'cursor-color': 'green',
 };
-
-
-
-
 /**
  * 绘制字符块
  * @param {HTMLCanvasElement} canvas - 画布
@@ -482,3 +478,47 @@ export function deCalCursorIndex2(
     i += currentCursor[2];
     return i;
 }
+
+
+export function drawMouse(canvas, x, y,style={color:'rgba(255,255,255,0.3)',strokeStyle:'white'}){
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = style.color;
+    // 以 xy 为中心 绘制圆形
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, 2 * Math.PI);
+    ctx.fill();
+    // 绘制圆形边框
+    ctx.strokeStyle = style.strokeStyle;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+}
+
+/**
+ * 智能绘制鼠标
+ * @param {*} canvas 
+ * @param {[number,number][]} mouse3Location 
+ * @param {[number,number][]} time3 
+ */
+export function smartDrawMouse(
+    canvas, mouse3Location,time3,style={color:'rgba(255,255,255,0.3)',strokeStyle:'white'}
+){
+
+    let x1 = mouse3Location[0][0];
+    let y1 = mouse3Location[0][1];
+    let t1 = time3[0];
+    let x2 = mouse3Location[1][0];
+    let y2 = mouse3Location[1][1];
+    let t2 = time3[1];
+    let x3 = mouse3Location[2][0];
+    let y3 = mouse3Location[2][1];
+    let t3 = time3[2];
+
+    let x4 = x3 + (x3 - x2) * (t3 - t2) / (t2 - t1);
+    let y4 = y3 + (y3 - y2) * (t3 - t2) / (t2 - t1);
+    // 绘制
+    drawMouse(canvas, x4, y4,style);
+}
+
+
+// V2 版本 重写数据渲染函数以实现更灵活的渲染
+

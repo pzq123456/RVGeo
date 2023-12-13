@@ -47,6 +47,45 @@ export function fileToHtml(filePath, element, style) {
         // handle error
         console.log(error);
     });
+}
 
+/**
+ * Render Markdown string to HTML
+ * @param {*} string 
+ * @param {*} element 
+ * @param {*} style 
+ */
+export function stringToHtml(string, element, style) {
+    // if no elementId, create one
+    if (!element) {
+        throw new Error('element is required');
+    }
+    // handle success
+    element.innerHTML =
+    marked.parse(string);
+    // add style
+    if (style) {
+        element.setAttribute('style',parseStyle(style));
+    }
+}
+
+
+
+
+/**
+ * 获取文件内容
+ * @param {*} filepath 
+ * @param {*} callBack 
+ */
+export function manipulateFile(filepath,callBack){
+    axios.get(filepath)
+    .then(function (response) {
+        // handle success
+        callBack(response.data);
+    })
+    .catch(function (error) {
+        // handle error
+        console.log(error);
+    });
 }
 
