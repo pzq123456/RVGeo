@@ -1,6 +1,6 @@
 # RVGeo V 2.0 `Dev Branch` 
 
-https://www.volcengine.com/theme/3438137-R-7-1
+> - 基于 Leaflet 重新设计。 V 2.5 版本将会基于 Leaflet 重新设计，目前正在进行中。
 
 > - current version: [2.0.7](https://www.npmjs.com/package/rvgeo)
 > - next version: 2.0.8 (working...)
