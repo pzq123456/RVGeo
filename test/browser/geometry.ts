@@ -1,8 +1,8 @@
-import {Point, point} from '../src/index';
-import {Bounds, bounds} from '../src/index';
-import {Transformation, transformation} from '../src/index';
-import {Canvas} from '../src/index';
-
+import {
+    Canvas, 
+    Point, point, 
+    Bounds, bounds, 
+    Transformation, transformation} from '../../src';
 
 const mydiv = document.getElementById('map') as HTMLElement;
 const canvas = new Canvas(1800, 600, mydiv);
@@ -111,10 +111,4 @@ console.log('pt:', pt);
 // untransform
 let pu = trans.untransform(pt);
 console.log('pu:', pu);
-
-// test update point
-p._update(p6, true);
-console.log('p:', p);
-console.log('p6:', p6);
-
 

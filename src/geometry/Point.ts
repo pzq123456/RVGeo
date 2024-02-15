@@ -78,7 +78,7 @@ export class Point{
 	 * @param {number} y - 点的y坐标。
 	 * @returns 
 	 */
-	_update(x: number | Point, y?: number | Boolean) : Point {
+	_update(x: number | Point | [number,number], y?: number | Boolean) : Point {
 		if (x instanceof Point) {
 			this.x = x.x;
 			this.y = x.y;
@@ -87,7 +87,15 @@ export class Point{
 				emptyObj(x);
 			}
 			return this;
-		}else if (y && typeof y === 'number') {
+		}else if (Array.isArray(x)) {
+			this.x = x[0];
+			this.y = x[1];
+			if(y === true){
+				// 释放原对象
+				emptyObj(x);
+			}
+		}
+		else if (y && typeof y === 'number') {
 			this.x = x;
 			this.y = y;
 		}

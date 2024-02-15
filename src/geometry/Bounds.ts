@@ -29,12 +29,12 @@ export class Bounds {
 			points = a as Point[];
 		}
 		const minMax = this.findMinMax(points);
-		console.log(minMax);
+
 		this.min = minMax.min;
 		this.max = minMax.max;
     }
 
-    findMinMax(points: Point[]) : {min: Point, max: Point} {
+    private findMinMax(points: Point[]) : {min: Point, max: Point} {
 		if (points.length === 0) {
 			return {
 				min: new Point(0, 0),
@@ -90,39 +90,59 @@ export class Bounds {
 
 	// @method getBottomLeft(): Point
 	// Returns the bottom-left point of the bounds.
-	getBottomLeft() {
+	/**
+	 * 返回边界的左下角点。
+	 * @returns {Point} 返回边界的左下角点。
+	 */
+	getBottomLeft() : Point {
 		return toPoint(this.min.x, this.max.y);
 	}
 
 	// @method getTopRight(): Point
 	// Returns the top-right point of the bounds.
-	getTopRight() { // -> Point
+	/**
+	 * 返回边界的右上角点。
+	 * @returns {Point} 返回边界的右上角点。
+	 */
+	getTopRight() : Point {
 		return toPoint(this.max.x, this.min.y);
 	}
 
 	// @method getTopLeft(): Point
 	// Returns the top-left point of the bounds (i.e. [`this.min`](#bounds-min)).
-	getTopLeft() {
+	/**
+	 * 返回边界的左上角点。
+	 * @returns {Point} 返回边界的左上角点。
+	 */
+	getTopLeft() : Point {
 		return this.min; // left, top
 	}
 
 	// @method getBottomRight(): Point
 	// Returns the bottom-right point of the bounds (i.e. [`this.max`](#bounds-max)).
-	getBottomRight() {
+	/**
+	 * 返回边界的右下角点。
+	 * @returns {Point} 返回边界的右下角点。
+	 */
+	getBottomRight() : Point {
 		return this.max; // right, bottom
 	}
 
 	// @method getSize(): Point
 	// Returns the size of the given bounds
-	getSize() {
+	/**
+	 * 返回边界的大小。
+	 * @returns {Point} 返回边界的大小。(width, height)
+	 */
+	getSize() : Point {
 		return this.max.subtract(this.min);
 	}
 
-	// @method contains(otherBounds: Bounds): Boolean
-	// Returns `true` if the rectangle contains the given one.
-	// @alternative
-	// @method contains(point: Point): Boolean
-	// Returns `true` if the rectangle contains the given point.
+	/**
+	 * 如果矩形包含给定的点或边界，则返回`true`。
+	 * @param {Point|Bounds} obj - 给定的点或边界。
+	 * @returns {Boolean} 如果矩形包含给定的点或边界，则返回`true`。
+	 */
 	contains(obj : Point | Bounds) : boolean {
 		let min, max;
 		if (obj instanceof Bounds) {
@@ -140,9 +160,12 @@ export class Bounds {
 		       (max.y <= this.max.y);
 	}
 
-	// @method intersects(otherBounds: Bounds): Boolean
-	// Returns `true` if the rectangle intersects the given bounds. Two bounds
-	// intersect if they have at least one point in common.
+	/**
+	 * 如果矩形与给定的边界相交，则返回`true`。
+	 * - 两个边界相交: 它们至少有一个公共点。
+	 * @param bounds 
+	 * @returns 
+	 */
 	intersects(bounds: Bounds) : boolean {
 		bounds = toBounds(bounds);
 
@@ -156,9 +179,12 @@ export class Bounds {
 		return xIntersects && yIntersects;
 	}
 
-	// @method overlaps(otherBounds: Bounds): Boolean
-	// Returns `true` if the rectangle overlaps the given bounds. Two bounds
-	// overlap if their intersection is an area.
+	/**
+	 * 如果矩形与给定的边界重叠，则返回`true`。
+	 * - 两个边界重叠: 它们的交集是一个区域。
+	 * @param bounds 
+	 * @returns 
+	 */
 	overlaps(bounds: Bounds) : boolean {
 		bounds = toBounds(bounds);
 
@@ -172,18 +198,22 @@ export class Bounds {
 		return xOverlaps && yOverlaps;
 	}
 
-	// @method isValid(): Boolean
-	// Returns `true` if the bounds are properly initialized.
+	/**
+	 * 如果边界正确初始化，则返回`true`。
+	 * @returns 
+	 */
 	isValid() {
 		return !!(this.min && this.max);
 	}
 
-
-	// @method pad(bufferRatio: Number): Bounds
-	// Returns bounds created by extending or retracting the current bounds by a given ratio in each direction.
-	// For example, a ratio of 0.5 extends the bounds by 50% in each direction.
-	// Negative values will retract the bounds.
-	pad(bufferRatio: number) {
+	/**
+	 * 返回通过在每个方向上扩展或收缩当前边界的给定比率创建的边界。
+	 * - 例如，0.5的比率在每个方向上扩展边界50%。 
+	 * - 负值将收缩边界。
+	 * @param {Number} bufferRatio - 比率（0.5表示扩展50%）
+	 * @returns {Bounds} 返回新的边界。
+	 */
+	pad(bufferRatio: number) : Bounds {
 		const min = this.min,
 		max = this.max,
 		heightBuffer = Math.abs(min.x - max.x) * bufferRatio,
@@ -206,16 +236,48 @@ export class Bounds {
 		return this.min.equals(bounds.getTopLeft()) &&
 			this.max.equals(bounds.getBottomRight());
 	}
+
+	toGeoJSON() {
+		return [this.getBottomLeft().toGeoJSON(), this.getTopRight().toGeoJSON()];
+	}
 }
 
-// @factory L.bounds(corner1: Point, corner2: Point)
-// Creates a Bounds object from two corners coordinate pairs.
-// @alternative
-// @factory L.bounds(points: Point[])
-// Creates a Bounds object from the given array of points.
-export function toBounds(a : Point | Point[] | Bounds, b? : Point) : Bounds {
+/**
+ * 从两个角坐标对创建边界对象。
+ * @param {Point | Point[] | Bounds} a - 角坐标对或点数组或边界对象。
+ * @param {Point} b - 角坐标对
+ * @returns {Bounds} 返回新的边界对象。
+ * @example
+ * 1. 参数为两个角坐标对
+ * ```js
+ * var p1 = L.point(10, 10),
+ * p2 = L.point(40, 60),
+ * bounds = L.bounds(p1, p2);
+ * ```
+ * 2. 参数为点数组
+ * ```js
+ * var p1 = L.point(10, 10),
+ * p2 = L.point(40, 60),
+ * p3 = L.point(50, 70),
+ * bounds = L.bounds([p1, p2, p3]);
+ * ```
+ * 3. 参数为边界对象
+ * ```js
+ * var p1 = L.point(10, 10),
+ * p2 = L.point(40, 60),
+ * bounds1 = L.bounds(p1, p2);
+ * var bounds2 = L.bounds(bounds1);
+ * ```
+ */
+export function toBounds(a : Point | Point[] | number[][] |Bounds, b? : Point) : Bounds {
 	if (!a || a instanceof Bounds) {
 		return a;
+	}else if(a instanceof Point && b instanceof Point){
+		return new Bounds(a, b);
+	}else{
+		// 对 a 中的每一个元素都使用 toPoint 转换
+		const points = a as Point[];
+		const newPoints = points.map(p => toPoint(p));
+		return new Bounds(newPoints);
 	}
-	return new Bounds(a, b);
 }
