@@ -3,6 +3,10 @@ import {LatLng, toLatLng} from './LatLng';
 
 
 export class LatLngBounds {
+	_southWest!: LatLng;
+	_northEast!: LatLng;
+
+	// @class LatLngBounds
 	/**
 	* @class LatLngBounds
 	* Represents a rectangular geographical area on a map.
@@ -27,15 +31,38 @@ export class LatLngBounds {
 	* - Caution: if the area crosses the antimeridian (often confused with the International Date Line), 
 	* - you must specify corners _outside_ the [-180, 180] degrees longitude range.
 	*/
-	constructor(corner1, corner2) { // (LatLng, LatLng) or (LatLng[])
+	constructor(corner1: LatLng | LatLng[], corner2?: LatLng ) {
 		if (!corner1) { return; }
-
-		const latlngs = corner2 ? [corner1, corner2] : corner1;
-
-		for (let i = 0, len = latlngs.length; i < len; i++) {
-			this.extend(latlngs[i]);
+		let latlngs : LatLng[];
+		if (corner2) { // 如果用户已经指定了两个点则直接使用（对于跨越日期变更线的情况，需要用户自己指定）
+			this._southWest = toLatLng(corner1 as LatLng);
+			this._northEast = toLatLng(corner2);
+		}else {
+			latlngs = corner1 as LatLng[];
+			const swne = this.findSwNe(latlngs);
+			this._southWest = swne[0];
+			this._northEast = swne[1];
 		}
 	}
+
+	findSwNe(latlngs: LatLng[]) {
+		if (latlngs.length === 0) {
+			return [new LatLng(0, 0), new LatLng(0, 0)];
+		}else{
+			let minLat = latlngs[0].lat;
+			let minLng = latlngs[0].lng;
+			let maxLat = latlngs[0].lat;
+			let maxLng = latlngs[0].lng;
+			for (let i = 1; i < latlngs.length; i++) {
+				minLat = Math.min(minLat, latlngs[i].lat);
+				minLng = Math.min(minLng, latlngs[i].lng);
+				maxLat = Math.max(maxLat, latlngs[i].lat);
+				maxLng = Math.max(maxLng, latlngs[i].lng);
+			}
+			return [new LatLng(minLat, minLng), new LatLng(maxLat, maxLng)];
+		}
+	}
+
 
 		// @method extend(latlng: LatLng): this
 	// Extend the bounds to contain the given point
@@ -43,35 +70,20 @@ export class LatLngBounds {
 	// @alternative
 	// @method extend(otherBounds: LatLngBounds): this
 	// Extend the bounds to contain the given bounds
-	extend(obj) {
-		const sw = this._southWest,
-		      ne = this._northEast;
-		let sw2, ne2;
-
+	extend(obj: LatLng | LatLngBounds): this { // (LatLng) or (LatLngBounds) -> this
 		if (obj instanceof LatLng) {
-			sw2 = obj;
-			ne2 = obj;
-
-		} else if (obj instanceof LatLngBounds) {
-			sw2 = obj._southWest;
-			ne2 = obj._northEast;
-
-			if (!sw2 || !ne2) { return this; }
-
-		} else {
-			return obj ? this.extend(toLatLng(obj) || toLatLngBounds(obj)) : this;
+			const latlng = obj;
+			this._southWest.lat = Math.min(latlng.lat, this._southWest.lat);
+			this._northEast.lat = Math.max(latlng.lat, this._northEast.lat);
+			this._southWest.lng = Math.min(latlng.lng, this._southWest.lng);
+			this._northEast.lng = Math.max(latlng.lng, this._northEast.lng);
+		}else if (obj instanceof LatLngBounds) {
+			const bounds = obj;
+			this._southWest.lat = Math.min(bounds._southWest.lat, this._southWest.lat);
+			this._northEast.lat = Math.max(bounds._northEast.lat, this._northEast.lat);
+			this._southWest.lng = Math.min(bounds._southWest.lng, this._southWest.lng);
+			this._northEast.lng = Math.max(bounds._northEast.lng, this._northEast.lng);
 		}
-
-		if (!sw && !ne) {
-			this._southWest = new LatLng(sw2.lat, sw2.lng);
-			this._northEast = new LatLng(ne2.lat, ne2.lng);
-		} else {
-			sw.lat = Math.min(sw2.lat, sw.lat);
-			sw.lng = Math.min(sw2.lng, sw.lng);
-			ne.lat = Math.max(ne2.lat, ne.lat);
-			ne.lng = Math.max(ne2.lng, ne.lng);
-		}
-
 		return this;
 	}
 
@@ -79,7 +91,7 @@ export class LatLngBounds {
 	// Returns bounds created by extending or retracting the current bounds by a given ratio in each direction.
 	// For example, a ratio of 0.5 extends the bounds by 50% in each direction.
 	// Negative values will retract the bounds.
-	pad(bufferRatio) {
+	pad(bufferRatio: number): LatLngBounds {
 		const sw = this._southWest,
 		    ne = this._northEast,
 		    heightBuffer = Math.abs(sw.lat - ne.lat) * bufferRatio,
@@ -152,14 +164,8 @@ export class LatLngBounds {
 	// @alternative
 	// @method contains (latlng: LatLng): Boolean
 	// Returns `true` if the rectangle contains the given point.
-	contains(obj) { // (LatLngBounds) or (LatLng) -> Boolean
-		if (typeof obj[0] === 'number' || obj instanceof LatLng || 'lat' in obj) {
-			obj = toLatLng(obj);
-		} else {
-			obj = toLatLngBounds(obj);
-		}
-
-		const sw = this._southWest
+	contains(obj : LatLng | [number, number] | LatLngBounds ) : boolean {
+		const sw = this._southWest,
 		      ne = this._northEast;
 		let sw2, ne2;
 
@@ -167,7 +173,7 @@ export class LatLngBounds {
 			sw2 = obj.getSouthWest();
 			ne2 = obj.getNorthEast();
 		} else {
-			sw2 = ne2 = obj;
+			sw2 = ne2 = toLatLng(obj);
 		}
 
 		return (sw2.lat >= sw.lat) && (ne2.lat <= ne.lat) &&
@@ -176,7 +182,7 @@ export class LatLngBounds {
 
 	// @method intersects(otherBounds: LatLngBounds): Boolean
 	// Returns `true` if the rectangle intersects the given bounds. Two bounds intersect if they have at least one point in common.
-	intersects(bounds) {
+	intersects(bounds : LatLngBounds) : boolean {
 		bounds = toLatLngBounds(bounds);
 
 		const sw = this._southWest,
@@ -192,7 +198,7 @@ export class LatLngBounds {
 
 	// @method overlaps(otherBounds: LatLngBounds): Boolean
 	// Returns `true` if the rectangle overlaps the given bounds. Two bounds overlap if their intersection is an area.
-	overlaps(bounds) {
+	overlaps(bounds : LatLngBounds) : boolean {
 		bounds = toLatLngBounds(bounds);
 
 		const sw = this._southWest,
@@ -214,7 +220,7 @@ export class LatLngBounds {
 
 	// @method equals(otherBounds: LatLngBounds, maxMargin?: Number): Boolean
 	// Returns `true` if the rectangle is equivalent (within a small margin of error) to the given bounds. The margin of error can be overridden by setting `maxMargin` to a small number.
-	equals(bounds, maxMargin) {
+	equals(bounds: LatLngBounds, maxMargin?: number) : boolean {
 		if (!bounds) { return false; }
 
 		bounds = toLatLngBounds(bounds);
@@ -241,9 +247,18 @@ export class LatLngBounds {
 // @alternative
 // @factory L.latLngBounds(latlngs: LatLng[])
 // Creates a `LatLngBounds` object defined by the geographical points it contains. Very useful for zooming the map to fit a particular set of locations with [`fitBounds`](#map-fitbounds).
-export function toLatLngBounds(a, b) {
+export function toLatLngBounds(a: LatLng | LatLng[] | LatLngBounds | [LatLng, LatLng], b?: LatLng): LatLngBounds {
+	if(!a){
+		return a;
+	}
 	if (a instanceof LatLngBounds) {
 		return a;
 	}
-	return new LatLngBounds(a, b);
+	if (Array.isArray(a)) {
+		return new LatLngBounds(a as LatLng[]);
+	}
+	if (a instanceof LatLng && b instanceof LatLng) {
+		return new LatLngBounds(a, b);
+	}
+	return new LatLngBounds(a);
 }

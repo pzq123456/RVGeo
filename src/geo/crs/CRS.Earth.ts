@@ -20,7 +20,10 @@ export class Earth extends CRS{
 
 	// distance between two geographical points using spherical law of cosines approximation
 	// haversine 公式
-	static distance(latlng1: LatLng, latlng2: LatLng): number {
+	static distance(latlng1: LatLng, latlng2: LatLng | null): number {
+		if (latlng2 === null) {
+			throw new Error('latlng2不能为空');
+		}
 		const rad = Math.PI / 180,
 		    lat1 = latlng1.lat * rad,
 		    lat2 = latlng2.lat * rad,

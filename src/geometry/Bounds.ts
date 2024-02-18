@@ -24,14 +24,16 @@ export class Bounds {
 		if (!a) { return; } 
 		let points : Point[]; 
 		if (b) {
-			points = [a as Point, b];
+			this.min = a as Point;
+			this.max = b;
 		}else{
 			points = a as Point[];
-		}
-		const minMax = this.findMinMax(points);
+			const minMax = this.findMinMax(points);
 
-		this.min = minMax.min;
-		this.max = minMax.max;
+			this.min = minMax.min;
+			this.max = minMax.max;
+		}
+
     }
 
     private findMinMax(points: Point[]) : {min: Point, max: Point} {

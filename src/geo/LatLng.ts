@@ -1,6 +1,6 @@
 import * as Util from '../core/Util.js';
 import {Earth} from './crs/CRS.Earth';
-import {toLatLngBounds} from './LatLngBounds';
+import {toLatLngBounds, LatLngBounds} from './LatLngBounds';
 
 /* @class LatLng
  * @aka L.LatLng
@@ -54,10 +54,16 @@ export class LatLng{
 
 	// @method equals(otherLatLng: LatLng, maxMargin?: Number): Boolean
 	// Returns `true` if the given `LatLng` point is at the same position (within a small margin of error). The margin of error can be overridden by setting `maxMargin` to a small number.
-	equals(obj, maxMargin) {
+	equals(obj: LatLng, maxMargin?: number): boolean {
 		if (!obj) { return false; }
 
-		obj = toLatLng(obj);
+		// obj = toLatLng(obj);
+		// 若 obj 不是 LatLng 对象，则返回 false
+		if (obj instanceof LatLng) {
+			obj = obj;
+		}else {
+			return false;
+		}
 
 		const margin = Math.max(
 		        Math.abs(this.lat - obj.lat),
@@ -68,13 +74,13 @@ export class LatLng{
 
 	// @method toString(): String
 	// Returns a string representation of the point (for debugging purposes).
-	toString(precision) {
+	toString(precision?: number): string {
 		return `LatLng(${Util.formatNum(this.lat, precision)}, ${Util.formatNum(this.lng, precision)})`;
 	}
 
 	// @method distanceTo(otherLatLng: LatLng): Number
 	// Returns the distance (in meters) to the given `LatLng` calculated using the [Spherical Law of Cosines](https://en.wikipedia.org/wiki/Spherical_law_of_cosines).
-	distanceTo(other) {
+	distanceTo(other: LatLng): number {
 		return Earth.distance(this, toLatLng(other));
 	}
 
@@ -86,13 +92,13 @@ export class LatLng{
 
 	// @method toBounds(sizeInMeters: Number): LatLngBounds
 	// Returns a new `LatLngBounds` object in which each boundary is `sizeInMeters/2` meters apart from the `LatLng`.
-	toBounds(sizeInMeters) {
+	toBounds(sizeInMeters: number): LatLngBounds {
 		const latAccuracy = 180 * sizeInMeters / 40075017,
 		    lngAccuracy = latAccuracy / Math.cos((Math.PI / 180) * this.lat);
 
 		return toLatLngBounds(
-		        [this.lat - latAccuracy, this.lng - lngAccuracy],
-		        [this.lat + latAccuracy, this.lng + lngAccuracy]);
+		        toLatLng([this.lat - latAccuracy, this.lng - lngAccuracy]),
+		        toLatLng([this.lat + latAccuracy, this.lng + lngAccuracy]));
 	}
 
 	clone() {
@@ -113,10 +119,34 @@ export class LatLng{
 // Expects an plain object of the form `{lat: Number, lng: Number}` or `{lat: Number, lng: Number, alt: Number}` instead.
 //  You can also use `lon` in place of `lng` in the object form.
 
-export function toLatLng(a, b, c) {
-	if (a instanceof LatLng) {
+
+/**
+ * @function toLatLng - 将输入转换为`LatLng`对象。
+ * @param {LatLng|Array<number>|Object} a - 输入值。
+ * @param {number} b
+ * @param {number} c
+ * @returns {LatLng} 返回一个`LatLng`对象。
+ * 
+ * @example
+ * ```js
+ * var latlng = toLatLng(50.5, 30.5);
+ * var latlng = toLatLng([50.5, 30.5]);
+ * var latlng = toLatLng({lat: 50.5, lng: 30.5});
+ * var latlng = toLatLng({lat: 50.5, lon: 30.5});
+ * var latlng = toLatLng({lat: 50.5, lng: 30.5, alt: 100});
+ * ```
+ */
+export function toLatLng(a: 
+	LatLng | [number, number] | [number, number, number] | number 
+	|{lat: number, lng: number} | {lat: number, lon: number} | {lat: number, lng: number, alt: number}
+	, b?: number, c?: number): LatLng 
+{
+	// default return value
+
+	if (a === undefined || a === null || a instanceof LatLng) {
 		return a;
 	}
+
 	if (Array.isArray(a) && typeof a[0] !== 'object') {
 		if (a.length === 3) {
 			return new LatLng(a[0], a[1], a[2]);
@@ -124,16 +154,15 @@ export function toLatLng(a, b, c) {
 		if (a.length === 2) {
 			return new LatLng(a[0], a[1]);
 		}
-		return null;
-	}
-	if (a === undefined || a === null) {
-		return a;
-	}
-	if (typeof a === 'object' && 'lat' in a) {
-		return new LatLng(a.lat, 'lng' in a ? a.lng : a.lon, a.alt);
+	}else if (typeof a === 'object' && 'lat' in a) {
+		return new LatLng(a.lat, 'lng' in a ? a.lng : a.lon, 'alt' in a ? a.alt : undefined);
 	}
 	if (b === undefined) {
-		return null;
+		throw new Error('Invalid LatLng object: ' + a);
 	}
-	return new LatLng(a, b, c);
+	// 若 a 既不是数组 也不是对象，且 b 不是 undefined，则 a 是一个数字，b 是一个数字
+	if (!Array.isArray(a)) {
+		return new LatLng(a, b, c);
+	}
+	throw new Error('Invalid LatLng object: ' + a);
 }

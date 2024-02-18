@@ -6,12 +6,35 @@ export class Canvas{ // 用于 debug 的画布
         public width: number = 300,
         public height: number = 150,
         public container: HTMLElement,
+        transformation?: number[] // 仿射变换
     ){
         this.canvas = document.createElement('canvas'); // 创建一个canvas元素
         this.canvas.width = width;
         this.canvas.height = height;
         container.appendChild(this.canvas);
-        this.initCanvas();
+        this.initCanvas('black', 'rgba(125, 0, 0, 0.5)', 'black', transformation);
+    }
+
+    static getTransArray(width:number,height:number,topLeft:[number,number] = [-180,90],bottomRight:[number,number] = [180,-90]){
+        // 根据左上角和右下角的经纬度坐标，计算出仿射变换的参数。将所表示的区域映射到画布的范围内，画布的坐标原点位于中心。
+        let x = width / (bottomRight[0] - topLeft[0]);
+        let y = height / (topLeft[1] - bottomRight[1]);
+        return [x, 0, 0, y, -x * topLeft[0], y * topLeft[1]];
+
+        /**
+        a (m11)
+        水平方向的缩放
+        b(m12)
+        竖直方向的倾斜偏移
+        c(m21)
+        水平方向的倾斜偏移
+        d(m22)
+        竖直方向的缩放
+        e(dx)
+        水平方向的移动
+        f(dy)
+        竖直方向的移动
+         */
     }
 
     drawPoint(x: number, y: number, color: string = 'black', pointStyle: string = 'o', radius: number = 3){
@@ -79,8 +102,12 @@ export class Canvas{ // 用于 debug 的画布
         strokeStyle: string = 'black',
         fillStyle: string = 'rgba(125, 0, 0, 0.5)',
         bgColor: string = 'black',
+        transformation?: number[] // 仿射变换
     ){
         let ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        if(transformation){
+            ctx.setTransform(transformation[0], transformation[1], transformation[2], transformation[3], transformation[4], transformation[5]);
+        }
         ctx.strokeStyle = strokeStyle;
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, this.width, this.height);
