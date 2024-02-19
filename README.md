@@ -61,3 +61,4 @@
     // 调用继承自类 B 的方法
     abInstance.methodB(); // 输出: Method B
 ```
+### 2. [函数重载](https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads)
