@@ -270,8 +270,12 @@ export class Bounds {
  * bounds1 = L.bounds(p1, p2);
  * var bounds2 = L.bounds(bounds1);
  * ```
+ * 4. 参数为二维数组
+ * ```js
+ * var bounds = L.bounds([[10, 10], [40, 60]]);
+ * ```
  */
-export function toBounds(a : Point | Point[] | number[][] |Bounds, b? : Point) : Bounds {
+export function toBounds(a : Point | Point[] | number[][] | Bounds, b? : Point) : Bounds {
 	if (!a || a instanceof Bounds) {
 		return a;
 	}else if(a instanceof Point && b instanceof Point){

@@ -11,14 +11,18 @@ import {Point} from '../../geometry/Point';
  * a sphere. Used by the `EPSG:3857` CRS.
  */
 
-const earthRadius = 6378137;
+const earthRadius = 6378137; // in meters
 
 export const SphericalMercator = {
 
 	R: earthRadius,
-	MAX_LATITUDE: 85.0511287798,
-
-	project(latlng: LatLng) {
+	MAX_LATITUDE: 85.0511287798, 
+	/**
+	 * 将经纬度坐标转换为平面坐标。
+	 * @param {LatLng} latlng - 经纬度坐标
+	 * @returns {Point} - 平面坐标
+	 */
+	project(latlng: LatLng) : Point {
 		const d = Math.PI / 180,
 		    max = this.MAX_LATITUDE,
 		    lat = Math.max(Math.min(max, latlng.lat), -max),
@@ -29,7 +33,12 @@ export const SphericalMercator = {
 			this.R * Math.log((1 + sin) / (1 - sin)) / 2);
 	},
 
-	unproject(point: Point) {
+	/**
+	 * 将平面坐标转换为经纬度坐标。
+	 * @param {Point} point - 平面坐标
+	 * @returns {LatLng} - 经纬度坐标
+	 */
+	unproject(point: Point) : LatLng {
 		const d = 180 / Math.PI;
 
 		return new LatLng(
@@ -38,6 +47,7 @@ export const SphericalMercator = {
 	},
 
 	bounds: (function () {
+		// 这个是一个球体的边界
 		const d = earthRadius * Math.PI;
 		return bounds([[-d, -d], [d, d]]);
 	})()
