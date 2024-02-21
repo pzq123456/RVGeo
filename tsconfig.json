@@ -19,6 +19,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     // "normalTypeScriptOptions": "here"
+    "declaration": true,
+    "declarationDir": "./types"
   },
   "include": ["src"],
   "typedocOptions": {
