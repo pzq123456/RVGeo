@@ -14,14 +14,20 @@ interface AsyncListener extends Listener {
 
 interface EventData {
     type: string;
-    target: EventEmitter;
+    target: Evented;
     [key: string]: any; // Other optional properties
 }
 
 /**
- * 事件基础函数
+ * 事件基础函数（类，默认构造函数）
+ * - 维护两个事件监听器队列（同步、异步）
+ * - 提供事件监听、移除、触发等方法
+ * - 提供一次性事件监听
+ * - 提供获取指定事件类型的监听器
+ * - 提供判断是否存在指定事件类型的监听器
+ * > 参考 [Leaflet 的事件机制设计](https://github.com/Leaflet/Leaflet/blob/80a42768306c8c2f9f1bd1eb48d529ffcac3072f/src/core/Events.js#L29)
  */
-export class EventEmitter {
+export class Evented {
     private _events: { [key: string]: Listener[] } = {};
     private _asyncEvents: { [event: string]: AsyncListener[] } = {};
 
@@ -49,8 +55,6 @@ export class EventEmitter {
         return this;
     }
     
-
-
     /**
      * 移除事件监听
      * @param type 
@@ -177,5 +181,24 @@ export class EventEmitter {
      */
     hasListeners(type: string): boolean {
         return !!(this._events[type]?.length || this._asyncEvents[type]?.length);
+    }
+
+    /**
+     * 移除所有事件监听
+     * @returns {this} 返回 EventEmitter 实例
+     */
+    removeAllListeners(): this {
+        this._events = {};
+        this._asyncEvents = {};
+        return this;
+    }
+
+    /**
+     * 判断是否为异步监听器
+     * @param {Listener | AsyncListener} listener - 监听器
+     * @returns {boolean} 返回一个布尔值
+     */
+    static isAsyncListener(listener: Listener | AsyncListener): listener is AsyncListener {
+        return (listener as AsyncListener).fn.constructor.name === 'AsyncFunction';
     }
 }

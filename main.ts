@@ -22,8 +22,8 @@ canvas.drawPoint(place0.lng, place0.lat, 'red','x',1);
 canvas.drawPoint(place1.lng, place1.lat, 'blue','x',1);
 canvas.drawPoint(place2.lng, place2.lat, 'green','x',1);
 
-import { EventEmitter } from './src/core/events';
-const emitter = new EventEmitter();
+import { Evented } from './src/core/events';
+const emitter = new Evented();
 function mockFn(event: any) {
     console.log(event.message);
 }
@@ -37,5 +37,3 @@ console.log('off');
 let listeners = emitter.listeners('click');
 console.log(listeners);
 emitter.emit('click', { message: 'Hello, world!' });
-
-

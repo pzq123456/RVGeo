@@ -1,4 +1,5 @@
 // This can live anywhere in your codebase:
+
 /**
  * Apply mixins to a class
  * @param derivedCtor - The class to apply the mixins to
