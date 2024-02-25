@@ -3,5 +3,5 @@
  */
 
 export {applyMixins} from './mixins';
-export {UUID} from './utils';
+export * from './utils';
 export {Evented} from './events';

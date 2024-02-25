@@ -17,9 +17,10 @@
 
 /**
  * - 最小外包矩形（左下角和右上角的坐标）
- * - MBR 中的 minX, minY, maxX, maxY 的排序在某些情况下会有歧义，尤其是在地理坐标系的语境下。（譬如跨越了 180 度经线的情况）
- * - 所以允许 minX > maxX 或 minY > maxY，但是在使用时需要注意。
  * - （总是默认遵守这样的约定）所以并没有 MBR 类，而只有一个相对松散的类型定义与系列工具函数。
+ * - MBR 中的 minX, minY, maxX, maxY 的排序在某些情况下会有歧义，尤其是在地理坐标系的语境下。（譬如跨越了反子午圈的情况（斐济群岛））
+ * - 这样的情况较为少见，本项目暂不考虑。
+ * - 所以允许 minX > maxX 或 minY > maxY，但是在使用时需要注意。
  */
 export type MBR = [number, number, number, number]; // [minX, minY, maxX, maxY] or [minLon, minLat, maxLon, maxLat]
 

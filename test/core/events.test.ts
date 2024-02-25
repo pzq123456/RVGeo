@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { EventEmitter } from '../../src/core/events';
+import { Evented } from '../../src/core/events';
 
-describe('EventEmitter', () => {
+describe('Evented', () => {
   it('should emit events', () => {
-    const emitter = new EventEmitter();
+    const emitter = new Evented();
     let message = '';
     function clickHandler(event: any) {
         message = event.message;
@@ -18,7 +18,7 @@ describe('EventEmitter', () => {
     // 默认 pass
 
     // 异步建议在浏览器中测试
-    // const emitter = new EventEmitter();
+    // const emitter = new Evented();
     // async function clickHandler(event: any) {
     //     // 暂停 3 秒
     //     await new Promise(resolve => setTimeout(resolve, 3000));
@@ -44,7 +44,7 @@ describe('EventEmitter', () => {
   it('should remove event listeners', () => {
     // in browser
     /*
-      const emitter = new EventEmitter();
+      const emitter = new Evented();
       function mockFn(event: any) {
           console.log(event.message);
       }
@@ -59,7 +59,7 @@ describe('EventEmitter', () => {
       console.log(listeners);
       emitter.emit('click', { message: 'Hello, world!' }); 
      */
-    const emitter = new EventEmitter();
+    const emitter = new Evented();
     const mockFn = vi.fn();
     emitter.on('click', mockFn);
 
@@ -71,7 +71,7 @@ describe('EventEmitter', () => {
   });
 
   it('should get event listeners', () => {
-    const emitter = new EventEmitter();
+    const emitter = new Evented();
     const mockFn1 = vi.fn();
     const mockFn2 = vi.fn();
     emitter.on('click', mockFn1);
@@ -85,7 +85,7 @@ describe('EventEmitter', () => {
   });
 
   it('should check if event listeners exist', () => {
-    const emitter = new EventEmitter();
+    const emitter = new Evented();
     const mockFn = vi.fn();
     emitter.on('click', mockFn);
 
