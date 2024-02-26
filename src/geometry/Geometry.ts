@@ -7,6 +7,9 @@
  */
 
 import { MBR } from "./MBR";
+import { Point } from "./Point";
+import { LineString } from "./LineString";
+// import { Polygon } from "./Polygon";
 
 // base class for all geometry classes
 export interface GeoJSONGeometry {
@@ -40,19 +43,48 @@ export abstract class Geometry<T> {
         this.updateBBox(); // update the bounding box
     }
 
-    abstract updateBBox(): void;
-    abstract toGeoJSON(): GeoJSONFeature<T>; // wrap the geometry in a GeoJSON feature
-    abstract fromGeoJSON(geoJSON: GeoJSONGeometry): void; 
+    getCoordinates(): any { return this.coordinates; }
+    getProperties(): T { return this.properties; }
+    getBoundingBox(): MBR | null { return this.bbox; }
 
-    getCoordinates(): any {
-        return this.coordinates;
+    
+    abstract clone(): Geometry<T>; // clone the geometry
+
+
+    abstract updateBBox(): void; // update the bounding box
+    
+    toGeoJSON(): GeoJSONFeature<T>{
+        let feature: GeoJSONFeature<T> = {
+            type: "Feature",
+            geometry: {
+                type: this.constructor.name,
+                coordinates: this.coordinates
+            },
+            properties: this.properties,
+        };
+        if (this.bbox) {
+            feature.bbox = this.bbox;
+        }
+        return feature;
     }
 
-    getProperties(): T {
-        return this.properties;
+    static fromGeoJSON(feature: GeoJSONFeature<any>): Geometry<any> {
+        const { type } = feature;
+        const Constructor = Geometry.getConstructor(type);
+        return Constructor.fromGeoJSON(feature);
     }
 
-    getBoundingBox(): MBR | null {
-        return this.bbox;
-    }
+    // 通过类型获取构造函数
+    private static getConstructor(type: string): typeof Geometry<any> {
+        switch (type) {
+          case "Point":
+            return Point;
+          case "LineString":
+            return LineString;
+        //   case "Polygon":
+        //     return Polygon;
+          default:
+            throw new Error(`Unsupported geometry type: ${type}`);
+        }
+      }
 }

@@ -39,3 +39,39 @@ export function isPotentialGeoObject(obj: any): boolean {
     return false;
   }
 }
+
+/**
+ * 节流函数
+ * @param func - 要执行的函数
+ * @param wait - 等待时间
+ * @returns - 返回一个节流函数
+ */
+export function throttle(func: Function, wait: number) {
+  let previous = 0;
+  return function(this: any, ...args: any[]) {
+    const now = Date.now();
+    if (now - previous > wait) {
+      func.apply(this, args);
+      previous = now;
+    }
+  };
+}
+
+/**
+ * Merge the properties
+ * @param {object} dest - The target object
+ * @param {...any} args - The objects to be merged
+ * @returns {object} - The merged object
+ * @example
+ * extend({a: 1}, {b: 2}, {c: 3}) // {a: 1, b: 2, c: 3}
+ * extend({a: 1}, {a: 2}, {a: 3}) // {a: 3}
+ */
+export function extend(dest: any, ...args: any[]) : any {
+  for (let i = 0, len = args.length; i < len; i++) {
+    const src = args[i];
+    for (const key in src) {
+      dest[key] = src[key];
+    }
+  }
+  return dest;
+}

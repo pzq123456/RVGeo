@@ -1,10 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect} from 'vitest';
 import { Point, toPoint } from '../../src/geometry/Point';
 
 describe('Point', () => {
   it('should create a point', () => {
     const point = new Point([1, 2]);
-    // console.log(point.getCoordinates());
     expect(point.getCoordinates()).toEqual([1, 2]);
   });
 
@@ -27,18 +26,20 @@ describe('Point', () => {
   });
 
   it('should convert from GeoJSON', () => {
-    const point = new Point([1, 2]);
-    const geoJSON = {
-      type: 'Point',
-      coordinates: [3, 4],
-    };
-    point.fromGeoJSON(geoJSON);
-    expect(point.getCoordinates()).toEqual([3, 4]);
+    const point = Point.fromGeoJSON({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [1, 2],
+      },
+      properties: { name: 'test' },
+    });
+    expect(point.getCoordinates()).toEqual([1, 2]);
+    expect(point.getProperties()).toEqual({ name: 'test' });
   });
 
   it('should create a point using factory function', () => {
     const point = toPoint(1, 2);
-    console.log(point.getCoordinates());
     expect(point.getCoordinates()).toEqual([1, 2]);
   });
 
@@ -68,16 +69,25 @@ describe('Point', () => {
     expect(point.getCoordinates()).toEqual([50, 30]);
   });
 
-  it('should create a Point from an object with lon and lat properties', () => {
-    const point = toPoint({ lon: 80, lat: 40 });
+  it('should create a Point from an array of coordinates with optional properties', () => {
+    const point = toPoint([50, 30], { name: 'My Point' });
     expect(point).toBeInstanceOf(Point);
-    expect(point.getCoordinates()).toEqual([80, 40]);
+    expect(point.getCoordinates()).toEqual([50, 30]);
+    expect(point.getProperties()).toEqual({ name: 'My Point' });
   });
 
-  it('should create a Point from an object with x and y properties', () => {
-    const point = toPoint({ x: 70, y: 50 });
+  it('should create a Point from an object with lon and lat properties and optional properties', () => {
+    const point = toPoint({ lon: 80, lat: 40 }, { name: 'My Point' });
+    expect(point).toBeInstanceOf(Point);
+    expect(point.getCoordinates()).toEqual([80, 40]);
+    expect(point.getProperties()).toEqual({ name: 'My Point' });
+  });
+
+  it('should create a Point from an object with x and y properties and optional properties', () => {
+    const point = toPoint({ x: 70, y: 50 }, { name: 'My Point' });
     expect(point).toBeInstanceOf(Point);
     expect(point.getCoordinates()).toEqual([70, 50]);
+    expect(point.getProperties()).toEqual({ name: 'My Point' });
   });
 
   it('should create a Point from an object with lng and lat properties', () => {
@@ -94,8 +104,20 @@ describe('Point', () => {
   });
 
   it('should throw an error for invalid input', () => {
+    // @ts-ignore
     expect(() => toPoint(10)).toThrow('Invalid input');
+    // @ts-ignore
     expect(() => toPoint([10])).toThrow('Invalid input');
+    // @ts-ignore
     expect(() => toPoint({ foo: 'bar' })).toThrow('Invalid input');
+  });
+
+  // test point clone method
+  it('should clone a point', () => {
+    const point = toPoint(100, 20, { name: 'My Point' });
+    const clone = point.clone();
+    expect(clone).toBeInstanceOf(Point);
+    expect(clone.getCoordinates()).toEqual([100, 20]);
+    expect(clone.getProperties()).toEqual({ name: 'My Point' });
   });
 });
