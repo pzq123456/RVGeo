@@ -105,3 +105,7 @@ gantt
 ```
 
 ### 2. [函数重载](https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads)
+
+## References
+- https://www.jasondavies.com/maps/bounds/
+- https://d3js.org/d3-geo/math
