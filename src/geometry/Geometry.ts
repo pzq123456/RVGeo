@@ -2,14 +2,22 @@
  * @module Geometry
  * 该模块中的是内置的 geometry 对象（存储的坐标全部为 WGS 84 经纬度坐标）
  * @see http://geojson.io/
- * 地理要素分为Point（点）、MultiPoint（多点）、LineString（线）、MultiLineString（多线）、Polygon（面）、MultiPolygon（多面）、GeometryCollection（几何集合）
- * - 该模块的目的就是为了方便操作这些地理要素
+ * 地理要素分为
+ *      |- Point（点）
+ *core--|- LineString（线）
+ *      |- Polygon（面）
+ * ===
+ *      |-MultiPoint（多点）
+ *multi~|-MultiLineString（多线）
+ *      |-MultiPolygon（多面）
+ * ===
+ * GeometryCollection（几何集合）
  */
 
 import { MBR } from "./MBR";
 import { Point } from "./Point";
 import { LineString } from "./LineString";
-// import { Polygon } from "./Polygon";
+import { Polygon } from "./Polygon";
 
 // base class for all geometry classes
 export interface GeoJSONGeometry {
@@ -81,8 +89,8 @@ export abstract class Geometry<T> {
             return Point;
           case "LineString":
             return LineString;
-        //   case "Polygon":
-        //     return Polygon;
+          case "Polygon":
+            return Polygon;
           default:
             throw new Error(`Unsupported geometry type: ${type}`);
         }
