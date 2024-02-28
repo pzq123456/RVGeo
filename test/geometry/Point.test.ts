@@ -15,6 +15,7 @@ describe('Point', () => {
   it('should convert to GeoJSON', () => {
     const point = new Point([1, 2], { name: 'test' });
     const geoJSON = point.toGeoJSON();
+    // console.log(geoJSON);
     expect(geoJSON).toEqual({
       type: 'Feature',
       geometry: {
@@ -22,6 +23,7 @@ describe('Point', () => {
         coordinates: [1, 2],
       },
       properties: { name: 'test' },
+      bbox: [ 1, 2, 1, 2 ]
     });
   });
 

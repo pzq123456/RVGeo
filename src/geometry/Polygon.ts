@@ -1,12 +1,9 @@
-import { Geometry, GeoJSONFeature, defaultProperties } from "./Geometry";
+import { Geometry } from "./Geometry";
+import { GeoJSONFeature, defaultProperties, GeoJSONPolygon } from "./GeoJSON";
 
 export class Polygon extends Geometry<defaultProperties> {
     constructor(coordinates: [number, number][][], properties?: defaultProperties) {
         super(coordinates, properties);
-    }
-
-    clone(): Polygon {
-        return new Polygon(this.coordinates, this.properties);
     }
 
     updateBBox(): void {
@@ -21,12 +18,17 @@ export class Polygon extends Geometry<defaultProperties> {
         }
         this.bbox = [minX, minY, maxX, maxY];
     }
+    
+    static fromGeometry(geometry: GeoJSONPolygon): Polygon {
+        return new Polygon(geometry.coordinates);
+    }
 
-    static fromGeoJSON(feature: GeoJSONFeature<any>): Polygon {
+    static fromFeature(feature: GeoJSONFeature<any>): Polygon {
         const { geometry, properties } = feature;
         if (geometry.type !== "Polygon") {
             throw new Error(`The input geometry is not a Polygon: ${geometry.type}`);
         }
-        return new Polygon(geometry.coordinates, properties);
+        const pointGeometry = geometry as GeoJSONPolygon; // Type assertion
+        return new Polygon(pointGeometry.coordinates, properties);
     }
 }

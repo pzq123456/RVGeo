@@ -15,32 +15,18 @@
  */
 
 import { MBR } from "./MBR";
-import { Point } from "./Point";
-import { LineString } from "./LineString";
-import { Polygon } from "./Polygon";
-
-// base class for all geometry classes
-export interface GeoJSONGeometry {
-    type: string;
-    coordinates: any;
-}
-
-export interface GeoJSONFeature<T> {
-    type: "Feature";
-    geometry: GeoJSONGeometry;
-    properties: T;
-    bbox?: MBR; // https://datatracker.ietf.org/doc/html/rfc7946#section-5
-}
-
-export interface defaultProperties {}; // 只要不指定字段，用户就可以自定义任意字段
+import { GeoJSONFeature, GeoJSONGeometry } from "./GeoJSON";
 
 /**
  * Geometry for GeoJSON
  */
 export abstract class Geometry<T> {
-    protected bbox: MBR | null = [Infinity, Infinity, -Infinity, -Infinity];
+    protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
     protected coordinates: any;
     protected properties: T = {} as T ; // if no properties are provided, use an empty object
+    
+    static fromFeature: any;
+    static fromGeometry: any;
 
     constructor(coordinates: any, properties?: T) {
         this.coordinates = coordinates;
@@ -56,8 +42,12 @@ export abstract class Geometry<T> {
     getBoundingBox(): MBR | null { return this.bbox; }
 
     
-    abstract clone(): Geometry<T>; // clone the geometry
-
+    clone(): Geometry<T>{
+        const coordinates = this.coordinates.slice(); // Deep copy of coordinates
+        const properties = { ...this.properties }; // Deep copy of properties
+      
+        return new (this.constructor as any)(coordinates, properties);
+    }
 
     abstract updateBBox(): void; // update the bounding box
     
@@ -76,23 +66,13 @@ export abstract class Geometry<T> {
         return feature;
     }
 
-    static fromGeoJSON(feature: GeoJSONFeature<any>): Geometry<any> {
-        const { type } = feature;
-        const Constructor = Geometry.getConstructor(type);
-        return Constructor.fromGeoJSON(feature);
-    }
-
-    // 通过类型获取构造函数
-    private static getConstructor(type: string): typeof Geometry<any> {
-        switch (type) {
-          case "Point":
-            return Point;
-          case "LineString":
-            return LineString;
-          case "Polygon":
-            return Polygon;
-          default:
-            throw new Error(`Unsupported geometry type: ${type}`);
+    static fromGeoJSON(feature: GeoJSONFeature<any> | GeoJSONGeometry): Geometry<any> {
+        // 每一个子类都实现了 fromFeature 和 fromGeometry 方法
+        // 所以这里可以直接调用
+        if (feature.type === "Feature") {
+            return this.fromFeature(feature);
+        } else {
+            return this.fromGeometry(feature as GeoJSONGeometry);
         }
-      }
+    }
 }

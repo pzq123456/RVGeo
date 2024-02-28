@@ -1,31 +1,33 @@
 import * as core from "../core";
 const isPotentialGeoObject = core.isPotentialGeoObject; // 判断一个 object 是否是(潜在的)地理对象（是否含有 X，Y 或者 lon，lat 或者 lng，lat 属性）
 
-import { Geometry, GeoJSONFeature, defaultProperties } from "./Geometry";
-
+import { Geometry} from "./Geometry";
+import { GeoJSONFeature, defaultProperties, GeoJSONPoint } from "./GeoJSON";
 /**
  * Point geometry
  */
 export class Point extends Geometry<defaultProperties> {
-    constructor(coordinates: [number, number], properties?: defaultProperties) {
+    constructor(coordinates: GeoJSONPoint["coordinates"] | any, properties?: defaultProperties) {
         super(coordinates, properties);
     }
 
-    clone(): Point {
-        return new Point(this.coordinates, this.properties);
-    }
-
     updateBBox(): void {
-        this.bbox = null; // point has no bounding box
+        this.bbox = [this.coordinates[0], this.coordinates[1], this.coordinates[0], this.coordinates[1]];
     }
 
-    static fromGeoJSON(feature: GeoJSONFeature<any>): Point {
+    static fromGeometry(geometry: GeoJSONPoint): Point {
+        return new Point(geometry.coordinates);
+    }
+
+    static fromFeature(feature: GeoJSONFeature<any>): Point {
         const { geometry, properties } = feature;
         if (geometry.type !== "Point") {
             throw new Error(`The input geometry is not a Point: ${geometry.type}`);
         }
-        return new Point(geometry.coordinates, properties);
+        const pointGeometry = geometry as GeoJSONPoint; // Type assertion
+        return new Point(pointGeometry.coordinates, properties);
     }
+    
 }
 
 /*Factory function*/

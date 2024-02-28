@@ -1,12 +1,9 @@
-import { Geometry, GeoJSONFeature, defaultProperties } from "./Geometry";
+import { Geometry } from "./Geometry";
+import { GeoJSONFeature, defaultProperties, GeoJSONLineString } from "./GeoJSON";
 
 export class LineString extends Geometry<defaultProperties> {
-    constructor(coordinates: [number, number][], properties?: defaultProperties) {
+    constructor(coordinates: GeoJSONLineString["coordinates"], properties?: defaultProperties) {
         super(coordinates, properties);
-    }
-
-    clone(): LineString {
-        return new LineString(this.coordinates, this.properties);
     }
 
     updateBBox(): void {
@@ -20,11 +17,16 @@ export class LineString extends Geometry<defaultProperties> {
         this.bbox = [minX, minY, maxX, maxY];
     }
 
-    static fromGeoJSON(feature: GeoJSONFeature<any>): LineString {
+    static fromGeometry(geometry: GeoJSONLineString): LineString {
+        return new LineString(geometry.coordinates);
+    }
+
+    static fromFeature(feature: GeoJSONFeature<any>): LineString {
         const { geometry, properties } = feature;
         if (geometry.type !== "LineString") {
             throw new Error(`The input geometry is not a LineString: ${geometry.type}`);
         }
-        return new LineString(geometry.coordinates, properties);
+        const pointGeometry = geometry as GeoJSONLineString; // Type assertion
+        return new LineString(pointGeometry.coordinates, properties);
     }
 }
