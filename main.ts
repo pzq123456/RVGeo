@@ -38,30 +38,30 @@ canvas.drawPoint(place2.lng, place2.lat, 'green','x',1);
 // console.log(listeners);
 // emitter.emit('click', { message: 'Hello, world!' });
 
-const GeoJSON = {
-    "type": "Feature",
-    "geometry": {
-        "type": "Point",
-        "coordinates": [125.6, 10.1]
-    },
-    "properties": {
-        "name": "Dinagat Islands"
-    }
-}
+// const GeoJSON = {
+//     "type": "Feature",
+//     "geometry": {
+//         "type": "Point",
+//         "coordinates": [125.6, 10.1]
+//     },
+//     "properties": {
+//         "name": "Dinagat Islands"
+//     }
+// }
 
 
-import { Point } from './src/geometry/Point';
-let point = new Point([100, 20]);
-console.log(point);
+// import { Point } from './src/geometry/Point';
+// let point = new Point([100, 20]);
+// console.log(point);
 
-// point from GeoJSON
-let point2 = Point.fromGeoJSON(GeoJSON as any);
-console.log(point2);
+// // point from GeoJSON
+// let point2 = Point.fromGeoJSON(GeoJSON as any);
+// console.log(point2);
 
-import { LineString } from './src/geometry/LineString';
-let line = new LineString([[100, 20], [200, 30]]);
-console.log(line);
+// import { LineString } from './src/geometry/LineString';
+// let line = new LineString([[100, 20], [200, 30]]);
+// console.log(line);
 
-import { Polygon } from './src/geometry/Polygon';
-let polygon = new Polygon([[[100, 20], [200, 30], [300, 40]]]);
-console.log(polygon);
+// import { Polygon } from './src/geometry/Polygon';
+// let polygon = new Polygon([[[100, 20], [200, 30], [300, 40]]]);
+// console.log(polygon);

@@ -55,5 +55,32 @@ Let's break down the significance and purpose of the Bounds Stream Object and th
    - The methods of the `boundsStream` object handle different types of geographic features by appropriately updating the bounding box based on the features' characteristics.
 
 In summary, the Bounds Stream Object is a mechanism used for efficiently processing and updating the bounding box of geographic features during streaming in geospatial data processing applications. It helps ensure that the bounding box accurately represents the extent of the features being processed.
+
+
+是的，这段代码处理了 boundingbox 的一些特殊情况，包括包含极地地区和跨越国际日期变更线等。其处理思路如下：
+
+1. 极地地区:
+
+由于经度线在极点汇聚，传统的经度范围（-180°到180°）不再适用。
+代码通过将经度范围扩展到 [-360°, 360°] 来解决这个问题。
+在计算最大经度差时，代码会考虑跨越 180° 的情况，并选择更大的经度差作为最终结果。
+2. 跨越国际日期变更线:
+
+国际日期变更线位于经度 180° 附近，是地球上日期变化的地方。
+跨越日期变更线的 boundingbox 需要特殊处理，因为经度值可能会从 -180° 突然跳到 180°。
+代码通过将 boundingbox 分成两个部分来解决这个问题：
+一个部分包含所有经度值在 -180° 到 0° 之间的点。
+另一个部分包含所有经度值在 0° 到 180° 之间的点。
+然后，代码将这两个部分的经度范围分别转换为 [0°, 360°] 和 [-360°, 0°]，并计算它们的最小和最大经度值。
+最终的 boundingbox 由这两个部分的最小和最大经度值组成。
+此外，代码还考虑了以下特殊情况:
+
+经度值为 0° 或 360° 的点。
+纬度值为 90° 或 -90° 的点。
+代码通过以下方式处理这些特殊情况:
+
+将经度值 0° 和 360° 视为同一个点。
+将纬度值 90° 和 -90° 视为同一个点。
+总体而言，这段代码通过对经度范围进行扩展、分割和转换，以及对特殊点的处理，有效地解决了 boundingbox 计算的特殊情况，确保了结果的准确性。
 ## references
 - [Jason Davies: Geo-bounding problems](https://www.jasondavies.com/maps/bounds/)
