@@ -120,3 +120,71 @@ export function cartesianNormalize(d: [number, number, number]): [number, number
   const magnitude = Math.sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
   return [d[0] / magnitude, d[1] / magnitude, d[2] / magnitude];
 }
+
+// 二维笛卡尔坐标系下的向量运算
+
+/**
+ * 计算两个二维笛卡尔坐标系下的向量 a 和 b 的点积。
+ * This function calculates the dot product of two 2D Cartesian vectors a and b.
+ */
+export function dot(a : [number, number], b : [number, number]) : number {
+  return a[0] * b[0] + a[1] * b[1];
+}
+
+/**
+ * 计算两个二维笛卡尔坐标系下的向量 a 和 b 的叉积。
+ * This function calculates the cross product of two 2D Cartesian vectors a and b.
+ */
+export function cross(a : [number, number], b : [number, number]) : number {
+  return a[0] * b[1] - a[1] * b[0];
+}
+
+/**
+ * 计算两个二维笛卡尔坐标系下的向量 a 和 b 的和，返回一个新的向量。
+ * This function adds two 2D Cartesian vectors a and b, returning a new vector representing the sum.
+ */
+export function add(a : [number, number], b : [number, number]) : [number, number] {
+  return [a[0] + b[0], a[1] + b[1]];
+}
+
+/**
+ * 使用因子 k 缩放二维笛卡尔坐标系下的向量 vector，返回一个新的缩放后的向量。
+ * This function scales a 2D Cartesian vector vector by a factor k, returning a new scaled vector.
+ */
+export function scale(vector : [number, number], k : number) : [number, number] {
+  return [vector[0] * k, vector[1] * k];
+}
+
+/**
+ * 归一化二维笛卡尔坐标系下的向量 d，返回一个新的单位向量。
+ * This function normalizes a 2D Cartesian vector d, returning a new unit vector.
+ */
+export function normalize(d : [number, number]) : [number, number] {
+  var l = sqrt(d[0] * d[0] + d[1] * d[1]);
+  return [d[0] / l, d[1] / l];
+}
+
+// 3. Interpolation: 插值
+
+/**
+ * 三维笛卡尔坐标系下的向量插值。
+ * This function interpolates between two 3D Cartesian vectors a and b using a parameter t, returning the resulting vector.
+ */
+export function interpolate(a : [number, number, number], b : [number, number, number], t : number) : [number, number, number] {
+  return [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t,
+    a[2] + (b[2] - a[2]) * t
+  ];
+}
+
+/**
+ * 二维笛卡尔坐标系下的向量插值。
+ * This function interpolates between two 2D Cartesian vectors a and b using a parameter t, returning the resulting vector.
+ */
+export function interpolate2(a : [number, number], b : [number, number], t : number) : [number, number] {
+  return [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t
+  ];
+}
