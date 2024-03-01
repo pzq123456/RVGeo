@@ -17,6 +17,25 @@ export class LineString extends Geometry<defaultProperties> {
         this.bbox = [minX, minY, maxX, maxY];
     }
 
+     /**
+     * 按照逆时针方向排序点
+     */
+    // sortPoints(){
+    //     let centroid = this.calculateCentroid();
+    //     let centroidXY = centroid.toXY();
+    //     this.coordinates.sort((a, b) => {
+    //         let angleA = getAngle(centroidXY, a.toXY());
+    //         let angleB = getAngle(centroidXY, b.toXY());
+    //         if(angleA < angleB){
+    //             return -1;
+    //         }else if(angleA > angleB){
+    //             return 1;
+    //         }else{
+    //             return 0;
+    //         }
+    //     });
+    // }
+
     static fromGeometry(geometry: GeoJSONLineString): LineString {
         return new LineString(geometry.coordinates);
     }
@@ -28,5 +47,9 @@ export class LineString extends Geometry<defaultProperties> {
         }
         const pointGeometry = geometry as GeoJSONLineString; // Type assertion
         return new LineString(pointGeometry.coordinates, properties);
+    }
+
+    static isLineString(lineString: any): lineString is LineString{
+        return lineString.type === "LineString";
     }
 }

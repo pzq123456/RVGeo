@@ -82,5 +82,7 @@ In summary, the Bounds Stream Object is a mechanism used for efficiently process
 将经度值 0° 和 360° 视为同一个点。
 将纬度值 90° 和 -90° 视为同一个点。
 总体而言，这段代码通过对经度范围进行扩展、分割和转换，以及对特殊点的处理，有效地解决了 boundingbox 计算的特殊情况，确保了结果的准确性。
+
+我正在处理一些地理坐标对(lon,lat), 现在我需要计算bbox，但往往有一些特殊的边界情况需要考虑。我现在希望对球面的拓扑特性进行建模以编写更加通用的算法。譬如说， 180° 经线是可以通过的，而90°纬度则收缩为一个点。其实只需要简单地改换坐标大小判断就可以实现一部分的算法，比如说正常情况下对于经度轴： -180 -> 0 -> 180, 我们只需要改换一下大小即可：-0 -> -180 180 -> +0.同样，对于极点，则可以将经度拓展为 -360 +360. 我现在希望设计这样一套函数， 使用typescript 编写。
 ## references
 - [Jason Davies: Geo-bounding problems](https://www.jasondavies.com/maps/bounds/)

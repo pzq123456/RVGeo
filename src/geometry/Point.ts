@@ -27,7 +27,10 @@ export class Point extends Geometry<defaultProperties> {
         const pointGeometry = geometry as GeoJSONPoint; // Type assertion
         return new Point(pointGeometry.coordinates, properties);
     }
-    
+
+    static isPoint(point: any): point is Point{
+        return point.type === "Point";
+    }
 }
 
 /*Factory function*/

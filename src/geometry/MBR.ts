@@ -13,11 +13,10 @@
 
 /**
  * - MBR 中的 minX, minY, maxX, maxY 的排序在某些情况下会有歧义，尤其是在地理坐标系的语境下。（譬如跨越了反子午圈的情况（斐济群岛））
- * - 所以允许 minX > maxX 或 minY > maxY，但是在使用时需要注意。
- * - 这样的情况较为少见，本项目暂不考虑，用户可以自行处理。
+ * - 所以允许 minX > maxX 遇到这样的情况时，需要进行特殊处理。
  */
-export type MBR = [number, number, number, number]; // [minX, minY, maxX, maxY] or [minLon, minLat, maxLon, maxLat]
 
+export type MBR = [number, number, number, number]; // [minX, minY, maxX, maxY] or [minLon, minLat, maxLon, maxLat]
 /**
  * Rectangle
  * y  ---------------
@@ -29,9 +28,107 @@ export type MBR = [number, number, number, number]; // [minX, minY, maxX, maxY] 
  */
 
 /**
+ * MBR 跨越反子午线的情况
+ * |----        ----|
+ * | \  |       |\  |
+ * | M  |       |B R|
+ * |  \ |       |  \|
+ * |----        ----|
+ * -180     0      180
+ * 只有明确知道 MBR 跨越了反子午线的情况下才能使用以下的方法
+ * pointInMBRWithAntimeridian()
+ * getMBRWithAntimeridian()
+ */
+
+/**
  * - Rectangle is a rectangle that bounds a set of points.
  */
 export type Rectangle = {x: number; y: number; w: number; h: number;}
+
+/**
+ * 计算多点的最小外包矩形（默认情况）
+ * @param points - 多点
+ * @returns {MBR} 返回最小外包矩形 [minLon, minLat, maxLon, maxLat]
+ */
+export function getPointsMBR(points: [number, number][]): MBR{
+    let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;
+    for(let i = 0; i < points.length; i++){
+        let lon = points[i][0];
+        let lat = points[i][1];
+        minLon = Math.min(minLon, lon);
+        minLat = Math.min(minLat, lat);
+        maxLon = Math.max(maxLon, lon);
+        maxLat = Math.max(maxLat, lat);
+    }
+    return [minLon, minLat, maxLon, maxLat];
+}
+
+/**
+ * 判断点是否在 MBR 内（默认情况）
+ * @param point - 点
+ * @param mbr - 最小外包矩形
+ * @returns {boolean} 返回是否在 MBR 内 在则返回 true 不在则返回 false
+ */
+export function pointInMBR(point: [number, number],mbr: MBR) : boolean{
+    let minLon = mbr[0], minLat = mbr[1], maxLon = mbr[2], maxLat = mbr[3];
+    let lon = point[0], lat = point[1];
+    return lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat;
+}
+
+/**
+ * 判断点是否在 MBR 内（跨越了反子午线的情况）
+ * - 必须保 MBR 真的跨越了反子午线，否则会出现错误
+ * @param point 
+ * @param mbr 
+ * @returns 
+ */
+export function pointInMBRWithAntimeridian(point: [number, number],mbr: MBR) : boolean{
+    let mbr1 = mbr.map((v,i)=>{
+        if(i%2===0){
+            return changeLon(v);
+        }else{
+            return v;
+        }
+    }) as MBR;
+    let mbr2 = mbr.map((v,i)=>{
+        if(i%2===0){
+            return antiChangeLon(v);
+        }else{
+            return v;
+        }
+    }) as MBR;
+    return pointInMBR(point, mbr1) || pointInMBR(point, mbr2);
+}
+
+/**
+ * 计算多点的最小外包矩形（跨越反子午线的情况）
+ * - 会自动计算并选择面积最小的情况
+ * - get MBR with antimeridian
+ * @param points - 多点
+ * @returns {MBR} 
+ */
+export function getMBRWithAntimeridian(points: [number, number][]): MBR {
+    // 1. 将所有点转换为 0-180 经度
+    let points180 = points.map(changePoint);
+    // 2. 计算最小外包矩形
+    let mbr1 = getPointsMBR(points);
+    let mbr2 = getPointsMBR(points180);
+    // 3. 找到经纬度跨度更小的 MBR 若是 0-180 经度的 MBR 则转换回来
+    return smallerMBR(mbr1, mbr2, [false, true]);
+}
+
+/** 
+ * 将单个跨越了反子午线的 MBR 分割成两个简单的 MBR
+*/
+export function splitMBRWithAntimeridian(mbr: MBR): MBR[]{
+    // 从左到右
+    let mbr1 = [mbr[0], mbr[1], 180, mbr[3]] as MBR;
+    // 从右到左
+    let mbr2 = [-180, mbr[1], mbr[2], mbr[3]] as MBR;
+    return [mbr1, mbr2];
+}
+
+/*============C=O=V=E=R=T============= */
 
 /**
  * MBR 转换为 Rectangle
@@ -80,37 +177,62 @@ export function mbrToPolygon(mbr:MBR): [number,number][] {
     ];
 }
 
-/**
- * 计算多点的最小外包矩形
- * @param points - 多点
- * @returns {MBR} 返回最小外包矩形 [minLon, minLat, maxLon, maxLat]
- */
-export function getPointsMBR(
-    points: [number, number][]
-): MBR{
-    let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;
-    for(let i = 0; i < points.length; i++){
-        let lon = points[i][0];
-        let lat = points[i][1];
-        minLon = Math.min(minLon, lon);
-        minLat = Math.min(minLat, lat);
-        maxLon = Math.max(maxLon, lon);
-        maxLat = Math.max(maxLat, lat);
+/*===========P=R=I=V=A=T=E============ */
+
+function changeLon(lon: number): number {
+    // points in 0-180 -> points in -180-0
+    // points in -180-0 -> points in 0-180
+    if (lon < 0) {
+        return lon + 180;
+    } else {
+        return lon - 180;
     }
-    return [minLon, minLat, maxLon, maxLat];
 }
 
-/**
- * 判断点是否在 MBR 内
- * @param point - 点
- * @param mbr - 最小外包矩形
- * @returns {boolean} 返回是否在 MBR 内 在则返回 true 不在则返回 false
- */
-export function pointInMBR(
-    point: [number, number],
-    mbr: MBR) : boolean
-{
-    let minLon = mbr[0], minLat = mbr[1], maxLon = mbr[2], maxLat = mbr[3];
-    let lon = point[0], lat = point[1];
-    return lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat;
+function antiChangeLon(lon: number): number {
+    // points in -180-0 -> points in 0-180
+    // points in 0-180 -> points in -180-0
+    if (lon < 0) {
+        return lon + 180;
+    } else {
+        return lon - 180;
+    }
+}
+
+function changePoint(point: [number, number]): [number, number] {
+    return [changeLon(point[0]), point[1]];
+}
+
+// tag 代表是否经过了经度变换
+function smallerMBR(mbr1: MBR, mbr2: MBR,tag:[boolean,boolean]=[false,false]): MBR {
+    // 寻找经纬度跨度更小的 MBR
+    let lonSpan1 = mbr1[2] - mbr1[0];
+    let latSpan1 = mbr1[3] - mbr1[1];
+    let lonSpan2 = mbr2[2] - mbr2[0];
+    let latSpan2 = mbr2[3] - mbr2[1];
+    if (lonSpan1 * latSpan1 < lonSpan2 * latSpan2) {
+        if(tag[0]){
+            return mbr1.map((v,i)=>{
+                if(i%2===0){
+                    return antiChangeLon(v);
+                }else{
+                    return v;
+                }
+            }) as MBR;
+        }else{
+            return mbr1;
+        }
+    } else {
+        if(tag[1]){
+            return mbr2.map((v,i)=>{
+                if(i%2===0){
+                    return antiChangeLon(v);
+                }else{
+                    return v;
+                }
+            }) as MBR;
+        }else{
+            return mbr2;
+        }
+    }
 }

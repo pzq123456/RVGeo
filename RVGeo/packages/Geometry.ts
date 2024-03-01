@@ -585,5 +585,3 @@ export class Circle {
         return edges <= this.rSquared;
     }
 }
-  
-

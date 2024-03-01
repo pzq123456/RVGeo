@@ -31,4 +31,8 @@ export class Polygon extends Geometry<defaultProperties> {
         const pointGeometry = geometry as GeoJSONPolygon; // Type assertion
         return new Polygon(pointGeometry.coordinates, properties);
     }
+
+    static isPolygon(polygon: any): polygon is Polygon{
+        return polygon.type === "Polygon";
+    }
 }

@@ -3,6 +3,8 @@
  */
 
 export * from './GeoJSON';
+export * from './MBR';
+
 export * from './Geometry';
 export * from './Point';
 export * from './LineString';
