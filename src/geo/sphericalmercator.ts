@@ -2,7 +2,7 @@
  * @see https://github.com/mapbox/sphericalmercator/blob/master/sphericalmercator.js
  */
 
-import { isFloat, D2R, R2D } from "..";
+import { isFloat, D2R, R2D, isEPSG3857 } from "..";
 
 type cacheLevel = {
     Bc: number[];
@@ -143,7 +143,7 @@ export class SphericalMercator {
         var bbox = this.ll(ll, zoom).concat(this.ll(ur, zoom));
 
         // If web mercator requested reproject to 900913.
-        if (srs === '900913') {
+        if (isEPSG3857(srs)) {
             return this.convert(bbox, '900913');
         } else {
             return bbox;
@@ -151,7 +151,7 @@ export class SphericalMercator {
     }
 
     /**
-    * Convert bbox to xyx bounds
+    * Convert bbox to xyz bounds
     * @param {Number} bbox in the form `[w, s, e, n]`.
     * @param {Number} zoom.
     * @param {Boolean} tms_style whether to compute using tms-style.
@@ -160,7 +160,7 @@ export class SphericalMercator {
     */
     public xyz(bbox: number[], zoom: number, tms_style?: boolean, srs?: string): { minX: number; minY: number; maxX: number; maxY: number } {
         // If web mercator provided reproject to WGS84.
-        if (srs === '900913') {
+        if (isEPSG3857(srs)) {
             bbox = this.convert(bbox, 'WGS84');
         }
 
@@ -194,7 +194,7 @@ export class SphericalMercator {
     //   assumed to be the "other" projection.
     // - `@return` {Object} bbox with reprojected coordinates.  
     public convert(bbox: number[], to: string): number[] {
-        if (to === '900913') {
+        if (isEPSG3857(to)) {
             return this.forward(bbox.slice(0, 2)).concat(this.forward(bbox.slice(2,4)));
         } else {
             return this.inverse(bbox.slice(0, 2)).concat(this.inverse(bbox.slice(2,4)));
@@ -202,7 +202,8 @@ export class SphericalMercator {
     }
 
     /**
-     * Convert lon/lat values to 900913 x/y.
+     * Convert lon/lat values to x/y.
+     * - EPSG:4326(WGS84) -> EPSG:3857
      * - EPSG:3857 = EPSG:900913 (@link https://epsg.io/900913)
      * @param {Array} ll `[lon, lat]` array of geographic coordinates.
      * @returns 
@@ -221,7 +222,8 @@ export class SphericalMercator {
     }
 
     /**
-     * Convert 900913 x/y values to lon/lat.
+     * Convert x/y values to lon/lat.
+     * - EPSG:3857 -> EPSG:4326(WGS84)
      * - EPSG:3857 = EPSG:900913 (@link https://epsg.io/900913)
      * @param {Array} xy `[x, y]` array of geographic coordinates.
      * @returns 
@@ -233,5 +235,35 @@ export class SphericalMercator {
         ];
     }
 }
-  
-export default SphericalMercator;  
+
+/**
+ * (lonlat -> xy)EPSG:4326(WGS84) -> EPSG:3857
+ * - EPSG:3857 = EPSG:900913 (@link https://epsg.io/900913)
+ * @param {Array} ll `[lon, lat]` array of geographic coordinates.
+ * @returns 
+ */
+export function forward(ll: number[]): number[] {
+    var xy = [
+        A * ll[0] * D2R,
+        A * Math.log(Math.tan((Math.PI*0.25) + (0.5 * ll[1] * D2R)))
+    ];
+    // if xy value is beyond maxextent (e.g. poles), return maxextent.
+    (xy[0] > MAXEXTENT) && (xy[0] = MAXEXTENT);
+    (xy[0] < -MAXEXTENT) && (xy[0] = -MAXEXTENT);
+    (xy[1] > MAXEXTENT) && (xy[1] = MAXEXTENT);
+    (xy[1] < -MAXEXTENT) && (xy[1] = -MAXEXTENT);
+    return xy;
+}
+
+/**
+ * (xy -> lonlat)EPSG:3857 -> EPSG:4326(WGS84)
+ * - EPSG:3857 = EPSG:900913 (@link https://epsg.io/900913)
+ * @param {Array} xy `[x, y]` array of geographic coordinates.
+ * @returns 
+ */
+export function inverse(xy: number[]): number[] {
+    return [
+        (xy[0] * R2D / A),
+        ((Math.PI*0.5) - 2.0 * Math.atan(Math.exp(-xy[1] / A))) * R2D
+    ];
+}

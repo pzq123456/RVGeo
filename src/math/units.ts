@@ -4,110 +4,7 @@
  * - 该模块主要用于单位换算，包括距离单位和面积单位。
  * - This module is mainly used for unit conversion, including distance units and area units.
  */
-
-export const earthRadius = 6371008.8; // meters 均值半径
-
-export type Units =
-  | "meters"
-  | "metres"
-  | "millimeters"
-  | "millimetres"
-  | "centimeters"
-  | "centimetres"
-  | "kilometers"
-  | "kilometres"
-  | "miles"
-  | "nauticalmiles"
-  | "inches"
-  | "yards"
-  | "feet"
-  | "radians"
-  | "degrees";
-
-export type AreaUnits =
-  | Exclude<Units, "radians" | "degrees">
-  | "acres"
-  | "hectares";
-
-
-/**
- * - Unit of measurement factors using a spherical (non-ellipsoid) earth radius.
- * - 单位换算关系，以球面（非椭球体）地球半径为基准。
- * - Keys are the name of the unit, values are the number of that unit in a single radian.
- * - 键是单位的名称，值是相较于1弧度的单位缩放比例。
- * - `definition`: The length of the arc on the unit circle subtended by an angle of 1 radian.
- * - `定义`：弧长等于半径的弧，其所对的圆心角为1弧度。
- * - `注意`: 其中已经含有地球半径的信息，因此不需要再乘以地球半径。
- * @memberof Units
- * @type {Object}
- */
-export const factors: Record<Units, number> = {
-    centimeters: earthRadius * 100,
-    centimetres: earthRadius * 100,
-    degrees: 360 / (2 * Math.PI),
-    feet: earthRadius * 3.28084,
-    inches: earthRadius * 39.37,
-    kilometers: earthRadius / 1000,
-    kilometres: earthRadius / 1000,
-    meters: earthRadius,
-    metres: earthRadius,
-    miles: earthRadius / 1609.344,
-    millimeters: earthRadius * 1000,
-    millimetres: earthRadius * 1000,
-    nauticalmiles: earthRadius / 1852,
-    radians: 1,
-    yards: earthRadius * 1.0936,
-};
-  
-/**
- * - Unit of measurement factors based on 1 meter.
- * - 单位换算关系，以1米为基准。
- */
-export const factors2: Record<Units, number> = {
-  centimeters: 1 * 100,
-  centimetres: 1 * 100,
-  degrees: ( 360 / (2 * Math.PI) ) * 1 / earthRadius,
-  feet: 1 * 3.28084,
-  inches: 1 * 39.37,
-  kilometers: 1 / 1000,
-  kilometres: 1 / 1000,
-  meters: 1,
-  metres: 1,
-  miles: 1 / 1609.344,
-  millimeters: 1 * 1000,
-  millimetres: 1 * 1000,
-  nauticalmiles: 1 / 1852,
-  radians: 1 / earthRadius,
-  yards: 1 * 1.0936,
-}
-/**
-  * - Area of measurement factors based on 1 square meter.
-  * - 单位换算关系，以1平方米为基准。
-  * - Keys are the name of the unit, values are the number of square meters in 1 of that unit.
-  * - 键是单位的名称，值是1个单位所对应的平方米数。
-  * @warning 角度单位不适用于面积单位换算。
-  * @warning The angle unit is not applicable to area unit conversion.
-  * @memberof Units
-  * @type {Object}
-  */
-export const areaFactors: Record<AreaUnits, number> = {
-  acres: 0.000247105,
-  centimeters: 10000,
-  centimetres: 10000,
-  feet: 10.763910417,
-  hectares: 0.0001,
-  inches: 1550.003100006,
-  kilometers: 0.000001,
-  kilometres: 0.000001,
-  meters: 1,
-  metres: 1,
-  miles: 3.86e-7,
-  nauticalmiles: 2.9155334959812285e-7,
-  millimeters: 1000000,
-  millimetres: 1000000,
-  yards: 1.195990046,
-};
-
+import { Units, factors, factors2, areaFactors, AreaUnits } from './factors';
 /**
  * - Convert a distance measurement (assuming a spherical Earth) from radians to a more friendly unit.
  * - 将距离测量值（假设地球是球形的）从弧度转换为更友好的单位。
@@ -214,7 +111,7 @@ export function metersTo(distance: number, units: Units): number {
  * @param to - 目标距离单位
  * @returns {number} - 转换后距离
  */
-export function unitTounit(
+export function unitToUnit(
   distance: number,
   from: Units,
   to: Units
@@ -223,4 +120,55 @@ export function unitTounit(
   return metersTo(toMeters(distance, from), to);
 }
 
-// Computational geometry
+// 面积单位转换
+// Area unit conversion
+
+// 将面积单位转换为平方米
+// Convert area units to square meters
+
+/**
+ * - 将面积单位转换为平方米
+ * - Convert area units to square meters
+ * @param area - 面积
+ * @param units - 面积单位
+ * @returns {number} - 面积（平方米）
+ */
+export function toSquareMeters(area: number, units: AreaUnits): number {
+  const factor = areaFactors[units];
+  if (!factor) {
+    throw new Error(units + " units is invalid");
+  }
+  return area / factor;
+}
+
+/**
+ * - 将面积单位平方米转换为指定单位
+ * - Convert area units from square meters to specified units
+ * @param area - 面积（平方米）
+ * @param units - 面积单位
+ * @returns {number} - 面积
+ */
+export function squareMetersTo(area: number, units: AreaUnits): number {
+  const factor = areaFactors[units];
+  if (!factor) {
+    throw new Error(units + " units is invalid");
+  }
+  return area * factor;
+}
+
+/**
+ * - 面积单位内互相转换
+ * - Convert area units to each other
+ * @param area - 面积
+ * @param from - 当前面积单位
+ * @param to - 目标面积单位
+ * @returns {number} - 转换后面积
+ */
+export function areaToArea(
+  area: number,
+  from: AreaUnits,
+  to: AreaUnits
+): number {
+  // Convert to square meters first, then to final units to ensure the best possible precision.
+  return squareMetersTo(toSquareMeters(area, from), to);
+}
