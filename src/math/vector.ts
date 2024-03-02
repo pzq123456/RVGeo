@@ -1,27 +1,9 @@
-export const epsilon = 1e-6;
-export const epsilon2 = 1e-12;
 export const pi = Math.PI;
 export const halfPi = pi / 2;
-export const quarterPi = pi / 4;
-export const tau = pi * 2;
-
-export const degrees = 180 / pi;
-export const radians = pi / 180;
-
-export const abs = Math.abs;
-export const atan = Math.atan;
 export const atan2 = Math.atan2;
 export const cos = Math.cos;
-export const ceil = Math.ceil;
-export const exp = Math.exp;
-export const floor = Math.floor;
-export const hypot = Math.hypot;
-export const log = Math.log;
-export const pow = Math.pow;
 export const sin = Math.sin;
-export const sign = Math.sign || function(x) { return x > 0 ? 1 : x < 0 ? -1 : 0; };
 export const sqrt = Math.sqrt;
-export const tan = Math.tan;
 
 export function acos(x : number) {
   return x > 1 ? 0 : x < -1 ? pi : Math.acos(x);
@@ -39,7 +21,6 @@ export function haversin(x : number) {
 
 // 1. Coordinate Conversion: 球坐标系和笛卡尔坐标系的转换
 //    cartesian: [x, y, z] -> spherical: [theta, phi]
-
 /**
  * 三维笛卡尔坐标系转换为球坐标系（极坐标系）的公式如下：
  * This function takes a 3D Cartesian vector [x, y, z] and converts it to spherical coordinates [theta, phi].

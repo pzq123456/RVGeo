@@ -4,18 +4,6 @@
  */
 
 /**
- * 生成UUID
- * @returns - UUID 
- */
-export function UUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-/**
  * 判断一个 object 是否是(潜在的)地理对象（是否含有 X，Y 或者 lon，lat 或者 lng，lat 属性）
  * @param obj - 待判断的对象
  * @returns{boolean} - 如果是地理对象则返回 true，否则返回 false
@@ -74,4 +62,26 @@ export function extend(dest: any, ...args: any[]) : any {
     }
   }
   return dest;
+}
+
+/**
+* 释放对象
+* @param {Object} obj - 需要释放的对象
+*/
+export function emptyObj(obj: { [key: string]: any }) {
+  for (let i in obj) {
+      delete obj[i];
+  }
+}
+
+/**
+ * 生成UUID
+ * @returns - UUID 
+ */
+export function UUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }

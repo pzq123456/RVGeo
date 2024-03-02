@@ -5,9 +5,7 @@
  * - This module is mainly used for unit conversion, including distance units and area units.
  */
 
-import { sphere } from "./Ellipsoid.ts";
-
-export const earthRadius = sphere.a; // 6371008.8 m
+export const earthRadius = 6371008.8; // meters 均值半径
 
 export type Units =
   | "meters"
@@ -59,7 +57,7 @@ export const factors: Record<Units, number> = {
     nauticalmiles: earthRadius / 1852,
     radians: 1,
     yards: earthRadius * 1.0936,
-  };
+};
   
 /**
  * - Unit of measurement factors based on 1 meter.

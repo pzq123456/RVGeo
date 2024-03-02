@@ -1,1 +1,3 @@
 export * from './vector'
+export * from './utils'
+export * from './factors'

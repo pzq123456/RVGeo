@@ -16,7 +16,7 @@
  * - 所以允许 minX > maxX 遇到这样的情况时，需要进行特殊处理。
  */
 
-export type MBR = [number, number, number, number]; // [minX, minY, maxX, maxY] or [minLon, minLat, maxLon, maxLat]
+export type MBR = [number, number, number, number]; // [minX, minY, maxX, maxY] or [w, s, e, n]
 /**
  * Rectangle
  * y  ---------------
