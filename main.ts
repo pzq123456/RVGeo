@@ -1,8 +1,11 @@
 import {Canvas} from './canvas';
-
+import { SphericalMercator } from './src'
 const mydiv = document.getElementById('map') as HTMLElement;
-let trans = Canvas.getTransArray(1800, 900);
-const canvas = new Canvas(1800, 900, mydiv,trans);
+const canvasSize = 512;
+// let trans = Canvas.getTransArray(canvasSize, canvasSize, [-canvasSize/2, canvasSize/2], [canvasSize/2, -canvasSize/2]);
+// const canvas = new Canvas(1800, 900, mydiv,trans);
+
+const canvas = new Canvas(canvasSize, canvasSize, mydiv);
 
 
 let place0 = {
@@ -18,50 +21,22 @@ let place2 = {
     lng: -180
 }
 
-canvas.drawPoint(place0.lng, place0.lat, 'red','x',1);
-canvas.drawPoint(place1.lng, place1.lat, 'blue','x',1);
-canvas.drawPoint(place2.lng, place2.lat, 'green','x',1);
+let sm = new SphericalMercator({size: canvasSize});
+let point0 = sm.px([place0.lng, place0.lat], 0);
+let point1 = sm.px([place1.lng, place1.lat], 0);
+let point2 = sm.px([place2.lng, place2.lat], 0);
+console.log(point0, point1, point2);
 
-// import { Evented } from './src/core/events';
-// const emitter = new Evented();
-// function mockFn(event: any) {
-//     console.log(event.message);
-// }
-// emitter.on('click', mockFn);
+canvas.drawPoint(point0[0], point0[1], 'red','o',10);
+canvas.drawPoint(point1[0], point1[1], 'blue','o',10);
+canvas.drawPoint(point2[0], point2[1], 'green','o',10);
 
+// bbox
+let bbox = sm.bbox(0,0,1);
+console.log(bbox);
+// canvas.drawBound(bbox[0], bbox[1], bbox[2], bbox[3], 'red');
 
-// emitter.emit('click', { message: 'Hello, world!' });
-
-// emitter.off('click', mockFn);
-// console.log('off');
-// let listeners = emitter.listeners('click');
-// console.log(listeners);
-// emitter.emit('click', { message: 'Hello, world!' });
-
-// const GeoJSON = {
-//     "type": "Feature",
-//     "geometry": {
-//         "type": "Point",
-//         "coordinates": [125.6, 10.1]
-//     },
-//     "properties": {
-//         "name": "Dinagat Islands"
-//     }
-// }
-
-
-// import { Point } from './src/geometry/Point';
-// let point = new Point([100, 20]);
-// console.log(point);
-
-// // point from GeoJSON
-// let point2 = Point.fromGeoJSON(GeoJSON as any);
-// console.log(point2);
-
-// import { LineString } from './src/geometry/LineString';
-// let line = new LineString([[100, 20], [200, 30]]);
-// console.log(line);
-
-// import { Polygon } from './src/geometry/Polygon';
-// let polygon = new Polygon([[[100, 20], [200, 30], [300, 40]]]);
-// console.log(polygon);
+// xyz
+let xyz = sm.pxBbox(0,0,0);
+console.log(xyz);
+canvas.drawBound(xyz[0], xyz[1], xyz[2], xyz[3], 'blue');

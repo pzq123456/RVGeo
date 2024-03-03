@@ -18,3 +18,11 @@ body{
     font-size: 18px;
     font-family: 'Arial', sans-serif;
 }
+
+/* map 居中 */
+#map{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

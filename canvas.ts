@@ -37,6 +37,7 @@ export class Canvas{ // 用于 debug 的画布
          */
     }
 
+
     drawPoint(x: number, y: number, color: string = 'black', pointStyle: string = 'o', radius: number = 1){
         let ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
         // 存储之前的状态
@@ -98,7 +99,7 @@ export class Canvas{ // 用于 debug 的画布
         ctx.restore();
     }
 
-    drawAxes(segNum: [number,number] = [60,30], color: string = 'green'){
+    drawAxes(segNum: [number,number] = [6,6], color: string = 'green'){
         let ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
         ctx.save();
         ctx.strokeStyle = color;

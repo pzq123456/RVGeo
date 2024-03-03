@@ -19,3 +19,24 @@ Thus, a CRS definition will typically consist of a "stack" of dependent specific
 当然，如果对地球的形状要求更高，则可以考虑使用更精确的地球椭球体模型，例如GRS80椭球体。GRS80椭球体的长半轴为6378.137公里，短半轴为6356.7523142公里。在这个模型下，地球表面积和体积的误差可以进一步降低。
 
 不过，在大多数情况下，使用6371.0088公里作为地球半径已经足够精确了。
+
+## tiles systems
+```
+    +-------------+-------------+  85.0511 deg N
+    |             |             |
+    |    x: 0     |    x: 1     |
+    |    y: 0     |    y: 0     |
+    |    z: 1     |    z: 1     |
+    |             |             |
+    +-------------+-------------+   0.0 deg N
+    |             |             |
+    |    x: 0     |    x: 1     |
+    |    y: 1     |    y: 1     |
+    |    z: 1     |    z: 1     |
+    |             |             |
+    +-------------+-------------+  85.0511 deg S
+
+180.0 deg W               180.0 deg E
+```
+> - https://mercantile.readthedocs.io/en/latest/quickstart.html
+> - https://developers.planet.com/docs/planetschool/xyz-tiles-and-slippy-maps/

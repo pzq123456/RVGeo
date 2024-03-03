@@ -2,7 +2,7 @@
  * @see https://github.com/mapbox/sphericalmercator/blob/master/sphericalmercator.js
  */
 
-import { isFloat, D2R, R2D, isEPSG3857 } from "..";
+import { isFloat, D2R, R2D, isEPSG3857, isEPSG4326 } from "..";
 
 type cacheLevel = {
     Bc: number[];
@@ -21,6 +21,8 @@ let cache = {} as cache;
 
 const A: number = 6378137.0;
 const MAXEXTENT: number = 20037508.342789244;
+const MAXLON: number = 180;
+const MAXLAT: number = 85.05112877980659;
 
 export class SphericalMercator {
 
@@ -70,31 +72,45 @@ export class SphericalMercator {
      * @returns 
      */
     public px(ll: number[], zoom: number): number[] {
-      if (isFloat(zoom)) {
-        var size = this.size * Math.pow(2, zoom);
-        var d = size / 2;
-        var bc = (size / 360);
-        var cc = (size / (2 * Math.PI));
-        var ac = size;
-        var f = Math.min(Math.max(Math.sin(D2R * ll[1]), -0.9999), 0.9999);
-        var x = d + ll[0] * bc;
-        var y = d + 0.5 * Math.log((1 + f) / (1 - f)) * -cc;
-        (x > ac * this.expansion) && (x = ac * this.expansion);
-        (y > ac) && (y = ac);
-        //(x < 0) && (x = 0);
-        //(y < 0) && (y = 0);
-        return [x, y];
-      } else {
-        var d = this.zc[zoom];
-        var f = Math.min(Math.max(Math.sin(D2R * ll[1]), -0.9999), 0.9999);
-        var x = Math.round(d + ll[0] * this.Bc[zoom]);
-        var y = Math.round(d + 0.5 * Math.log((1 + f) / (1 - f)) * (-this.Cc[zoom]));
-        (x > this.Ac[zoom] * this.expansion) && (x = this.Ac[zoom] * this.expansion);
-        (y > this.Ac[zoom]) && (y = this.Ac[zoom]);
-        //(x < 0) && (x = 0);
-        //(y < 0) && (y = 0);
-        return [x, y];
-      }
+        // make ll inside the valid range
+        if (ll[0] > MAXLON) {
+            ll[0] = MAXLON;
+        }
+        if (ll[0] < -MAXLON) {
+            ll[0] = -MAXLON;
+        }
+        if (ll[1] > MAXLAT) {
+            ll[1] = MAXLAT;
+        }
+        if (ll[1] < -MAXLAT) {
+            ll[1] = -MAXLAT;
+        }
+        // convert to screen pixel value
+        if (isFloat(zoom)) {
+            var size = this.size * Math.pow(2, zoom);
+            var d = size / 2;
+            var bc = (size / 360);
+            var cc = (size / (2 * Math.PI));
+            var ac = size;
+            var f = Math.min(Math.max(Math.sin(D2R * ll[1]), -0.9999), 0.9999);
+            var x = d + ll[0] * bc;
+            var y = d + 0.5 * Math.log((1 + f) / (1 - f)) * -cc;
+            (x > ac * this.expansion) && (x = ac * this.expansion);
+            (y > ac) && (y = ac);
+            //(x < 0) && (x = 0);
+            //(y < 0) && (y = 0);
+            return [x, y];
+        } else {
+            var d = this.zc[zoom];
+            var f = Math.min(Math.max(Math.sin(D2R * ll[1]), -0.9999), 0.9999);
+            var x = Math.round(d + ll[0] * this.Bc[zoom]);
+            var y = Math.round(d + 0.5 * Math.log((1 + f) / (1 - f)) * (-this.Cc[zoom]));
+            (x > this.Ac[zoom] * this.expansion) && (x = this.Ac[zoom] * this.expansion);
+            (y > this.Ac[zoom]) && (y = this.Ac[zoom]);
+            //(x < 0) && (x = 0);
+            //(y < 0) && (y = 0);
+            return [x, y];
+        }
     }
 
     /**
@@ -124,8 +140,8 @@ export class SphericalMercator {
 
    /**
     * Convert tile xyz value to bbox of the form `[w, s, e, n]`
-    * @param {Number} x (longitude) number.
-    * @param {Number} y (latitude) number.
+    * @param {Number} x 
+    * @param {Number} y 
     * @param {Number} zoom zoom.
     * @param {Boolean} tms_style  to compute using tms-style.
     * @param {String} srs projection for resulting bbox (WGS84|900913).
@@ -153,7 +169,7 @@ export class SphericalMercator {
     /**
     * Convert bbox to xyz bounds
     * @param {Number} bbox in the form `[w, s, e, n]`.
-    * @param {Number} zoom.
+    * @param {Number} zoom zoom.
     * @param {Boolean} tms_style whether to compute using tms-style.
     * @param {String} srs projection of input bbox (WGS84|900913).
     * @return {Object} XYZ bounds containing minX, maxX, minY, maxY properties.  
@@ -161,7 +177,7 @@ export class SphericalMercator {
     public xyz(bbox: number[], zoom: number, tms_style?: boolean, srs?: string): { minX: number; minY: number; maxX: number; maxY: number } {
         // If web mercator provided reproject to WGS84.
         if (isEPSG3857(srs)) {
-            bbox = this.convert(bbox, 'WGS84');
+            bbox = this.convert(bbox, 'WGS84'); // convert to wgs84 lonlat
         }
 
         var ll = [bbox[0], bbox[1]]; // lower left
@@ -193,12 +209,27 @@ export class SphericalMercator {
     // - `to` {String} projection of output bbox (WGS84|900913). Input bbox
     //   assumed to be the "other" projection.
     // - `@return` {Object} bbox with reprojected coordinates.  
-    public convert(bbox: number[], to: string): number[] {
+    public convert(bbox: number[], to: string, zoom?: number): number[] {
         if (isEPSG3857(to)) {
             return this.forward(bbox.slice(0, 2)).concat(this.forward(bbox.slice(2,4)));
-        } else {
+        }else{
             return this.inverse(bbox.slice(0, 2)).concat(this.inverse(bbox.slice(2,4)));
         }
+        // } else {
+        //     if(!zoom) throw new Error('SphericalMercator: missing zoom level for conversion');
+        //     // convert to px 
+        //     var ll = this.px(bbox.slice(0, 2), zoom);
+        //     var ur = this.px(bbox.slice(2, 4), zoom);
+        //     // convert to to
+
+        // }
+    }
+
+    public pxBbox(x: number, y: number, zoom: number): number[] {
+        const bbox = this.bbox(x, y, zoom);
+        let ll = this.px([bbox[0], bbox[1]], zoom);
+        let ur = this.px([bbox[3], bbox[2]], zoom);
+        return [ll[0], ll[1], ur[0], ur[1]];
     }
 
     /**
