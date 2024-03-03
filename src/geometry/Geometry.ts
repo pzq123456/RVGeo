@@ -75,4 +75,26 @@ export abstract class Geometry<T> {
             return this.fromGeometry(feature as GeoJSONGeometry);
         }
     }
+
+    /**
+     * 直接在原对象上更新坐标
+     * @param coordinates 
+     * @param properties 
+     */
+    update_(coordinates: any, properties?: T): void {
+        this.coordinates = coordinates;
+        if (properties) {
+            this.properties = properties;
+        }
+        this.updateBBox();
+    }
+
+    /**
+     * 返回当前对象的副本，更新坐标
+     * @param coordinates 
+     * @param properties 
+     */
+    update(coordinates: any, properties?: T): void {
+        this.clone().update_(coordinates, properties);
+    }
 }

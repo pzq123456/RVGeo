@@ -40,3 +40,10 @@ Thus, a CRS definition will typically consist of a "stack" of dependent specific
 ```
 > - https://mercantile.readthedocs.io/en/latest/quickstart.html
 > - https://developers.planet.com/docs/planetschool/xyz-tiles-and-slippy-maps/
+
+## why mercator
+Although the Mercator projection significantly distorts scale and area (particularly near the poles), it has two important properties that outweigh the scale distortion:
+It’s a conformal projection, which means that it preserves the shape of relatively small objects. This is especially important when showing aerial imagery, because we want to avoid distorting the shape of buildings. Square buildings should appear square, not rectangular.
+It’s a cylindrical projection, which means that north and south are always straight up and down, and west and east are always straight left and right.
+Since the Mercator projection goes to infinity at the poles, it doesn’t actually show the entire world. Using a square aspect ratio for the map, the maximum latitude shown is approximately 85.05 degrees.
+To simplify the calculations, we use the spherical form of this projection, not the ellipsoidal form. Since the projection is used only for map display, and not for displaying numeric coordinates, we don’t need the extra precision of an ellipsoidal projection. The spherical projection causes approximately 0.33% scale distortion in the Y direction, which is not visually noticeable.

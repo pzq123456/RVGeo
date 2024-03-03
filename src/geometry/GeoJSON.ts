@@ -11,13 +11,13 @@ export interface GeoJSONGeometry {
 // Interface for GeoJSON point coordinates
 export interface GeoJSONPoint extends GeoJSONGeometry {
     type: "Point";
-    coordinates: [number, number, number];
+    coordinates: [number, number];
 }
 
 // Interface for GeoJSON multipoint coordinates
 export interface GeoJSONMultiPoint extends GeoJSONGeometry {
     type: "MultiPoint";
-    coordinates: [number, number, number][];
+    coordinates: [number, number][];
 }
 
 // Interface for GeoJSON line string coordinates

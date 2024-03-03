@@ -75,6 +75,22 @@ export function pointInMBR(point: [number, number],mbr: MBR) : boolean{
     return lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat;
 }
 
+export function containsMBR(mbr1: MBR, mbr2: MBR): boolean {
+    return mbr1[0] <= mbr2[0] && mbr1[1] <= mbr2[1] && mbr1[2] >= mbr2[2] && mbr1[3] >= mbr2[3];
+}
+
+export function intersectsMBR(mbr1: MBR, mbr2: MBR): boolean {
+    return mbr1[0] <= mbr2[2] && mbr1[2] >= mbr2[0] && mbr1[1] <= mbr2[3] && mbr1[3] >= mbr2[1];
+}
+
+export function overlapsMBR(mbr1: MBR, mbr2: MBR): boolean {
+    return mbr1[0] < mbr2[2] && mbr1[2] > mbr2[0] && mbr1[1] < mbr2[3] && mbr1[3] > mbr2[1];
+}
+
+export function equalsMBR(mbr1: MBR, mbr2: MBR): boolean {
+    return mbr1[0] === mbr2[0] && mbr1[1] === mbr2[1] && mbr1[2] === mbr2[2] && mbr1[3] === mbr2[3];
+}
+
 /**
  * 判断点是否在 MBR 内（跨越了反子午线的情况）
  * - 必须保 MBR 真的跨越了反子午线，否则会出现错误
@@ -127,6 +143,7 @@ export function splitMBRWithAntimeridian(mbr: MBR): MBR[]{
     let mbr2 = [-180, mbr[1], mbr[2], mbr[3]] as MBR;
     return [mbr1, mbr2];
 }
+
 
 /*============C=O=V=E=R=T============= */
 

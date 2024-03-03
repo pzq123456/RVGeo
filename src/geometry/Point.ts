@@ -75,4 +75,3 @@ export function toPoint(...args: any[]): Point {
         return new Point([args[0], args[1]], args[2]);
     }
 }
-
