@@ -134,7 +134,9 @@ export function intersection(latlng11: [number, number], latlng12: [number, numb
 
         // normalize the vector
         const I1 = cartesianNormalize(l);
+        // console.log(I1);
         const I2 = cartesianScale(I1, -1);
+        // console.log(I2);
 
         // check(I1, p11, p12);
         // check(I2, p11, p12);
@@ -159,10 +161,13 @@ export function intersection(latlng11: [number, number], latlng12: [number, numb
 
         function check(I: [number, number, number], Ps: [number, number, number], Pe: [number, number, number]) : boolean {
             // cartesianAngle between p11 and I
-            const a1 = cartesianAngle(Ps, I);
-            const a2 = cartesianAngle(Pe, I);
+            const a1 = cartesianAngle(Ps,I);
+            const a2 = cartesianAngle(Pe,I);
             const a3 = cartesianAngle(Ps, Pe);
-
+            console.log('ps',Ps);
+            console.log('pe',Pe);
+            console.log('I',I);
+            console.log(a1, a2, a3);
             return Math.abs(a1 + a2 - a3) < 1e-6;
         }
     }

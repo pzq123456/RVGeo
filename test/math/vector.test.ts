@@ -3,7 +3,7 @@ import { spherical, cartesianAngle } from '../../src';
 
 describe('spherical', () => {
     it('spherical', () => {
-        const result = spherical([-1, -0, 0]);
+        const result = spherical([1, 0, 0]);
         expect(result).toEqual([0, 0]);
     });
 
