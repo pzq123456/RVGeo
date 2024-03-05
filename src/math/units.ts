@@ -172,3 +172,22 @@ export function areaToArea(
   // Convert to square meters first, then to final units to ensure the best possible precision.
   return squareMetersTo(toSquareMeters(area, from), to);
 }
+
+// 度分秒 转换 为 十进制度
+// Degree minute second conversion to decimal degree
+export function dmsToDeg(d: number, m: number, s: number, direction: string): number {
+  let deg = d + m / 60 + s / 3600;
+  if (direction === "S" || direction === "W") {
+    deg = -deg;
+  }
+  return deg;
+}
+
+// 十进制度 转换 为 度分秒
+// Decimal degree conversion to degree minute second
+export function degToDMS(deg: number): [number, number, number, string] {
+  let d = Math.floor(deg);
+  let min = Math.floor((deg - d) * 60);
+  let sec = ((deg - d) * 60 - min) * 60;
+  return [d, min, sec, deg < 0 ? (deg < -180 ? "W" : "S") : deg > 180 ? "E" : "N"];
+}

@@ -1,5 +1,3 @@
-export const EPSLN = 1.0e-10; // a small number for tolerance
-
 /**
  * D2R usage: 角度转弧度
  * - PI / 180

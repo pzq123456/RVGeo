@@ -1,4 +1,4 @@
-import {sphericalArea} from '../../';
+import { haversine, sphericalArea } from '../../';
 import { Projection } from "../projection";
 export interface CRS {
     projection: Projection | null;
@@ -11,28 +11,26 @@ export interface CRS {
 }
 
 export const Earth: CRS = {
-    // Mean Earth Radius, as recommended for use by
-	// the International Union of Geodesy and Geophysics,
-	// see https://rosettacode.org/wiki/Haversine_formula
     R : 6371000,
     projection: null,
     /**
-     * distance between two geographical points using spherical law of cosines approximation(haversine 公式)
+     * haversine 计算球面两点之间的距离
+     * @see https://rosettacode.org/wiki/Haversine_formula
      * @param latlng1 
      * @param latlng2 
      * @returns 
      */
     distance(latlng1: [number, number], latlng2: [number, number]): number {
-        let rad = Math.PI / 180,
-            lat1 = latlng1[0] * rad,
-            lat2 = latlng2[0] * rad,
-            sinDLat = Math.sin((latlng2[0] - latlng1[0]) * rad / 2),
-            sinDLon = Math.sin((latlng2[1] - latlng1[1]) * rad / 2),
-            a = sinDLat * sinDLat + Math.cos(lat1) * Math.cos(lat2) * sinDLon * sinDLon,
-            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return this.R * c;
+        return haversine(latlng1, latlng2, this.R);
     },
 
+    /**
+     * - 使用格林公式及球面积分直接计算球面多边形的面积
+     * - calculate the area of a spherical polygon using the spherical excess method
+     * @see http://home.ustc.edu.cn/~liujunyan/blog/Area-and-center-of-spherical-polygon/
+     * @param points - 可以为点类型数组、LineString 类型或者二维数组（需要为经纬度坐标系下）
+     * @returns {number} - 面积
+     */
     area(points: [number, number][]) : number {
         return sphericalArea(points, this.R);
     }

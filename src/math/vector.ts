@@ -4,6 +4,25 @@ export const atan2 = Math.atan2;
 export const cos = Math.cos;
 export const sin = Math.sin;
 export const sqrt = Math.sqrt;
+export const EPSLN = 1.0e-10; // a small number for tolerance
+
+/**
+ * deep compare two arrays(1D)
+ * @param a 
+ * @param b 
+ * @param tolerance 
+ * @returns 
+ */
+export function equals(a : number[] | number, b : number[] | number, tolerance : number = EPSLN) {
+
+  if (!Array.isArray(a) && !Array.isArray(b)) {
+    return Math.abs(a - b) < tolerance;
+  }
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((v, i) => Math.abs(v - b[i]) < tolerance);
+  }
+  return false;
+}
 
 export function acos(x : number) {
   return x > 1 ? 0 : x < -1 ? pi : Math.acos(x);
@@ -20,7 +39,7 @@ export function haversin(x : number) {
 // cartesian coordinates
 
 // 1. Coordinate Conversion: 球坐标系和笛卡尔坐标系的转换
-//    cartesian: [x, y, z] -> spherical: [theta, phi]
+//    cartesian: [x, y, z] -> coordinates [longitude, latitude]
 /**
  * 三维笛卡尔坐标系转换为球坐标系（极坐标系）的公式如下：
  * This function takes a 3D Cartesian vector [x, y, z] and converts it to spherical coordinates [theta, phi].
@@ -31,13 +50,17 @@ export function spherical(cartesian : [number, number, number]) : [number, numbe
   return [atan2(cartesian[1], cartesian[0]), asin(cartesian[2])];
 }
 
-//    spherical: [theta, phi] -> cartesian: [x, y, z]
+//    coordinates [longitude, latitude] -> cartesian: [x, y, z]
 /**
  * 球坐标系（极坐标系）转换为三维笛卡尔坐标系的公式如下：
- * This function takes a 2D spherical vector [theta, phi] and converts it back to Cartesian coordinates [x, y, z].
+ * This function takes spherical coordinates [longitude, latitude] and converts them to a 3D Cartesian vector [x, y, z].
  */
 export function cartesian(spherical : [number, number]) : [number, number, number] {
-  var lambda = spherical[0], phi = spherical[1], cosPhi = cos(phi);
+  // 首先转化为弧度
+  spherical.forEach((d, i) => spherical[i] = d * pi / 180);
+  var lambda = spherical[0], 
+      phi = spherical[1], 
+      cosPhi = cos(phi);
   return [cosPhi * cos(lambda), cosPhi * sin(lambda), sin(phi)];
 }
 
@@ -101,6 +124,19 @@ export function cartesianNormalize(d: [number, number, number]): [number, number
   const magnitude = Math.sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
   return [d[0] / magnitude, d[1] / magnitude, d[2] / magnitude];
 }
+
+// 计算 夹角 arccos(dot(a, b) / (length(a) * length(b)))
+/**
+ * 计算两个三维笛卡尔坐标系下的向量 a 和 b 的夹角。
+ * This function calculates the angle between two 3D Cartesian vectors a and b.
+ */
+export function cartesianAngle(a : [number, number, number], b : [number, number, number]) : number {
+  return acos(
+                      cartesianDot(a, b) / 
+              (sqrt(cartesianDot(a, a) * cartesianDot(b, b)))
+    );
+}
+
 
 // 二维笛卡尔坐标系下的向量运算
 
