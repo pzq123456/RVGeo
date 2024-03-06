@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { sphericalArea, haversine, bearing, midpoint, intermediatePoint, intersection } from '../../src';
+import { sphericalArea, haversine, bearing, midpoint, intermediatePoint, intersection, radiansToDegrees } from '../../src';
 
 const colorado = [ // 269,837 km2
     [
@@ -102,7 +102,14 @@ describe('sphericalArea', () => {
     });
 
     it('intersection', () => {
-        const result = intersection([-180,0], [180,0], [0,90], [0,-90]);
-        expect(result).toEqual([0,0]);
+        const result = intersection([-90,0], [90,0], [0,90], [0,-90]);
+        for(let i = 0; i < 2; i++) {
+            expect(result[i]).toBeCloseTo([0, 0][i]); // 在数学上，这种特殊情况无法区分
+        }
+
+        const result2 = intersection([-45,0], [45,0], [0,45], [0,-45]);
+        for(let i = 0; i < 2; i++) {
+            expect(result2[i]).toBeCloseTo([0, 0][i]); // 在数学上，这种特殊情况无法区分
+        }
     });
 });

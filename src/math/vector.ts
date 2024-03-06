@@ -1,3 +1,5 @@
+import {degreesToRadians} from './units';
+
 export const pi = Math.PI;
 export const halfPi = pi / 2;
 export const atan2 = Math.atan2;
@@ -52,16 +54,19 @@ export function spherical(cartesian : [number, number, number]) : [number, numbe
 
 //    coordinates [longitude, latitude] -> cartesian: [x, y, z]
 /**
- * 球坐标系（极坐标系）转换为三维笛卡尔坐标系的公式如下：
  * This function takes spherical coordinates [longitude, latitude] and converts them to a 3D Cartesian vector [x, y, z].
  */
-export function cartesian(spherical : [number, number]) : [number, number, number] {
-  // 首先转化为弧度
-  spherical.forEach((d, i) => spherical[i] = d * pi / 180);
-  var lambda = spherical[0], 
-      phi = spherical[1], 
-      cosPhi = cos(phi);
-  return [cosPhi * cos(lambda), cosPhi * sin(lambda), sin(phi)];
+export function cartesian(spherical : [number, number], toRadians: boolean = true) : [number, number, number] {
+
+  if (toRadians) {
+    spherical = [degreesToRadians(spherical[0]), degreesToRadians(spherical[1])];
+  }
+
+  const lon = spherical[0];
+  const lat = spherical[1];
+
+  const cosLat = cos(lat);
+  return [cosLat * cos(lon), cosLat * sin(lon), sin(lat)];
 }
 
 // 2. Vector Operations: 笛卡尔坐标系下的向量运算
@@ -130,11 +135,12 @@ export function cartesianNormalize(d: [number, number, number]): [number, number
  * 计算两个三维笛卡尔坐标系下的向量 a 和 b 的夹角。
  * This function calculates the angle between two 3D Cartesian vectors a and b.
  */
-export function cartesianAngle(a : [number, number, number], b : [number, number, number]) : number {
-  return acos(
-                      cartesianDot(a, b) / 
-              (sqrt(cartesianDot(a, a) * cartesianDot(b, b)))
-    );
+export function cartesianAngle(
+  a : [number, number, number], 
+  b : [number, number, number],
+  ) : number {
+  let tmp = cartesianDot(a, b) / (sqrt(cartesianDot(a, a) * cartesianDot(b, b)));
+  return acos(tmp);
 }
 
 

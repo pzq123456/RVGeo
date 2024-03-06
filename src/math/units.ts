@@ -63,10 +63,13 @@ export function degreesToRadians(degrees: number): number {
 
 /**
  * - Converts an angle in radians to degrees
- * - 将弧度转换为角度
  * @name radiansToDegrees
  * @param {number} radians angle in radians
  * @returns {number} degrees between 0 and 360 degrees
+ * @example
+ * radiansToDegrees(Math.PI / 2); // => 90
+ * let resultArray = [Math.PI, Math.PI / 2, 0, -Math.PI / 2, -Math.PI];
+ * resultArray.map(radiansToDegrees); // => [180, 90, 0, -90, -180]
  */
 export function radiansToDegrees(radians: number): number {
   const degrees = radians % (2 * Math.PI);

@@ -1,4 +1,5 @@
 import {Canvas} from './canvas';
+import { cartesian } from './src';
 const mydiv = document.getElementById('map') as HTMLElement;
 const canvasSize = 512;
 // let trans = Canvas.getTransArray(canvasSize, canvasSize, [-canvasSize/2, canvasSize/2], [canvasSize/2, -canvasSize/2]);
@@ -39,3 +40,5 @@ let place2 = {
 // let xyz = sm.pxBbox(0,0,0);
 // console.log(xyz);
 // canvas.drawBound(xyz[0], xyz[1], xyz[2], xyz[3], 'blue');
+const result2 = cartesian([0, 90]);
+// console.log(result2);
