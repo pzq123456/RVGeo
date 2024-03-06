@@ -69,7 +69,7 @@ export function getPointsMBR(points: [number, number][]): MBR{
  * @param mbr - 最小外包矩形
  * @returns {boolean} 返回是否在 MBR 内 在则返回 true 不在则返回 false
  */
-export function pointInMBR(point: [number, number],mbr: MBR) : boolean{
+export function pointInMBR(point: [number, number], mbr: MBR) : boolean{
     let minLon = mbr[0], minLat = mbr[1], maxLon = mbr[2], maxLat = mbr[3];
     let lon = point[0], lat = point[1];
     return lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat;
@@ -143,7 +143,6 @@ export function splitMBRWithAntimeridian(mbr: MBR): MBR[]{
     let mbr2 = [-180, mbr[1], mbr[2], mbr[3]] as MBR;
     return [mbr1, mbr2];
 }
-
 
 /*============C=O=V=E=R=T============= */
 

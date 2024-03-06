@@ -1,6 +1,6 @@
 export class Canvas{ // 用于 debug 的画布
     canvas: HTMLCanvasElement;
-    pointStyle: Array<string> = ['x', '+', 'o', '*'];
+    pointStyle: Array<string> = ['x', '+', 'o', '*','[]'];
 
     constructor(
         public width: number = 300,
@@ -80,6 +80,8 @@ export class Canvas{ // 用于 debug 的画布
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2, true);
             ctx.fill();
+        }else if(pointStyle === '[]' || pointStyle === 'square' || pointStyle === 'box' || pointStyle === 's'){
+            ctx.fillRect(x - radius, y - radius, 2 * radius, 2 * radius);
         }
     }
 
@@ -127,6 +129,19 @@ export class Canvas{ // 用于 debug 的画布
         ctx.restore();
     }
 
+    drawCircle(x: number, y: number, radius: number, color: string = 'black', fill: boolean = false){
+        let ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+        if(fill){
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+        ctx.stroke();
+        ctx.restore();
+    }
     initCanvas(
         strokeStyle: string = 'black',
         fillStyle: string = 'rgba(125, 0, 0, 0.5)',
@@ -148,3 +163,38 @@ export class Canvas{ // 用于 debug 的画布
         }
     }
 }
+
+export function drawQuadTree2Canvas(quadTree: any, ctx: CanvasRenderingContext2D, style: { strokeColor: string, strokeWeight: number, strokeOpacity: number } = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.4 }) {
+    // Set drawing style
+    ctx.strokeStyle = style.strokeColor;
+    ctx.lineWidth = style.strokeWeight;
+    ctx.globalAlpha = style.strokeOpacity;
+  
+    const boundary =  quadTree.boundary;
+  
+    const [minLon, minLat, maxLon, maxLat] = boundary;
+  
+    // Draw rectangle using path
+    ctx.beginPath();
+    ctx.moveTo(minLon, minLat);
+    ctx.lineTo(maxLon, minLat);
+    ctx.lineTo(maxLon, maxLat);
+    ctx.lineTo(minLon, maxLat);
+    ctx.closePath();
+    ctx.stroke();
+  
+    // Recursively draw child nodes
+    if (quadTree.northWest) {
+      drawQuadTree2Canvas(quadTree.northWest, ctx, style);
+    }
+    if (quadTree.northEast) {
+      drawQuadTree2Canvas(quadTree.northEast, ctx, style);
+    }
+    if (quadTree.southWest) {
+      drawQuadTree2Canvas(quadTree.southWest, ctx, style);
+    }
+    if (quadTree.southEast) {
+      drawQuadTree2Canvas(quadTree.southEast, ctx, style);
+    }
+  }
+  

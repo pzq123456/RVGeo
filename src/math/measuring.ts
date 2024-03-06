@@ -1,5 +1,8 @@
 import { D2R } from "./factors";
 import { cartesian, spherical, cartesianCross,cartesianNormalize, cartesianScale, cartesianAngle } from "./vector";
+/**
+ * 与球面相关的测量方法
+ */
 
 /**
  * - 使用格林公式及球面积分直接计算球面多边形的面积
@@ -23,17 +26,7 @@ export function sphericalArea(points: [number, number][], RADIUS: number = 1) : 
     coordinates.forEach((point, index) => {
         coordinates[index] = point.map((value) => value * D2R) as [number, number];
     });
-    // for (let i = 0; i < len; i++) {
-    //     let j = (i + 1) % len; // 下一个点
 
-    //     if(coordinates[i][1] == coordinates[j][1]){
-    //         area += (coordinates[j][0] - coordinates[i][0]) * Math.sin(coordinates[i][1]);
-    //     }else{
-    //         area -= 
-    //             ((coordinates[j][0] - coordinates[i][0]) / (coordinates[j][1] - coordinates[i][1])) * 
-    //             ( Math.cos(coordinates[j][1]) - coordinates[i][1] );
-    //     }
-    // }
     for (let i = 0; i < len; i++) {
         let j = (i + 1) % len;
         let k = (i + 2) % len;
@@ -45,7 +38,7 @@ export function sphericalArea(points: [number, number][], RADIUS: number = 1) : 
 }
 
 /**
- * haversine 计算球面两点之间的距离
+ * 使用 haversine 公式计算球面两点之间的距离
  * @param latlng1 
  * @param latlng2 
  * @param {number} R - 球体半径
@@ -116,6 +109,19 @@ export function intermediatePoint(latlng1: [number, number], latlng2: [number, n
     return [φ / D2R, λ / D2R];
 }
 
+/**
+ * 求解两条球面线段的交点
+ * - Given two lines on a sphere, this will return their intersection point.
+ * @param latlng11 
+ * @param latlng12 
+ * @param latlng21 
+ * @param latlng22 
+ * @returns - 返回弧度制的交点坐标[lat, lon]
+ * @example
+ * intersection([0, 0], [0, 90], [0, 45], [90, 45]); // [1.5707963267948966, 0]
+ * // you need to convert the result to degrees if you want to use it in degrees
+ * intersection([0, 0], [0, 90], [0, 45], [90, 45]).map(x => x * 180 / Math.PI); // [90, 0]
+ */
 export function intersection(latlng11: [number, number], latlng12: [number, number], 
     latlng21: [number, number], latlng22: [number, number]) : [number, number] {
         // ,R: number = 1

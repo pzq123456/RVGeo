@@ -43,10 +43,13 @@ export function haversin(x : number) {
 // 1. Coordinate Conversion: 球坐标系和笛卡尔坐标系的转换
 //    cartesian: [x, y, z] -> coordinates [longitude, latitude]
 /**
- * 三维笛卡尔坐标系转换为球坐标系（极坐标系）的公式如下：
- * This function takes a 3D Cartesian vector [x, y, z] and converts it to spherical coordinates [theta, phi].
- * - theta: The azimuthal angle (longitude) in radians, calculated using atan2(y, x).
- * - phi: The polar angle (latitude) in radians, calculated using asin(z).
+ * 将三维笛卡尔坐标系下的向量 [x, y, z] 转换为球坐标系下的向量 [lat, lon]（弧度制）。
+ * This function takes a 3D Cartesian vector [x, y, z] and converts it to spherical coordinates [lat, lon].
+ * @example
+ * spherical([1, 0, 0]); // [0, 0]
+ * spherical([0, 1, 0]); // [1.5707963267948966, 1.5707963267948966]
+ * // you need to convert the result to degrees if you want to use it in degrees
+ * spherical([0, 1, 0]).map(x => x * 180 / Math.PI); // [90, 90]
  */
 export function spherical(cartesian : [number, number, number]) : [number, number] {
   return [atan2(cartesian[1], cartesian[0]), asin(cartesian[2])];
@@ -54,7 +57,10 @@ export function spherical(cartesian : [number, number, number]) : [number, numbe
 
 //    coordinates [longitude, latitude] -> cartesian: [x, y, z]
 /**
- * This function takes spherical coordinates [longitude, latitude] and converts them to a 3D Cartesian vector [x, y, z].
+ * 将球坐标系下的向量 [longitude, latitude]（弧度制）转换为三维笛卡尔坐标系下的向量 [x, y, z]。
+ * - This function takes spherical coordinates [longitude, latitude] and converts them to a 3D Cartesian vector [x, y, z].
+ * @param spherical
+ * @param toRadians - 默认输入为角度，如果输入为弧度，需要设置 toRadians 为 false。
  */
 export function cartesian(spherical : [number, number], toRadians: boolean = true) : [number, number, number] {
 

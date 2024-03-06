@@ -1,44 +1,57 @@
-import {Canvas} from './canvas';
-import { cartesian } from './src';
+import {Canvas, drawQuadTree2Canvas} from './canvas';
+import {MBR, QuadTree,Circle} from './src'
+
 const mydiv = document.getElementById('map') as HTMLElement;
-const canvasSize = 512;
-// let trans = Canvas.getTransArray(canvasSize, canvasSize, [-canvasSize/2, canvasSize/2], [canvasSize/2, -canvasSize/2]);
-// const canvas = new Canvas(1800, 900, mydiv,trans);
+const canvasSize = 1024;
 
 const canvas = new Canvas(canvasSize, canvasSize, mydiv);
 
+const points = randomPoints([0, 0, 1000, 1000], 20);
 
-let place0 = {
-    lat: 0,
-    lng: 0
+let qdTree = new QuadTree([0, 0, 1024, 1024], 1);
+
+const queryRange = [100, 100, 500, 500] as MBR;
+canvas.drawBound(queryRange[0], queryRange[1], queryRange[2], queryRange[3], 'red');    
+
+
+for(let i = 0; i < points.length; i++){
+    let point = points[i];
+    canvas.drawPoint(point[0], point[1], 'green', 'o', 5);
+    qdTree.insert(point as [number, number]);
 }
-let place1 = {
-    lat: 90,
-    lng: 180
+
+let ctx = canvas.canvas.getContext('2d') as CanvasRenderingContext2D;
+
+drawQuadTree2Canvas(qdTree, ctx, { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.4 });
+
+// query range
+let pointsInRange = qdTree.queryRange(queryRange);
+// circle range
+let circle = new Circle(700, 700, 300);
+canvas.drawCircle(circle.x, circle.y, circle.r, 'red', false);
+
+// queryRange in circle
+// let pointsInRangeCircle = qdTree.queryCircle(circle);
+// for(let i = 0; i < pointsInRangeCircle.length; i++){
+//     let point = pointsInRangeCircle[i];
+//     canvas.drawPoint(point[0], point[1], 'yellow', '[]', 10);
+// }
+
+// draw points in range
+for(let i = 0; i < pointsInRange.length; i++){
+    let point = pointsInRange[i];
+    canvas.drawPoint(point[0], point[1], 'pink', '[]', 10);
 }
-let place2 = {
-    lat: -90,
-    lng: -180
+
+
+function randomPoint(range: MBR){
+    return [range[0] + Math.random() * (range[2] - range[0]), range[1] + Math.random() * (range[3] - range[1])];
 }
 
-// let sm = new SphericalMercator({size: canvasSize});
-// let point0 = sm.px([place0.lng, place0.lat], 0);
-// let point1 = sm.px([place1.lng, place1.lat], 0);
-// let point2 = sm.px([place2.lng, place2.lat], 0);
-// console.log(point0, point1, point2);
-
-// canvas.drawPoint(point0[0], point0[1], 'red','o',10);
-// canvas.drawPoint(point1[0], point1[1], 'blue','o',10);
-// canvas.drawPoint(point2[0], point2[1], 'green','o',10);
-
-// // bbox
-// let bbox = sm.bbox(0,0,1);
-// console.log(bbox);
-// // canvas.drawBound(bbox[0], bbox[1], bbox[2], bbox[3], 'red');
-
-// // xyz
-// let xyz = sm.pxBbox(0,0,0);
-// console.log(xyz);
-// canvas.drawBound(xyz[0], xyz[1], xyz[2], xyz[3], 'blue');
-const result2 = cartesian([0, 90]);
-// console.log(result2);
+function randomPoints(range: MBR, num: number){
+    let points = [] as number[][];
+    for(let i = 0; i < num; i++){
+        points.push(randomPoint(range));
+    }
+    return points;
+}
