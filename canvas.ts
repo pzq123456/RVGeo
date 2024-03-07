@@ -81,7 +81,7 @@ export class Canvas{ // 用于 debug 的画布
             ctx.arc(x, y, radius, 0, Math.PI * 2, true);
             ctx.fill();
         }else if(pointStyle === '[]' || pointStyle === 'square' || pointStyle === 'box' || pointStyle === 's'){
-            ctx.fillRect(x - radius, y - radius, 2 * radius, 2 * radius);
+            ctx.strokeRect(x - radius, y - radius, 2 * radius, 2 * radius);
         }
     }
 
@@ -98,6 +98,24 @@ export class Canvas{ // 用于 debug 的画布
         ctx.save();
         ctx.strokeStyle = color;
         ctx.strokeRect(left, top, right - left, bottom - top);
+        ctx.restore();
+    }
+
+    drawPolygon(points: [number,number][], color: string = 'blue', fill: boolean = false){
+        let ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(points[0][0], points[0][1]);
+        for(let i = 1; i < points.length; i++){
+            ctx.lineTo(points[i][0], points[i][1]);
+        }
+        ctx.closePath();
+        if(fill){
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+        ctx.stroke();
         ctx.restore();
     }
 

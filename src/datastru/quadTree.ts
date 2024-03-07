@@ -1,6 +1,4 @@
-import { Circle, MBR, pointInMBR, intersectsMBR } from "../geometry";
-
-// 支持不同坐标系的关键点： contains 函数，该函数负责判断一个点是否在当前节点的范围内，将其设计为插件形式，方便扩展
+import { MBR, pointInMBR, intersectsMBR } from "../geometry";
 
 export class QuadTree{ // 四叉树基础类
     private capacity: number;
@@ -28,28 +26,14 @@ export class QuadTree{ // 四叉树基础类
         this.maxDepth = maxDepth;
     }
 
-    private _contains(point: [number,number], boundary: MBR): boolean{
+    contains(point:[number,number], boundary: MBR): boolean {
         return pointInMBR(point,boundary);
     }
-
-    private _intersects(boundary: MBR, range: MBR): boolean{
+    
+    intersects(boundary: MBR, range: MBR): boolean {
         return intersectsMBR(boundary,range);
     }
 
-    contains(point:[number,number], boundary: MBR): boolean {
-        return this._contains(point, boundary);
-    }
-
-    intersects(boundary: MBR, range: MBR): boolean {
-        return this._intersects(boundary, range);
-    }
-    setContains(func: (point: [number,number], boundary: MBR) => boolean) {
-        this._contains = func;
-    }
-
-    setIntersects(func: (boundary: MBR, range: MBR) => boolean) {
-        this._intersects = func;
-    }
     /**
      * 插入一个点
      * @param point - 点的坐标 
@@ -135,39 +119,56 @@ export class QuadTree{ // 四叉树基础类
         pointsInRange.push(...this.southEast!.queryRange(range));
         return pointsInRange;
     }
+
+    /**
+     * you need a customRange object to support custom range query
+     * - note : this function has the SAME LOGIC as queryRange.
+     * @see customRange
+     */
+    customQuery(range: customRange): [number,number][]{
+
+        let pointsInRange: [number,number][] = [];        
+        if(!range.intersects(this.boundary)){
+            return pointsInRange;
+        }
+
+        for(let i = 0; i < this.points.length; i++){
+            if(range.contains(this.points[i])){
+                pointsInRange.push(this.points[i]);
+            }
+        }
+
+        if(this.northWest === null){
+            return pointsInRange;
+        }
+
+        pointsInRange.push(...this.northWest.customQuery(range));
+        pointsInRange.push(...this.northEast!.customQuery(range));
+        pointsInRange.push(...this.southWest!.customQuery(range));
+        pointsInRange.push(...this.southEast!.customQuery(range));
+        return pointsInRange;
+    }
 }
 
-
-
-    // /**
-    //  * 四叉树圆形范围查询
-    //  * @param range - 查询范围
-    //  * @param found - 查询结果
-    //  * @returns 
-    //  */
-    // queryCircle(range: Circle, intrecs: any = []): [number,number][]{
-    //     let pointsInRange: [number,number][] = [];        
-    //     if(!range.intersects(this.boundary)){
-    //         return pointsInRange;
-    //     }else{
-    //         intrecs.push(this.boundary);
-    //     }
-
-    //     for(let i = 0; i < this.points.length; i++){
-    //         if(range.contains(this.points[i])){
-    //             pointsInRange.push(this.points[i]);
-    //         }
-    //     }
-    //     if(this.northWest === null){
-    //         return pointsInRange;
-    //     }
-    //     pointsInRange.push(...this.northWest.queryCircle(range,intrecs));
-    //     pointsInRange.push(...this.northEast!.queryCircle(range,intrecs));
-    //     pointsInRange.push(...this.southWest!.queryCircle(range,intrecs));
-    //     pointsInRange.push(...this.southEast!.queryCircle(range,intrecs));
-    //     return pointsInRange;
-    // }
-
+/**
+ * impliment customRange to support custom range query
+ * - make sure your customRange object has correct intersects and contains function
+ * - note: 
+ *  - the boundary of customRange is the boundary of QuadTree
+ *  - the point of customRange is the point of QuadTree
+ * @example
+ * // customRange use circle as example
+ * circleRange = {
+ * intersects: (boundary: MBR) => {},
+ * contains: (point: [number,number]) => {}
+ * }
+ * @see `Circle` class in Geometry directory
+ * 
+ */
+export interface customRange{
+    intersects: (boundary: MBR) => boolean;
+    contains: (point: [number,number]) => boolean;
+}
 
 // https://www.youtube.com/watch?v=OJxEcs0w_kE
 // https://en.wikipedia.org/wiki/Quadtree
