@@ -39,10 +39,12 @@ export class LatLng{
 
 		// @property lat: Number
 		// Latitude in degrees
+		// 纬度
 		this.lat = +lat;
 
 		// @property lng: Number
 		// Longitude in degrees
+		// 经度
 		this.lng = +lng;
 
 		// @property alt: Number

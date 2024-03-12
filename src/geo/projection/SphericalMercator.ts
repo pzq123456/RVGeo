@@ -21,9 +21,10 @@ export const SphericalMercator: Projection = {
             max = MAXLAT,
             lat = Math.max(Math.min(max, lonlat[1]), -max),
             sin = Math.sin(lat * d);
-        
+
         let x = A * lonlat[0] * d;
         let y = A * Math.log((1 + sin) / (1 - sin)) / 2;
+        // see: https://en.wikipedia.org/wiki/Mercator_projection
 
         if (y > MAXEXTENT) y = MAXEXTENT;
         if (y < -MAXEXTENT) y = -MAXEXTENT;
