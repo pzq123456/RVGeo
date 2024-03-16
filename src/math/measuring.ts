@@ -1,5 +1,5 @@
 import { D2R } from "./factors";
-import { cartesian, spherical, cartesianCross,cartesianNormalize, cartesianScale, cartesianAngle } from "./vector";
+import { cartesian, spherical, cartesianCross,cartesianNormalize, cartesianScale, cartesianAngle, cross } from "./vector";
 /**
  * 与球面相关的测量方法
  */
@@ -123,49 +123,49 @@ export function intermediatePoint(latlng1: [number, number], latlng2: [number, n
  * intersection([0, 0], [0, 90], [0, 45], [90, 45]).map(x => x * 180 / Math.PI); // [90, 0]
  */
 export function intersection(latlng11: [number, number], latlng12: [number, number], 
-    latlng21: [number, number], latlng22: [number, number]) : [number, number] {
-        // ,R: number = 1
-        // Convert to 3D Cartesian coordinates
-        const p11 = cartesian(latlng11);
-        const p12 = cartesian(latlng12);
-        const p21 = cartesian(latlng21);
-        const p22 = cartesian(latlng22);
+latlng21: [number, number], latlng22: [number, number]) : [number, number] {
+    // ,R: number = 1
+    // Convert to 3D Cartesian coordinates
+    const p11 = cartesian(latlng11);
+    const p12 = cartesian(latlng12);
+    const p21 = cartesian(latlng21);
+    const p22 = cartesian(latlng22);
 
-        // cartesianCross product of the two lines
-        const n1 = cartesianCross(p11, p12);
-        const n2 = cartesianCross(p21, p22);
+    // cartesianCross product of the two lines
+    const n1 = cartesianCross(p11, p12);
+    const n2 = cartesianCross(p21, p22);
 
-        // cartesianCross product of n1 and n2
-        const l = cartesianCross(n1, n2);
+    // cartesianCross product of n1 and n2
+    const l = cartesianCross(n1, n2);
 
-        // normalize the vector
-        const I1 = cartesianNormalize(l);
-        const I2 = cartesianScale(I1, -1);
+    // normalize the vector
+    const I1 = cartesianNormalize(l);
+    const I2 = cartesianScale(I1, -1);
 
-        if (check(I2, p11, p12)) {
-            return spherical(I2);
-        }
-        if (check(I2, p21, p22)) {
-            return spherical(I2);
-        }
-
-        if (check(I1, p11, p12)) {
-            return spherical(I1);
-        }
-        if (check(I1, p21, p22)) {
-            return spherical(I1);
-        }
-
-        return [0, 0];
-  
-
-        function check(I: [number, number, number], Ps: [number, number, number], Pe: [number, number, number]) : boolean {
-            const a1 = cartesianAngle(Ps,I);
-            const a2 = cartesianAngle(Pe,I);
-            const a3 = cartesianAngle(Ps, Pe);
-            return Math.abs(a1 + a2 - a3) < 1e-6;
-        }
+    if (check(I2, p11, p12)) {
+        return spherical(I2);
     }
+    if (check(I2, p21, p22)) {
+        return spherical(I2);
+    }
+
+    if (check(I1, p11, p12)) {
+        return spherical(I1);
+    }
+    if (check(I1, p21, p22)) {
+        return spherical(I1);
+    }
+
+    return [0, 0];
+
+
+    function check(I: [number, number, number], Ps: [number, number, number], Pe: [number, number, number]) : boolean {
+        const a1 = cartesianAngle(Ps,I);
+        const a2 = cartesianAngle(Pe,I);
+        const a3 = cartesianAngle(Ps, Pe);
+        return Math.abs(a1 + a2 - a3) < 1e-6;
+    }
+}
 
 /**
  * Given a start point, initial bearing, and distance, 
@@ -186,4 +186,74 @@ export function destination(latlng1: [number, number], brng: number, distance: n
     const λ2 = lon1 + Math.atan2(Math.sin(θ)*Math.sin(distance/R)*Math.cos(lat1), 
                                  Math.cos(distance/R)-Math.sin(lat1)*Math.sin(φ2));
     return [φ2 / D2R, λ2 / D2R];
+}
+
+/**
+ * 投影函数
+ */
+type projectionFun = (latlng: [number, number]) => [number, number];
+
+/**
+ * 也可以使用该函数计算两条线段的交点
+ * - 现将经纬度坐标投影到平面坐标系下，然后计算交点，最后将交点投影回经纬度坐标系
+ * - lonlats -- (projectionFrom) --> XYs -- (planeIntersection) --> XY -- (projectionTo) --> lonlat
+ * @param p1 - 二维向量(x1,y1) 默认认为`经纬度坐标`
+ * @param p2 - 二维向量(x2,y2) 默认认为`经纬度坐标`
+ * @param p3 - 二维向量(x3,y3) 默认认为`经纬度坐标`
+ * @param p4 - 二维向量(x4,y4) 默认认为`经纬度坐标`
+ * @param projectionFrom - 投影函数 （在求交之前对输入点投影） 
+ * @param projectionTo - 投影函数 (在求交之后对输出点投影)
+ * @param isInfine - 是否视作无穷线段 默认为 false 有限线段
+ * @returns {[number,number] | null} - 交点 或 null
+ */
+export function planeIntersection(
+    p1: [number,number], // 第一条线段的起点 
+    p2: [number,number], // 第一条线段的终点
+    p3: [number,number], // 第二条线段的起点
+    p4: [number,number], // 第二条线段的终点
+    projectionFrom: projectionFun, // 投影函数 （在求交之前对输入点投影）
+    projectionTo: projectionFun, // 投影函数 (在求交之后对输出点投影)
+    isInfine = false, // 是否视作无穷线段 默认为 false 有限线段
+): [number,number] | null {
+
+    // 若有投影函数，则对输入点进行投影
+    if (projectionFrom) {
+        p1 = projectionFrom(p1);
+        p2 = projectionFrom(p2);
+        p3 = projectionFrom(p3);
+        p4 = projectionFrom(p4);
+    }
+
+    // 首先计算两条线段的向量
+    let v1 = [p2[0] - p1[0], p2[1] - p1[1]] as [number,number];
+    let v2 = [p4[0] - p3[0], p4[1] - p3[1]] as [number,number];
+    // 将 v1 声明为 []
+    // 计算向量叉积
+    let det = cross(v1, v2);
+
+    // 如果叉积为 0，说明两条线段平行或共线
+    if (det === 0) {
+        console.log("两条线段平行或共线");
+        return null;
+    }
+
+    // 计算交点
+    let t1 = cross([p3[0] - p1[0], p3[1] - p1[1]], v2) / det;
+    let t2 = cross([p3[0] - p1[0], p3[1] - p1[1]], v1) / det;
+
+    if(!isInfine) {
+        // 如果交点不在两条线段上，返回 null
+        if (t1 < 0 || t1 > 1 || t2 < 0 || t2 > 1) {
+            console.log("交点不在两条线段上");
+            return null;
+        }
+    }
+
+    // 若有投影函数，则对输出点进行投影
+    if (projectionTo) {
+        return projectionTo([p1[0] + v1[0] * t1, p1[1] + v1[1] * t1]);
+    }
+    
+    // 返回交点
+    return [p1[0] + v1[0] * t1, p1[1] + v1[1] * t1];
 }
