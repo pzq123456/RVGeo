@@ -1,5 +1,5 @@
 import {Canvas, drawQuadTree2Canvas} from './canvas';
-import {MBR, QuadTree,Circle, customRange, pointInMBR} from './src'
+import {MBR, QuadTree,Circle} from './src'
 
 const mydiv = document.getElementById('map') as HTMLElement;
 const canvasSize = 1024;
@@ -29,7 +29,7 @@ let pointsInRange = qdTree.queryRange(queryRange);
 // draw points in range
 for(let i = 0; i < pointsInRange.length; i++){
     let point = pointsInRange[i];
-    canvas.drawPoint(point[0], point[1], 'pink', '[]', 10);
+    canvas.drawPoint(point[0], point[1], 'pink', '*', 10);
 }
 
 // circle range
@@ -39,7 +39,7 @@ canvas.drawCircle(circle.x, circle.y, circle.r, 'red', false);
 let pointsInRangeCircle = qdTree.customQuery(circle);
 for(let i = 0; i < pointsInRangeCircle.length; i++){
     let point = pointsInRangeCircle[i];
-    canvas.drawPoint(point[0], point[1], 'yellow', '[]', 10);
+    canvas.drawPoint(point[0], point[1], 'yellow', 'x', 10);
 }
 
 function randomPoint(range: MBR){
