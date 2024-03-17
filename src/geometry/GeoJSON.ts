@@ -45,9 +45,10 @@ export interface GeoJSONMultiPolygon extends GeoJSONGeometry {
 }
 
 // Interface for GeoJSON geometry collection
-export interface GeoJSONGeometryCollection extends GeoJSONGeometry {
+export interface GeoJSONGeometryCollection{
     type: "GeometryCollection";
     geometries: GeoJSONGeometry[];
+    bbox?: MBR;
 }
 
 // Interface for GeoJSON feature
@@ -56,12 +57,14 @@ export interface GeoJSONFeature<T> {
     geometry: GeoJSONGeometry;
     properties: T;
     bbox?: MBR; // https://datatracker.ietf.org/doc/html/rfc7946#section-5
+    id?: string | number;
 }
 
 // Interface for GeoJSON feature collection
 export interface GeoJSONFeatureCollection {
     type: "FeatureCollection";
     features: GeoJSONFeature<any>[];
+    bbox?: MBR;
 }
 
 export interface defaultProperties {}; // 只要不指定字段，用户就可以自定义任意字段

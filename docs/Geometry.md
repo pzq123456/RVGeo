@@ -1,4 +1,10 @@
 # Geometry
+
+
+## [antimeridian problem](https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.9)
+- In representing Features that cross the antimeridian, interoperability is improved by modifying their geometry.  Any geometry that crosses the antimeridian SHOULD be represented by cutting it in two such that neither part's representation crosses the antimeridian. 
+- For example, a line extending from 45 degrees N, 170 degrees E across the antimeridian to 45 degrees N, 170 degrees W should be cut in two and represented as a MultiLineString.
+
 ## Geo-bounding problems (Minimum Bounding Rectangle for geographic features)
 > code: https://github.com/d3/d3-geo/blob/main/src/bounds.js
 

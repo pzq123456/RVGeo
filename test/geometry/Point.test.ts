@@ -122,4 +122,16 @@ describe('Point', () => {
     expect(clone.getCoordinates()).toEqual([100, 20]);
     expect(clone.getProperties()).toEqual({ name: 'My Point' });
   });
+
+  // test point equals method
+  it('should return true for equal points', () => {
+    const point1 = toPoint(100, 20, { name: 'My Point' });
+    const point2 = toPoint(100, 20, { name: 'My Point' });
+    // 记录运行时间
+    console.time('equals');
+    const result = point1.equals(point2);
+    console.timeEnd('equals');
+    expect(result).toBe(true);
+  });
+
 });
