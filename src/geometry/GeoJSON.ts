@@ -54,7 +54,7 @@ export interface GeoJSONGeometryCollection{
 // Interface for GeoJSON feature
 export interface GeoJSONFeature<T> {
     type: "Feature";
-    geometry: GeoJSONGeometry;
+    geometry: GeoJSONGeometry | GeoJSONGeometryCollection;
     properties: T;
     bbox?: MBR; // https://datatracker.ietf.org/doc/html/rfc7946#section-5
     id?: string | number;

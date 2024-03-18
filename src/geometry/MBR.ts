@@ -45,6 +45,13 @@ export type MBR = [number, number, number, number]; // [minX, minY, maxX, maxY] 
  */
 export type Rectangle = {x: number; y: number; w: number; h: number;}
 
+export function mergeMBR(mbr1: MBR, mbr2: MBR): MBR {
+    return [Math.min(mbr1[0], mbr2[0]), Math.min(mbr1[1], mbr2[1]), Math.max(mbr1[2], mbr2[2]), Math.max(mbr1[3], mbr2[3])];
+}
+export function mergePointMBR(mbr: MBR, point: [number, number]): MBR {
+    return [Math.min(mbr[0], point[0]), Math.min(mbr[1], point[1]), Math.max(mbr[2], point[0]), Math.max(mbr[3], point[1])];
+}
+
 /**
  * 计算多点的最小外包矩形（默认情况）
  * @param points - 多点

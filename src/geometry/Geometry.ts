@@ -14,13 +14,13 @@
  * GeometryCollection（几何集合）
  */
 
-// FeatureCollection 及 GeometryCollection 提供另外的支持
-
-import { MBR } from "./MBR";
-import { GeoJSONFeature, GeoJSONGeometry, GeoJSONFeatureCollection, GeoJSONGeometryCollection } from "./GeoJSON";
+import { MBR, mergeMBR } from "./MBR";
+import { GeoJSONFeature, GeoJSONGeometry, GeoJSONGeometryCollection } from "./GeoJSON";
 
 /**
- * Geometry for GeoJSON
+ * Geometry for GeoJSON independent Objects including Point, LineString, Polygon
+ * - no GeometryCollection
+ * - no MultiPoint, MultiLineString, MultiPolygon
  */
 export abstract class Geometry<T> {
     protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
@@ -77,8 +77,13 @@ export abstract class Geometry<T> {
         // 所以这里可以直接调用
         if (feature.type === "Feature") {
             return this.fromFeature(feature);
-        } else {
+        } else if (feature.type === "Geometry") {
             return this.fromGeometry(feature as GeoJSONGeometry);
+        } else if(feature.type === "FeatureCollection"){
+            throw new Error( feature.type + "is not supported");
+        }
+        else{
+            throw new Error("Unknown GeoJSON type: " + feature.type);
         }
     }
 
@@ -107,60 +112,56 @@ export abstract class Geometry<T> {
     }
 }
 
-interface GeometryObject {
-    type: string | null;
-    coordinates?: any;
-    geometries?: any;
-    arcs?: any;
-    bbox?: MBR;
-    id?: string | number;
-    properties?: any;
-}
+// 包括：MultiPoint, MultiLineString, MultiPolygon 及 GeometryCollection
+// GeometryCollection 就不使用抽象类了
+// 暂时不支持嵌套 GeometryCollection
+export class GeometryCollection{
+    geometries: Geometry<any>[] = [];
+    bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
 
-export function geomifyObject(input: GeoJSONFeatureCollection | GeoJSONFeature<any> | GeoJSONGeometry): any {
-    if (input == null) {
-        return {type: null};
-    } else if (input.type === "FeatureCollection") {
-        return geomifyFeatureCollection(input as GeoJSONFeatureCollection);
-    } else if (input.type === "Feature") {
-        return geomifyFeature(input as GeoJSONFeature<any>);
-    } else {
-        return geomifyGeometry(input as GeoJSONGeometry);
-    }
-}
-
-function geomifyFeatureCollection(input: GeoJSONFeatureCollection) : GeometryObject {
-    var output = {type: "GeometryCollection", geometries: input.features.map(geomifyFeature)} as GeometryObject;
-    if (input.bbox != null) output.bbox = input.bbox;
-    return output;
-}
-
-function geomifyFeature(input: GeoJSONFeature<any>) : GeometryObject {
-    var output = geomifyGeometry(input.geometry), key; // eslint-disable-line no-unused-vars
-    if (input.id != null) output.id = input.id;
-    if (input.bbox != null) output.bbox = input.bbox;
-    for (key in input.properties) { output.properties = input.properties; break; }
-    return output;
-}
-
-
-
-function geomifyGeometry(input: GeoJSONGeometry | GeoJSONGeometryCollection): GeometryObject {
-    if (input == null) return {type: null};
-    let output = {} as GeometryObject;
-    if (input.type === "GeometryCollection") {
-        input = input as GeoJSONGeometryCollection;
-        // 递归调用
-        output = {type: "GeometryCollection", geometries: input.geometries.map(geomifyGeometry)};
-        if (input.bbox != null) output.bbox = input.bbox;
-    } else if (input.type === "Point" || input.type === "MultiPoint") {
-        output = {type: input.type, coordinates: input.coordinates};
-    } else if (input.type === "LineString" || input.type === "MultiLineString" || input.type === "Polygon" || input.type === "MultiPolygon") {
-        input = input as GeoJSONGeometry;
-        output = {type: input.type, arcs: input.coordinates};
-    }else {
-        throw new Error("Unknown geometry type: " + input.type);
+    constructor(geometries: Geometry<any>[]){
+        // 默认维护一个 bbox
+        geometries.forEach(geometry => {
+            this.geometries.push(geometry);
+            this.updateBBox(geometry);
+        });
     }
 
-    return output;
+    updateBBox(geometry: Geometry<any>): void {
+        const bbox = geometry.getBoundingBox();
+        if (bbox) {
+            this.bbox = mergeMBR(this.bbox, bbox);
+        }
+    }
+
+    addGeometry(geometry: Geometry<any>): void {
+        this.geometries.push(geometry);
+        this.updateBBox(geometry);
+    }
+
+    _update(geometry: Geometry<any>, index: number): void {
+        this.geometries[index] = geometry;
+        this.updateBBox(geometry);
+    }
+
+    toGeoJSON(): GeoJSONFeature<any>{
+        let feature: GeoJSONFeature<any> = {
+            type: "Feature",
+            geometry: {
+                type: "GeometryCollection",
+                geometries: this.geometries.map(geometry => geometry.toGeoJSON().geometry)
+            },
+            properties: {}
+        } as GeoJSONFeature<any>;
+        if (this.bbox) {
+            feature.bbox = this.bbox;
+        }
+        return feature;
+    }
+
+    static fromFeature: any;
+
+    static fromGeometry(geometry: GeoJSONGeometryCollection): GeometryCollection{
+        //
+    }
 }
