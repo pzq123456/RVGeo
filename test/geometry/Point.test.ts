@@ -1,5 +1,5 @@
 import { describe, it, expect} from 'vitest';
-import { Point, toPoint } from '../../src/geometry/Point';
+import { Point, toPoint, MultiPoint } from '../../src/geometry/Point';
 
 describe('Point', () => {
   it('should create a point', () => {
@@ -134,4 +134,9 @@ describe('Point', () => {
     expect(result).toBe(true);
   });
 
+  // MultiPoint
+  it('should create a MultiPoint', () => {
+    const multiPoint = new MultiPoint([[1, 2], [3, 4], [5, 6], [3, 3]]);
+    console.log(multiPoint.toGeoJSON());
+  });
 });

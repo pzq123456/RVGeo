@@ -1,8 +1,8 @@
-import { Geometry } from "./Geometry";
-import { GeoJSONFeature, defaultProperties, GeoJSONPolygon } from "./GeoJSON";
+import { Geometry, GeometryCollection } from "./Geometry";
+import { GeoJSONFeature, defaultProperties, GeoJSONPolygon, GeoJSONMultiPolygon } from "./GeoJSON";
 
 export class Polygon extends Geometry<defaultProperties> {
-    constructor(coordinates: [number, number][][], properties?: defaultProperties) {
+    constructor(coordinates: GeoJSONPolygon["coordinates"] , properties?: defaultProperties) {
         super(coordinates, properties);
     }
 
@@ -34,5 +34,60 @@ export class Polygon extends Geometry<defaultProperties> {
 
     static isPolygon(polygon: any): polygon is Polygon{
         return polygon.type === "Polygon";
+    }
+}
+
+export class MultiPolygon extends GeometryCollection{
+
+    constructor(geometries: Polygon[] | GeoJSONMultiPolygon["coordinates"], properties?: defaultProperties){
+        // 判断类型
+        if(geometries[0] instanceof Polygon){
+            super(geometries as Polygon[], properties);
+        }else{
+            super((geometries as GeoJSONMultiPolygon["coordinates"])
+                    .map(coordinates => new Polygon(coordinates)),
+                    properties);
+        }
+    }
+
+    addGeometry(geometry: Polygon | GeoJSONPolygon["coordinates"]): void {
+        if(geometry instanceof Polygon){
+            this.geometries.push(geometry);
+            this.updateBBox(geometry);
+        }else{
+            this.geometries.push(new Polygon(geometry));
+            this.updateBBox(this.geometries[this.geometries.length - 1]);
+        }
+    }
+
+    toGeoJSON(): GeoJSONFeature<any>{
+        let feature: GeoJSONFeature<any> = {
+            type: "Feature",
+            geometry: {
+                type: "MultiPolygon",
+                coordinates: this.geometries.map(geometry => geometry.getCoordinates())
+            },
+        } as GeoJSONFeature<any>;
+        if (this.properties) {
+            feature.properties = this.properties;
+        };
+        if (this.bbox) {
+            feature.bbox = this.bbox;
+        };
+        return feature;
+    }
+
+    static fromFeature(feature: GeoJSONFeature<any>): GeometryCollection{
+        const { geometry, properties } = feature;
+        if (geometry.type !== "MultiPolygon") {
+            throw new Error(`The input geometry is not a MultiPolygon: ${geometry.type}`);
+        }
+        
+        const multiPolygonGeometry = geometry as GeoJSONMultiPolygon; // Type assertion
+        return new MultiPolygon(multiPolygonGeometry.coordinates, properties);
+    }
+
+    static fromGeometry(geometry: GeoJSONMultiPolygon): GeometryCollection{
+        return new MultiPolygon(geometry.coordinates);
     }
 }

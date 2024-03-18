@@ -1,8 +1,8 @@
 import * as core from "../core";
 const isPotentialGeoObject = core.isPotentialGeoObject; // 判断一个 object 是否是(潜在的)地理对象（是否含有 X，Y 或者 lon，lat 或者 lng，lat 属性）
 
-import { Geometry} from "./Geometry";
-import { GeoJSONFeature, defaultProperties, GeoJSONPoint } from "./GeoJSON";
+import { Geometry, GeometryCollection} from "./Geometry";
+import { GeoJSONFeature, defaultProperties, GeoJSONPoint, GeoJSONMultiPoint } from "./GeoJSON";
 /**
  * Point geometry
  */
@@ -32,6 +32,67 @@ export class Point extends Geometry<defaultProperties> {
         return point.type === "Point";
     }
 }
+
+export class MultiPoint extends GeometryCollection{
+    // 可以传入 点类型数组 但是会忽略每一个点的 properties
+    // 因为 MultiPoint 本身有 properties
+    // 建议在外部提取每一个点的 properties 再传入 到 MultiPoint 的 properties
+    constructor(geometries: Point[] | GeoJSONMultiPoint["coordinates"], properties?: defaultProperties){
+        // 判断类型
+        if(geometries[0] instanceof Point){
+            super(geometries as Point[], properties);
+        }else{
+            super((geometries as GeoJSONMultiPoint["coordinates"])
+                    .map(coordinates => new Point(coordinates)),
+                    properties);
+        }
+    }
+
+    addGeometry(geometry: Point | GeoJSONMultiPoint["coordinates"]): void {
+        if(geometry instanceof Point){
+            this.geometries.push(geometry);
+            this.updateBBox(geometry);
+        }else{
+            this.geometries.push(new Point(geometry));
+            this.updateBBox(this.geometries[this.geometries.length - 1]);
+        }
+    }
+
+    toGeoJSON(): GeoJSONFeature<any>{
+        let feature: GeoJSONFeature<any> = {
+            type: "Feature",
+            geometry: {
+                type: "MultiPoint",
+                coordinates: this.geometries.map(geometry => geometry.getCoordinates())
+            },
+            // properties: this.properties,
+        } as GeoJSONFeature<any>;
+
+        if (this.properties) {
+            feature.properties = this.properties;
+        }
+        
+        if (this.bbox) {
+            feature.bbox = this.bbox;
+        }
+        return feature;
+    }
+
+    static fromFeature(feature: GeoJSONFeature<any>): GeometryCollection{
+        const { geometry, properties } = feature;
+        if (geometry.type !== "MultiPoint") {
+            throw new Error(`The input geometry is not a MultiPoint: ${geometry.type}`);
+        }
+
+        const multiPointGeometry = geometry as GeoJSONMultiPoint; // Type assertion
+        return new MultiPoint(multiPointGeometry.coordinates, properties);
+    }
+
+    static fromGeometry(geometry: GeoJSONMultiPoint): GeometryCollection{
+        return new MultiPoint(geometry.coordinates);
+    }
+}
+
 
 /*Factory function*/
 

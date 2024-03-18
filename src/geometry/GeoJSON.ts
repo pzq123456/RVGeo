@@ -41,7 +41,7 @@ export interface GeoJSONPolygon extends GeoJSONGeometry {
 // Interface for GeoJSON multi polygon coordinates
 export interface GeoJSONMultiPolygon extends GeoJSONGeometry {
     type: "MultiPolygon";
-    coordinates: [number, number[][]][];
+    coordinates: [number, number][][][];
 }
 
 // Interface for GeoJSON geometry collection

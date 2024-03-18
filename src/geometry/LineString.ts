@@ -1,5 +1,5 @@
-import { Geometry } from "./Geometry";
-import { GeoJSONFeature, defaultProperties, GeoJSONLineString } from "./GeoJSON";
+import { Geometry, GeometryCollection } from "./Geometry";
+import { GeoJSONFeature, defaultProperties, GeoJSONLineString, GeoJSONMultiLineString } from "./GeoJSON";
 
 export class LineString extends Geometry<defaultProperties> {
     constructor(coordinates: GeoJSONLineString["coordinates"], properties?: defaultProperties) {
@@ -17,9 +17,9 @@ export class LineString extends Geometry<defaultProperties> {
         this.bbox = [minX, minY, maxX, maxY];
     }
 
-     /**
+    /**
      * 按照逆时针方向排序点
-     */
+    */
     // sortPoints(){
     //     let centroid = this.calculateCentroid();
     //     let centroidXY = centroid.toXY();
@@ -51,5 +51,60 @@ export class LineString extends Geometry<defaultProperties> {
 
     static isLineString(lineString: any): lineString is LineString{
         return lineString.type === "LineString";
+    }
+}
+
+export class MultiLineString extends GeometryCollection{
+
+    constructor(geometries: LineString[] | GeoJSONMultiLineString["coordinates"], properties?: defaultProperties){
+        // 判断类型
+        if(geometries[0] instanceof LineString){
+            super(geometries as LineString[], properties);
+        }else{
+            super((geometries as GeoJSONMultiLineString["coordinates"])
+                    .map(coordinates => new LineString(coordinates)),
+                    properties);
+        }
+    }
+
+    addGeometry(geometry: LineString | GeoJSONLineString["coordinates"]): void {
+        if(geometry instanceof LineString){
+            this.geometries.push(geometry);
+            this.updateBBox(geometry);
+        }else{
+            this.geometries.push(new LineString(geometry));
+            this.updateBBox(this.geometries[this.geometries.length - 1]);
+        }
+    }
+
+    toGeoJSON(): GeoJSONFeature<any>{
+        let feature: GeoJSONFeature<any> = {
+            type: "Feature",
+            geometry: {
+                type: "MultiLineString",
+                coordinates: this.geometries.map(geometry => geometry.getCoordinates())
+            },
+        } as GeoJSONFeature<any>;
+        if (this.properties) {
+            feature.properties = this.properties;
+        };
+        if (this.bbox) {
+            feature.bbox = this.bbox;
+        };
+        return feature;
+    }
+
+    static fromFeature(feature: GeoJSONFeature<any>): GeometryCollection{
+        const { geometry, properties } = feature;
+        if (geometry.type !== "MultiLineString") {
+            throw new Error(`The input geometry is not a MultiLineString: ${geometry.type}`);
+        }
+        
+        const multiLineStringGeometry = geometry as GeoJSONMultiLineString; // Type assertion
+        return new MultiLineString(multiLineStringGeometry.coordinates, properties);
+    }
+
+    static fromGeometry(geometry: GeoJSONMultiLineString): GeometryCollection{
+        return new MultiLineString(geometry.coordinates);
     }
 }

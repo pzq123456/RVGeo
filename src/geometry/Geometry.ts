@@ -15,7 +15,9 @@
  */
 
 import { MBR, mergeMBR } from "./MBR";
-import { GeoJSONFeature, GeoJSONGeometry, GeoJSONGeometryCollection } from "./GeoJSON";
+import { GeoJSONFeature, GeoJSONFeatureCollection, GeoJSONGeometry, GeoJSONGeometryCollection, GeoJSONLineString, GeoJSONMultiLineString, GeoJSONMultiPoint, GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon } from "./GeoJSON";
+
+import { Point, MultiPoint, Polygon, MultiPolygon, LineString, MultiLineString } from ".";
 
 /**
  * Geometry for GeoJSON independent Objects including Point, LineString, Polygon
@@ -64,8 +66,11 @@ export abstract class Geometry<T> {
                 type: this.constructor.name,
                 coordinates: this.coordinates
             },
-            properties: this.properties,
-        };
+            // properties: this.properties,
+        } as GeoJSONFeature<T>;
+        if (this.properties) {
+            feature.properties = this.properties;
+        }
         if (this.bbox) {
             feature.bbox = this.bbox;
         }
@@ -118,8 +123,10 @@ export abstract class Geometry<T> {
 export class GeometryCollection{
     geometries: Geometry<any>[] = [];
     bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
+    properties: any = {};
 
-    constructor(geometries: Geometry<any>[]){
+    constructor(geometries: Geometry<any>[] | GeometryCollection[], properties?: any) {
+        this.properties = properties;
         // 默认维护一个 bbox
         geometries.forEach(geometry => {
             this.geometries.push(geometry);
@@ -151,17 +158,113 @@ export class GeometryCollection{
                 type: "GeometryCollection",
                 geometries: this.geometries.map(geometry => geometry.toGeoJSON().geometry)
             },
-            properties: {}
+            // properties: this.properties,
         } as GeoJSONFeature<any>;
+        if (this.properties) {
+            feature.properties = this.properties;
+        }
         if (this.bbox) {
             feature.bbox = this.bbox;
         }
         return feature;
     }
 
-    static fromFeature: any;
+    static fromFeature(feature: GeoJSONFeature<any> | GeoJSONFeatureCollection): GeometryCollection{
+        return new GeometryCollection([]);
+    }
 
-    static fromGeometry(geometry: GeoJSONGeometryCollection): GeometryCollection{
-        //
+    static fromGeometry(geometry: GeoJSONGeometryCollection | GeoJSONGeometry): GeometryCollection{
+        // 1. GeometryCollection
+        if(geometry.type === "GeometryCollection"){
+            const geometries = (geometry as GeoJSONGeometryCollection).geometries.map(geo => fromGeometryObj(geo));
+            return new GeometryCollection(geometries);
+        }else{
+            throw new Error("The input geometry is not a GeometryCollection: " + geometry.type);
+        }
     }
 }
+
+// 工厂函数
+
+// 用于创建 Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon
+function fromGeometryObj(
+    geometry: GeoJSONGeometry 
+): Geometry<any> | GeometryCollection {
+    switch (geometry.type) {
+        case "Point":
+            return Point.fromGeometry(geometry as GeoJSONPoint);
+        case "LineString":
+            return LineString.fromGeometry(geometry as GeoJSONLineString);
+        case "Polygon":
+            return Polygon.fromGeometry(geometry as GeoJSONPolygon);
+        case "MultiPoint":
+            return MultiPoint.fromGeometry(geometry as GeoJSONMultiPoint);
+        case "MultiLineString":
+            return MultiLineString.fromGeometry(geometry as GeoJSONMultiLineString);
+        case "MultiPolygon":
+            return MultiPolygon.fromGeometry(geometry as GeoJSONMultiPolygon);
+        default:
+            throw new Error("Unknown geometry type: " + geometry.type + " in fromGeometryObj");
+    }
+}
+
+
+
+
+// from feature
+// 1. 带有 GeometryCollection 的 feature
+// 2. FeatureCollection
+
+// from geometry
+// 1. GeometryCollection
+
+// examples
+const GeometryCollectionEXP = {
+    "type": "Feature",
+    "geometry": {
+        "type": "GeometryCollection",
+        "geometries": [
+            {
+                "type": "Point",
+                "coordinates": [100.0, 0.0]
+            },
+            {
+                "type": "LineString",
+                "coordinates": [
+                    [101.0, 0.0], [102.0, 1.0]
+                ]
+            }
+        ]
+    },
+    "properties": {}
+};
+
+// feature collection
+const FeatureCollectionEXP = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [102.0, 0.5]
+            },
+            "properties": {
+                "prop0": "value0"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
+                ]
+            },
+            "properties": {
+                "prop0": "value0",
+                "prop1": 0.0
+            }
+        }
+    ]
+};
