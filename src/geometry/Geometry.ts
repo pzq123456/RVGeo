@@ -17,22 +17,20 @@
 import { MBR, mergeMBR } from "./MBR";
 import { GeoJSONFeature, GeoJSONFeatureCollection, GeoJSONGeometry, GeoJSONGeometryCollection, GeoJSONLineString, GeoJSONMultiLineString, GeoJSONMultiPoint, GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon } from "./GeoJSON";
 
-import { Point, MultiPoint, Polygon, MultiPolygon, LineString, MultiLineString } from ".";
-
 /**
  * Geometry for GeoJSON independent Objects including Point, LineString, Polygon
  * - no GeometryCollection
  * - no MultiPoint, MultiLineString, MultiPolygon
  */
-export abstract class Geometry<T> {
+export abstract class Geometry {
     protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
     protected coordinates: any;
-    protected properties: T = {} as T ; // if no properties are provided, use an empty object
+    protected properties: any;
     
     static fromFeature: any;
     static fromGeometry: any;
 
-    constructor(coordinates: any, properties?: T) {
+    constructor(coordinates: any, properties?: any) {
         this.coordinates = coordinates;
         // this.properties = properties;
         if (properties) {
@@ -42,32 +40,34 @@ export abstract class Geometry<T> {
     }
 
     getCoordinates(): any { return this.coordinates; }
-    getProperties(): T { return this.properties; }
+    getProperties(): any { return this.properties; }
     getBoundingBox(): MBR | null { return this.bbox; }
 
+    set Properties(properties: any) { this.properties = properties; }
+
     
-    clone(): Geometry<T>{
+    clone(): Geometry{
         const coordinates = this.coordinates.slice(); // Deep copy of coordinates
         const properties = { ...this.properties }; // Deep copy of properties
       
         return new (this.constructor as any)(coordinates, properties);
     }
 
-    equals(geometry: Geometry<T>): boolean {
+    equals(geometry: Geometry): boolean {
         return JSON.stringify(this.toGeoJSON()) === JSON.stringify(geometry.toGeoJSON());
     }
 
-    abstract updateBBox(): void; // update the bounding box
+    abstract updateBBox(): void; 
     
-    toGeoJSON(): GeoJSONFeature<T>{
-        let feature: GeoJSONFeature<T> = {
+    toGeoJSON(): GeoJSONFeature{
+        let feature: GeoJSONFeature = {
             type: "Feature",
             geometry: {
                 type: this.constructor.name,
                 coordinates: this.coordinates
             },
             // properties: this.properties,
-        } as GeoJSONFeature<T>;
+        } as GeoJSONFeature;
         if (this.properties) {
             feature.properties = this.properties;
         }
@@ -77,7 +77,7 @@ export abstract class Geometry<T> {
         return feature;
     }
 
-    static fromGeoJSON(feature: GeoJSONFeature<any> | GeoJSONGeometry): Geometry<any> {
+    static fromGeoJSON(feature: GeoJSONFeature | GeoJSONGeometry): Geometry {
         // 每一个子类都实现了 fromFeature 和 fromGeometry 方法
         // 所以这里可以直接调用
         if (feature.type === "Feature") {
@@ -97,7 +97,7 @@ export abstract class Geometry<T> {
      * @param coordinates 
      * @param properties 
      */
-    update_(coordinates: any, properties?: T): void {
+    update_(coordinates: any, properties?: any): void {
         this.coordinates = coordinates;
         if (properties) {
             this.properties = properties;
@@ -110,7 +110,7 @@ export abstract class Geometry<T> {
      * @param coordinates 
      * @param properties 
      */
-    update(coordinates: any, properties?: T): Geometry<T> {
+    update(coordinates: any, properties?: any): Geometry {
         const geometry = this.clone();
         geometry.update_(coordinates, properties);
         return geometry;
@@ -121,12 +121,14 @@ export abstract class Geometry<T> {
 // GeometryCollection 就不使用抽象类了
 // 暂时不支持嵌套 GeometryCollection
 export class GeometryCollection{
-    geometries: Geometry<any>[] = [];
-    bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
-    properties: any = {};
+    protected geometries: (Geometry | GeometryCollection)[] = [];
+    protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
+    protected properties: any;
 
-    constructor(geometries: Geometry<any>[] | GeometryCollection[], properties?: any) {
-        this.properties = properties;
+    constructor(geometries: (Geometry | GeometryCollection)[], properties?: any) {
+        if (properties) {
+            this.properties = properties;
+        }
         // 默认维护一个 bbox
         geometries.forEach(geometry => {
             this.geometries.push(geometry);
@@ -134,32 +136,37 @@ export class GeometryCollection{
         });
     }
 
-    updateBBox(geometry: Geometry<any>): void {
+    set Properties(properties: any) { this.properties = properties; }
+    getBoundingBox(): MBR | null { return this.bbox; }
+    getGeometries(): (Geometry | GeometryCollection)[] { return this.geometries; }
+    getProperties(): any { return this.properties; }
+
+    updateBBox(geometry: Geometry | GeometryCollection): void {
         const bbox = geometry.getBoundingBox();
         if (bbox) {
             this.bbox = mergeMBR(this.bbox, bbox);
         }
     }
 
-    addGeometry(geometry: Geometry<any>): void {
+    addGeometry(geometry: Geometry): void {
         this.geometries.push(geometry);
         this.updateBBox(geometry);
     }
 
-    _update(geometry: Geometry<any>, index: number): void {
+    _update(geometry: Geometry, index: number): void {
         this.geometries[index] = geometry;
         this.updateBBox(geometry);
     }
 
-    toGeoJSON(): GeoJSONFeature<any>{
-        let feature: GeoJSONFeature<any> = {
+    toGeoJSON(): GeoJSONFeature{
+        let feature: GeoJSONFeature = {
             type: "Feature",
             geometry: {
                 type: "GeometryCollection",
                 geometries: this.geometries.map(geometry => geometry.toGeoJSON().geometry)
             },
             // properties: this.properties,
-        } as GeoJSONFeature<any>;
+        } as GeoJSONFeature;
         if (this.properties) {
             feature.properties = this.properties;
         }
@@ -169,8 +176,25 @@ export class GeometryCollection{
         return feature;
     }
 
-    static fromFeature(feature: GeoJSONFeature<any> | GeoJSONFeatureCollection): GeometryCollection{
-        return new GeometryCollection([]);
+    static fromFeature(feature: GeoJSONFeature | GeoJSONFeatureCollection): GeometryCollection{
+        // from feature
+        // 1. 带有 GeometryCollection 的 feature
+        // 2. FeatureCollection
+        if(feature.type === "Feature"){
+            const geometry = feature.geometry;
+            if(geometry.type === "GeometryCollection"){
+                const geometries = (geometry as GeoJSONGeometryCollection).geometries.map(geo => fromGeometryObj(geo));
+                return new GeometryCollection(geometries, feature.properties);
+            }else{
+                throw new Error("The input feature is not a GeometryCollection: " + geometry.type);
+            }
+        }else if(feature.type === "FeatureCollection"){
+            // 递归调用 fromGeometry
+            const geometries = (feature as GeoJSONFeatureCollection).features.map(f => fromFeatureObj(f));
+            return new GeometryCollection(geometries);
+        } else{
+            throw new Error("Unknown GeoJSON type");
+        }
     }
 
     static fromGeometry(geometry: GeoJSONGeometryCollection | GeoJSONGeometry): GeometryCollection{
@@ -184,87 +208,63 @@ export class GeometryCollection{
     }
 }
 
-// 工厂函数
+export interface geometryCreator{
+    fromFeature: any;
+    fromGeometry: any;
+}
 
-// 用于创建 Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon
-function fromGeometryObj(
-    geometry: GeoJSONGeometry 
-): Geometry<any> | GeometryCollection {
+// Factory functions
+export function fromGeometryObj(
+    geometry: GeoJSONGeometry | GeoJSONGeometryCollection
+): Geometry | GeometryCollection {
     switch (geometry.type) {
         case "Point":
-            return Point.fromGeometry(geometry as GeoJSONPoint);
+            return PointCreator.fromGeometry(geometry as GeoJSONPoint);
         case "LineString":
-            return LineString.fromGeometry(geometry as GeoJSONLineString);
+            return LineStringCreator.fromGeometry(geometry as GeoJSONLineString);
         case "Polygon":
-            return Polygon.fromGeometry(geometry as GeoJSONPolygon);
+            return PolygonCreator.fromGeometry(geometry as GeoJSONPolygon);
         case "MultiPoint":
-            return MultiPoint.fromGeometry(geometry as GeoJSONMultiPoint);
+            return MultiPointCreator.fromGeometry(geometry as GeoJSONMultiPoint);
         case "MultiLineString":
-            return MultiLineString.fromGeometry(geometry as GeoJSONMultiLineString);
+            return MultiLineStringCreator.fromGeometry(geometry as GeoJSONMultiLineString);
         case "MultiPolygon":
-            return MultiPolygon.fromGeometry(geometry as GeoJSONMultiPolygon);
+            return MultiPolygonCreator.fromGeometry(geometry as GeoJSONMultiPolygon);
+        case "GeometryCollection":
+            return GeometryCollection.fromGeometry(geometry);
         default:
             throw new Error("Unknown geometry type: " + geometry.type + " in fromGeometryObj");
     }
 }
 
-
-
-
-// from feature
-// 1. 带有 GeometryCollection 的 feature
-// 2. FeatureCollection
-
-// from geometry
-// 1. GeometryCollection
-
-// examples
-const GeometryCollectionEXP = {
-    "type": "Feature",
-    "geometry": {
-        "type": "GeometryCollection",
-        "geometries": [
-            {
-                "type": "Point",
-                "coordinates": [100.0, 0.0]
-            },
-            {
-                "type": "LineString",
-                "coordinates": [
-                    [101.0, 0.0], [102.0, 1.0]
-                ]
-            }
-        ]
-    },
-    "properties": {}
-};
-
-// feature collection
-const FeatureCollectionEXP = {
-    "type": "FeatureCollection",
-    "features": [
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [102.0, 0.5]
-            },
-            "properties": {
-                "prop0": "value0"
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                    [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
-                ]
-            },
-            "properties": {
-                "prop0": "value0",
-                "prop1": 0.0
-            }
+export function fromFeatureObj(feature: GeoJSONFeature | GeoJSONFeatureCollection): Geometry | GeometryCollection {
+    if(feature.type === "Feature"){
+        const geometry = feature.geometry;
+        switch (geometry.type) {
+            case "Point":
+                return PointCreator.fromFeature(feature);
+            case "LineString":
+                return LineStringCreator.fromFeature(feature);
+            case "Polygon":
+                return PolygonCreator.fromFeature(feature);
+            case "MultiPoint":
+                return MultiPointCreator.fromFeature(feature);
+            case "MultiLineString":
+                return MultiLineStringCreator.fromFeature(feature);
+            case "MultiPolygon":
+                return MultiPolygonCreator.fromFeature(feature);
+            case "GeometryCollection":
+                return GeometryCollection.fromFeature(feature);
+            default:
+                throw new Error("Unknown geometry type: " + geometry.type + " in fromGeometryObj");
         }
-    ]
-};
+    }else if(feature.type === "FeatureCollection"){
+        return GeometryCollection.fromFeature(feature);
+    }else{
+        throw new Error("Unknown GeoJSON type");
+    }
+}
+
+// import { PointCreator, MultiPointCreator } from "./Point";
+// import { LineStringCreator, MultiLineStringCreator } from ".";
+// import { PolygonCreator, MultiPolygonCreator } from "./Polygon";

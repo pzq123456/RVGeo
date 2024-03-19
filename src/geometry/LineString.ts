@@ -1,8 +1,8 @@
-import { Geometry, GeometryCollection } from "./Geometry";
-import { GeoJSONFeature, defaultProperties, GeoJSONLineString, GeoJSONMultiLineString } from "./GeoJSON";
+import { Geometry, GeometryCollection, geometryCreator } from ".";
+import { GeoJSONFeature, GeoJSONLineString, GeoJSONMultiLineString } from "./GeoJSON";
 
-export class LineString extends Geometry<defaultProperties> {
-    constructor(coordinates: GeoJSONLineString["coordinates"], properties?: defaultProperties) {
+export class LineString extends Geometry {
+    constructor(coordinates: GeoJSONLineString["coordinates"], properties?: any) {
         super(coordinates, properties);
     }
 
@@ -40,7 +40,7 @@ export class LineString extends Geometry<defaultProperties> {
         return new LineString(geometry.coordinates);
     }
 
-    static fromFeature(feature: GeoJSONFeature<any>): LineString {
+    static fromFeature(feature: GeoJSONFeature): LineString {
         const { geometry, properties } = feature;
         if (geometry.type !== "LineString") {
             throw new Error(`The input geometry is not a LineString: ${geometry.type}`);
@@ -54,9 +54,15 @@ export class LineString extends Geometry<defaultProperties> {
     }
 }
 
+export const LineStringCreator = {
+    fromFeature: LineString.fromFeature,
+    fromGeometry: LineString.fromGeometry
+} as geometryCreator;
+
+
 export class MultiLineString extends GeometryCollection{
 
-    constructor(geometries: LineString[] | GeoJSONMultiLineString["coordinates"], properties?: defaultProperties){
+    constructor(geometries: LineString[] | GeoJSONMultiLineString["coordinates"], properties?: any){
         // 判断类型
         if(geometries[0] instanceof LineString){
             super(geometries as LineString[], properties);
@@ -77,14 +83,15 @@ export class MultiLineString extends GeometryCollection{
         }
     }
 
-    toGeoJSON(): GeoJSONFeature<any>{
-        let feature: GeoJSONFeature<any> = {
+    toGeoJSON(): GeoJSONFeature{
+        let feature: GeoJSONFeature = {
             type: "Feature",
             geometry: {
                 type: "MultiLineString",
-                coordinates: this.geometries.map(geometry => geometry.getCoordinates())
+                // 类型断言
+                coordinates: this.geometries.map(geometry => (geometry as LineString).getCoordinates()) as GeoJSONMultiLineString["coordinates"]
             },
-        } as GeoJSONFeature<any>;
+        } as GeoJSONFeature;
         if (this.properties) {
             feature.properties = this.properties;
         };
@@ -94,7 +101,7 @@ export class MultiLineString extends GeometryCollection{
         return feature;
     }
 
-    static fromFeature(feature: GeoJSONFeature<any>): GeometryCollection{
+    static fromFeature(feature: GeoJSONFeature): GeometryCollection{
         const { geometry, properties } = feature;
         if (geometry.type !== "MultiLineString") {
             throw new Error(`The input geometry is not a MultiLineString: ${geometry.type}`);
@@ -108,3 +115,8 @@ export class MultiLineString extends GeometryCollection{
         return new MultiLineString(geometry.coordinates);
     }
 }
+
+export const MultiLineStringCreator = {
+    fromFeature: MultiLineString.fromFeature,
+    fromGeometry: MultiLineString.fromGeometry
+} as geometryCreator;

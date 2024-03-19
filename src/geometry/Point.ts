@@ -1,13 +1,14 @@
 import * as core from "../core";
 const isPotentialGeoObject = core.isPotentialGeoObject; // 判断一个 object 是否是(潜在的)地理对象（是否含有 X，Y 或者 lon，lat 或者 lng，lat 属性）
 
-import { Geometry, GeometryCollection} from "./Geometry";
-import { GeoJSONFeature, defaultProperties, GeoJSONPoint, GeoJSONMultiPoint } from "./GeoJSON";
+import { Geometry, GeometryCollection, geometryCreator} from "./Geometry";
+import { GeoJSONFeature, GeoJSONPoint, GeoJSONMultiPoint } from "./GeoJSON";
+
 /**
  * Point geometry
  */
-export class Point extends Geometry<defaultProperties> {
-    constructor(coordinates: GeoJSONPoint["coordinates"] | any, properties?: defaultProperties) {
+export class Point extends Geometry {
+    constructor(coordinates: GeoJSONPoint["coordinates"] | any, properties?: any) {
         super(coordinates, properties);
     }
 
@@ -19,13 +20,18 @@ export class Point extends Geometry<defaultProperties> {
         return new Point(geometry.coordinates);
     }
 
-    static fromFeature(feature: GeoJSONFeature<any>): Point {
+    static fromFeature(feature: GeoJSONFeature): Point {
         const { geometry, properties } = feature;
         if (geometry.type !== "Point") {
             throw new Error(`The input geometry is not a Point: ${geometry.type}`);
         }
         const pointGeometry = geometry as GeoJSONPoint; // Type assertion
-        return new Point(pointGeometry.coordinates, properties);
+        // return new Point(pointGeometry.coordinates, properties);
+        if(properties){
+            return new Point(pointGeometry.coordinates, properties);
+        }else{
+            return new Point(pointGeometry.coordinates);
+        }
     }
 
     static isPoint(point: any): point is Point{
@@ -33,11 +39,17 @@ export class Point extends Geometry<defaultProperties> {
     }
 }
 
+export const PointCreator = {
+    fromFeature: Point.fromFeature,
+    fromGeometry: Point.fromGeometry
+} as geometryCreator;
+
 export class MultiPoint extends GeometryCollection{
     // 可以传入 点类型数组 但是会忽略每一个点的 properties
     // 因为 MultiPoint 本身有 properties
     // 建议在外部提取每一个点的 properties 再传入 到 MultiPoint 的 properties
-    constructor(geometries: Point[] | GeoJSONMultiPoint["coordinates"], properties?: defaultProperties){
+
+    constructor(geometries: Point[] | GeoJSONMultiPoint["coordinates"], properties?: any){
         // 判断类型
         if(geometries[0] instanceof Point){
             super(geometries as Point[], properties);
@@ -58,15 +70,17 @@ export class MultiPoint extends GeometryCollection{
         }
     }
 
-    toGeoJSON(): GeoJSONFeature<any>{
-        let feature: GeoJSONFeature<any> = {
+    toGeoJSON(): GeoJSONFeature{
+
+        let feature: GeoJSONFeature = {
             type: "Feature",
             geometry: {
                 type: "MultiPoint",
-                coordinates: this.geometries.map(geometry => geometry.getCoordinates())
+                // 类型断言
+                coordinates: this.geometries.map(geometry => (geometry as Point).getCoordinates()) as GeoJSONMultiPoint["coordinates"]
             },
-            // properties: this.properties,
-        } as GeoJSONFeature<any>;
+
+        } as GeoJSONFeature;
 
         if (this.properties) {
             feature.properties = this.properties;
@@ -78,14 +92,19 @@ export class MultiPoint extends GeometryCollection{
         return feature;
     }
 
-    static fromFeature(feature: GeoJSONFeature<any>): GeometryCollection{
+    static fromFeature(feature: GeoJSONFeature): GeometryCollection{
         const { geometry, properties } = feature;
         if (geometry.type !== "MultiPoint") {
             throw new Error(`The input geometry is not a MultiPoint: ${geometry.type}`);
         }
 
         const multiPointGeometry = geometry as GeoJSONMultiPoint; // Type assertion
-        return new MultiPoint(multiPointGeometry.coordinates, properties);
+
+        if(properties){
+            return new MultiPoint(multiPointGeometry.coordinates, properties);
+        }else{
+            return new MultiPoint(multiPointGeometry.coordinates);
+        }
     }
 
     static fromGeometry(geometry: GeoJSONMultiPoint): GeometryCollection{
@@ -93,6 +112,10 @@ export class MultiPoint extends GeometryCollection{
     }
 }
 
+export const MultiPointCreator = {
+    fromFeature: MultiPoint.fromFeature,
+    fromGeometry: MultiPoint.fromGeometry
+} as geometryCreator;
 
 /*Factory function*/
 
@@ -109,9 +132,9 @@ export class MultiPoint extends GeometryCollection{
  * // lon, lat = X, Y = lng, lat = x, y
  * let point = toPoint({lon: 120, lat: 30}, { name: 'test' });
  */
-export function toPoint(Lon: number, Lat: number, properties?: defaultProperties): Point
-export function toPoint(coordinates: [number, number], properties?: defaultProperties): Point
-export function toPoint(obj:{lon: number, lat: number} | {x: number, y: number} | {lng: number, lat: number}, properties?: defaultProperties): Point
+export function toPoint(Lon: number, Lat: number, properties?: any): Point
+export function toPoint(coordinates: [number, number], properties?: any): Point
+export function toPoint(obj:{lon: number, lat: number} | {x: number, y: number} | {lng: number, lat: number}, properties?: any): Point
 export function toPoint(...args: any[]): Point {
     if (args.length === 1) {
         if(!isPotentialGeoObject(args[0]) && args[0].length === 2) {

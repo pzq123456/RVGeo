@@ -52,10 +52,10 @@ export interface GeoJSONGeometryCollection{
 }
 
 // Interface for GeoJSON feature
-export interface GeoJSONFeature<T> {
+export interface GeoJSONFeature {
     type: "Feature";
     geometry: GeoJSONGeometry | GeoJSONGeometryCollection;
-    properties: T;
+    properties: any;
     bbox?: MBR; // https://datatracker.ietf.org/doc/html/rfc7946#section-5
     id?: string | number;
 }
@@ -63,8 +63,6 @@ export interface GeoJSONFeature<T> {
 // Interface for GeoJSON feature collection
 export interface GeoJSONFeatureCollection {
     type: "FeatureCollection";
-    features: GeoJSONFeature<any>[];
+    features: GeoJSONFeature[];
     bbox?: MBR;
 }
-
-export interface defaultProperties {}; // 只要不指定字段，用户就可以自定义任意字段
