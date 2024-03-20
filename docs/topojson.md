@@ -22,6 +22,13 @@ Yet encoding topology also has numerous useful applications for maps and visuali
   - [hexagonal cartograms](http://pitchinteractive.com/latest/tilegrams-more-human-maps/)
   - [automatic map coloring](https://bl.ocks.org/4188334)
   - [topology-preserving shape simplification](https://github.com/topojson/topojson-simplify)
+## Sever
+The algorithm has four steps:
+
+  - [x] extract - decompose shapes into lines and rings.
+  - [ ] join - identify junctions (intersection points).
+  - [ ] cut - split or rotate arcs to terminate at junctions.
+  - [ ] dedup - consolidate duplicate arcs.
 
 ## API Reference
 

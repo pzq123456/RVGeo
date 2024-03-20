@@ -1,61 +1,82 @@
-import { GeoJSONFeature, GeoJSONGeometry, GeoJSONFeatureCollection, GeoJSONGeometryCollection, MBR } from "../geometry";
+import { GeometryObject } from './geometry';
 
-interface GeometryObject {
-    type: string | null;
-    coordinates?: any;
-    geometries?: any;
-    arcs?: any;
-    bbox?: MBR;
-    id?: string | number;
-    properties?: any;
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
+interface Arc {
+    0: number;
+    1: number;
+}
+export interface Topology {
+    type: string;
+    coordinates: [number,number][];
+    lines: Arc[];
+    rings: Arc[];
+    objects: { [key: string]: GeometryObject };
 }
 
-export function geomifyObject(input: GeoJSONFeatureCollection | GeoJSONFeature<any> | GeoJSONGeometry): any {
-    if (input == null) {
-        return {type: null};
-    } else if (input.type === "FeatureCollection") {
-        return geomifyFeatureCollection(input as GeoJSONFeatureCollection);
-    } else if (input.type === "Feature") {
-        return geomifyFeature(input as GeoJSONFeature<any>);
-    } else {
-        return geomifyGeometry(input as GeoJSONGeometry);
-    }
-}
+// Extracts the lines and rings from the specified hash of geometry objects.
+//
+// Returns an object with three properties:
+//
+// * coordinates - shared buffer of [x, y] coordinates
+// * lines - lines extracted from the hash, of the form [start, end]
+// * rings - rings extracted from the hash, of the form [start, end]
+//
+// For each ring or line, start and end represent inclusive indexes into the
+// coordinates buffer. For rings (and closed lines), coordinates[start] equals
+// coordinates[end].
+//
+// For each line or polygon geometry in the input hash, including nested
+// geometries as in geometry collections, the `coordinates` array is replaced
+// with an equivalent `arcs` array that, for each line (for line string
+// geometries) or ring (for polygon geometries), points to one of the above
+// lines or rings.
 
-/**
- * 将 FeatureCollection 转换为 GeometryCollection
- * - Geometries 中包含 properties
- */
-function geomifyFeatureCollection(input: GeoJSONFeatureCollection) : GeometryObject {
-    var output = {type: "GeometryCollection", geometries: input.features.map(geomifyFeature)} as GeometryObject;
-    if (input.bbox != null) output.bbox = input.bbox;
-    return output;
-}
+export function extract(objects : { [key: string]: GeometryObject }) : Topology {
+    let index = -1;
+    let coordinates: [number,number][] = [];
+    let lines: Arc[] = [];
+    let rings: Arc[] = [];
 
-function geomifyFeature(input: GeoJSONFeature<any>) : GeometryObject {
-    var output = geomifyGeometry(input.geometry), key; // eslint-disable-line no-unused-vars
-    if (input.id != null) output.id = input.id;
-    if (input.bbox != null) output.bbox = input.bbox;
-    for (key in input.properties) { output.properties = input.properties; break; }
-    return output;
-}
-
-function geomifyGeometry(input: GeoJSONGeometry | GeoJSONGeometryCollection): GeometryObject {
-    if (input == null) return {type: null};
-    let output = {} as GeometryObject;
-    if (input.type === "GeometryCollection") {
-        input = input as GeoJSONGeometryCollection;
-        // 递归调用
-        output = {type: "GeometryCollection", geometries: input.geometries.map(geomifyGeometry)};
-        if (input.bbox != null) output.bbox = input.bbox;
-    } else if (input.type === "Point" || input.type === "MultiPoint") {
-        output = {type: input.type, coordinates: input.coordinates};
-    } else if (input.type === "LineString" || input.type === "MultiLineString" || input.type === "Polygon" || input.type === "MultiPolygon") {
-        input = input as GeoJSONGeometry;
-        output = {type: input.type, arcs: input.coordinates};
-    }else {
-        throw new Error("Unknown geometry type: " + input.type);
+    function extractGeometry(geometry : GeometryObject) {
+        if (geometry && geometry.type &&hasOwnProperty.call(extractGeometryType, geometry.type)) extractGeometryType[geometry.type](geometry);
     }
 
-    return output;
+    const extractGeometryType : { [key: string]: (o: GeometryObject) => void } = {
+        GeometryCollection: function(o) { o.geometries.forEach(extractGeometry); },
+        LineString: function(o) { o.arcs = extractLine(o.arcs); },
+        MultiLineString: function(o) { o.arcs = o.arcs.map(extractLine); },
+        Polygon: function(o) { o.arcs = o.arcs.map(extractRing); },
+        MultiPolygon: function(o) { o.arcs = o.arcs.map(extractMultiRing); }
+    };
+
+    function extractLine(line : [number,number][]) {
+        for (var i = 0, n = line.length; i < n; ++i) coordinates[++index] = line[i];
+        var arc = {0: index - n + 1, 1: index};
+        lines.push(arc);
+        return arc;
+    }
+
+    function extractRing(ring : [number,number][]) {
+        for (var i = 0, n = ring.length; i < n; ++i) coordinates[++index] = ring[i];
+        var arc = {0: index - n + 1, 1: index};
+        rings.push(arc);
+        return arc;
+    }
+
+    function extractMultiRing(rings : [number,number][][]) {
+        return rings.map(extractRing);
+    }
+
+    for (var key in objects) {
+        extractGeometry(objects[key]);
+    }
+
+    return {
+        type: "Topology",
+        coordinates: coordinates,
+        lines: lines,
+        rings: rings,
+        objects: objects
+    };
 }
