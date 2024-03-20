@@ -87,7 +87,7 @@ export function hashmap(size: number, hash: (value: any) => number, equal: equal
       return value;
     }
   
-    function get(key: any, missingValue: any) {
+    function get(key: any, missingValue?: any) {
       var index = hash(key) & mask,
           matchKey = keystore[index],
           collisions = 0;

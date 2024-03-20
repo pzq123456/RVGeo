@@ -1,17 +1,21 @@
 import { GeometryObject } from './geometry';
+import { quantized } from './prequantize';
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
-interface Arc {
+export interface Arc {
     0: number;
     1: number;
+    next?: Arc;
 }
 export interface Topology {
     type: string;
     coordinates: [number,number][];
     lines: Arc[];
     rings: Arc[];
-    objects: { [key: string]: GeometryObject };
+    objects: GeometryObject;
+    bbox?: [number,number,number,number];
+    transform?: quantized;
 }
 
 // Extracts the lines and rings from the specified hash of geometry objects.
@@ -32,7 +36,7 @@ export interface Topology {
 // geometries) or ring (for polygon geometries), points to one of the above
 // lines or rings.
 
-export function extract(objects : { [key: string]: GeometryObject }) : Topology {
+export function extract(objects : GeometryObject ) : Topology {
     let index = -1;
     let coordinates: [number,number][] = [];
     let lines: Arc[] = [];
@@ -69,6 +73,7 @@ export function extract(objects : { [key: string]: GeometryObject }) : Topology 
     }
 
     for (var key in objects) {
+        // @ts-ignore
         extractGeometry(objects[key]);
     }
 

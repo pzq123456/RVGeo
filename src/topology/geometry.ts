@@ -10,7 +10,31 @@ export interface GeometryObject {
     properties?: any;
 }
 
-export function geomifyObject(input: GeoJSONFeatureCollection | GeoJSONFeature | GeoJSONGeometry): any {
+// {
+//     foo: {
+//       type: "LineString",
+//       coordinates: []
+//     }
+// } 
+
+interface geometryInputs {
+    [key: string]: GeoJSONFeatureCollection | GeoJSONFeature | GeoJSONGeometry;
+}
+
+interface geometryOutputs {
+    [key: string]: GeometryObject;
+}
+
+
+
+export function geometry(inputs : geometryInputs) : geometryOutputs {
+    var outputs = {}, key;
+    //@ts-ignore
+    for (key in inputs) outputs[key] = geomifyObject(inputs[key]);
+    return outputs;
+}
+
+export function geomifyObject(input: GeoJSONFeatureCollection | GeoJSONFeature | GeoJSONGeometry): GeometryObject {
     if (input == null) {
         return {type: null};
     } else if (input.type === "FeatureCollection") {

@@ -178,7 +178,6 @@ export class GeometryCollection{
     }
 }
 
-
 export interface geometryCreator{
     fromFeature: any;
     fromGeometry: any;

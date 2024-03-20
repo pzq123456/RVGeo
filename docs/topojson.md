@@ -26,9 +26,9 @@ Yet encoding topology also has numerous useful applications for maps and visuali
 The algorithm has four steps:
 
   - [x] extract - decompose shapes into lines and rings.
-  - [ ] join - identify junctions (intersection points).
-  - [ ] cut - split or rotate arcs to terminate at junctions.
-  - [ ] dedup - consolidate duplicate arcs.
+  - [x] join - identify junctions (intersection points).
+  - [x] cut - split or rotate arcs to terminate at junctions.
+  - [x] dedup - consolidate duplicate arcs.
 
 ## API Reference
 
