@@ -15,7 +15,9 @@
  */
 
 import { MBR, mergeMBR } from "./MBR";
-import { GeoJSONFeature, GeoJSONFeatureCollection, GeoJSONGeometry, GeoJSONGeometryCollection, GeoJSONLineString, GeoJSONMultiLineString, GeoJSONMultiPoint, GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon } from "./GeoJSON";
+import { GeoJSONFeature, GeoJSONGeometry } from "./GeoJSON";
+
+// 注意： 该模块中的类不建议直接实例化，而是通过工厂函数创建
 
 /**
  * Geometry for GeoJSON independent Objects including Point, LineString, Polygon
@@ -32,7 +34,7 @@ export abstract class Geometry {
 
     constructor(coordinates: any, properties?: any) {
         this.coordinates = coordinates;
-        // this.properties = properties;
+
         if (properties) {
             this.properties = properties;
         }
@@ -44,7 +46,6 @@ export abstract class Geometry {
     getBoundingBox(): MBR | null { return this.bbox; }
 
     set Properties(properties: any) { this.properties = properties; }
-
     
     clone(): Geometry{
         const coordinates = this.coordinates.slice(); // Deep copy of coordinates
@@ -175,96 +176,10 @@ export class GeometryCollection{
         }
         return feature;
     }
-
-    static fromFeature(feature: GeoJSONFeature | GeoJSONFeatureCollection): GeometryCollection{
-        // from feature
-        // 1. 带有 GeometryCollection 的 feature
-        // 2. FeatureCollection
-        if(feature.type === "Feature"){
-            const geometry = feature.geometry;
-            if(geometry.type === "GeometryCollection"){
-                const geometries = (geometry as GeoJSONGeometryCollection).geometries.map(geo => fromGeometryObj(geo));
-                return new GeometryCollection(geometries, feature.properties);
-            }else{
-                throw new Error("The input feature is not a GeometryCollection: " + geometry.type);
-            }
-        }else if(feature.type === "FeatureCollection"){
-            // 递归调用 fromGeometry
-            const geometries = (feature as GeoJSONFeatureCollection).features.map(f => fromFeatureObj(f));
-            return new GeometryCollection(geometries);
-        } else{
-            throw new Error("Unknown GeoJSON type");
-        }
-    }
-
-    static fromGeometry(geometry: GeoJSONGeometryCollection | GeoJSONGeometry): GeometryCollection{
-        // 1. GeometryCollection
-        if(geometry.type === "GeometryCollection"){
-            const geometries = (geometry as GeoJSONGeometryCollection).geometries.map(geo => fromGeometryObj(geo));
-            return new GeometryCollection(geometries);
-        }else{
-            throw new Error("The input geometry is not a GeometryCollection: " + geometry.type);
-        }
-    }
 }
+
 
 export interface geometryCreator{
     fromFeature: any;
     fromGeometry: any;
 }
-
-// Factory functions
-export function fromGeometryObj(
-    geometry: GeoJSONGeometry | GeoJSONGeometryCollection
-): Geometry | GeometryCollection {
-    switch (geometry.type) {
-        case "Point":
-            return PointCreator.fromGeometry(geometry as GeoJSONPoint);
-        case "LineString":
-            return LineStringCreator.fromGeometry(geometry as GeoJSONLineString);
-        case "Polygon":
-            return PolygonCreator.fromGeometry(geometry as GeoJSONPolygon);
-        case "MultiPoint":
-            return MultiPointCreator.fromGeometry(geometry as GeoJSONMultiPoint);
-        case "MultiLineString":
-            return MultiLineStringCreator.fromGeometry(geometry as GeoJSONMultiLineString);
-        case "MultiPolygon":
-            return MultiPolygonCreator.fromGeometry(geometry as GeoJSONMultiPolygon);
-        case "GeometryCollection":
-            return GeometryCollection.fromGeometry(geometry);
-        default:
-            throw new Error("Unknown geometry type: " + geometry.type + " in fromGeometryObj");
-    }
-}
-
-export function fromFeatureObj(feature: GeoJSONFeature | GeoJSONFeatureCollection): Geometry | GeometryCollection {
-    if(feature.type === "Feature"){
-        const geometry = feature.geometry;
-        switch (geometry.type) {
-            case "Point":
-                return PointCreator.fromFeature(feature);
-            case "LineString":
-                return LineStringCreator.fromFeature(feature);
-            case "Polygon":
-                return PolygonCreator.fromFeature(feature);
-            case "MultiPoint":
-                return MultiPointCreator.fromFeature(feature);
-            case "MultiLineString":
-                return MultiLineStringCreator.fromFeature(feature);
-            case "MultiPolygon":
-                return MultiPolygonCreator.fromFeature(feature);
-            case "GeometryCollection":
-                return GeometryCollection.fromFeature(feature);
-            default:
-                throw new Error("Unknown geometry type: " + geometry.type + " in fromGeometryObj");
-        }
-    }else if(feature.type === "FeatureCollection"){
-        return GeometryCollection.fromFeature(feature);
-    }else{
-        throw new Error("Unknown GeoJSON type");
-    }
-}
-
-// import { PointCreator, MultiPointCreator } from "./Point";
-// import { LineStringCreator, MultiLineStringCreator } from ".";
-// import { PolygonCreator, MultiPolygonCreator } from "./Polygon";
