@@ -1,4 +1,4 @@
-import { GeoJSONFeature, GeoJSONGeometry, GeoJSONFeatureCollection, GeoJSONGeometryCollection, MBR } from "../geometry";
+import { GeoJSONFeature, GeoJSONGeometry, GeoJSONFeatureCollection, GeoJSONGeometryCollection, MBR } from "../../geometry";
 
 export interface GeometryObject {
     type: string | null;
@@ -14,7 +14,7 @@ export interface geometryInputs {
     [key: string]: GeoJSONFeatureCollection | GeoJSONFeature | GeoJSONGeometry;
 }
 
-interface geometryOutputs {
+export interface geometryOutputs {
     [key: string]: GeometryObject;
 }
 

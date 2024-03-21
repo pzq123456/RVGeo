@@ -1,11 +1,9 @@
-import { GeoJSONFeature, GeoJSONFeatureCollection, GeoJSONGeometry } from "../geometry";
-
 import { bounds } from "./bounds";
 import { cut } from "./cut";
 import { dedup, dedupedTopology } from "./dedup";
 import { delta } from "./delta";
 import { Arc, extract } from "./extract";
-import { geomifyObject as geometry, GeometryObject } from "./geometry";
+import { geometry, GeometryObject, geometryInputs } from "./geometry";
 import { hashmap } from "./hash";
 import { prequantize } from "./prequantize";
 
@@ -14,7 +12,7 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
 // Constructs the TopoJSON Topology for the specified hash of features.
 // Each object in the specified hash must be a GeoJSON object,
 // meaning FeatureCollection, a Feature or a geometry object.
-export function topology(objects: GeoJSONFeatureCollection | GeoJSONFeature | GeoJSONGeometry, quantization: number) : dedupedTopology {
+export function topology(objects: geometryInputs, quantization: number) : dedupedTopology {
   let geoObjects = geometry(objects);
   var bbox = bounds(geoObjects),
       transform = quantization > 0 && bbox && prequantize(geoObjects, bbox, quantization),
@@ -30,8 +28,9 @@ export function topology(objects: GeoJSONFeatureCollection | GeoJSONFeature | Ge
     return coordinates.slice(arc[0] as number, arc[1] as number + 1 );
   }) as [number,number][][];
 
-  // delete topology.coordinates;
-  topology.coordinates = null as any;
+  // @ts-ignore
+  delete topology.coordinates;
+  // topology.coordinates = null as any;
   coordinates = null as any;
 
   function indexGeometry(geometry : GeometryObject) {
@@ -60,7 +59,6 @@ export function topology(objects: GeoJSONFeatureCollection | GeoJSONFeature | Ge
   }
 
   for (var key in geoObjects) {
-    // @ts-ignore
     indexGeometry(geoObjects[key]);
   }
 

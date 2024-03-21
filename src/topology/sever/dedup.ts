@@ -13,10 +13,12 @@ export function dedup(topology: dedupedTopology) : dedupedTopology {
         arcCount = lines.length + rings.length,
         i, n;
 
-    // delete topology.lines;
-    // delete topology.rings;
-    topology.lines = null as any;
-    topology.rings = null as any;
+    // @ts-ignore
+    delete topology.lines;
+    // @ts-ignore
+    delete topology.rings;
+    // topology.lines = null as any;
+    // topology.rings = null as any;
 
 
     // Count the number of (non-unique) arcs to initialize the hashmap safely.

@@ -1,4 +1,4 @@
-import { GeometryObject, geometryInputs} from './geometry';
+import { GeometryObject, geometryOutputs} from './geometry';
 import { quantized } from './prequantize';
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -14,7 +14,7 @@ export interface Topology {
     coordinates: [number,number][];
     lines: Arc[];
     rings: Arc[];
-    objects: geometryInputs;
+    objects: geometryOutputs;
     bbox?: [number,number,number,number];
     transform?: quantized;
 }
@@ -37,7 +37,7 @@ export interface Topology {
 // geometries) or ring (for polygon geometries), points to one of the above
 // lines or rings.
 
-export function extract(objects : geometryInputs ) : Topology {
+export function extract(objects : geometryOutputs ) : Topology {
     let index = -1;
     let coordinates: [number,number][] = [];
     let lines: Arc[] = [];

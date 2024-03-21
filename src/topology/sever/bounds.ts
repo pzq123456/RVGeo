@@ -1,9 +1,9 @@
-import { GeometryObject, geometryInputs } from "./geometry";
+import { GeometryObject, geometryOutputs } from "./geometry";
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 // Computes the bounding box of the specified hash of GeoJSON objects.
-export function bounds(objects: geometryInputs) : [number,number,number,number] | undefined {
+export function bounds(objects: geometryOutputs) : [number,number,number,number] | undefined {
   var x0 = Infinity,
       y0 = Infinity,
       x1 = -Infinity,

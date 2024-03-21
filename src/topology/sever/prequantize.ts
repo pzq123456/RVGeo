@@ -1,7 +1,7 @@
-import { GeometryObject } from "./geometry";
+import { GeometryObject, geometryOutputs } from "./geometry";
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
-export function prequantize(objects : GeometryObject, bbox : [number,number,number,number], n : number) : quantized {
+export function prequantize(objects : geometryOutputs, bbox : [number,number,number,number], n : number) : quantized {
     var x0 = bbox[0],
         y0 = bbox[1],
         x1 = bbox[2],
@@ -63,7 +63,6 @@ export function prequantize(objects : GeometryObject, bbox : [number,number,numb
     } as {[key: string]: (o: GeometryObject) => void};
 
     for (var key in objects) {
-        //@ts-ignore
         quantizeGeometry(objects[key]);
     }
 
