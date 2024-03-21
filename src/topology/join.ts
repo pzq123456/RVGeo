@@ -1,5 +1,6 @@
 import {hashset, hashmap, equalPoint, hashPoint} from './hash';
 import { Topology } from './extract';
+
 // Given an extracted (pre-)topology, identifies all of the junctions. These are
 // the points at which arcs (lines or rings) will need to be cut so that each
 // arc is represented uniquely.

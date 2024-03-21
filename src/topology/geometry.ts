@@ -10,14 +10,7 @@ export interface GeometryObject {
     properties?: any;
 }
 
-// {
-//     foo: {
-//       type: "LineString",
-//       coordinates: []
-//     }
-// } 
-
-interface geometryInputs {
+export interface geometryInputs {
     [key: string]: GeoJSONFeatureCollection | GeoJSONFeature | GeoJSONGeometry;
 }
 

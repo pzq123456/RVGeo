@@ -6,7 +6,7 @@ export interface dedupedTopology extends Topology {
 }
 
 // Given a cut topology, combines duplicate arcs.
-export function dedup(topology: dedupedTopology) {
+export function dedup(topology: dedupedTopology) : dedupedTopology {
     let coordinates = topology.coordinates,
         lines = topology.lines, line,
         rings = topology.rings, ring,
