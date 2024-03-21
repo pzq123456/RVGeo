@@ -14,6 +14,7 @@ export interface Topology {
     coordinates: [number,number][];
     lines: Arc[];
     rings: Arc[];
+    arcs?: any[];
     objects: geometryOutputs;
     bbox?: [number,number,number,number];
     transform?: quantized;
