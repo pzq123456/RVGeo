@@ -3,67 +3,126 @@
 > - https://github.com/topojson/topojson?tab=readme-ov-file
 > - https://github.com/topojson/topojson-server/tree/master/src
 
-## TopoJSON 包
-# TopoJSON
-**TopoJSON** is an extension of GeoJSON that encodes topology. Rather than representing geometries discretely, geometries in TopoJSON files are stitched together from shared line segments called *arcs*. 
+## TopoJSON
+**TopoJSON** 是 GeoJSON 的拓展，实现了拓扑编码。与 GeoJSON 直接使用独立的几何对象表示不同，TopoJSON 将所有的用于表示几何图形的共享线段不重复地存放在 arcs 中，这使得其可以高效编码几何数据。例如，加利福尼亚州与内华达州之间的公共边界，在 GeoJSON 会存储两次，而在 TopoJSON 中只会存储一次。
 
-- TopoJSON eliminates redundancy, allowing related geometries to be stored efficiently in the same file. For example, the shared boundary between California and Nevada is represented only once, rather than being duplicated for both states. 
+- 单个TopoJSON文件可以包含多个功能集合，而不会重复，例如州和县。或者，TopoJSON文件可以有效地将多边形（用于填充）和边界（用于笔划）表示为共享同一弧形网格的两个特征集合。
+- delta-encoding 可以进一步压缩文件。
+- 使用 TopoJSON 来编码数据可以实现许多有用的功能：
+  - [Dorling Cartogram 气泡图](http://www.ncgia.ucsb.edu/projects/Cartogram_Central/types.html)
+  - [hexagonal cartograms 六边形地图](http://pitchinteractive.com/latest/tilegrams-more-human-maps/)
+  - [automatic map coloring 地图自动上色](https://bl.ocks.org/4188334)
+  - [topology-preserving shape simplification 几何图形简化](https://github.com/topojson/topojson-simplify)
 
-- A single TopoJSON file can contain multiple feature collections without duplication, such as states and counties. Or, a TopoJSON file can efficiently represent both polygons (for fill) and boundaries (for stroke) as two feature collections that share the same arc mesh. 
-  - See [How To Infer Topology](https://bost.ocks.org/mike/topology/) for a visual explanation of how TopoJSON works. 
-  - See [Command-Line Cartography](https://medium.com/@mbostock/command-line-cartography-part-1-897aa8f8ca2c) for an introduction to TopoJSON and related tools. 
-  - See [TopoJSON Format Specification](https://github.com/topojson/topojson-specification) for the format specification.
+## 由 GeoJSON 得到 TopoJSON 
 
-- delta-encoding : To further reduce file size, TopoJSON can use quantized delta-encoding for integer coordinates. This is similar to rounding coordinate values (e.g., [LilJSON](https://github.com/migurski/LilJSON)), but with greater efficiency and control over loss of information. And like GeoJSON, TopoJSON files are easily modified in a text editor and amenable to gzip compression.
+该过程分为四个步骤：
+  - [x] extract - 将形状分解为线条和环形。
+  - [x] join - 识别交叉点。
+  - [x] cut - 分割或旋转圆弧以终止于接点。
+  - [x] dedup - 合并重复的圆弧。
 
-Yet encoding topology also has numerous useful applications for maps and visualization above! 
-- Topology can also be used for 
-  - [Dorling Cartogram](http://www.ncgia.ucsb.edu/projects/Cartogram_Central/types.html)
-  - [hexagonal cartograms](http://pitchinteractive.com/latest/tilegrams-more-human-maps/)
-  - [automatic map coloring](https://bl.ocks.org/4188334)
-  - [topology-preserving shape simplification](https://github.com/topojson/topojson-simplify)
-## Sever
-The algorithm has four steps:
-
-  - [x] extract - decompose shapes into lines and rings.
-  - [x] join - identify junctions (intersection points).
-  - [x] cut - split or rotate arcs to terminate at junctions.
-  - [x] dedup - consolidate duplicate arcs.
-
-## API Reference
-
-### [Generation (topojson-server)](https://github.com/topojson/topojson-server)
-
+## Generation (topojson-server)
 * [topojson.topology](https://github.com/topojson/topojson-server/blob/master/README.md#topology) - convert GeoJSON to TopoJSON.
-* [geo2topo](https://github.com/topojson/topojson-server/blob/master/README.md#geo2topo) - convert GeoJSON to TopoJSON.
 
-### [Simplification (topojson-simplify)](https://github.com/topojson/topojson-simplify)
+## Manipulation (topojson-client)
 
-* [topojson.presimplify](https://github.com/topojson/topojson-simplify/blob/master/README.md#presimplify) - prepare TopoJSON for simplification.
-* [topojson.simplify](https://github.com/topojson/topojson-simplify/blob/master/README.md#simplify) - simplify geometry by removing coordinates.
-* [topojson.quantile](https://github.com/topojson/topojson-simplify/blob/master/README.md#quantile) - compute a simplification threshold.
-* [topojson.filter](https://github.com/topojson/topojson-simplify/blob/master/README.md#filter) - remove rings from a topology.
-* [topojson.filterAttached](https://github.com/topojson/topojson-simplify/blob/master/README.md#filterAttached) - remove detached rings.
-* [topojson.filterAttachedWeight](https://github.com/topojson/topojson-simplify/blob/master/README.md#filterAttachedWeight) - remove small detached rings.
-* [topojson.filterWeight](https://github.com/topojson/topojson-simplify/blob/master/README.md#filterWeight) - remove small rings.
-* [topojson.planarRingArea](https://github.com/topojson/topojson-simplify/blob/master/README.md#planarRingArea) - compute the planar area of a ring.
-* [topojson.planarTriangleArea](https://github.com/topojson/topojson-simplify/blob/master/README.md#planarTriangleArea) - compute the planar area of a triangle.
-* [topojson.sphericalRingArea](https://github.com/topojson/topojson-simplify/blob/master/README.md#sphericalRingArea) - compute the spherical area of a ring.
-* [topojson.sphericalTriangleArea](https://github.com/topojson/topojson-simplify/blob/master/README.md#sphericalTriangleArea) - compute the spherical area of a triangle.
-* [toposimplify](https://github.com/topojson/topojson-simplify/blob/master/README.md#toposimplify) - simplify TopoJSON, removing coordinates.
+### topojson.feature(topology, object) 
+> - delta-code 解码（累计相加）
+> - 对于某一个环或线，取负值区域的编码就是翻转。正负值编码对照表：
+>  0, -1, -2, -3, add `~` before
+> -1, 0, 1, 2, 3
+> - 对于索引而言，-1 取反后刚好得到 0 也就是正数第一个值。
 
-### [Manipulation (topojson-client)](https://github.com/topojson/topojson-client)
+Returns the GeoJSON Feature or FeatureCollection for the specified *object* in the given *topology*. If the specified object is a string, it is treated as *topology*. objects[*object*]. Then, if the object is a GeometryCollection, a FeatureCollection is returned, and each geometry in the collection is mapped to a Feature. Otherwise, a Feature is returned. The returned feature is a shallow copy of the source *object*: they may share identifiers, bounding boxes, properties and coordinates.
 
-* [topojson.feature](https://github.com/topojson/topojson-client/blob/master/README.md#feature) - convert TopoJSON to GeoJSON.
-* [topojson.merge](https://github.com/topojson/topojson-client/blob/master/README.md#merge) - merge TopoJSON geometry and convert to GeoJSON polygons.
-* [topojson.mergeArcs](https://github.com/topojson/topojson-client/blob/master/README.md#mergeArcs) - merge TopoJSON geometry to form polygons.
-* [topojson.mesh](https://github.com/topojson/topojson-client/blob/master/README.md#mesh) - mesh TopoJSON geometry and convert to GeoJSON lines.
-* [topojson.meshArcs](https://github.com/topojson/topojson-client/blob/master/README.md#meshArcs) - mesh TopoJSON geometry to form lines.
-* [topojson.neighbors](https://github.com/topojson/topojson-client/blob/master/README.md#neighbors) - compute adjacent features.
-* [topojson.bbox](https://github.com/topojson/topojson-client/blob/master/README.md#bbox) - compute the bounding box of a topology.
-* [topojson.quantize](https://github.com/topojson/topojson-client/blob/master/README.md#quantize) - round coordinates, reducing precision.
-* [topojson.transform](https://github.com/topojson/topojson-client/blob/master/README.md#transform) - remove delta-encoding and apply a transform.
-* [topojson.untransform](https://github.com/topojson/topojson-client/blob/master/README.md#untransform) - apply delta-encoding and remove a transform.
-* [topo2geo](https://github.com/topojson/topojson-client/blob/master/README.md#topo2geo) - convert TopoJSON to GeoJSON.
-* [topomerge](https://github.com/topojson/topojson-client/blob/master/README.md#topomerge) - merge TopoJSON geometry, and optionally filter.
-* [topoquantize](https://github.com/topojson/topojson-client/blob/master/README.md#topoquantize) - round TopoJSON, reducing precision.
+Some examples:
+
+  * A point is mapped to a feature with a geometry object of type “Point”.
+  * Likewise for line strings, polygons, and other simple geometries.
+  * A null geometry object (of type null in TopoJSON) is mapped to a feature with a null geometry object.
+  * A geometry collection of points is mapped to a feature collection of features, each with a point geometry.
+  * A geometry collection of geometry collections is mapped to a feature collection of features, each with a geometry collection.
+
+```js
+const t = 
+{
+  type: "Topology",
+  transform: {scale: [1, 1], translate: [0, 0]},
+  objects: {foo: {type: "MultiPolygon", arcs: [[[0]]]}},
+  arcs: [
+    [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
+    [[0, 0], [1, 0], [0, 1]],
+    [[1, 1], [-1, 0], [0, -1]],
+    [[1, 1]],
+    [[0, 0]]
+  ]
+}
+
+topojson.feature(t, t.objects.foo);
+
+// result: GeoJSON
+{
+  type: "Feature", 
+  properties: {}, 
+  geometry: {type: "MultiPolygon", 
+    coordinates: [[[
+          [0, 0], 
+          [1, 0], 
+          [1, 1], 
+          [0, 1], 
+          [0, 0]
+        ]]]
+  }
+}
+```
+
+### topojson.merge(topology, objects)
+
+Returns the GeoJSON MultiPolygon geometry object representing the union for the specified array of Polygon and MultiPolygon *objects* in the given *topology*. Interior borders shared by adjacent polygons are removed. See [Merging States](https://bl.ocks.org/mbostock/5416405) for an example. The returned geometry is a shallow copy of the source *object*: they may share coordinates.
+
+### topojson.mergeArcs(topology, objects) [<>](https://github.com/topojson/topojson-client/blob/master/src/merge.js#L9 "Source")
+
+Equivalent to [topojson.merge](#merge), but returns TopoJSON rather than GeoJSON. The returned geometry is a shallow copy of the source *object*: they may share coordinates.
+
+### topojson.mesh(topology[, object[, filter]]) [<>](https://github.com/topojson/topojson-client/blob/master/src/mesh.js#L4 "Source")
+
+Returns the GeoJSON MultiLineString geometry object representing the mesh for the specified *object* in the given *topology*. This is useful for rendering strokes in complicated objects efficiently, as edges that are shared by multiple features are only stroked once. If *object* is not specified, a mesh of the entire topology is returned. The returned geometry is a shallow copy of the source *object*: they may share coordinates.
+
+An optional *filter* function may be specified to prune arcs from the returned mesh using the topology. The filter function is called once for each candidate arc and takes two arguments, *a* and *b*, two geometry objects that share that arc. Each arc is only included in the resulting mesh if the filter function returns true. For typical map topologies the geometries *a* and *b* are adjacent polygons and the candidate arc is their boundary. If an arc is only used by a single geometry then *a* and *b* are identical. This property is useful for separating interior and exterior boundaries; an easy way to produce a mesh of interior boundaries is:
+
+```js
+var interiors = topojson.mesh(topology, object, function(a, b) { return a !== b; });
+```
+
+See this [county choropleth](https://bl.ocks.org/mbostock/4060606) for example. Note: the *a* and *b* objects are TopoJSON objects (pulled directly from the topology), and not automatically converted to GeoJSON features as by [topojson.feature](#feature).
+
+### topojson.meshArcs(topology[, object[, filter]]) [<>](https://github.com/topojson/topojson-client/blob/master/src/mesh.js#L8 "Source")
+
+Equivalent to [topojson.mesh](#mesh), but returns TopoJSON rather than GeoJSON. The returned geometry is a shallow copy of the source *object*: they may share coordinates.
+
+### topojson.neighbors(objects) [<>](https://github.com/topojson/topojson-client/blob/master/src/neighbors.js "Source")
+
+Returns an array representing the set of neighboring objects for each object in the specified *objects* array. The returned array has the same number of elements as the input array; each element *i* in the returned array is the array of indexes for neighbors of object *i* in the input array. For example, if the specified objects array contains the features *foo* and *bar*, and these features are neighbors, the returned array will be \[\[1\], \[0\]\], indicating that *foo* is a neighbor of *bar* and *vice versa*. Each array of neighbor indexes for each object is guaranteed to be sorted in ascending order.
+
+### topojson.bbox(topology) [<>](https://github.com/topojson/topojson-client/blob/master/src/bbox.js "Source")
+
+Returns the computed [bounding box](https://github.com/topojson/topojson-specification#3-bounding-boxes) of the specified *topology* [*x*₀, *y*₀, *x*₁, *y*₁] where *x*₀ is the minimum *x*-value, *y*₀ is the minimum *y*-value, *x*₁ is the maximum *x*-value, and *y*₁ is the maximum *y*-value. If the *topology* has no points and no arcs, the returned bounding box is [∞, ∞, -∞, -∞]. (This method ignores the existing *topology*.bbox, if any.)
+
+### topojson.quantize(topology, transform) [<>](https://github.com/topojson/topojson-client/blob/master/src/quantize.js "Source")
+
+Returns a shallow copy of the specified *topology* with [quantized and delta-encoded](https://github.com/topojson/topojson-specification#213-arcs) arcs according to the specified [*transform* object](https://github.com/topojson/topojson-specification/blob/master/README.md#212-transforms). If the *topology* is already quantized, an error is thrown. See also [topoquantize](#topoquantize).
+
+If a quantization number *n* is specified instead of a *transform* object, the corresponding transform object is first computed using the bounding box of the topology. In this case, the quantization number *n* must be a positive integer greater than one which determines the maximum number of expressible values per dimension in the resulting quantized coordinates; typically, a power of ten is chosen such as 1e4, 1e5 or 1e6. If the *topology* does not already have a *topology*.bbox, one is computed using [topojson.bbox](#bbox).
+
+### topojson.transform(transform) [<>](https://github.com/topojson/topojson-client/blob/master/src/transform.js "Source")
+
+If the specified [*transform* object](https://github.com/topojson/topojson-specification/blob/master/README.md#212-transforms) is non-null, returns a [point *transform* function](#_transform) to remove delta-encoding and apply the transform. If the *transform* is null, returns the identity function.
+
+### topojson.untransform(transform) [<>](https://github.com/topojson/topojson-client/blob/master/src/untransform.js "Source")
+
+If the specified [*transform* object](https://github.com/topojson/topojson-specification/blob/master/README.md#212-transforms) is non-null, returns a [point *transform* function](#_transform) to apply quantized delta-encoding and remove the transform. If the *transform* is null, returns the identity function. See also [topojson.quantize](#quantize).
+
+### transform(point[, index])
+
+Applies this transform function to the specified *point*, returning a new point with the transformed coordinates. If the specified *index* is truthy, the input *point* is treated as relative to the previous point passed to this transform, as is the case with delta-encoded arcs.

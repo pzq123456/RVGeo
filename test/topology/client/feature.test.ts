@@ -3,9 +3,11 @@ import { feature } from '../../../src/topology/client/feature';
 
 describe('topojson.feature', function() {
     it('the geometry type is preserved', function() {
-        var t = simpleTopology({type: "Polygon", arcs: [[0]]});
+        var t = simpleTopology({type: "Polygon", arcs: [[0],[-1]]});
         expect(feature(t, t.objects.foo).geometry.type).toBe("Polygon");
-        console.log(feature(t, t.objects.foo));
+        console.log(feature(t, t.objects.foo).geometry.coordinates);
+        console.log(`${~0}, ${~-1}, ${~-2}, ${~-3}, ${~-4}`);
+        console.log(`${0}, ${-1}, ${-2}, ${-3}, ${-4}`);
     });
 
     it('Point is a valid geometry type', function() {
@@ -26,11 +28,11 @@ function simpleTopology(object) {
         transform: {scale: [1, 1], translate: [0, 0]},
         objects: {foo: object},
         arcs: [
-        [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
-        [[0, 0], [1, 0], [0, 1]],
-        [[1, 1], [-1, 0], [0, -1]],
-        [[1, 1]],
-        [[0, 0]]
+            [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
+            [[0, 0], [1, 0], [0, 1]],
+            [[1, 1], [-1, 0], [0, -1]],
+            [[1, 1]],
+            [[0, 0]]
         ]
     };
 }

@@ -12,7 +12,7 @@ export class Canvas{ // 用于 debug 的画布
         this.canvas.width = width;
         this.canvas.height = height;
         container.appendChild(this.canvas);
-        this.initCanvas('black', 'rgba(125, 0, 0, 0.5)', 'black', transformation);
+        this.initCanvas('black', 'rgba(125, 0, 0, 0.5)', 'white', transformation);
     }
 
     static getTransArray(width:number,height:number,topLeft:[number,number] = [-180,90],bottomRight:[number,number] = [180,-90]){
@@ -44,6 +44,33 @@ export class Canvas{ // 用于 debug 的画布
         ctx.save();
         // 绘制点
         this.PointStylePen(ctx, x, y, color, pointStyle, radius);
+        // 恢复之前的状态
+        ctx.restore();
+    }
+
+    drawArc(spoint: [number,number], epoint: [number,number], color: string = 'black', pointStyle: string = 'o', radius: number = 1){
+        let ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        // 存储之前的状态
+        ctx.save();
+        // 绘制点
+        this.PointStylePen(ctx, spoint[0], spoint[1], color, pointStyle, radius);
+        this.PointStylePen(ctx, epoint[0], epoint[1], color, pointStyle, radius);
+        ctx.beginPath();
+        ctx.moveTo(spoint[0], spoint[1]);
+        ctx.lineTo(epoint[0], epoint[1]);
+        ctx.stroke();
+        // 恢复之前的状态
+        ctx.restore();
+    } 
+
+    drawArcs(points: [number,number][], color: string = 'black', pointStyle: string = 'o', radius: number = 1){
+        let ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        // 存储之前的状态
+        ctx.save();
+        // 绘制点
+        for(let i = 0; i < points.length - 1; i++){
+            this.drawArc(points[i], points[i + 1], color, pointStyle, radius);
+        }
         // 恢复之前的状态
         ctx.restore();
     }
@@ -174,7 +201,7 @@ export class Canvas{ // 用于 debug 的画布
         ctx.fillRect(0, 0, this.width, this.height);
         ctx.strokeRect(0, 0, this.width, this.height);
         ctx.fillStyle = fillStyle;
-        this.drawAxes();
+        // this.drawAxes();
 
         if(transformation){
             ctx.setTransform(transformation[0], transformation[1], transformation[2], transformation[3], transformation[4], transformation[5]);
@@ -214,5 +241,8 @@ export function drawQuadTree2Canvas(quadTree: any, ctx: CanvasRenderingContext2D
     if (quadTree.southEast) {
       drawQuadTree2Canvas(quadTree.southEast, ctx, style);
     }
-  }
+}
+
+
+
   
