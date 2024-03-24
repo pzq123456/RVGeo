@@ -20,9 +20,14 @@ function features(topology : Topology, o : GeometryObject) {
       bbox = o.bbox,
       properties = o.properties == null ? {} : o.properties,
       geometry = object(topology, o);
-  return id == null && bbox == null ? {type: "Feature", properties: properties, geometry: geometry}
+  let res =  id == null && bbox == null ? {type: "Feature", properties: properties, geometry: geometry}
       : bbox == null ? {type: "Feature", id: id, properties: properties, geometry: geometry}
       : {type: "Feature", id: id, bbox: bbox, properties: properties, geometry: geometry};
+  // if without properties, delete it
+  if (Object.keys(properties).length === 0) {
+    delete res.properties;
+  }
+  return res;
 }
 
 export function object(topology : Topology, o : GeometryObject) : GeometryObject {

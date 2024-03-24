@@ -12,7 +12,7 @@ export class Canvas{ // 用于 debug 的画布
         this.canvas.width = width;
         this.canvas.height = height;
         container.appendChild(this.canvas);
-        this.initCanvas('black', 'rgba(125, 0, 0, 0.5)', 'white', transformation);
+        this.initCanvas('black', 'rgba(125, 0, 0, 0.5)', 'black', transformation);
     }
 
     static getTransArray(width:number,height:number,topLeft:[number,number] = [-180,90],bottomRight:[number,number] = [180,-90]){
@@ -67,6 +67,11 @@ export class Canvas{ // 用于 debug 的画布
         let ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
         // 存储之前的状态
         ctx.save();
+        // 若只有一个点，直接绘制点
+        if(points.length === 1){
+            this.PointStylePen(ctx, points[0][0], points[0][1], color, pointStyle, radius);
+            return;
+        }
         // 绘制点
         for(let i = 0; i < points.length - 1; i++){
             this.drawArc(points[i], points[i + 1], color, pointStyle, radius);
@@ -102,6 +107,7 @@ export class Canvas{ // 用于 debug 的画布
             ctx.lineTo(x + radius, y + radius);
             ctx.moveTo(x - radius, y + radius);
             ctx.lineTo(x + radius, y - radius);
+
             ctx.stroke();
         }else if(pointStyle === 'o' || pointStyle === 'circle' || pointStyle === 'ring' || pointStyle === 'd' || pointStyle === 'disk' || pointStyle === 'filled' || pointStyle === 'O'){
             ctx.beginPath();
@@ -112,11 +118,25 @@ export class Canvas{ // 用于 debug 的画布
         }
     }
 
-    drawLabel(x: number, y: number, label: string, color: string = 'black'){
+    drawLabel(x: number, y: number, label: string, color: string = 'black', size = 30){
+        // noise random to avoid overlap
+        const noise = Math.random() * size;
+        function randomSign(){
+            return Math.random() > 0.5 ? 1 : -1;
+        }
+        let rx = x + noise * randomSign();
+        let ry = y + noise * randomSign();
         let ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
         ctx.save();
         ctx.fillStyle = color;
-        ctx.fillText(label, x, y);
+        ctx.strokeStyle = color;
+        ctx.font = size + 'px Arial';
+        ctx.fillText(label, rx, ry);
+        // draw line to point out the label
+        ctx.beginPath();
+        ctx.moveTo(rx, ry);
+        ctx.lineTo(x, y);
+        ctx.stroke();
         ctx.restore();
     }
 
@@ -201,7 +221,7 @@ export class Canvas{ // 用于 debug 的画布
         ctx.fillRect(0, 0, this.width, this.height);
         ctx.strokeRect(0, 0, this.width, this.height);
         ctx.fillStyle = fillStyle;
-        // this.drawAxes();
+        this.drawAxes();
 
         if(transformation){
             ctx.setTransform(transformation[0], transformation[1], transformation[2], transformation[3], transformation[4], transformation[5]);

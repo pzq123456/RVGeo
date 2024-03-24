@@ -1,116 +1,76 @@
-import {Canvas, drawQuadTree2Canvas} from './canvas';
-// import {MBR, QuadTree,Circle} from './src'
+import {Canvas} from './canvas';
+import { topology, feature, Transform } from './src';
 
 const mydiv = document.getElementById('map') as HTMLElement;
 const canvasSize = 1024;
-
 const canvas = new Canvas(canvasSize, canvasSize, mydiv);
 
-// const points = randomPoints([0, 0, 1000, 1000], 20);
-
-// let qdTree = new QuadTree([0, 0, 1024, 1024], 1);
-
-// for(let i = 0; i < points.length; i++){
-//     let point = points[i];
-//     canvas.drawPoint(point[0], point[1], 'green', 'o', 5);
-//     qdTree.insert(point as [number, number]);
-// }
-// let ctx = canvas.canvas.getContext('2d') as CanvasRenderingContext2D;
-
-// drawQuadTree2Canvas(qdTree, ctx, { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.4 });
-
-// const queryRange = [100, 100, 500, 500] as MBR;
-// canvas.drawBound(queryRange[0], queryRange[1], queryRange[2], queryRange[3], 'red'); 
-// // query range
-// let pointsInRange = qdTree.queryRange(queryRange);
-// // draw points in range
-// for(let i = 0; i < pointsInRange.length; i++){
-//     let point = pointsInRange[i];
-//     canvas.drawPoint(point[0], point[1], 'pink', '*', 10);
-// }
-
-// // circle range
-// let circle = new Circle(700, 700, 300);
-// canvas.drawCircle(circle.x, circle.y, circle.r, 'red', false);
-// // queryRange in circle
-// let pointsInRangeCircle = qdTree.customQuery(circle);
-// for(let i = 0; i < pointsInRangeCircle.length; i++){
-//     let point = pointsInRangeCircle[i];
-//     canvas.drawPoint(point[0], point[1], 'yellow', 'x', 10);
-// }
-
-// function randomPoint(range: MBR){
-//     return [range[0] + Math.random() * (range[2] - range[0]), range[1] + Math.random() * (range[3] - range[1])];
-// }
-
-// function randomPoints(range: MBR, num: number){
-//     let points = [] as number[][];
-//     for(let i = 0; i < num; i++){
-//         points.push(randomPoint(range));
-//     }
-//     return points;
-// }
-
-
-const t = 
-{
+const t = {
   type: "Topology",
   transform: {scale: [1, 1], translate: [0, 0]},
-  objects: {foo: {type: "MultiPolygon", arcs: [[[0]]]}},
+  objects: {foo: {type: "MultiPolygon", arcs: [[[0], [1]]]}},
   arcs: [
     [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
     [[0, 0], [1, 0], [0, 1]],
     [[1, 1], [-1, 0], [0, -1]],
-    [[1, 1]],
-    [[0, 0]]
+    [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
   ]
 };
 
-// const clors = ['red', 'green', 'blue', 'yellow', 'pink'];
-// rgba(255, 0, 0, 0.5)
-const clors2 = ['rgba(255, 0, 0, 0.5)', 'rgba(0, 255, 0, 0.5)', 'rgba(0, 0, 255, 0.5)', 'rgba(255, 255, 0, 0.5)', 'rgba(255, 0, 255, 0.5)'];
-// draw the topology
-// canvas.drawTopology(t, 'red', 1);
-// canvas draw arc
-for(let i = 0; i < t.arcs.length; i++){
-    let arc = t.arcs[i];
-    let points = [] as [number, number][];
-    for(let j = 0; j < arc.length; j++){
-        let point = transformPoint(arc[j], [100,100], [200,200]);
-        points.push(point);
-        // draw label
-        canvas.drawLabel(point[0], point[1], `${arc[j][0]},${arc[j][1]}`, 'black');
+// console.log(feature(t, t.objects.foo));
+
+// canvas.drawArc([100, 100], [200, 600], 'red', '+', 10);
+// canvas.drawArcs([[100, 100], [200, 600], [300, 300], [400, 400]], 'blue', 'o', 5);
+// get the anti-delta code for arcs and transform 
+
+const transform = {scale: [100, -100], translate: [canvasSize / 2, canvasSize / 2]};
+
+function antiDrawArc(arc : [number, number][], transform : Transform, color : string = 'blue') {
+    const arcs = antidelta(arc, transform);
+    // transform the arcs to the canvas
+    const transformedArcs = arcs.map(arc => transformPoint(arc, transform));
+    // add noise to the transformedArcs so as to make the arcs more visible
+    let noise = Math.random() * 100;
+    transformedArcs.forEach(arc => {
+        arc[0] += noise;
+        arc[1] += noise;
+    });
+    // draw the arcs
+    canvas.drawArcs(transformedArcs, color , 'o', 5);
+    // draw label
+    for (let i = 0; i < transformedArcs.length; i++) {
+        canvas.drawLabel(
+            transformedArcs[i][0], transformedArcs[i][1],
+             `(${arcs[i][0]}, ${arcs[i][1]})`, color , 15);
     }
-    // console.log(points);
-    // canvas.drawArcs(points, clors2[i], "[]",3);
-    // 绘制时 每一个 arcs 偏差一定的距离
-    let offsetx = 10* Math.random();
-    let offsety = 10* Math.random();
-    let offsetPoints = [] as [number, number][];
-
-    for(let j = 0; j < points.length; j++){
-        let point = points[j];
-        let newPoint = [point[0] + offsetx, point[1] + offsety];
-        offsetPoints.push(newPoint);
+}
+const colors = ['red', 'green', 'blue', 'yellow', 'orange'];
+for (let i = 0; i < t.arcs.length; i++) {
+    antiDrawArc(t.arcs[i], transform, colors[i]);
+}
+// de delata-code function
+function antidelta(arcs : [number, number][], transform ?: Transform) {
+    // 将 x, y 坐标由 delta-code 转换为绝对坐标
+    for (var i = 0, n = arcs.length, x = 0, y = 0; i < n; ++i) {
+        var arc = arcs[i];
+        arcs[i] = [x += arc[0], y += arc[1]];
     }
-    canvas.drawArcs(offsetPoints, clors2[i], "[]",3);
+    return arcs;
 }
 
-const coordinates = 
-// [[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]
-// [ [ 0, 0 ], [ 1, 0 ], [ 1, 1 ], [ 0, 1 ], [ 0, 0 ] ]
-[ [ 1, 1 ], [ 0, 1 ], [ 0, 0 ], [ 1, 1 ] ]
-let pins = [];
-for(let i = 0; i < coordinates.length; i++){
-    // transform point
-    let point = coordinates[i];
-    let newPoint = transformPoint(point, [100,100], [200,200]);
-    // canvas.drawPoint(newPoint[0], newPoint[1], 'green', 'o', 5);
-    pins.push(newPoint);
-}
-canvas.drawPolygon(pins, 'green', false);
+function delata(arcs : [number, number][], transform ?: Transform) {
+    // 将 x, y 坐标由绝对坐标转换为 delta-code
+    for (var i = 0, n = arcs.length, x = 0, y = 0; i < n; ++i) {
+        var arc = arcs[i], x0 = arc[0], y0 = arc[1];
+        arcs[i] = [x0 - x, y0 - y];
+        x = x0;
+        y = y0;
+    }
+    return arcs;
 
-
-function transformPoint(point: number[], scale: number[], translate: number[]): [number, number]{
-    return [point[0] * scale[0] + translate[0], point[1] * scale[1] + translate[1]];
 }
+
+function transformPoint(point: [number, number], transform: Transform) {
+    return [point[0] * transform.scale[0] + transform.translate[0], point[1] * transform.scale[1] + transform.translate[1]];
+}
+

@@ -131,10 +131,16 @@ function renderArray(arr, parent) {
     for (let i = 0; i < arr.length; i++) {
         let li = document.createElement('li');
         ul.appendChild(li);
+        let span = document.createElement('span');
+        span.style.cssText = 'color: orange';
+        span.textContent = i;
+        span.textContent += ': ';
+        li.appendChild(span);
         if (typeof arr[i] === 'object') {
             renderObject(arr[i], li);
         } else {
             let span = document.createElement('span');
+            span.style.cssText = 'color: #fff';
             span.textContent = arr[i];
             li.appendChild(span);
         }

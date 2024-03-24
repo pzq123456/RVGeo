@@ -25,6 +25,50 @@
 ## Generation (topojson-server)
 * [topojson.topology](https://github.com/topojson/topojson-server/blob/master/README.md#topology) - convert GeoJSON to TopoJSON.
 
+- 输入格式：对于构造 TopoJSON 而言，库外部调用 `topology()` 函数，而在该函数内部则会首先调用 `geometry()` 函数将 GeoJSON 格式的数据转化为一种中间表达格式。这种中间表达格式将某一 Feature 的 properties 属性囊括进 geometry 属性中，特别的，对于 FeatureCollection 类型的数据会直接转化为 GeometryCollection ，递归处理每一个 Feature，对 properties 属性处理规则同前。
+- 如果传入了 transform ，则会进行 delta 编码。
+```js
+// 有效输入格式 1
+const geojson1 = {
+  foo: {
+    type: "Feature",
+    geometry: {
+      type: "LineString",
+      coordinates: [[0, 0]]
+    }
+  },
+  bar: {
+    type: "Feature",
+    geometry: {
+      type: "GeometryCollection",
+      geometries: [{
+        type: "LineString",
+        coordinates: [[0, 0]]
+      }]
+    }
+  }
+}
+
+// 有效输入格式 2
+const geojson2 = {
+  foo: {
+    type: "MultiLineString",
+    coordinates: [[[0, 0], [1, 0], [1, 1], [0, 0]], [], [[0, 0], [1, 0]]]
+  }，
+  bar: {
+    type: "MultiPoint",
+    coordinates: [[0, 0]]
+  }
+}
+
+```
+- 构造 TopoJSON 的过程粗略介绍：
+  - extract（弧段提取）：识别并提取出所有的线段及环等基本弧段（包括线和环），存放内部交换格式中。
+  - join（弧段求交）：对上一步提取的基本弧段进行求交，也就是识别两条或多条线（或环）相交的共享点。
+  - cut（弧段微调）：根据上一步识别出的所有连接点切割线和环，使其在连接点处终止。
+  - dedup（去重）：对得到的基本弧段进行去重检查，并分配唯一索引。譬如，对于某一条线段需要反转后对比是否重复；对于某一圆环则需要旋转一定步数后进行对比是否重复。去除大量的冗余弧段可以在确保几何结构精度的情况下压缩原来的数据。
+
+
 ## Manipulation (topojson-client)
 
 ### topojson.feature(topology, object) 
