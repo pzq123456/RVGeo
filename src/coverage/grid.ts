@@ -1,8 +1,8 @@
 /**
  * Coverage 栅格数据模块
  */
-import { MBR } from "./Geometry";
-import { PointOutsideMBR } from "./CGUtils";
+import { MBR } from '../geometry';
+import { PointOutsideMBR } from '../topology';
 
 /**
  * 网格类（本质是三维数组）:

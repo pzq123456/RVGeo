@@ -1,5 +1,5 @@
 import { describe, it, expect} from 'vitest';
-import { collectionFromFeature, collectionFromGeometry, fromGeometryObj, fromFeatureObj } from '../../src';
+import { collectionFromFeature, collectionFromGeometry, fromGeometryObj, fromFeatureObj, Geometry, GeometryCollection } from '../../src';
 // from geometry
 // 1. GeometryCollection
 
@@ -110,5 +110,4 @@ describe('Geometry', () => {
         const geometryCollection = fromFeatureObj(featureExp);
         console.log(geometryCollection);
     });
-
 });

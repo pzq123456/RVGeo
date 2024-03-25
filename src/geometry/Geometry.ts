@@ -16,6 +16,7 @@
 
 import { MBR, mergeMBR } from "./MBR";
 import { GeoJSONFeature, GeoJSONGeometry } from "./GeoJSON";
+
 import { Projection } from "../geo/projection/base";
 import { SphericalMercator } from "..";
 
@@ -82,11 +83,11 @@ export abstract class Geometry {
         return feature;
     }
 
-    static fromGeoJSON(feature: GeoJSONFeature | GeoJSONGeometry): Geometry {
+    static fromGeoJSON(feature: GeoJSONFeature | GeoJSONGeometry): Geometry | GeometryCollection {
         // 每一个子类都实现了 fromFeature 和 fromGeometry 方法
         // 所以这里可以直接调用
         if (feature.type === "Feature") {
-            return this.fromFeature(feature);
+            return this.fromFeature(feature as GeoJSONFeature);
         } else if (feature.type === "Geometry") {
             return this.fromGeometry(feature as GeoJSONGeometry);
         } else if(feature.type === "FeatureCollection"){
@@ -184,9 +185,4 @@ export class GeometryCollection{
         }
         return feature;
     }
-}
-
-export interface geometryCreator{
-    fromFeature: any;
-    fromGeometry: any;
 }

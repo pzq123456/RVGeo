@@ -7,8 +7,9 @@
 // @ts-nocheck
 const EPSILON = Math.pow(2, -52);
 const EDGE_STACK = new Uint32Array(512);
-import { cutPolygonByMBR } from './CGUtils';
-import { convertToWgs84 } from './Referencing';
+import { cutPolygonByMBR } from '../topology/utils';
+import { SphericalMercator } from '..';
+const convertToWgs84 = SphericalMercator.project;
 
 import {orient2d} from 'robust-predicates';
 

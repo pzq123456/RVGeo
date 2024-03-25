@@ -2,8 +2,8 @@
  * 渲染器类 将所有涉及绘制数据的逻辑集中在这里
  */
 
-import { simpleColorBand,binaryColorBand} from "./Colors";
-import { Grid, QTNode } from './Coverage';
+import { simpleColorBand,binaryColorBand} from './colors';
+import { Grid, QTNode } from '../coverage';
 // import { Complex } from "./Fourier";
 
 type Rect = {

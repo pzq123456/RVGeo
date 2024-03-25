@@ -1,9 +1,8 @@
 import * as core from "../core";
 const isPotentialGeoObject = core.isPotentialGeoObject; // 判断一个 object 是否是(潜在的)地理对象（是否含有 X，Y 或者 lon，lat 或者 lng，lat 属性）
 
-import { Geometry, GeometryCollection, geometryCreator} from "./Geometry";
+import { Geometry, GeometryCollection } from "./Geometry";
 import { GeoJSONFeature, GeoJSONPoint, GeoJSONMultiPoint } from "./GeoJSON";
-
 
 /**
  * Point geometry
@@ -46,10 +45,6 @@ export class Point extends Geometry {
     // }
 }
 
-export const PointCreator = {
-    fromFeature: Point.fromFeature,
-    fromGeometry: Point.fromGeometry
-} as geometryCreator;
 
 export class MultiPoint extends GeometryCollection{
     // 可以传入 点类型数组 但是会忽略每一个点的 properties
@@ -118,11 +113,6 @@ export class MultiPoint extends GeometryCollection{
         return new MultiPoint(geometry.coordinates);
     }
 }
-
-export const MultiPointCreator = {
-    fromFeature: MultiPoint.fromFeature,
-    fromGeometry: MultiPoint.fromGeometry
-} as geometryCreator;
 
 /*Factory function*/
 

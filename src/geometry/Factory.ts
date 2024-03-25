@@ -1,10 +1,10 @@
-import { PointCreator, MultiPointCreator } from "./Point";
-import { LineStringCreator, MultiLineStringCreator } from "./LineString";
-import { PolygonCreator, MultiPolygonCreator } from "./Polygon";
-
 import { GeoJSONFeature, GeoJSONFeatureCollection, GeoJSONGeometry, GeoJSONGeometryCollection, GeoJSONLineString, GeoJSONMultiLineString, GeoJSONMultiPoint, GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon } from "./GeoJSON";
 
-import { Geometry, GeometryCollection, geometryCreator } from "./Geometry";
+import { 
+    Geometry, GeometryCollection, 
+    Point, LineString, Polygon, 
+    MultiPoint, MultiLineString, MultiPolygon 
+} from ".";
 
 /**
  * Factory function for creating geometry objects from GeoJSON Geometry objects
@@ -17,19 +17,19 @@ export function fromGeometryObj(
 ): Geometry | GeometryCollection {
     switch (geometry.type) {
         case "Point":
-            return PointCreator.fromGeometry(geometry as GeoJSONPoint);
+            return Point.fromGeometry(geometry as GeoJSONPoint);
         case "LineString":
-            return LineStringCreator.fromGeometry(geometry as GeoJSONLineString);
+            return LineString.fromGeometry(geometry as GeoJSONLineString);
         case "Polygon":
-            return PolygonCreator.fromGeometry(geometry as GeoJSONPolygon);
+            return Polygon.fromGeometry(geometry as GeoJSONPolygon);
         case "MultiPoint":
-            return MultiPointCreator.fromGeometry(geometry as GeoJSONMultiPoint);
+            return MultiPoint.fromGeometry(geometry as GeoJSONMultiPoint);
         case "MultiLineString":
-            return MultiLineStringCreator.fromGeometry(geometry as GeoJSONMultiLineString);
+            return MultiLineString.fromGeometry(geometry as GeoJSONMultiLineString);
         case "MultiPolygon":
-            return MultiPolygonCreator.fromGeometry(geometry as GeoJSONMultiPolygon);
+            return MultiPolygon.fromGeometry(geometry as GeoJSONMultiPolygon);
         case "GeometryCollection":
-            return GeometryCollectionCreator.fromGeometry(geometry as GeoJSONGeometryCollection);
+            return collectionFromGeometry(geometry as GeoJSONGeometryCollection);
         default:
             throw new Error("Unknown geometry type: " + geometry.type + " in fromGeometryObj");
     }
@@ -47,24 +47,24 @@ export function fromFeatureObj(feature: GeoJSONFeature | GeoJSONFeatureCollectio
         const geometry = feature.geometry;
         switch (geometry.type) {
             case "Point":
-                return PointCreator.fromFeature(feature);
+                return Point.fromFeature(feature);
             case "LineString":
-                return LineStringCreator.fromFeature(feature);
+                return LineString.fromFeature(feature);
             case "Polygon":
-                return PolygonCreator.fromFeature(feature);
+                return Polygon.fromFeature(feature);
             case "MultiPoint":
-                return MultiPointCreator.fromFeature(feature);
+                return MultiPoint.fromFeature(feature);
             case "MultiLineString":
-                return MultiLineStringCreator.fromFeature(feature);
+                return MultiLineString.fromFeature(feature);
             case "MultiPolygon":
-                return MultiPolygonCreator.fromFeature(feature);
+                return MultiPolygon.fromFeature(feature);
             case "GeometryCollection":
-                return GeometryCollectionCreator.fromFeature(feature);
+                return collectionFromFeature(feature);
             default:
                 throw new Error("Unknown geometry type: " + geometry.type + " in fromGeometryObj");
         }
     }else if(feature.type === "FeatureCollection"){
-        return GeometryCollectionCreator.fromFeature(feature);
+        return collectionFromFeature(feature);
     }else{
         throw new Error("Unknown GeoJSON type");
     }
@@ -110,8 +110,3 @@ export function collectionFromGeometry(geometry: GeoJSONGeometryCollection | Geo
         throw new Error("The input geometry is not a GeometryCollection: " + geometry.type);
     }
 }
-
-const GeometryCollectionCreator = {
-    fromGeometry: collectionFromGeometry,
-    fromFeature: collectionFromFeature
-} as geometryCreator;

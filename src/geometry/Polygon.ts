@@ -1,4 +1,4 @@
-import { Geometry, GeometryCollection, geometryCreator } from "./Geometry";
+import { Geometry, GeometryCollection } from "./Geometry";
 import { GeoJSONFeature, GeoJSONPolygon, GeoJSONMultiPolygon } from "./GeoJSON";
 
 export class Polygon extends Geometry {
@@ -32,15 +32,7 @@ export class Polygon extends Geometry {
         return new Polygon(pointGeometry.coordinates, properties);
     }
 
-    // static isPolygon(polygon: any): polygon is Polygon{
-    //     return polygon.type === "Polygon";
-    // }
 }
-
-export const PolygonCreator = {
-    fromFeature: Polygon.fromFeature,
-    fromGeometry: Polygon.fromGeometry
-} as geometryCreator;
 
 export class MultiPolygon extends GeometryCollection{
 
@@ -97,8 +89,3 @@ export class MultiPolygon extends GeometryCollection{
         return new MultiPolygon(geometry.coordinates);
     }
 }
-
-export const MultiPolygonCreator = {
-    fromFeature: MultiPolygon.fromFeature,
-    fromGeometry: MultiPolygon.fromGeometry
-} as geometryCreator;

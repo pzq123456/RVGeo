@@ -122,7 +122,7 @@ export function intermediatePoint(latlng1: [number, number], latlng2: [number, n
  * // you need to convert the result to degrees if you want to use it in degrees
  * intersection([0, 0], [0, 90], [0, 45], [90, 45]).map(x => x * 180 / Math.PI); // [90, 0]
  */
-export function intersection(latlng11: [number, number], latlng12: [number, number], 
+export function sphereIntersection(latlng11: [number, number], latlng12: [number, number], 
 latlng21: [number, number], latlng22: [number, number]) : [number, number] {
     // ,R: number = 1
     // Convert to 3D Cartesian coordinates

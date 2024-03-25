@@ -85,3 +85,151 @@ export function UUID() {
     return v.toString(16);
   });
 }
+
+/**
+ * 计算数组的形状
+ * @param array - 数组
+ * @returns {number[]}
+ */
+export function calculateArrayShape(array: any[]): number[] {
+  let shape = [];
+  let tmp = array;
+  while(Array.isArray(tmp)) {
+      shape.push(tmp.length);
+      tmp = tmp[0];
+  }
+  return shape;
+}
+
+export function flattenArray(array: any[]): any[] {
+  let res = [];
+  for(let i = 0; i < array.length; i++) {
+      let tmp = array[i];
+      if (Array.isArray(tmp)) {
+          res.push(...flattenArray(tmp));
+      } else {
+          res.push(tmp);
+      }
+  }
+  return res;
+}
+
+/**
+* - 根据 indexArray 中存储的索引 从 fillArray 中取出对应的元素并填充到 indexArray 中
+* - fill indexArray with elements from fillArray according to the index stored in indexArray
+* - `注意`： indexArray 的形状未知 但是 fillArray 不论形状如何始终视为一维数组
+* - Note: the shape of indexArray is unknown, but fillArray is always regarded as a one-dimensional array regardless of its shape
+* @param indexArray - 存储索引的数组（被填充）
+* @param fillArray - 存储元素的数组 （用于填充）
+*/
+export function fillIndexArray(indexArray : any, fillArray : any ) : any{
+  let res = [];
+  for(let i = 0; i < indexArray.length; i++) {
+      let tmp = indexArray[i];
+      if (Array.isArray(tmp)) {
+          res.push(fillIndexArray(tmp, fillArray));
+      }else{
+          res.push(fillArray[tmp]);
+      }
+  }
+  return res;
+}
+
+/**
+* 拼接等长二维数组
+* @warning 必须为二维数组，必须等长。
+* @param array1 [ [1,2,3], [4,5,6], [7,8,9] ]
+* @param array2 [ ['a','b','c'], ['d','e','f'], ['g','h','i'] ]
+* @returns [ [1,2,3,'a','b','c'], [4,5,6,'d','e','f'], [7,8,9,'g','h','i'] ]
+*/
+export function concatEL2DArray(array1: any[], array2: any[]) : any[] {
+  array1.forEach((item, index) => {
+      array1[index] = item.concat(array2[index]);
+  });
+  return array1;
+}
+
+/**
+* 抽取二维数组的某一列（或某几列）
+* @param array - 二维数组
+* @param indexArray - 索引数组(或索引)
+*/
+export function subColumnInEL2DArray(
+  array: any[],
+  indexArray: number[] | number
+) : any[] {
+  // 首先判断 indexArray 是不是数组 及其有效性
+  if (!Array.isArray(indexArray)) {
+      indexArray = [indexArray];
+  }
+  // 判断 indexArray 是否合法
+  indexArray.forEach((item) => {
+      if (item < 0 || item >= array[0].length) {
+          throw new Error("indexArray is illegal!");
+      }
+  });
+  // 根据 indexArray 中的顺序抽取 array 中的元素并组成新的数组
+  let res: any[] = [];
+  array.forEach((item) => {
+      let tmp: any[] = [];
+      if (Array.isArray(indexArray)) {
+          indexArray.forEach((index) => {
+              tmp.push(item[index]);
+          });
+      } else {
+          tmp.push(item[indexArray]);
+      }
+      res.push(tmp);
+  });
+  return res;
+}
+/**
+* 生成随机索引数组（不重复）
+* @param length - 数组长度（自然数）
+* @param num - 随机索引个数（自然数）
+* @returns {number[]} - 随机索引数组
+*/
+/**
+* 生成随机索引数组（不重复）
+* @param length - 数组长度（自然数）
+* @param num - 随机索引个数（自然数）
+* @returns {number[]} - 随机索引数组
+*/
+export function randomIndexArray(
+  length: number,
+  num: number
+): number[] {
+  if (num > length) {
+      throw new Error("num must be less than length!");
+  }
+
+  const res: number[] = [];
+  while (res.length < num) {
+      const tmp = Math.floor(Math.random() * length);
+      if (!res.includes(tmp)) {
+          res.push(tmp);
+      }
+  }
+  return res;
+}
+
+/**
+ * - Round number to precision
+ * - 将数字四舍五入到指定精度
+ * @param {number} num Number
+ * @param {number} [precision=0] Precision
+ * @returns {number} rounded number
+ * @example
+ * round(120.4321)
+ * //=120
+ *
+ * round(120.4321, 2)
+ * //=120.43
+ */
+export function round(num: number, precision : number = 0): number {
+  if (precision && !(precision >= 0)) {
+      throw new Error("precision must be a positive number");
+  }
+  const multiplier = Math.pow(10, precision || 0); // 取10的precision次方
+  return Math.round(num * multiplier) / multiplier; // 乘以10的precision次方，四舍五入，再除以10的precision次方
+}

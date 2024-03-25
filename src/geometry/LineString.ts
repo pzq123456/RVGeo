@@ -1,4 +1,4 @@
-import { Geometry, GeometryCollection, geometryCreator } from "./Geometry";
+import { Geometry, GeometryCollection } from "./Geometry";
 import { GeoJSONFeature, GeoJSONLineString, GeoJSONMultiLineString } from "./GeoJSON";
 
 export class LineString extends Geometry {
@@ -53,12 +53,6 @@ export class LineString extends Geometry {
         return lineString.type === "LineString";
     }
 }
-
-export const LineStringCreator = {
-    fromFeature: LineString.fromFeature,
-    fromGeometry: LineString.fromGeometry
-} as geometryCreator;
-
 
 export class MultiLineString extends GeometryCollection{
 
@@ -115,8 +109,3 @@ export class MultiLineString extends GeometryCollection{
         return new MultiLineString(geometry.coordinates);
     }
 }
-
-export const MultiLineStringCreator = {
-    fromFeature: MultiLineString.fromFeature,
-    fromGeometry: MultiLineString.fromGeometry
-} as geometryCreator;
