@@ -1,5 +1,5 @@
 import { describe, it, expect} from 'vitest';
-import { LineString } from "../../src/geometry/LineString";
+import { LineString } from "../../src/geometry/";
 
 describe('LineString', () => {
   it('should create a LineString', () => {

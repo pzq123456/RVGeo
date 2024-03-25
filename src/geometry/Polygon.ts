@@ -32,9 +32,9 @@ export class Polygon extends Geometry {
         return new Polygon(pointGeometry.coordinates, properties);
     }
 
-    static isPolygon(polygon: any): polygon is Polygon{
-        return polygon.type === "Polygon";
-    }
+    // static isPolygon(polygon: any): polygon is Polygon{
+    //     return polygon.type === "Polygon";
+    // }
 }
 
 export const PolygonCreator = {

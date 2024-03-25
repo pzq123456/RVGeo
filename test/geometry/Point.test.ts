@@ -1,6 +1,6 @@
 import { describe, it, expect} from 'vitest';
-import { Point, toPoint, MultiPoint } from '../../src/geometry/Point';
-
+import { Point, toPoint, MultiPoint } from '../../src/geometry/';
+  
 describe('Point', () => {
   it('should create a point', () => {
     const point = new Point([1, 2]);

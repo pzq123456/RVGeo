@@ -4,16 +4,23 @@ const isPotentialGeoObject = core.isPotentialGeoObject; // 判断一个 object �
 import { Geometry, GeometryCollection, geometryCreator} from "./Geometry";
 import { GeoJSONFeature, GeoJSONPoint, GeoJSONMultiPoint } from "./GeoJSON";
 
+
 /**
  * Point geometry
  */
 export class Point extends Geometry {
+    // 默认为球面墨卡托投影
+
     constructor(coordinates: GeoJSONPoint["coordinates"] | any, properties?: any) {
         super(coordinates, properties);
     }
 
     updateBBox(): void {
         this.bbox = [this.coordinates[0], this.coordinates[1], this.coordinates[0], this.coordinates[1]];
+    }
+    
+    toXY(): [number, number] {
+        return this.projection.project(this.coordinates);
     }
 
     static fromGeometry(geometry: GeoJSONPoint): Point {
@@ -34,9 +41,9 @@ export class Point extends Geometry {
         }
     }
 
-    static isPoint(point: any): point is Point{
-        return point.type === "Point";
-    }
+    // static isPoint(point: any): point is Point{
+    //     return point.type === "Point";
+    // }
 }
 
 export const PointCreator = {

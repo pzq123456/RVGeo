@@ -16,6 +16,8 @@
 
 import { MBR, mergeMBR } from "./MBR";
 import { GeoJSONFeature, GeoJSONGeometry } from "./GeoJSON";
+import { Projection } from "../geo/projection/base";
+import { SphericalMercator } from "..";
 
 // 注意： 该模块中的类不建议直接实例化，而是通过工厂函数创建
 
@@ -28,6 +30,8 @@ export abstract class Geometry {
     protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
     protected coordinates: any;
     protected properties: any;
+    protected projection: Projection = SphericalMercator;
+    toXY(): any {}
     
     static fromFeature: any;
     static fromGeometry: any;
@@ -125,6 +129,8 @@ export class GeometryCollection{
     protected geometries: (Geometry | GeometryCollection)[] = [];
     protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
     protected properties: any;
+    protected projection: Projection = SphericalMercator;
+
 
     constructor(geometries: (Geometry | GeometryCollection)[], properties?: any) {
         if (properties) {
@@ -136,6 +142,8 @@ export class GeometryCollection{
             this.updateBBox(geometry);
         });
     }
+
+    toXY(): any {}
 
     set Properties(properties: any) { this.properties = properties; }
     getBoundingBox(): MBR | null { return this.bbox; }

@@ -1,4 +1,4 @@
-import { Geometry, GeometryCollection, geometryCreator } from ".";
+import { Geometry, GeometryCollection, geometryCreator } from "./Geometry";
 import { GeoJSONFeature, GeoJSONLineString, GeoJSONMultiLineString } from "./GeoJSON";
 
 export class LineString extends Geometry {

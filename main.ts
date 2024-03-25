@@ -1,5 +1,13 @@
 import {Canvas} from './canvas';
 import { topology, feature, Transform } from './src';
+import { Point, LineString, Polygon } from './src';
+
+let poi = new Point([1, 2]);
+console.log(poi);
+let line = new LineString([[1, 2], [3, 4]]);
+console.log(line);
+let polygon = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+console.log(polygon);
 
 const mydiv = document.getElementById('map') as HTMLElement;
 const canvasSize = 1024;
