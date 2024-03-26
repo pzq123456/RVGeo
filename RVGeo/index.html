@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="icon" type="image/svg+xml" href="logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RVGeo: Base Example</title>
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&&type=webgl&ak=zsuRD8fmHkCdmWzC84NDbsvwAiWBdCce">
     </script>
   </head>
-  <link rel="stylesheet" href="./src/helpers/DrawingManager.min.css">
+  <link rel="stylesheet" href="./helpers/DrawingManager.min.css">
   <body>
 
 
@@ -42,8 +42,11 @@
           </div>
 
       </footer>
-    <script type="module" src="/src/main.ts"></script>
-    <script src="./src/helpers/DrawingManager.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/geotiff"></script>
+    <script type="module" src="/RVGeo/main.ts"></script>
+    <script src="./helpers/DrawingManager.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/geotiff"></script> -->
+    <script src="
+    https://cdn.jsdelivr.net/npm/geotiff@2.1.3/dist-browser/geotiff.min.js
+    "></script>
   </body>
 </html>
