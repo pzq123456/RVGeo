@@ -114,7 +114,8 @@ export function PointOutsideMBR(point: [number,number], mbr: MBR, isPlane=false)
  * @param mbr - MBR [minx,miny,maxx,maxy]
  * @returns {Array | null} - 裁剪后的多边形 或 null （若多边形与 MBR 相离）
  */
-export function cutPolygonByMBR(polygon: [number,number][],mbr: MBR): [number,number][] | null {
+export function cutPolygonByMBR(polygon: [number,number][], mbr: MBR): [number,number][] | null {
+    // console.log(polygon);
     return intersectionPolygon(polygon, mbrToPolygon(mbr));
 }
 

@@ -9,7 +9,7 @@ const EPSILON = Math.pow(2, -52);
 const EDGE_STACK = new Uint32Array(512);
 import { cutPolygonByMBR } from '../topology/utils';
 import { SphericalMercator } from '..';
-const convertToWgs84 = SphericalMercator.project;
+const convertToWgs84 = SphericalMercator.unproject;
 
 import {orient2d} from 'robust-predicates';
 
@@ -631,6 +631,7 @@ function edgesAroundPoint(delaunay, start) {
     return result;
 }
 function forEachVoronoiCell(points, delaunay, callback) {
+    
     // console.log(points);
     const seen = new Set();  // of point ids
     for (let e = 0; e < delaunay.triangles.length; e++) {
@@ -688,10 +689,11 @@ export class Voronoi{
      * @returns 
      */
     cutVoronoiByMBR(MBR: [number, number, number, number]){
-        const {points, delaunay} = this;
+        const {points,delaunay} = this;
         const voronoi = new Map();
         forEachVoronoiCell(points, delaunay, (p, v) => {
             if(!this.isInsideMBR(v, MBR)){
+                console.log(v);
                 v = cutPolygonByMBR(v, MBR);
                 voronoi.set(p, v);
             }else{

@@ -1,3 +1,4 @@
+import { LineString, Point } from "..";
 import { D2R } from "./factors";
 import { cartesian, spherical, cartesianCross,cartesianNormalize, cartesianScale, cartesianAngle, cross } from "./vector";
 /**
@@ -34,6 +35,48 @@ export function sphericalArea(points: [number, number][], RADIUS: number = 1) : 
     }
    
     area *= RADIUS * RADIUS / 2;
+    return Math.abs(area);
+}
+
+/**
+ * - 使用 Shoelace Theorem 求多边形面积
+ * - calculate the area of a polygon using the Shoelace Theorem
+ * @param points - 可以为点类型数组、LineString 类型或者二维数组（需要为墨卡托平面坐标系下）
+ * - 需确保点按照顺时针或者逆时针排列 
+ * - need to ensure that the points are arranged clockwise or counterclockwise
+ * @returns 
+ */
+export function planePolygonArea(
+    points: Point[] | LineString | [number, number][],
+    radius: number = 1,
+) : number{
+    // 处理输入参数
+    // 首先统一为二维数组
+    let coordinates = LineString.isLineString(points) ? points.toXY() : points as number[][] | Point[];
+    // 判断数组长度
+    if (coordinates.length < 3) {
+        return 0;
+    }
+    // 判断元素类型 若为 Point 则转换为二维数组
+    if (Point.isPoint(coordinates[0])) {
+        // 声明类型 以便调用 Point 类型的方法
+        coordinates = coordinates as Point[];
+        coordinates.map((item, index) => {
+            coordinates[index] = item.toXY();
+        });
+    }
+    // 声明为二维数组
+    coordinates = coordinates as number[][];
+    // 用 Shoelace Theorem 计算面积
+    let area = 0;
+    let j = coordinates.length - 1;
+    for (let i = 0; i < coordinates.length; i++) {
+        area += (coordinates[j][0] + coordinates[i][0]) * (coordinates[j][1] - coordinates[i][1]);
+        j = i;
+    }
+    // 转换为指定单位
+    // area = area * areaFactors[unit] / 2;
+    area = area * radius * radius / 2;
     return Math.abs(area);
 }
 

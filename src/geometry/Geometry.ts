@@ -28,9 +28,9 @@ import { SphericalMercator } from "..";
  * - no MultiPoint, MultiLineString, MultiPolygon
  */
 export abstract class Geometry {
-    protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
-    protected coordinates: any;
-    protected properties: any;
+    bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
+    coordinates: any;
+    properties: any;
     projection: Projection = SphericalMercator;
     toXY(): any {}
     
@@ -46,9 +46,9 @@ export abstract class Geometry {
         this.updateBBox(); // update the bounding box
     }
 
-    getCoordinates(): any { return this.coordinates; }
-    getProperties(): any { return this.properties; }
-    getBoundingBox(): MBR | null { return this.bbox; }
+    // getCoordinates(): any { return this.coordinates; }
+    // getProperties(): any { return this.properties; }
+    // bbox: MBR | null { return this.bbox; }
 
     set Properties(properties: any) { this.properties = properties; }
     
@@ -127,9 +127,9 @@ export abstract class Geometry {
 // GeometryCollection 就不使用抽象类了
 // 暂时不支持嵌套 GeometryCollection
 export class GeometryCollection{
-    protected geometries: (Geometry | GeometryCollection)[] = [];
-    protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
-    protected properties: any;
+    geometries: (Geometry | GeometryCollection)[] = [];
+    bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
+    properties: any;
     projection: Projection = SphericalMercator;
 
     constructor(geometries: (Geometry | GeometryCollection)[], properties?: any) {
@@ -145,13 +145,8 @@ export class GeometryCollection{
 
     toXY(): any{}; // 未实现
 
-    set Properties(properties: any) { this.properties = properties; }
-    getBoundingBox(): MBR | null { return this.bbox; }
-    getGeometries(): (Geometry | GeometryCollection)[] { return this.geometries; }
-    getProperties(): any { return this.properties; }
-
     updateBBox(geometry: any): void {
-        const bbox = geometry.getBoundingBox();
+        const bbox = geometry.bbox;
         if (bbox) {
             this.bbox = mergeMBR(this.bbox, bbox);
         }

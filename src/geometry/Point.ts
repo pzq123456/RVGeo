@@ -9,9 +9,14 @@ import { GeoJSONFeature, GeoJSONPoint, GeoJSONMultiPoint } from "./GeoJSON";
  */
 export class Point extends Geometry {
     // 默认为球面墨卡托投影
+    lon: number;
+    lat: number;
 
     constructor(coordinates: GeoJSONPoint["coordinates"] | any, properties?: any) {
         super(coordinates, properties);
+        // 注意 lon 和 lat 两个属性是为了方便计算，不会随着坐标的变化而更新
+        this.lon = coordinates[0];
+        this.lat = coordinates[1];
     }
 
     updateBBox(): void {
@@ -20,6 +25,10 @@ export class Point extends Geometry {
     
     toXY(): GeoJSONPoint["coordinates"] {
         return this.projection.project(this.coordinates);
+    }
+
+    static isPoint(geometry: any): geometry is Point {
+        return geometry instanceof Point;
     }
 
     static fromGeometry(geometry: GeoJSONPoint): Point {
@@ -51,7 +60,7 @@ export class MultiPoint extends GeometryCollection{
         // 判断类型
         if(geometries[0] instanceof Point){
             super(geometries as Point[], properties);
-            this.coordinates = (geometries as Point[]).map(geometry => geometry.getCoordinates());
+            this.coordinates = (geometries as Point[]).map(geometry => geometry.coordinates);
         }else{
             super((geometries as GeoJSONMultiPoint["coordinates"])
                     .map(coordinates => new Point(coordinates)),
@@ -116,7 +125,7 @@ export class MultiPoint extends GeometryCollection{
     addGeometry(geometry: Point | GeoJSONPoint["coordinates"] | MultiPoint): void {
         if(geometry instanceof Point){
             this.geometries.push(geometry);
-            this.coordinates.push(geometry.getCoordinates());
+            this.coordinates.push(geometry.coordinates);
             this.updateBBox(geometry);
         }else if(geometry instanceof MultiPoint){
             this.geometries.concat(geometry.geometries);
@@ -136,7 +145,7 @@ export class MultiPoint extends GeometryCollection{
             geometry: {
                 type: "MultiPoint",
                 // 类型断言
-                coordinates: this.geometries.map(geometry => (geometry as Point).getCoordinates()) as GeoJSONMultiPoint["coordinates"]
+                coordinates: this.geometries.map(geometry => (geometry as Point).coordinates) as GeoJSONMultiPoint["coordinates"]
             },
 
         } as GeoJSONFeature;
@@ -149,6 +158,10 @@ export class MultiPoint extends GeometryCollection{
             feature.bbox = this.bbox;
         }
         return feature;
+    }
+
+    static isMultiPoint(geometry: any): geometry is MultiPoint {
+        return geometry instanceof MultiPoint;
     }
 
     static fromFeature(feature: GeoJSONFeature): GeometryCollection{
@@ -212,4 +225,8 @@ export function toPoint(...args: any[]): Point {
     }else{
         return new Point([args[0], args[1]], args[2]);
     }
+}
+
+export function toMultiPoint(points: Point[] | GeoJSONMultiPoint["coordinates"], properties?: any): MultiPoint{
+    return new MultiPoint(points, properties);
 }

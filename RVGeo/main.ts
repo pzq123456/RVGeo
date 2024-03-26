@@ -1,8 +1,8 @@
-import { drawCircle2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawLineString2BLMap, drawMultiPoint2BLMap, drawPlaneMBR2BLMap, drawPlaneMPS2BLMap, drawPoint2BLMap, drawPolygon2BLMap, drawQuadTree2BLMap, drawRectangle2BLMap, drawTriangleEdge2BLMap, innerIcon, removeAllOverlay } from './helpers/BLDraw.ts';
+import { drawCircle2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawLineString2BLMap, drawMultiPoint2BLMap, drawPlaneMBR2BLMap, drawPlaneMPS2BLMap, drawPoint2BLMap, drawPolygon2BLMap, drawQuadTree2BLMap, drawRectangle2BLMap, drawTriangleEdge2BLMap, innerIcon, removeAllOverlay } from '../src/BLDraw.ts';
 import { createToolBar } from './helpers/toolBar.ts';
-import { mockPoints } from './tests/Mock.ts';
+import { mockPoints } from '../src/Mock.ts';
 
-import * as RVGeo from './packages/index.ts';
+import * as RVGeo from '../src';
 import axios from 'axios';
 
 
@@ -110,48 +110,42 @@ function clear(){
 
 // 全局模拟数据（点集合）
 let ps = mockPoints(30, myMBR1);
-let mps = new RVGeo.Geometry.MultiPoint(ps);
-
+let mps = new RVGeo.MultiPoint(ps);
 
 function example1(){ // 绘制多点及其重心
   removeAllOverlay(map)
   let icon = innerIcon(0);
-  console.log(mps.calculateCentroid());
-  drawPoint2BLMap(mps.calculateCentroid(), map);
+  drawPoint2BLMap(mps.centroid(), map);
   drawMultiPoint2BLMap(mps, map, icon);
-
-  // const testProgress = RVGeo.Renderer.testProgress;
-  // testProgress();
 }
 
 function example2(){ // 绘制三角网
   removeAllOverlay(map);
-  let del = RVGeo.Delaunay.Delaunator.from(mps.toXYArray()); // 传入平面坐标！
-  let trs = RVGeo.Utils.fillIndexArray(del.getTriangleIndices(), mps.toArray());
-  let trc = RVGeo.Delaunay.triangleCenter(mps.toXYArray(),del, 0);
+  let del = RVGeo.Delaunator.from(mps.toXY()); // 传入平面坐标！
+  let trs = RVGeo.fillIndexArray(del.getTriangleIndices(), mps.coordinates);
+  let trc = RVGeo.triangleCenter(mps.toXY(),del, 0);
   drawPoint2BLMap(trc, map);
   drawTriangleEdge2BLMap(trs, map, {strokeColor: 'blue'});
-  let res = RVGeo.Utils.fillIndexArray(del.getHull(), mps.toArray());
+  let res = RVGeo.fillIndexArray(del.getHull(), mps.coordinates);
   drawPolygon2BLMap([res],map, {fillColor: 'gray'});
   drawMultiPoint2BLMap(mps, map);
-  console.log(del.getHull());
 }
 
 function example3(){ // 绘制凸包
   removeAllOverlay(map)
-  let ps2 = RVGeo.Shell.convexHull(ps);
-  let ls = new RVGeo.Geometry.LineString(ps2);
-  let polygon = new RVGeo.Geometry.Polygon([ls]);
-  let rect = polygon.getMBR();
+  let ps2 = RVGeo.convexHull(ps);
+  let ls = RVGeo.toLineString(ps2);
+  let polygon = new RVGeo.Polygon([ls.coordinates]);
+  let rect = polygon.bbox;
   drawPolygon2BLMap(polygon, map);
   drawRectangle2BLMap(rect, map);
 }
 
 function example4(){ // 计算面积
-  let Colorado = new RVGeo.Geometry.LineString(RVGeo.Geometry.mbrToPolygon(myMBR1).map((p) => new RVGeo.Geometry.Point(p[0],p[1])) as RVGeo.Geometry.Point[]); // 科罗拉多州边界（粗略）
-  let area = RVGeo.Measuration.SpherePolygonArea(Colorado);
-  let area2 = RVGeo.Measuration.PlanePolygonArea(Colorado);
-  alert("Colorado area (on sphere): " + area + " km2\n" + "Colorado area (in plane): " + area2 + " km2\n" + "Colorado area (real): 268,627 km2\n");
+  let Colorado = RVGeo.toLineString(RVGeo.mbrToPolygon(myMBR1).map((p) => new RVGeo.Point([p[0],p[1]]))); // 科罗拉多州边界（粗略）
+  let area = RVGeo.EPSG3857.area(Colorado.coordinates);
+  let area2 = RVGeo.EPSG3857.planeArea(Colorado.coordinates);
+  alert("Colorado area (on sphere): " + area + " m2\n" + "Colorado area (in plane): " + area2 + " m2\n" + "Colorado area (real): 268,627 km2\n");
 }
 
 function example5(){ // 绘制Voronoi
@@ -179,12 +173,15 @@ function example5(){ // 绘制Voronoi
     ]
   ] as [number, number][];
 
-  let myMps = new RVGeo.Geometry.MultiPoint(points);
+  let myMps = new RVGeo.MultiPoint(points);
 
+  let del = RVGeo.Delaunator.from(mps.toXY().concat(myMps.toXY())); // 传入平面坐标！
 
-  let del = RVGeo.Delaunay.Delaunator.from(mps.toXYArray().concat(myMps.toXYArray())); // 传入平面坐标！
-  let vor = new RVGeo.Delaunay.Voronoi(del);
+  let vor = new RVGeo.Voronoi(del);
   let voi = vor.cutVoronoiByMBR(myMBR1);
+  // let voi = vor.getVoronoi();
+  // console.log(voi);
+
   drawEdgeMap2BLMap(voi, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
 }
 
@@ -199,10 +196,9 @@ function example6(){ // 多边形求交
   // draw rectangle
   drawLineString2BLMap(rect1, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   drawLineString2BLMap(rect2, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 },true);
-  let res = RVGeo.CGUtils.intersectionPolygon(rect1, rect2);
+  let res = RVGeo.intersectionPolygon(rect1, rect2);
 
   drawPolygon2BLMap([res], map, {fillColor: 'red'});
-  drawMultiPoint2BLMap(RVGeo.Meta.createPointListFromArr(res), map);
 }
 
 function example7(){ // 线段求交

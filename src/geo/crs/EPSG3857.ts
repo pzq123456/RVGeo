@@ -1,7 +1,7 @@
 import { CRS, Earth } from "./base";
 import { SphericalMercator } from "../projection/";
 import { extend } from "../../core";
-import { sphericalArea } from "../../math/measuring";
+import { sphericalArea, planePolygonArea } from "../../math/measuring";
 
 const MAXLAT: number = 85.05112877980659; // EPSG:3857 支持的最大纬度
 
@@ -16,6 +16,9 @@ export const EPSG3857 = extend({}, Earth, {
     wrapLat: [-MAXLAT, MAXLAT],
     area(points: [number, number][]) : number {
         return sphericalArea(points, this.R);
+    },
+    planeArea(points: [number, number][]) : number {
+        return planePolygonArea(points,this.R);
     }
 }) as CRS;
 

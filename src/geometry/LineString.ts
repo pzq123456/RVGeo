@@ -1,6 +1,6 @@
 import { Geometry, GeometryCollection } from "./Geometry";
 import { GeoJSONFeature, GeoJSONLineString, GeoJSONMultiLineString } from "./GeoJSON";
-import { MultiPoint } from ".";
+import { MultiPoint, Point } from ".";
 
 export class LineString extends Geometry {
 
@@ -73,7 +73,7 @@ export class MultiLineString extends GeometryCollection{
         // 判断类型
         if(geometries[0] instanceof LineString){
             super(geometries as LineString[], properties);
-            this.coordinates = (geometries as LineString[]).map(geometry => geometry.getCoordinates());
+            this.coordinates = (geometries as LineString[]).map(geometry => geometry.coordinates);
         }else{
             super((geometries as GeoJSONMultiLineString["coordinates"])
                     .map(coordinates => new LineString(coordinates)),
@@ -98,7 +98,7 @@ export class MultiLineString extends GeometryCollection{
     addGeometry(geometry: LineString | GeoJSONLineString["coordinates"]): void {
         if(geometry instanceof LineString){
             this.geometries.push(geometry);
-            this.coordinates.push(geometry.getCoordinates());
+            this.coordinates.push(geometry.coordinates);
             this.updateBBox(geometry);
         }else{
             this.geometries.push(new LineString(geometry));
@@ -113,7 +113,7 @@ export class MultiLineString extends GeometryCollection{
             geometry: {
                 type: "MultiLineString",
                 // 类型断言
-                coordinates: this.geometries.map(geometry => (geometry as LineString).getCoordinates()) as GeoJSONMultiLineString["coordinates"]
+                coordinates: this.geometries.map(geometry => (geometry as LineString).coordinates) as GeoJSONMultiLineString["coordinates"]
             },
         } as GeoJSONFeature;
         if (this.properties) {
@@ -138,4 +138,8 @@ export class MultiLineString extends GeometryCollection{
     static fromGeometry(geometry: GeoJSONMultiLineString): GeometryCollection{
         return new MultiLineString(geometry.coordinates);
     }
+}
+
+export function toLineString(points: Point[]): LineString{
+    return new LineString(points.map(point => point.coordinates));
 }

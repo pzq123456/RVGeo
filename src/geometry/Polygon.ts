@@ -28,6 +28,10 @@ export class Polygon extends Geometry {
         }
         this.bbox = [minX, minY, maxX, maxY];
     }
+
+    static isPolygon(geometry: any): geometry is Polygon {
+        return geometry instanceof Polygon;
+    }
     
     static fromGeometry(geometry: GeoJSONPolygon): Polygon {
         return new Polygon(geometry.coordinates);
@@ -51,7 +55,7 @@ export class MultiPolygon extends GeometryCollection{
         // 判断类型
         if(geometries[0] instanceof Polygon){
             super(geometries as Polygon[], properties);
-            this.coordinates = (geometries as Polygon[]).map(geometry => geometry.getCoordinates());
+            this.coordinates = (geometries as Polygon[]).map(geometry => geometry.coordinates);
         }else{
             super((geometries as GeoJSONMultiPolygon["coordinates"])
                     .map(coordinates => new Polygon(coordinates)),
@@ -77,7 +81,7 @@ export class MultiPolygon extends GeometryCollection{
     addGeometry(geometry: Polygon | GeoJSONPolygon["coordinates"]): void {
         if(geometry instanceof Polygon){
             this.geometries.push(geometry);
-            this.coordinates.push(geometry.getCoordinates());
+            this.coordinates.push(geometry.coordinates);
             this.updateBBox(geometry);
         }else{
             this.geometries.push(new Polygon(geometry));
@@ -92,7 +96,7 @@ export class MultiPolygon extends GeometryCollection{
             geometry: {
                 type: "MultiPolygon",
                 // 类型断言
-                coordinates: this.geometries.map(geometry => (geometry as Polygon).getCoordinates()) as GeoJSONMultiPolygon["coordinates"]
+                coordinates: this.geometries.map(geometry => (geometry as Polygon).coordinates) as GeoJSONMultiPolygon["coordinates"]
             },
         } as GeoJSONFeature;
         if (this.properties) {
