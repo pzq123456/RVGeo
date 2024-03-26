@@ -31,7 +31,7 @@ export abstract class Geometry {
     protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
     protected coordinates: any;
     protected properties: any;
-    protected projection: Projection = SphericalMercator;
+    projection: Projection = SphericalMercator;
     toXY(): any {}
     
     static fromFeature: any;
@@ -130,8 +130,7 @@ export class GeometryCollection{
     protected geometries: (Geometry | GeometryCollection)[] = [];
     protected bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
     protected properties: any;
-    protected projection: Projection = SphericalMercator;
-
+    projection: Projection = SphericalMercator;
 
     constructor(geometries: (Geometry | GeometryCollection)[], properties?: any) {
         if (properties) {
@@ -144,26 +143,26 @@ export class GeometryCollection{
         });
     }
 
-    toXY(): any {}
+    toXY(): any{}; // 未实现
 
     set Properties(properties: any) { this.properties = properties; }
     getBoundingBox(): MBR | null { return this.bbox; }
     getGeometries(): (Geometry | GeometryCollection)[] { return this.geometries; }
     getProperties(): any { return this.properties; }
 
-    updateBBox(geometry: Geometry | GeometryCollection): void {
+    updateBBox(geometry: any): void {
         const bbox = geometry.getBoundingBox();
         if (bbox) {
             this.bbox = mergeMBR(this.bbox, bbox);
         }
     }
 
-    addGeometry(geometry: Geometry): void {
+    addGeometry(geometry: any): void {
         this.geometries.push(geometry);
         this.updateBBox(geometry);
     }
 
-    _update(geometry: Geometry, index: number): void {
+    _update(geometry: any, index: number): void {
         this.geometries[index] = geometry;
         this.updateBBox(geometry);
     }

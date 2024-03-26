@@ -1,7 +1,9 @@
 import { Geometry, GeometryCollection } from "./Geometry";
 import { GeoJSONFeature, GeoJSONLineString, GeoJSONMultiLineString } from "./GeoJSON";
+import { MultiPoint } from ".";
 
 export class LineString extends Geometry {
+
     constructor(coordinates: GeoJSONLineString["coordinates"], properties?: any) {
         super(coordinates, properties);
     }
@@ -15,6 +17,16 @@ export class LineString extends Geometry {
             maxY = Math.max(maxY, y);
         }
         this.bbox = [minX, minY, maxX, maxY];
+    }
+
+    toXY() : GeoJSONLineString["coordinates"] {
+        // this.projection.project
+        return (this.coordinates as GeoJSONLineString["coordinates"])
+            .map(point => this.projection.project(point));
+    }
+
+    toMultiPoint(): MultiPoint{
+        return new MultiPoint(this.coordinates);
     }
 
     /**
@@ -55,24 +67,42 @@ export class LineString extends Geometry {
 }
 
 export class MultiLineString extends GeometryCollection{
+    coordinates: GeoJSONMultiLineString["coordinates"];
 
     constructor(geometries: LineString[] | GeoJSONMultiLineString["coordinates"], properties?: any){
         // 判断类型
         if(geometries[0] instanceof LineString){
             super(geometries as LineString[], properties);
+            this.coordinates = (geometries as LineString[]).map(geometry => geometry.getCoordinates());
         }else{
             super((geometries as GeoJSONMultiLineString["coordinates"])
                     .map(coordinates => new LineString(coordinates)),
                     properties);
+            this.coordinates = geometries as GeoJSONMultiLineString["coordinates"];
         }
+    }
+
+    getCoodinates(): GeoJSONMultiLineString["coordinates"]{
+        return this.coordinates;
+    }
+
+    toMultiPoint(): MultiPoint{
+        return new MultiPoint(this.coordinates.flat());
+    }
+
+    toXY() : GeoJSONMultiLineString["coordinates"] {
+        return (this.geometries as LineString[])
+            .map(lineString => lineString.toXY());
     }
 
     addGeometry(geometry: LineString | GeoJSONLineString["coordinates"]): void {
         if(geometry instanceof LineString){
             this.geometries.push(geometry);
+            this.coordinates.push(geometry.getCoordinates());
             this.updateBBox(geometry);
         }else{
             this.geometries.push(new LineString(geometry));
+            this.coordinates.push(geometry);
             this.updateBBox(this.geometries[this.geometries.length - 1]);
         }
     }

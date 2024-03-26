@@ -1,5 +1,5 @@
 import { describe, it, expect} from 'vitest';
-import { LineString } from "../../src/geometry/";
+import { LineString, MultiLineString } from "../../src/geometry/";
 
 describe('LineString', () => {
   it('should create a LineString', () => {
@@ -37,5 +37,17 @@ describe('LineString', () => {
     });
     expect(line.getCoordinates()).toEqual([[1, 2], [3, 4]]);
     expect(line.getProperties()).toEqual({ name: 'test' });
+  });
+
+  // test toXY
+  it('should return x and y coordinates', () => {
+    const line = new LineString([[0, 0], [1, 1]]);
+    console.log(line.toXY());
+  });
+
+  // test multiLineString toXY
+  it('multiLineString should return x and y coordinates ', () => {
+    const multiLine = new MultiLineString([[[0, 0], [1, 1]], [[2, 2], [3, 3]]]);
+    console.log(multiLine.toXY());
   });
 });

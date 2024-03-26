@@ -304,7 +304,7 @@ export class MultiPoint extends Geometry{
         }
         return res;
     }
-
+ 
     /**
      * - 将多点转换为 GeoJSON 格式
      * - transform MultiPoint to GeoJSON format

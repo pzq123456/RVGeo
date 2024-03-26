@@ -1,11 +1,21 @@
 import { Geometry, GeometryCollection } from "./Geometry";
 import { GeoJSONFeature, GeoJSONPolygon, GeoJSONMultiPolygon } from "./GeoJSON";
+import { MultiPoint } from ".";
 
 export class Polygon extends Geometry {
     constructor(coordinates: GeoJSONPolygon["coordinates"] , properties?: any) {
         super(coordinates, properties);
     }
 
+    toXY(): GeoJSONPolygon["coordinates"] {
+        return (this.coordinates as GeoJSONPolygon["coordinates"])
+        .map(ring => ring.map(point => this.projection.project(point)));
+    }
+
+    toMultiPoint(): MultiPoint{
+        return new MultiPoint(this.coordinates.flat());
+    }
+    
     updateBBox(): void {
         let [minX, minY, maxX, maxY] = [Infinity, Infinity, -Infinity, -Infinity];
         for (const ring of this.coordinates) {
@@ -35,24 +45,43 @@ export class Polygon extends Geometry {
 }
 
 export class MultiPolygon extends GeometryCollection{
+    coordinates: GeoJSONMultiPolygon["coordinates"];
 
     constructor(geometries: Polygon[] | GeoJSONMultiPolygon["coordinates"], properties?: any){
         // 判断类型
         if(geometries[0] instanceof Polygon){
             super(geometries as Polygon[], properties);
+            this.coordinates = (geometries as Polygon[]).map(geometry => geometry.getCoordinates());
         }else{
             super((geometries as GeoJSONMultiPolygon["coordinates"])
                     .map(coordinates => new Polygon(coordinates)),
                     properties);
+            this.coordinates = geometries as GeoJSONMultiPolygon["coordinates"];
         }
+    }
+    
+    getCoodinates(): GeoJSONMultiPolygon["coordinates"]{
+        return this.coordinates;
+    }
+
+    toMultiPoint(): MultiPoint{
+        // todo: check
+        return new MultiPoint(this.coordinates.flat().flat());
+    }
+
+    toXY() : GeoJSONMultiPolygon["coordinates"] {
+        return (this.geometries as Polygon[])
+            .map(polygon => polygon.toXY());
     }
 
     addGeometry(geometry: Polygon | GeoJSONPolygon["coordinates"]): void {
         if(geometry instanceof Polygon){
             this.geometries.push(geometry);
+            this.coordinates.push(geometry.getCoordinates());
             this.updateBBox(geometry);
         }else{
             this.geometries.push(new Polygon(geometry));
+            this.coordinates.push(geometry);
             this.updateBBox(this.geometries[this.geometries.length - 1]);
         }
     }

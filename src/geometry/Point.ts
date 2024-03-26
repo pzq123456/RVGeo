@@ -18,7 +18,7 @@ export class Point extends Geometry {
         this.bbox = [this.coordinates[0], this.coordinates[1], this.coordinates[0], this.coordinates[1]];
     }
     
-    toXY(): [number, number] {
+    toXY(): GeoJSONPoint["coordinates"] {
         return this.projection.project(this.coordinates);
     }
 
@@ -31,8 +31,7 @@ export class Point extends Geometry {
         if (geometry.type !== "Point") {
             throw new Error(`The input geometry is not a Point: ${geometry.type}`);
         }
-        const pointGeometry = geometry as GeoJSONPoint; // Type assertion
-        // return new Point(pointGeometry.coordinates, properties);
+        const pointGeometry = geometry as GeoJSONPoint;
         if(properties){
             return new Point(pointGeometry.coordinates, properties);
         }else{
@@ -40,9 +39,6 @@ export class Point extends Geometry {
         }
     }
 
-    // static isPoint(point: any): point is Point{
-    //     return point.type === "Point";
-    // }
 }
 
 
@@ -50,24 +46,85 @@ export class MultiPoint extends GeometryCollection{
     // 可以传入 点类型数组 但是会忽略每一个点的 properties
     // 因为 MultiPoint 本身有 properties
     // 建议在外部提取每一个点的 properties 再传入 到 MultiPoint 的 properties
-
+    coordinates: GeoJSONMultiPoint["coordinates"];
     constructor(geometries: Point[] | GeoJSONMultiPoint["coordinates"], properties?: any){
         // 判断类型
         if(geometries[0] instanceof Point){
             super(geometries as Point[], properties);
+            this.coordinates = (geometries as Point[]).map(geometry => geometry.getCoordinates());
         }else{
             super((geometries as GeoJSONMultiPoint["coordinates"])
                     .map(coordinates => new Point(coordinates)),
                     properties);
+            this.coordinates = geometries as GeoJSONMultiPoint["coordinates"];
         }
     }
 
-    addGeometry(geometry: Point | GeoJSONMultiPoint["coordinates"]): void {
+    toXY(): GeoJSONMultiPoint["coordinates"] {
+        return this.geometries.map(geometry => (geometry as Point).toXY());
+    }
+
+    getCoodinates(): GeoJSONMultiPoint["coordinates"]{
+        return this.coordinates;
+    }
+
+    /**
+     * - 计算多点的重心
+     * - calculate centroid of MultiPoint
+     * @param values - 可指定权重数组(可选) 会首先归一化权重数组
+     * @returns {Point} 返回重心坐标
+     * @see https://en.wikipedia.org/wiki/Centroid
+     */
+    centroid(values?: number[]): Point{
+        // 若有权重数组 则归一化
+        if(values){
+            let sum = 0;
+            for(let i = 0; i < values.length; i++){
+                sum += values[i];
+            }
+            for(let i = 0; i < values.length; i++){
+                values[i] /= sum;
+            }
+
+            let sumLon = 0, sumLat = 0;
+            for(let i = 0; i < this.coordinates.length; i++){
+                let tmp = this.coordinates[i];
+                sumLon += tmp[0] * values[i];
+                sumLat += tmp[1] * values[i];
+            }
+            let lon = sumLon;
+            let lat = sumLat;
+
+            return new Point([lon, lat]);
+        }else{
+            let sumLon = 0, sumLat = 0;
+            for(let i = 0; i < this.coordinates.length; i++){
+                let tmp = this.coordinates[i];
+                sumLon += tmp[0];
+                sumLat += tmp[1];
+            }
+            let lon = sumLon / this.coordinates.length;
+            let lat = sumLat / this.coordinates.length;
+            return new Point([lon, lat]);
+        }
+    }
+
+    /**
+     * 将点（类型或数组）、多点类型融合到此 MultiPoint 中
+     * @param geometry 
+     */
+    addGeometry(geometry: Point | GeoJSONPoint["coordinates"] | MultiPoint): void {
         if(geometry instanceof Point){
             this.geometries.push(geometry);
+            this.coordinates.push(geometry.getCoordinates());
+            this.updateBBox(geometry);
+        }else if(geometry instanceof MultiPoint){
+            this.geometries.concat(geometry.geometries);
+            this.coordinates.concat(geometry.coordinates);
             this.updateBBox(geometry);
         }else{
             this.geometries.push(new Point(geometry));
+            this.coordinates.push(geometry);
             this.updateBBox(this.geometries[this.geometries.length - 1]);
         }
     }

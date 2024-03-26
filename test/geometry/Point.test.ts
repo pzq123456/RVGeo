@@ -7,6 +7,14 @@ describe('Point', () => {
     expect(point.getCoordinates()).toEqual([1, 2]);
   });
 
+  // test toXY
+  it('should return x and y coordinates', () => {
+    const point = new Point([0, 0]);
+    const [x, y] = point.toXY();
+    expect(x).toBe(0);
+    expect(y).toBe(0);
+  });
+
   it('should create a point with properties', () => {
     const point = new Point([1, 2], { name: 'test' });
     expect(point.getProperties()).toEqual({ name: 'test' });
@@ -137,6 +145,8 @@ describe('Point', () => {
   // MultiPoint
   it('should create a MultiPoint', () => {
     const multiPoint = new MultiPoint([[1, 2], [3, 4], [5, 6], [3, 3]]);
-    console.log(multiPoint.toGeoJSON());
+    // console.log(multiPoint.toGeoJSON());
+    // console.log(multiPoint.toXY());
+    console.log(multiPoint.centroid());
   });
 });
