@@ -9,14 +9,15 @@ import { GeoJSONFeature, GeoJSONPoint, GeoJSONMultiPoint } from "./GeoJSON";
  */
 export class Point extends Geometry {
     // 默认为球面墨卡托投影
-    lon: number;
-    lat: number;
+    get lon(): number {
+        return this.coordinates[0];
+    }
+    get lat(): number {
+        return this.coordinates[1];
+    }
 
     constructor(coordinates: GeoJSONPoint["coordinates"] | any, properties?: any) {
         super(coordinates, properties);
-        // 注意 lon 和 lat 两个属性是为了方便计算，不会随着坐标的变化而更新
-        this.lon = coordinates[0];
-        this.lat = coordinates[1];
     }
 
     updateBBox(): void {
@@ -55,7 +56,7 @@ export class MultiPoint extends GeometryCollection{
     // 可以传入 点类型数组 但是会忽略每一个点的 properties
     // 因为 MultiPoint 本身有 properties
     // 建议在外部提取每一个点的 properties 再传入 到 MultiPoint 的 properties
-    coordinates: GeoJSONMultiPoint["coordinates"];
+    readonly coordinates: GeoJSONMultiPoint["coordinates"];
     constructor(geometries: Point[] | GeoJSONMultiPoint["coordinates"], properties?: any){
         // 判断类型
         if(geometries[0] instanceof Point){

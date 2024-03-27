@@ -3,6 +3,7 @@ import { GeoJSONFeature, GeoJSONPolygon, GeoJSONMultiPolygon } from "./GeoJSON";
 import { MultiPoint } from ".";
 
 export class Polygon extends Geometry {
+
     constructor(coordinates: GeoJSONPolygon["coordinates"] , properties?: any) {
         super(coordinates, properties);
     }
@@ -49,7 +50,7 @@ export class Polygon extends Geometry {
 }
 
 export class MultiPolygon extends GeometryCollection{
-    coordinates: GeoJSONMultiPolygon["coordinates"];
+    readonly coordinates: GeoJSONMultiPolygon["coordinates"];
 
     constructor(geometries: Polygon[] | GeoJSONMultiPolygon["coordinates"], properties?: any){
         // 判断类型

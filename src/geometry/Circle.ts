@@ -1,5 +1,3 @@
-import {EPSLN} from '../'
-
 import { MBR, mbrToRectangle } from "./MBR";
 /**
  * 平面图形：圆形
@@ -29,7 +27,7 @@ export class Circle {
      * @param threshold - （默认为0）容差（用于修正计算误差）*建议根据实际情况手动调整
      * @returns {boolean} - true if the point is inside the circle
      */
-    contains(point:[number,number],threshold:number = EPSLN): boolean {
+    contains(point:[number,number], threshold: number = 1800000000): boolean {
         // make it more robust
         let x = point[0];
         let y = point[1];
@@ -66,5 +64,9 @@ export class Circle {
 
         // intersection on the edge of the circle
         return edges <= this.rSquared;
+    }
+
+    static isCircle(obj: any): obj is Circle {
+        return obj instanceof Circle;
     }
 }

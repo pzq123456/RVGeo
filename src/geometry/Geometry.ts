@@ -29,9 +29,9 @@ import { SphericalMercator } from "..";
  */
 export abstract class Geometry {
     bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
-    coordinates: any;
+    readonly coordinates: any;
     properties: any;
-    projection: Projection = SphericalMercator;
+    readonly projection: Projection = SphericalMercator;
     toXY(): any {}
     
     static fromFeature: any;
@@ -45,10 +45,6 @@ export abstract class Geometry {
         }
         this.updateBBox(); // update the bounding box
     }
-
-    // getCoordinates(): any { return this.coordinates; }
-    // getProperties(): any { return this.properties; }
-    // bbox: MBR | null { return this.bbox; }
 
     set Properties(properties: any) { this.properties = properties; }
     
@@ -97,36 +93,13 @@ export abstract class Geometry {
             throw new Error("Unknown GeoJSON type: " + feature.type);
         }
     }
-
-    /**
-     * 直接在原对象上更新坐标
-     * @param coordinates 
-     * @param properties 
-     */
-    update_(coordinates: any, properties?: any): void {
-        this.coordinates = coordinates;
-        if (properties) {
-            this.properties = properties;
-        }
-        this.updateBBox();
-    }
-
-    /**
-     * 返回当前对象的副本，更新坐标
-     * @param coordinates 
-     * @param properties 
-     */
-    update(coordinates: any, properties?: any): Geometry {
-        const geometry = this.clone();
-        geometry.update_(coordinates, properties);
-        return geometry;
-    }
 }
 
 // 包括：MultiPoint, MultiLineString, MultiPolygon 及 GeometryCollection
 // GeometryCollection 就不使用抽象类了
 // 暂时不支持嵌套 GeometryCollection
 export class GeometryCollection{
+    coordinates: any;
     geometries: (Geometry | GeometryCollection)[] = [];
     bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
     properties: any;

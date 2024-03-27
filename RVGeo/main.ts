@@ -237,7 +237,7 @@ function example7(){ // 线段求交
   drawLineString2BLMap(line1, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   drawLineString2BLMap(line2, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   drawLineString2BLMap(line3, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
-  let insPoi = RVGeo.CGUtils.intersection(line1[0], line1[1], line2[0], line2[1]) as [number, number];
+  let insPoi = RVGeo.intersection(line1[0], line1[1], line2[0], line2[1]) as [number, number];
   drawPoint2BLMap(insPoi, map);
 }
 
@@ -267,8 +267,8 @@ function example8(){ // 点线关系
     -104.51534491327676,
     38.97346949562407
   ] as [number, number];
-  let res1 = RVGeo.CGUtils.pointInEdge(outPoi, line[0], line[1]);
-  let res2 = RVGeo.CGUtils.pointInEdge(inPoi, line[0], line[1]);
+  let res1 = RVGeo.pointInEdge(outPoi, line[0], line[1]);
+  let res2 = RVGeo.pointInEdge(inPoi, line[0], line[1]);
 
   drawLineString2BLMap(line, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
   drawPoint2BLMap(outPoi, map, myIcon1);
@@ -279,13 +279,13 @@ function example8(){ // 点线关系
 
 declare const GeoTIFF: any;
 function example9(){
-  const drawProgress = RVGeo.Renderer.drawProgress;
+  const drawProgress = RVGeo.drawProgress;
   const progressBar = {x: 924, y: 1004, w: 100, h: 20};
   drawProgress(canvas,progressBar,0);
 
-  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
-  const trueColorBandFactory = RVGeo.Colors.trueColorBandFactory;
-  const drawTrueColorGrid2d = RVGeo.Renderer.drawTrueColorGrid2d;
+  const drawGrid2d = RVGeo.drawGrid2d;
+  const trueColorBandFactory = RVGeo.trueColorBandFactory;
+  const drawTrueColorGrid2d = RVGeo.drawTrueColorGrid2d;
 
   let URL = 'exa2.tif';
   let URL2 = 'exa.tif';
@@ -308,14 +308,14 @@ function getShowTif(URL: string, rect: {x: number, y: number, w: number, h: numb
         bands.forEach((band) => {
           data.push(parseData2(rasters[band], width, true, 256));
         });
-        let grid = new RVGeo.Coverage.Grid(myMBR1,data);
+        let grid = new RVGeo.Grid(myMBR1,data);
 
         grid.fillInvalidValue(0);  // 填充无效值
         grid.fillInvalidValue(1);
         grid.fillInvalidValue(2);
 
         console.log(grid.getBand(0));
-        let myTrueColorBand = trueColorBandFactory(RVGeo.Colors.stretchType.square);
+        let myTrueColorBand = trueColorBandFactory(RVGeo.stretchType.square);
         drawTrueColorGrid2d(canvas, grid, [0,1,2], rect, myTrueColorBand);
         drawProgress(canvas,progressBar,100);
       });
@@ -335,20 +335,20 @@ function getShowTif(URL: string, rect: {x: number, y: number, w: number, h: numb
     ] as [number, number, number, number];
     let data = parseData(res.data);
     // console.log(data);
-    let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
+    let grid = new RVGeo.Grid(myMBR1,[data]);
     let testPoi = [-105.723781221762,38.87054575208597] as [number, number];
-    let inMBR = grid.ConvertToGridMBR(innerMBR) as RVGeo.Geometry.MBR;
+    let inMBR = grid.ConvertToGridMBR(innerMBR) as RVGeo.MBR;
     let subdrid = grid.getSubGrid(inMBR);
 
-    let grid2 = new RVGeo.Coverage.Grid(innerMBR,subdrid);
+    let grid2 = new RVGeo.Grid(innerMBR,subdrid);
     drawGridLines2BLMap(grid2.MBR, grid2.rows, grid2.cols, map,{ strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5 });
-    drawLineString2BLMap(RVGeo.Geometry.mbrToPolygon(myMBR1), map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
+    drawLineString2BLMap(RVGeo.mbrToPolygon(myMBR1), map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 },true);
     drawPoint2BLMap(testPoi, map);
     drawLabel(testPoi, `${grid.getGridCoord(testPoi)}` ,map);
     drawGridLines2BLMap(grid.MBR, grid.rows, grid.cols, map,{ strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 });
-    let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear); // ["red", "yellow", "green","white"];
+    let myPseudoColorBand = RVGeo.pseudoColorBandFactory(RVGeo.stretchType.linear); // ["red", "yellow", "green","white"];
     drawGrid2d(canvas, data, {x: 0, y: 0, w: 512, h: 512}, grid.getBandStatistics(0), myPseudoColorBand);
-    const stretchType = RVGeo.Colors.stretchType;
+    const stretchType = RVGeo.stretchType;
     let postions = [
       [0,0],
       [0,1],
@@ -358,7 +358,7 @@ function getShowTif(URL: string, rect: {x: number, y: number, w: number, h: numb
     // 遍历枚举类型
     for(let type in stretchType){
       if(parseInt(type) > 3) break;
-      let colorband = RVGeo.Colors.simpleColorBandFactory(parseInt(type));
+      let colorband = RVGeo.simpleColorBandFactory(parseInt(type));
       let postion = postions[parseInt(type)];
       drawGrid2d(canvas, data, {x: postion[0]*256, y: postion[1]*256 + 256*2, w: 256, h: 256}, grid.getBandStatistics(0), colorband);
     }
@@ -378,20 +378,20 @@ function example10(){ // 四叉树
   ] as [number, number, number, number];
 
   // 平面四叉树矩形范围
-  let planeMBR = RVGeo.Reference.MBR2Plane(myMBR1);
+  let planeMBR = RVGeo.MBR2Plane(myMBR1);
   // 计算对角线距离
-  let diagonal = RVGeo.Measuration.haversine([queryMBR[0],queryMBR[1]],[queryMBR[2],queryMBR[3]],"meters");
-  let center = RVGeo.Reference.convertToMercator(mps.calculateCentroid(),"meters",6);
+  let diagonal = RVGeo.Earth.distance([queryMBR[0],queryMBR[1]],[queryMBR[2],queryMBR[3]]);
+  let center = RVGeo.SphericalMercator.project(mps.centroid().coordinates);
   // 查询的圆形范围
-  let queryCircle = new RVGeo.Geometry.Circle(center[0],center[1], Math.round(diagonal)/2);
-
+  let queryCircle = new RVGeo.Circle(center[0],center[1], Math.round(diagonal)/2);
+  // console.log(queryCircle);
   let boundary = myMBR1;
   let capacity = 2;
-  let qtree = new RVGeo.QuadTree.QuadTree(boundary, capacity);
-  let planeTree = new RVGeo.QuadTree.QuadTree(planeMBR, capacity);
+  let qtree = new RVGeo.QuadTree(boundary, capacity);
+  let planeTree = new RVGeo.QuadTree(planeMBR, capacity);
 
-  mps.toArray().forEach((p) => qtree.insert(p));
-  mps.toXYArray().forEach((p) => {
+  mps.coordinates.forEach((p) => qtree.insert(p));
+  mps.toXY().forEach((p) => {
     planeTree.insert(p);
   });
 
@@ -402,20 +402,22 @@ function example10(){ // 四叉树
 
   // query points
   // let queryPoints = qtree.queryRange(queryMBR);
-  let increcs = [] as RVGeo.Geometry.MBR[];
-  let queryPoints2 = planeTree.queryCircle(queryCircle,increcs);
+  let increcs = [] as RVGeo.MBR[];
+  let queryPoints2 = planeTree.customQuery(queryCircle);
  
   let queryPoints = qtree.queryRange(queryMBR);
+  console.log(queryPoints2);
   drawPlaneMPS2BLMap(queryPoints2, map);
   for(let i = 0; i < increcs.length; i++){
     drawPlaneMBR2BLMap(increcs[i], map, {strokeColor: 'blue', strokeOpacity: 0.5,});
   }
-  drawCircle2BLMap(mps.calculateCentroid(), Math.round(diagonal)/2, map, {strokeColor: 'red', strokeOpacity: 0.5, fillColor: 'red', fillOpacity: 0.2});
+  // console.log(mps.centroid());
+  drawCircle2BLMap(mps.centroid(), Math.round(diagonal)/2, map, {strokeColor: 'red', strokeOpacity: 0.5, fillColor: 'red', fillOpacity: 0.2});
 
   let icon = innerIcon(0);
   drawMultiPoint2BLMap(mps, map, icon);
   // draw query points
-  drawMultiPoint2BLMap(RVGeo.Meta.createPointListFromArr(queryPoints), map, innerIcon(1));
+  drawMultiPoint2BLMap(queryPoints, map, innerIcon(1));
   // draw mbr
   drawRectangle2BLMap(queryMBR, map,{
     strokeColor: "green",
@@ -430,9 +432,9 @@ function example10(){ // 四叉树
 function example11(){ // Alpha Shape 算法
   removeAllOverlay(map);
   let alpha = 1/15000000000;
-  let alphacomplex = RVGeo.Shell.alphaComplex(ps, alpha);
+  let alphacomplex = RVGeo.alphaComplex(ps, alpha);
   console.log(alphacomplex);
-  let trs = RVGeo.Utils.fillIndexArray(alphacomplex, mps.toArray());
+  let trs = RVGeo.fillIndexArray(alphacomplex, mps.coordinates);
  
   drawTriangleEdge2BLMap(trs, map, {strokeColor: 'blue'});
 
@@ -441,22 +443,22 @@ function example11(){ // Alpha Shape 算法
   drawMultiPoint2BLMap(mps, map, icon);
 
   // 用红色绘制凸包
-  let ps2 = RVGeo.Shell.convexHull(ps);
-  let ls2 = new RVGeo.Geometry.LineString(ps2);
-  let polygon2 = new RVGeo.Geometry.Polygon([ls2]);
+  let ps2 = RVGeo.convexHull(ps);
+  let ls2 = RVGeo.toLineString(ps2);
+  let polygon2 = new RVGeo.Polygon([ls2.coordinates]);
   drawPolygon2BLMap(polygon2, map, {fillColor: 'red', fillOpacity: 0.1, strokeColor: 'red', strokeOpacity: 0.5});
 }
 
 function example12(){
-  const Perlin = RVGeo.Noise.Perlin; // Perlin 噪声生成器
-  const dampedSin3D = RVGeo.Noise.dampedSin3D; // 3D阻尼正弦波噪声生成器
-  const Sin3D = RVGeo.Noise.Sin3D; // 3D正弦波噪声生成器
-  const worleyNoise = RVGeo.Noise.worleyNoise; // Worley 噪声生成器
-  const CountourColorList = RVGeo.Colors.CountourColorList; // 等值线颜色列表
-  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
+  const Perlin = RVGeo.Perlin; // Perlin 噪声生成器
+  const dampedSin3D = RVGeo.dampedSin3D; // 3D阻尼正弦波噪声生成器
+  const Sin3D = RVGeo.Sin3D; // 3D正弦波噪声生成器
+  const worleyNoise = RVGeo.worleyNoise; // Worley 噪声生成器
+  const CountourColorList = RVGeo.CountourColorList; // 等值线颜色列表
+  const drawGrid2d = RVGeo.drawGrid2d;
 
-  const Grid = RVGeo.Coverage.Grid; // 栅格类
-  const drawCountour = RVGeo.Renderer.drawCountour; // 绘制等值线
+  const Grid = RVGeo.Grid; // 栅格类
+  const drawCountour = RVGeo.drawCountour; // 绘制等值线
   const size = 64;
   const blocksize = 256;
 
@@ -467,11 +469,11 @@ function example12(){
   data.push(sample(size,1,1,Sin3D));
 
   // draw grid
-  let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear);
-  let rmySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear,true); // reverse color band
-  let myPseudoColorBand = RVGeo.Colors.pseudoColorBandFactory(RVGeo.Colors.stretchType.linear);
+  let mySimpleColorBand = RVGeo.simpleColorBandFactory(RVGeo.stretchType.linear);
+  let rmySimpleColorBand = RVGeo.simpleColorBandFactory(RVGeo.stretchType.linear,true); // reverse color band
+  let myPseudoColorBand = RVGeo.pseudoColorBandFactory(RVGeo.stretchType.linear);
 
-  let grid = [] as RVGeo.Coverage.Grid[];
+  let grid = [] as RVGeo.Grid[];
   data.forEach((d) => {
     grid.push(new Grid(myMBR1, [d]));
   });
@@ -495,7 +497,7 @@ function example12(){
   }
 
   let worleygrid = new Grid(myMBR1,[worleyNoise(256,256,16)]);
-  // let mySimpleColorBand2 = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear,true);
+  // let mySimpleColorBand2 = RVGeo.simpleColorBandFactory(RVGeo.stretchType.linear,true);
   drawGrid2d(canvas, worleygrid.data[0], {x: 0, y: 3*blocksize, w: blocksize, h: blocksize}, worleygrid.getBandStatistics(0), mySimpleColorBand);
   drawGrid2d(canvas, worleygrid.data[0], {x: blocksize, y: 3*blocksize, w: blocksize, h: blocksize}, worleygrid.getBandStatistics(0), myPseudoColorBand);
   for(let i = 0; i < 30; i++){
@@ -520,12 +522,12 @@ function example12(){
 }
 
 function example13(){
-  // const binDrawGrid2d = RVGeo.Renderer.binDrawGrid2d;
-  const drawCountour = RVGeo.Renderer.drawCountour;
-  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
+  // const binDrawGrid2d = RVGeo.binDrawGrid2d;
+  const drawCountour = RVGeo.drawCountour;
+  const drawGrid2d = RVGeo.drawGrid2d;
   axios.get('dem.csv').then((res)=>{
     let data = parseData(res.data);
-    let grid = new RVGeo.Coverage.Grid(myMBR1,[data]);
+    let grid = new RVGeo.Grid(myMBR1,[data]);
 
     let countour1 = grid.getCoutourCode(0,0.6);
     let countour2 = grid.getCoutourCode(0,1.2);
@@ -536,9 +538,9 @@ function example13(){
 
 
     drawGrid2d(canvas, data, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), 
-      RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.power,true));
+      RVGeo.simpleColorBandFactory(RVGeo.stretchType.power,true));
 
-    // binDrawGrid2d(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.Colors.simplePseudoColorBand);
+    // binDrawGrid2d(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},RVGeo.simplePseudoColorBand);
     drawCountour(canvas, countour1, {x: 0, y: 0, w: 1024, h: 1024},"red");
     drawCountour(canvas, countour2, {x: 0, y: 0, w: 1024, h: 1024},"green");
     drawCountour(canvas, countour3, {x: 0, y: 0, w: 1024, h: 1024},"blue");
@@ -550,11 +552,11 @@ function example13(){
 }
 
 function example14(){
-  const subdivide2QTree = RVGeo.Coverage.subdivide2QTree;
-  const Grid = RVGeo.Coverage.Grid;
-  const drawQTree2d = RVGeo.Renderer.drawQTree2d;
-  // const drawGrid2d = RVGeo.Renderer.drawGrid2d;
-  let mySimpleColorBand = RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear);
+  const subdivide2QTree = RVGeo.subdivide2QTree;
+  const Grid = RVGeo.Grid;
+  const drawQTree2d = RVGeo.drawQTree2d;
+  // const drawGrid2d = RVGeo.drawGrid2d;
+  let mySimpleColorBand = RVGeo.simpleColorBandFactory(RVGeo.stretchType.linear);
   axios.get('dem.csv').then((res)=>{
     let data = parseData(res.data);
     let grid = new Grid(myMBR1,[data]);
@@ -567,12 +569,12 @@ function example14(){
 }
 
 function example15(){
-  const fastFFT2 = RVGeo.Fourier.fastFFT2;
-  const drawGrid2d = RVGeo.Renderer.drawGrid2d;
-  const Grid = RVGeo.Coverage.Grid;
-  const Sin3D = RVGeo.Noise.Sin3D; // 3D正弦波噪声生成器
-  const Perlin = RVGeo.Noise.Perlin; // Perlin 噪声生成器
-  const dampedSin3D = RVGeo.Noise.dampedSin3D; // 3D阻尼正弦波噪声生成器
+  const fastFFT2 = RVGeo.fastFFT2;
+  const drawGrid2d = RVGeo.drawGrid2d;
+  const Grid = RVGeo.Grid;
+  const Sin3D = RVGeo.Sin3D; // 3D正弦波噪声生成器
+  const Perlin = RVGeo.Perlin; // Perlin 噪声生成器
+  const dampedSin3D = RVGeo.dampedSin3D; // 3D阻尼正弦波噪声生成器
 
   let data = [];
   data.push(sample(128,0.05,0.05,Perlin));
@@ -590,25 +592,25 @@ function example15(){
     fft.push(tmp.map((row) => row.map((c) => Math.sqrt(c.real*c.real + c.imag*c.imag)))); // 模值
   });
 
-  let grid = [] as RVGeo.Coverage.Grid[];
+  let grid = [] as RVGeo.Grid[];
   data.forEach((d) => {
     grid.push(new Grid(myMBR1, [d]));
   });
 
-  let fftGrid = [] as RVGeo.Coverage.Grid[];
+  let fftGrid = [] as RVGeo.Grid[];
   fft.forEach((d) => {
     fftGrid.push(new Grid(myMBR1, [d]));
   });
 
   // 1024 * 1024
   for(let i = 0; i < 4; i++){
-    drawGrid2d(canvas, data[i], {x: 0, y: i*256, w: 256, h: 256}, grid[i].getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
-    drawGrid2d(canvas, fft[i], {x: 256, y: i*256, w: 256, h: 256}, fftGrid[i].getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+    drawGrid2d(canvas, data[i], {x: 0, y: i*256, w: 256, h: 256}, grid[i].getBandStatistics(0), RVGeo.simpleColorBandFactory(RVGeo.stretchType.linear));
+    drawGrid2d(canvas, fft[i], {x: 256, y: i*256, w: 256, h: 256}, fftGrid[i].getBandStatistics(0), RVGeo.simpleColorBandFactory(RVGeo.stretchType.linear));
   }
 
   for(let i = 4; i < 8; i++){
-    drawGrid2d(canvas, data[i], {x: 512, y:(i - 4)*256, w: 256, h: 256}, grid[i].getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
-    drawGrid2d(canvas, fft[i], {x: 768, y:(i - 4)*256, w: 256, h: 256}, fftGrid[i].getBandStatistics(0), RVGeo.Colors.simpleColorBandFactory(RVGeo.Colors.stretchType.linear));
+    drawGrid2d(canvas, data[i], {x: 512, y:(i - 4)*256, w: 256, h: 256}, grid[i].getBandStatistics(0), RVGeo.simpleColorBandFactory(RVGeo.stretchType.linear));
+    drawGrid2d(canvas, fft[i], {x: 768, y:(i - 4)*256, w: 256, h: 256}, fftGrid[i].getBandStatistics(0), RVGeo.simpleColorBandFactory(RVGeo.stretchType.linear));
   }
 
   function sample(size: number,x: number,y: number, sampleFunc: (x: number, y: number) => number){
@@ -629,15 +631,15 @@ function example15(){
  * 影像直方图
  */
 function example16(){
-  // const drawSample2 = RVGeo.Renderer.drawSample2;
-  const drawSample = RVGeo.Renderer.drawSample;
-  const drawProgress = RVGeo.Renderer.drawProgress;
-  const hist = RVGeo.Colors.hist; // 直方图
+  // const drawSample2 = RVGeo.drawSample2;
+  const drawSample = RVGeo.drawSample;
+  const drawProgress = RVGeo.drawProgress;
+  const hist = RVGeo.hist; // 直方图
   const progressBar = {x: 924, y: 1004, w: 100, h: 20};
   drawProgress(canvas,progressBar,0);
 
-  const trueColorBandFactory = RVGeo.Colors.trueColorBandFactory;
-  const drawTrueColorGrid2d = RVGeo.Renderer.drawTrueColorGrid2d;
+  const trueColorBandFactory = RVGeo.trueColorBandFactory;
+  const drawTrueColorGrid2d = RVGeo.drawTrueColorGrid2d;
 
   let URL = 'exa2.tif';
   let URL2 = 'exa.tif';
@@ -669,14 +671,14 @@ function getShowTif(URL: string, rect: {x: number, y: number, w: number, h: numb
         bands.forEach((band) => {
           data.push(parseData2(rasters[band], width, true, 256));
         });
-        let grid = new RVGeo.Coverage.Grid(myMBR1,data);
+        let grid = new RVGeo.Grid(myMBR1,data);
 
         grid.fillInvalidValue(0);  // 填充无效值
         grid.fillInvalidValue(1);
         grid.fillInvalidValue(2);
 
         // console.log(grid.getBand(0));
-        let myTrueColorBand = trueColorBandFactory(RVGeo.Colors.stretchType.square);
+        let myTrueColorBand = trueColorBandFactory(RVGeo.stretchType.square);
         drawTrueColorGrid2d(canvas, grid, [0,1,2], rect, myTrueColorBand);
         drawProgress(canvas,progressBar,50);
         if(rect2){
@@ -689,9 +691,9 @@ function getShowTif(URL: string, rect: {x: number, y: number, w: number, h: numb
             {color: "rgba(0,0,255,0.3)", backgroundColor: "rgba(0,0,0,0)"}
           ]
           for(let i = 0; i < rect2.length; i++){
-            // drawSample2(canvas,rect2[i],hist(grid.getBand(i),RVGeo.Colors.stretchType.square,grid.getBandStatistics(i)),styles[i]);
-            drawSample(canvas,rect2[i],hist(grid.getBand(i),RVGeo.Colors.stretchType.square,grid.getBandStatistics(i)),styles[i]);
-            // console.log(hist(grid.getBand(i),RVGeo.Colors.stretchType.linear,grid.getBandStatistics(i)));
+            // drawSample2(canvas,rect2[i],hist(grid.getBand(i),RVGeo.stretchType.square,grid.getBandStatistics(i)),styles[i]);
+            drawSample(canvas,rect2[i],hist(grid.getBand(i),RVGeo.stretchType.square,grid.getBandStatistics(i)),styles[i]);
+            // console.log(hist(grid.getBand(i),RVGeo.stretchType.linear,grid.getBandStatistics(i)));
             // console.log(grid.getBand(i));
           }
         }

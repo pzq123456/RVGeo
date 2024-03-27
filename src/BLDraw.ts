@@ -8,10 +8,9 @@
  */
 
 import { Point, MultiPoint, LineString, MultiLineString, Polygon, MBR, toLineString } from '.';
-import { fillIndexArray, SphericalMercator } from '.';
+import { fillIndexArray, SphericalMercator,plane2MBR } from '.';
 import { QuadTree } from '.';
-const convertToWgs84 = SphericalMercator.project;
-const plane2MBR = SphericalMercator.unproject;
+const convertToWgs84 = SphericalMercator.unproject;
 
 // import { convertToWgs84, plane2MBR } from '../packages/Referencing.ts';
 // disable ts error
@@ -88,7 +87,7 @@ export function removeAllOverlay(map: any) {
  * @param multiPoint - 多点
  * @param map - 百度地图实例
  */
-export function drawMultiPoint2BLMap(multiPoint: MultiPoint | Point[] , map: any, icon?: any) {
+export function drawMultiPoint2BLMap(multiPoint: MultiPoint | Point[] | [number,number][], map: any, icon?: any) {
     let points = MultiPoint.isMultiPoint(multiPoint) ? multiPoint.coordinates : multiPoint;
     for (let i = 0; i < points.length; i++) {
         let point = points[i];

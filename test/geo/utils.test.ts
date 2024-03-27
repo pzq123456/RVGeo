@@ -1,4 +1,4 @@
-import { isEPSG3857 } from '../../src'
+import { isEPSG3857, Earth } from '../../src'
 import { describe, it, expect } from 'vitest';
 
 describe('geo utils', () => {
@@ -22,4 +22,9 @@ describe('geo utils', () => {
         expect(isEPSG3857('EPSG:32661')).toBe(false);
         expect(isEPSG3857('EPSG:32661')).toBe(false);
     });
+    it('harv distance', () => {
+        let dis = Earth.distance([50, 5], [58, 3]);
+        console.log(dis);
+    });
+
 })

@@ -8,6 +8,8 @@
  * ------------------------> x
  */
 
+import { SphericalMercator } from "..";
+
 // todo https://www.jos.org.cn/html/2022/9/6293.htm
 // todo https://datatracker.ietf.org/doc/html/rfc7946#section-5
 
@@ -51,6 +53,35 @@ export function mergeMBR(mbr1: MBR, mbr2: MBR): MBR {
 export function mergePointMBR(mbr: MBR, point: [number, number]): MBR {
     return [Math.min(mbr[0], point[0]), Math.min(mbr[1], point[1]), Math.max(mbr[2], point[0]), Math.max(mbr[3], point[1])];
 }
+
+/**
+ * default projection : SphericalMercator
+ * - you can change the projection by passing the second parameter
+ */
+export function MBR2Plane(mbr: MBR, projection = SphericalMercator): MBR{
+    let res: MBR;
+
+    let plane0 = projection.project([mbr[0],mbr[1]]);
+    let plane1 = projection.project([mbr[2],mbr[3]]);
+
+    res = [plane0[0],plane0[1],plane1[0],plane1[1]];
+    return res;
+}
+
+/**
+ * default projection : SphericalMercator
+ * - you can change the projection by passing the second parameter
+ */
+export function plane2MBR(plane: MBR, projection = SphericalMercator): MBR{
+    let res : MBR;
+
+    let mbr0 = projection.unproject([plane[0],plane[1]]);
+    let mbr1 = projection.unproject([plane[2],plane[3]]);
+
+    res = [mbr0[0],mbr0[1],mbr1[0],mbr1[1]];
+    return res;
+}
+
 
 /**
  * 计算多点的最小外包矩形（默认情况）

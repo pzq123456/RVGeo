@@ -4,12 +4,12 @@ import { Polygon, MultiPolygon } from '../../src/geometry/';
 describe('Point', () => {
     it('should create a polygon', () => {
         const polygon = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
-        expect(polygon.getCoordinates()).toEqual([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+        expect(polygon.coordinates).toEqual([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
     });
     
     it('should create a polygon with properties', () => {
         const polygon = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]], { name: 'test' });
-        expect(polygon.getProperties()).toEqual({ name: 'test' });
+        expect(polygon.properties()).toEqual({ name: 'test' });
     });
     
     it('should convert to GeoJSON', () => {
@@ -36,8 +36,8 @@ describe('Point', () => {
         },
         properties: { name: 'test' },
         });
-        expect(polygon.getCoordinates()).toEqual([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
-        expect(polygon.getProperties()).toEqual({ name: 'test' });
+        expect(polygon.coordinates).toEqual([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+        expect(polygon.properties).toEqual({ name: 'test' });
     });
     
     it('should create a polygon using factory function', () => {
@@ -49,6 +49,6 @@ describe('Point', () => {
             coordinates: [[[1, 2], [3, 4], [5, 6], [1, 2]]],
         }
         });
-        expect(polygon.getCoordinates()).toEqual([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+        expect(polygon.coordinates).toEqual([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
     });
 });

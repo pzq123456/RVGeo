@@ -1,18 +1,9 @@
 import { LineString, Point } from "..";
 import { D2R } from "./factors";
 import { cartesian, spherical, cartesianCross,cartesianNormalize, cartesianScale, cartesianAngle, cross } from "./vector";
-/**
- * 与球面相关的测量方法
- */
 
-/**
- * - 使用格林公式及球面积分直接计算球面多边形的面积
- * - calculate the area of a spherical polygon using the spherical excess method
- * @see http://home.ustc.edu.cn/~liujunyan/blog/Area-and-center-of-spherical-polygon/
- * @param points - 可以为点类型数组、LineString 类型或者二维数组（需要为经纬度坐标系下）
- * @param RADIUS - 半径（默认为 1）
- * @returns {number} - 面积
- */
+// see: https://www.movable-type.co.uk/scripts/latlong.html
+
 export function sphericalArea(points: [number, number][], RADIUS: number = 1) : number{
     // 首先统一为二维数组
     let coordinates = points.slice();
