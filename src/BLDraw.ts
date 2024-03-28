@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * 用于调用百度地图的绘制工具。
  * - 百度地图 api 是外部库，所以不放在 package 目录下。
@@ -7,7 +8,7 @@
  * - 百度地图的文档及接口都比较混乱，与 GeoJSON 的规范也有出入，所以需要做一些转换。
  */
 
-import { Point, MultiPoint, LineString, MultiLineString, Polygon, MBR, toLineString } from '.';
+import { Point, MultiPoint, LineString, MultiLineString, Polygon, MBR} from '.';
 import { fillIndexArray, SphericalMercator,plane2MBR } from '.';
 import { QuadTree } from '.';
 const convertToWgs84 = SphericalMercator.unproject;
@@ -107,17 +108,19 @@ export function drawRectangle2BLMap( rect : [minLon:number, minLat:number, maxLo
     map.addOverlay(rectangle);   //增加矩形
 }
 
-export function drawLineString2BLMap(lineString: LineString | number[][], map: any, style:Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 },close:boolean = false) {
-    // let points = lineString.coordinates;
+export function drawLineString2BLMap(lineString: LineString | [number,number][] , map: any, style:Object = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 }, close:boolean = false) {
+    
     // 处理 LineString 和 number[] 两种情况
     let points = LineString.isLineString(lineString) ? lineString.coordinates : lineString;
+    if(points.length < 2) return;
     let blPoints = [];
 
     for (let i = 0; i < points.length; i++) {
-
         blPoints.push(new BMapGL.Point(points[i][0], points[i][1]));
     }
+    // 若需要闭合
     if(close) blPoints.push(new BMapGL.Point(points[0][0], points[0][1]));
+
     let polyline = new BMapGL.Polyline(blPoints, style);   //创建折线
     map.addOverlay(polyline);   //增加折线
 }

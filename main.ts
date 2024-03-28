@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { drawCircle2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawLineString2BLMap, drawMultiPoint2BLMap, drawPlaneMBR2BLMap, drawPlaneMPS2BLMap, drawPoint2BLMap, drawPolygon2BLMap, drawQuadTree2BLMap, drawRectangle2BLMap, drawTriangleEdge2BLMap, innerIcon, removeAllOverlay } from './src/BLDraw.ts';
 import { createToolBar } from './helpers/toolBar.ts';
 import { mockPoints } from './src/Mock.ts';
@@ -5,7 +6,24 @@ import { mockPoints } from './src/Mock.ts';
 import * as RVGeo from './src/index.ts';
 import axios from 'axios';
 
+const setEditorValue = window.setEditorValue;
 
+function customModify(code: string){
+  // 只保留函数体
+  let start = code.indexOf('{');
+  let end = code.lastIndexOf('}');
+  let result = code.substring(start+1, end);
+  // 去掉缩进 两个空格
+  result = result.split('\n').map((line) => {
+    return line.substring(2);
+  }).join('\n');
+  // 在第一行添加 'use strict';
+  result = "const RVGeo = window.RVGeo;\n" + result;
+  setEditorValue(result);
+}
+
+
+window.RVGeo = RVGeo;
 const myMBR1 = [
   -109.04885344551185,
   36.988099165319085,
@@ -62,11 +80,12 @@ function parseData2(
   return result;
 }
 
-const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
+const canvas = document.getElementById('myCanvas0') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
+// 设置变换
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+console.log('canvas', canvas.width, canvas.height);
 
 declare const BMapGL: any;
 // GL版命名空间为BMapGL
@@ -76,25 +95,24 @@ map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  //
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
 
 // 注册工具条
-createToolBar(document.querySelector<HTMLDivElement>('#toolBar')!, [
-  { name: '绘制多点及其重心', action: () =>  example1()},
-  { name: '绘制三角网', action: () =>  example2()},
-  { name: '绘制凸包', action: () =>  example3()},
-  { name: '计算面积', action: () =>  example4()},
-  { name: '绘制Voronoi', action: () =>  example5()},
-  { name: '多边形求交', action: () =>  example6()},
-  { name: '线段求交', action: () =>  example7()},
-  { name: '点线关系', action: () =>  example8()},
-  { name: '四叉树', action: () =>  example10()},
-  { name: 'Alpha Complex', action: () =>  example11()},
-  { name: '栅格', action: () =>  example9()},
-  { name: 'Perlin Noise', action: () =>  example12()},
-  { name: 'Countour', action: () =>  example13()},
-  { name: 'Pyramid', action: () =>  example14()},
-  { name: 'FFT', action: () =>  example15()},
-  { name: '影像直方图', action: () =>  example16()},
-  { name: 'clear', action: () =>  clear()},
-])
+createToolBar(document.querySelector<HTMLDivElement>('#toolbar')!, [
+  { name: '绘制多点及其重心', action: example1},
+  { name: '绘制三角网', action: example2},
+  { name: '绘制凸包', action: example3},
+  { name: '计算面积', action: example4},
+  { name: '绘制Voronoi', action: example5},
+  { name: '多边形求交', action: example6},
+  { name: '线段求交', action: example7},
+  { name: '点线关系', action: example8},
+  { name: '四叉树', action: example10},
+  { name: 'Alpha Complex', action: example11},
+  { name: '栅格', action: example9},
+  { name: 'Perlin Noise', action: example12},
+  { name: 'Countour', action: example13},
+  { name: 'Pyramid', action: example14},
+  { name: 'FFT', action: example15},
+  { name: '影像直方图', action: example16},
+],[{ name: 'clear', action: clear},],customModify);
 
 function clear(){
   removeAllOverlay(map);
@@ -105,8 +123,6 @@ function clear(){
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
-
-
 
 // 全局模拟数据（点集合）
 let ps = mockPoints(30, myMBR1);

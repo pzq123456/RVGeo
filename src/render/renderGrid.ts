@@ -13,14 +13,17 @@ type Rect = {
     h: number
 }; // 矩形 与canvas 的定义一致 xy为左上角 w为宽 h为高
 
+
+
 export function drawGrid2d(
     canavs: HTMLCanvasElement,
     grid2D: number[][],
     Rect: Rect, // {x, y, w, h}
     statistics: {max: number, min: number, mean: number},
     colorBand: (statistics: {max: number, min: number, mean: number},value: number) => string = simpleColorBand,
-    GridMBR? : [number,number,number,number] // [minX index ,minY index,maxX index,maxY index]
+    GridMBR? : [number,number,number,number], // [minX index ,minY index,maxX index,maxY index]
 ){
+
     // 首先分割 rect 为小格子
     let cellWidth = Rect.w / grid2D[0].length;
     let cellHeight = Rect.h / grid2D.length;
@@ -28,7 +31,6 @@ export function drawGrid2d(
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
-
     // 绘制矩形
     for(let row = 0; row < grid2D.length; row++){
         for(let col = 0; col < grid2D[0].length; col++){

@@ -1,7 +1,8 @@
+// @ts-nocheck
 /**
  * 用于生成mock数据
  */
-import { Point, LineString, toLineString } from ".";
+import { Point, toLineString } from ".";
 
 function mockLon(
     maxLon: number = 180,
