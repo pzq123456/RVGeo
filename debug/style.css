@@ -1,0 +1,28 @@
+#console-output{
+    width: 100%;
+    height: 100vh;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    color: #fff;
+    background: #001a07;
+    /* 滚动条 */
+    overflow: auto;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    background: #151515;
+    color: #fff;
+    font-size: 18px;
+    font-family: 'Arial', sans-serif;
+}
+
+/* map 居中 */
+#map{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
