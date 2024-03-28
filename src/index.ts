@@ -1,36 +1,12 @@
-/**
- * 包的入口文件
- */
-import * as Geometry from './Geometry';
-import * as Measuration from './Distance';
-import * as Delaunay from './Delaunay';
-import * as Shell from './Shell';
-import * as Reference from './Referencing';
-import * as Meta from './MetaData';
-import * as Unit from './constants/Units';
-import * as Coverage from './Coverage';
-import * as QuadTree from './QuadTree';
-import * as Noise from './Noise';
-import * as Colors from './Colors';
-import * as Renderer from './Renderer';
-import * as Utils from './constants/Utils';
-import * as CGUtils from './CGUtils';
-import * as Fourier from './Fourier';
-
-export {
-    Geometry,
-    Measuration,
-    Coverage,
-    CGUtils,
-    Delaunay,
-    Shell,
-    Reference,
-    Colors,
-    Renderer,
-    QuadTree,
-    Meta,
-    Noise,
-    Unit,
-    Utils,
-    Fourier
-};
+export * from './cluster';
+export * from './core';
+export * from './coverage';
+export * from './datastru';
+export * from './geo';
+export * from './geometry';
+export * from './math';
+export * from './net';
+export * from './render';
+export * from './topology';
+export * from './triangulation';
+// export * from './workers';
