@@ -24,14 +24,12 @@ consoleTypes.forEach(type => {
             }
         });
         oldConsole.apply(console, args);
-
     };
 });
 
 // 处理错误
 window.onerror = function (message, source, lineno, colno, error) {
     console.error(message, source, lineno, colno, error);
-    // CustomLogFunction(message, 'error', myConsoleDiv);
     return true;
 };
 
