@@ -1,11 +1,4 @@
 # RVGeo V 2.0
-> RVGeo V2.5 is under development, you can get the latest version from the `next` branch in next few days. I will inplement the core inheritance and plugin system in the next version. The core inheritance system will make the code more readable and the plugin system will make the code more extensible.
-> - An isloated library for GeoJSON and my personal GIS Object Model will be released in the future.
-> - DataIO model will be released in the future.
-> - In addition, the interactive tutorial website is also under development. In the future, users will be able to use the code editor and drag-and-drop node editor to learn how to use RVGeo. The website will be launched when RVGeo V2.5 is released.
->   - Code editor uses the same monaco editor as VScode, and I will pre-import the type files of RVGeo into the editor, so the user experience will be better than the general online editor.
->   - The node editor is similar to the one provided in Blender. 
-
 [home page](https://pzq123456.github.io/RVGeo/)
 
 [![](https://img.shields.io/npm/v/rvgeo.svg?label=NPM&logo=npm&color=CB3837)](https://www.npmjs.com/package/rvgeo)
@@ -15,7 +8,7 @@
 ### Browser
 ``` html
 <script type="module"> 
-  import * as rvgeo from 'https://cdn.jsdelivr.net/npm/rvgeo@2.0.7/+esm'
+  import * as rvgeo from 'https://cdn.jsdelivr.net/npm/rvgeo@2.0.9/+esm'
 </script>
 ```
 - test: 
