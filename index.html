@@ -23,14 +23,17 @@
           </div>
             <label for="js-code">JS</label>
             <div class="codearea" id="js-code"></div>
-            <div id="console-output"></div>
+
         </div>
 
         <div class="right">
             <div id="toolbar"></div>
             <div class="map" id="allmap"></div>
-            <canvas id="myCanvas0" width="2048" height="1024"
-            style="width: 940px; height: 512px; border: 1px solid black;"></canvas>
+            <div class="column">
+              <canvas id="myCanvas0" width="1024" height="1024"
+              style="width: 512px; height: 512px; border: 1px solid black;"></canvas>
+              <div id="console-output"></div>
+            </div>
         </div>
     </div>
     <script type="module" src="/editor.js"></script>

@@ -116,7 +116,9 @@ export function drawCountour(
     for(let row = 0; row < countourCodeGrid.length; row++){
         for(let col = 0; col < countourCodeGrid[0].length; col++){
             let value = countourCodeGrid[row][col];
-            countourCase(value, {x: Rect.x + col * cellWidth, y: Rect.y + row * cellHeight, w: cellWidth, h: cellHeight}, ctx, strokeColor);
+            countourCase(value, {x: Rect.x + col * cellWidth + cellWidth / 2
+            , y: Rect.y + row * cellHeight + cellHeight / 2
+            , w: cellWidth, h: cellHeight}, ctx, strokeColor);
         }
     }
 

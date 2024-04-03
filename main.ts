@@ -333,7 +333,7 @@ function getShowTif(URL: string, rect: {x: number, y: number, w: number, h: numb
         grid.fillInvalidValue(1);
         grid.fillInvalidValue(2);
 
-        console.log(grid.getBand(0));
+        // console.log(grid.getBand(0));
         let myTrueColorBand = trueColorBandFactory(RVGeo.stretchType.square);
         drawTrueColorGrid2d(canvas, grid, [0,1,2], rect, myTrueColorBand);
         drawProgress(canvas,progressBar,100);
@@ -425,7 +425,7 @@ function example10(){ // 四叉树
   let queryPoints2 = planeTree.customQuery(queryCircle);
  
   let queryPoints = qtree.queryRange(queryMBR);
-  console.log(queryPoints2);
+  // console.log(queryPoints2);
   drawPlaneMPS2BLMap(queryPoints2, map);
   for(let i = 0; i < increcs.length; i++){
     drawPlaneMBR2BLMap(increcs[i], map, {strokeColor: 'blue', strokeOpacity: 0.5,});
@@ -554,7 +554,7 @@ function example13(){
     let countour4 = grid.getCoutourCode(0,2.4);
     let countour5 = grid.getCoutourCode(0,3.6);
     let countour6 = grid.getCoutourCode(0,4.8);
-
+    // console.log(countour1);
 
     drawGrid2d(canvas, data, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), 
       RVGeo.simpleColorBandFactory(RVGeo.stretchType.power,true));

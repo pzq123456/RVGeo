@@ -256,7 +256,7 @@ export class Grid{
         return binarizationData;
     }
 
-    getCoutourCode(band: number, threshold: number, isPadding?: boolean): number[][]{
+    getCoutourCode(band: number, threshold: number, isPadding: boolean = true): number[][]{
         // 二值化后，依次逆时针拾取相邻四个格网的值，组成四位二进制数，转换为十进制数，即为等值线编码
         let binarizationData = this.binarization(band, threshold);
         let contourCode = [] as number[][];
@@ -282,12 +282,9 @@ export class Grid{
             // 然后再将第一行复制一份，添加到第一行，最后一行复制一份，添加到最后一行
             for(let row = 0; row < contourCode.length; row++){
                 let rowData = contourCode[row];
-                rowData.unshift(rowData[0]);
                 rowData.push(rowData[rowData.length - 1]);
             }
-            let top = contourCode[0];
             let bottom = contourCode[contourCode.length - 1];
-            contourCode.unshift(top);
             contourCode.push(bottom);
         }
         return contourCode;
