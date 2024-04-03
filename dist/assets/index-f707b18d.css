@@ -1,0 +1,64 @@
+.map{
+  height: 60%;
+  width: 98%;
+}
+/* 隐藏版权信息 */
+.BMap_cpyCtrl {
+  display: none;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body{
+  background: #454545;
+  color: #fff;
+}
+
+.codearea{
+  width: 100%;
+  height: 92%;
+}
+
+.container{
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.left{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.right{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+#console-output{
+  width: 45%;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  color: #fff;
+  background: #030303;
+  padding: 10px;
+  resize: none;
+  
+}
+
+.column{
+  display: flex;
+  flex-direction: row;
+  /* 自动滚动条 */
+  overflow: auto;
+}
