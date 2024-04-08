@@ -38,6 +38,10 @@ export function drawGrid2d(
             let color = colorBand(statistics, value);
             ctx.fillStyle = color;
             ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+
+            // // 绘制中心
+            // ctx.fillStyle = "red";
+            // ctx.fillRect(Rect.x + col * cellWidth + cellWidth / 2 - 2, Rect.y + row * cellHeight + cellHeight / 2 - 2, 4, 4);
         }
     }
     // 若有 GridMBR 则绘制
@@ -51,6 +55,22 @@ export function drawGrid2d(
     // 绘制中心
     // ctx.fillStyle = "red";
     // ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
+
+    // // 绘制格网
+    // ctx.strokeStyle = "green";
+    // ctx.lineWidth = 1;
+    // for(let row = 0; row < grid2D.length; row++){
+    //     ctx.beginPath();
+    //     ctx.moveTo(Rect.x, Rect.y + row * cellHeight);
+    //     ctx.lineTo(Rect.x + Rect.w, Rect.y + row * cellHeight);
+    //     ctx.stroke();
+    // }
+    // for(let col = 0; col < grid2D[0].length; col++){
+    //     ctx.beginPath();
+    //     ctx.moveTo(Rect.x + col * cellWidth, Rect.y);
+    //     ctx.lineTo(Rect.x + col * cellWidth, Rect.y + Rect.h);
+    //     ctx.stroke();
+    // }
 }
 
 export function binDrawGrid2d(
@@ -80,22 +100,6 @@ export function binDrawGrid2d(
             ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
         }
     }
-
-    // // 绘制格网
-    // ctx.strokeStyle = "white";
-    // ctx.lineWidth = 1;
-    // for(let row = 0; row < grid2D.length; row++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x, Rect.y + row * cellHeight);
-    //     ctx.lineTo(Rect.x + Rect.w, Rect.y + row * cellHeight);
-    //     ctx.stroke();
-    // }
-    // for(let col = 0; col < grid2D[0].length; col++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x + col * cellWidth, Rect.y);
-    //     ctx.lineTo(Rect.x + col * cellWidth, Rect.y + Rect.h);
-    //     ctx.stroke();
-    // }
 }
 
 export function drawCountour(
@@ -105,8 +109,8 @@ export function drawCountour(
     strokeColor: string = "white"
 ){
     // 首先分割 rect 为小格子
-    let cellWidth = Rect.w / countourCodeGrid[0].length;
-    let cellHeight = Rect.h / countourCodeGrid.length;
+    let cellWidth = Rect.w / (countourCodeGrid[0].length + 1);
+    let cellHeight = Rect.h / (countourCodeGrid.length + 1);
 
     let ctx = canavs.getContext("2d");
     if(ctx === null){
@@ -116,28 +120,20 @@ export function drawCountour(
     for(let row = 0; row < countourCodeGrid.length; row++){
         for(let col = 0; col < countourCodeGrid[0].length; col++){
             let value = countourCodeGrid[row][col];
-            countourCase(value, {x: Rect.x + col * cellWidth + cellWidth / 2
-            , y: Rect.y + row * cellHeight + cellHeight / 2
-            , w: cellWidth, h: cellHeight}, ctx, strokeColor);
+            let rect = {
+                x: Rect.x + col * cellWidth + cellWidth / 2,
+                y: Rect.y + row * cellHeight + cellHeight / 2,
+                w: cellWidth, 
+                h: cellHeight
+            };
+
+            countourCase(value, rect , ctx, strokeColor);
+
+            // // draw rect
+            // ctx.strokeStyle = "red";
+            // ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
         }
     }
-
-    // // 绘制格网
-    // ctx.strokeStyle = "white";
-    // ctx.lineWidth = 1;
-    // for(let row = 0; row < countourCodeGrid.length; row++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x, Rect.y + row * cellHeight);
-    //     ctx.lineTo(Rect.x + Rect.w, Rect.y + row * cellHeight);
-    //     ctx.stroke();
-    // }
-    // for(let col = 0; col < countourCodeGrid[0].length; col++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x + col * cellWidth, Rect.y);
-    //     ctx.lineTo(Rect.x + col * cellWidth, Rect.y + Rect.h);
-    //     ctx.stroke();
-    // }
-
 }
 
 /**

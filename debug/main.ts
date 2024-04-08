@@ -1,84 +1,64 @@
-import {Canvas} from './canvas';
-import { topology, feature, Transform } from '../src';
-import { Point, LineString, Polygon } from '../src';
-
-let poi = new Point([1, 2]);
-console.log(poi);
-let line = new LineString([[1, 2], [3, 4]]);
-console.log(line);
-let polygon = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
-console.log(polygon);
+import * as RVGeo from '../src';
 
 const mydiv = document.getElementById('map') as HTMLElement;
 const canvasSize = 1024;
-const canvas = new Canvas(canvasSize, canvasSize, mydiv);
+const canvas = createCanvas(canvasSize, canvasSize);
+mydiv.appendChild( canvas );
 
-const t = {
-  type: "Topology",
-  transform: {scale: [1, 1], translate: [0, 0]},
-  objects: {foo: {type: "MultiPolygon", arcs: [[[0], [1]]]}},
-  arcs: [
-    [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
-    [[0, 0], [1, 0], [0, 1]],
-    [[1, 1], [-1, 0], [0, -1]],
-    [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
-  ]
-};
+const myMBR1 = [
+    -109.04885344551185,
+    36.988099165319085,
+    -102.05550147177286,
+    41.01069002801907
+  ] as [number, number, number, number];
 
-// console.log(feature(t, t.objects.foo));
+const Perlin = RVGeo.Perlin; // Perlin 噪声生成器
+const drawGrid2d = RVGeo.drawGrid2d;
 
-// canvas.drawArc([100, 100], [200, 600], 'red', '+', 10);
-// canvas.drawArcs([[100, 100], [200, 600], [300, 300], [400, 400]], 'blue', 'o', 5);
-// get the anti-delta code for arcs and transform 
+const Grid = RVGeo.Grid; // 栅格类
+const drawCountour = RVGeo.drawCountour; // 绘制等值线
+const size = 64;
 
-const transform = {scale: [100, -100], translate: [canvasSize / 2, canvasSize / 2]};
+let data = sample(size,0.05,0.05,Perlin);
+let grid = new Grid(myMBR1, [data]);
 
-function antiDrawArc(arc : [number, number][], transform : Transform, color : string = 'blue') {
-    const arcs = antidelta(arc, transform);
-    // transform the arcs to the canvas
-    const transformedArcs = arcs.map(arc => transformPoint(arc, transform));
-    // add noise to the transformedArcs so as to make the arcs more visible
-    let noise = Math.random() * 100;
-    transformedArcs.forEach(arc => {
-        arc[0] += noise;
-        arc[1] += noise;
-    });
-    // draw the arcs
-    canvas.drawArcs(transformedArcs, color , 'o', 5);
-    // draw label
-    for (let i = 0; i < transformedArcs.length; i++) {
-        canvas.drawLabel(
-            transformedArcs[i][0], transformedArcs[i][1],
-             `(${arcs[i][0]}, ${arcs[i][1]})`, color , 15);
+// // draw grid
+let mySimpleColorBand = RVGeo.simpleColorBandFactory(RVGeo.stretchType.power);
+let rect = {x: 0, y: 0, w: 1024, h: 1024};
+drawGrid2d(canvas, data, {x: 0, y: 0, w: 1024, h: 1024}, grid.getBandStatistics(0), mySimpleColorBand);
+
+drawCountour(canvas, grid.getCoutourCode(0,- 0.35), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,- 0.3), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,- 0.2), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,- 0.1), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,0.001), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,0.002), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,0.15), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,0.2), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,0.25), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,0.3), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,0.35), rect ,"white");
+drawCountour(canvas, grid.getCoutourCode(0,0.5), rect ,"white");
+
+function sample(size: number,x: number,y: number, sampleFunc: (x: number, y: number) => number){
+  let data = [] as number[][];
+  for(let i = 0; i < size; i++){
+    let tmp = [] as number[];
+    for(let j = 0; j < size; j++){
+      let noise = sampleFunc(i*x - size/2, j*y - size/2); // 生成噪声0-1
+      tmp.push(noise);
     }
-}
-const colors = ['red', 'green', 'blue', 'yellow', 'orange'];
-for (let i = 0; i < t.arcs.length; i++) {
-    antiDrawArc(t.arcs[i], transform, colors[i]);
-}
-// de delata-code function
-function antidelta(arcs : [number, number][], transform ?: Transform) {
-    // 将 x, y 坐标由 delta-code 转换为绝对坐标
-    for (var i = 0, n = arcs.length, x = 0, y = 0; i < n; ++i) {
-        var arc = arcs[i];
-        arcs[i] = [x += arc[0], y += arc[1]];
-    }
-    return arcs;
+    data.push(tmp);
+  }
+  return data;
 }
 
-function delata(arcs : [number, number][], transform ?: Transform) {
-    // 将 x, y 坐标由绝对坐标转换为 delta-code
-    for (var i = 0, n = arcs.length, x = 0, y = 0; i < n; ++i) {
-        var arc = arcs[i], x0 = arc[0], y0 = arc[1];
-        arcs[i] = [x0 - x, y0 - y];
-        x = x0;
-        y = y0;
-    }
-    return arcs;
-
+function createCanvas(
+    width: number,
+    height: number
+): HTMLCanvasElement {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    return canvas;
 }
-
-function transformPoint(point: [number, number], transform: Transform) {
-    return [point[0] * transform.scale[0] + transform.translate[0], point[1] * transform.scale[1] + transform.translate[1]];
-}
-
