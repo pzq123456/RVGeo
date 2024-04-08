@@ -18,7 +18,7 @@ export function reactGrid2d(
     canavs: HTMLCanvasElement,
     colRow: [number, number],
     Rect: Rect, // {x, y, w, h}
-    XY: [number, number], // [x, y]
+    XY: [number, number] | [null,null], // [x, y]
     callback?: (col: number, row: number) => void
 ){
     let cellWidth = Rect.w / colRow[0];
@@ -29,13 +29,14 @@ export function reactGrid2d(
     }
     ctx.strokeStyle = "red";
     ctx.lineWidth = 1;
-    let [col, row] = XY2ColRow(colRow, Rect, XY);
-    ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
-    // fill color with alpha
-    ctx.fillStyle = "rgba(255,0,0,0.1)";
-    ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
 
-    callback && callback(col, row);
+    if(XY[0] && XY[1]){
+        let [col, row] = XY2ColRow(colRow, Rect, XY);
+        ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+        callback && callback(col, row);
+    }
+
+
 }
 
 function XY2ColRow(
@@ -75,7 +76,7 @@ export function drawGrid2d(
             ctx.fillStyle = color;
             ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
             // 绘制边框
-            ctx.strokeStyle = "white";
+            ctx.strokeStyle = "gray";
             ctx.lineWidth = 1;
             ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
         }
