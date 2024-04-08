@@ -14,6 +14,42 @@ type Rect = {
 }; // 矩形 与canvas 的定义一致 xy为左上角 w为宽 h为高
 
 
+export function reactGrid2d(
+    canavs: HTMLCanvasElement,
+    colRow: [number, number],
+    Rect: Rect, // {x, y, w, h}
+    XY: [number, number], // [x, y]
+    callback?: (col: number, row: number) => void
+){
+    let cellWidth = Rect.w / colRow[0];
+    let cellHeight = Rect.h / colRow[1];
+    let ctx = canavs.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 1;
+    let [col, row] = XY2ColRow(colRow, Rect, XY);
+    ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+    // fill color with alpha
+    ctx.fillStyle = "rgba(255,0,0,0.1)";
+    ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+
+    callback && callback(col, row);
+}
+
+function XY2ColRow(
+    colRow: [number, number],
+    Rect: Rect, // {x, y, w, h}
+    XY: [number, number], // [x, y]
+){
+    let cellWidth = Rect.w / colRow[0];
+    let cellHeight = Rect.h / colRow[1];
+    let col = Math.floor((XY[0] - Rect.x) / cellWidth);
+    let row = Math.floor((XY[1] - Rect.y) / cellHeight);
+    return [col, row];
+}
+
 
 export function drawGrid2d(
     canavs: HTMLCanvasElement,
@@ -38,10 +74,10 @@ export function drawGrid2d(
             let color = colorBand(statistics, value);
             ctx.fillStyle = color;
             ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
-
-            // // 绘制中心
-            // ctx.fillStyle = "red";
-            // ctx.fillRect(Rect.x + col * cellWidth + cellWidth / 2 - 2, Rect.y + row * cellHeight + cellHeight / 2 - 2, 4, 4);
+            // 绘制边框
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
         }
     }
     // 若有 GridMBR 则绘制
@@ -51,26 +87,6 @@ export function drawGrid2d(
         ctx.lineWidth = 1;
         ctx.strokeRect(Rect.x + minX * cellWidth, Rect.y + minY * cellHeight, (maxX - minX) * cellWidth, (maxY - minY) * cellHeight);
     }
-
-    // 绘制中心
-    // ctx.fillStyle = "red";
-    // ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
-
-    // // 绘制格网
-    // ctx.strokeStyle = "green";
-    // ctx.lineWidth = 1;
-    // for(let row = 0; row < grid2D.length; row++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x, Rect.y + row * cellHeight);
-    //     ctx.lineTo(Rect.x + Rect.w, Rect.y + row * cellHeight);
-    //     ctx.stroke();
-    // }
-    // for(let col = 0; col < grid2D[0].length; col++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x + col * cellWidth, Rect.y);
-    //     ctx.lineTo(Rect.x + col * cellWidth, Rect.y + Rect.h);
-    //     ctx.stroke();
-    // }
 }
 
 export function binDrawGrid2d(

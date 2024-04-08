@@ -11,7 +11,7 @@ import { PointOutsideMBR } from '../topology';
  * - MBR 统一使用 `WGS84` 坐标系
  */
 export class Grid{
-    MBR: MBR; // [minLon, minLat, maxLon, maxLat]
+    MBR: MBR; // default
     data: number[][][]; // 三维数组
     shape: number[]; // 三维数组的形状
     rows: number;  // 行数
@@ -41,6 +41,18 @@ export class Grid{
 
     get bandCount(){
         return this.bands;
+    }
+
+    setMBR(MBR: MBR){
+        this.MBR = MBR;
+    }
+
+    set XYZValue(xyzv: [number, number, number, number]){
+        let x = xyzv[0];
+        let y = xyzv[1];
+        let z = xyzv[2];
+        let v = xyzv[3];
+        this.data[z][y][x] = v;
     }
 
     /**
@@ -300,6 +312,26 @@ export class Grid{
         }
         array.sort((a,b) => a - b);
         return array;
+    }
+
+    static fromFillValue(
+        fillVal : number = 0,
+        shape : [number, number, number]
+    ){
+        let data = [] as number[][][];
+        for(let i = 0; i < shape[0]; i++){
+            let bandData = [] as number[][];
+            for(let j = 0; j < shape[1]; j++){
+                let rowData = [] as number[];
+                for(let k = 0; k < shape[2]; k++){
+                    rowData.push(fillVal);
+                }
+                bandData.push(rowData);
+            }
+            data.push(bandData);
+        }
+        // use default MBR
+        return new Grid([0,0,0,0], data);
     }
     
 }
