@@ -138,8 +138,6 @@ export class Grid{
         }
     }
 
-
-
     /**
      * 与 `getSubGrid` 方法类似，但返回的是一个 Grid 对象
      * @param GridMBR - 网格范围 行列号索引表示
