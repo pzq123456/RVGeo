@@ -17,6 +17,8 @@ export class Grid{
     rows: number;  // 行数
     cols: number;  // 列数
     bands: number; // 波段数
+    stasticsCache: {max: number, min: number, mean: number}[] = [];
+
     constructor(MBR: MBR, data: number[][][]){
         this.MBR = MBR;
         this.data = data;
@@ -52,7 +54,27 @@ export class Grid{
         let y = xyzv[1];
         let z = xyzv[2];
         let v = xyzv[3];
+        let oriV = this.data[z][y][x];
         this.data[z][y][x] = v;
+
+        if(this.stasticsCache[z]){
+            // 更新统计信息
+            let max = this.stasticsCache[z].max;
+            let min = this.stasticsCache[z].min;
+            let mean = this.stasticsCache[z].mean;
+            let value = this.data[z][y][x];
+
+            if(value > max){
+                max = value;
+            }
+            if(value < min){
+                min = value;
+            }
+            let sum = mean * this.rows * this.cols;
+            sum = sum - oriV + value;
+            mean = sum / (this.rows * this.cols);
+            this.stasticsCache[z] = {max, min, mean};
+        }
     }
 
     /**
@@ -217,28 +239,27 @@ export class Grid{
      * @param band - 波段号
      */
     getBandStatistics(band: number): {max: number, min: number, mean: number}{
-        let bandData = this.data[band];
-        let max = bandData[0][0];
-        let min = bandData[0][0];
-        let sum = 0;
-        for(let row = 0; row < this.rows; row++){
-            for(let col = 0; col < this.cols; col++){
-                let value = bandData[row][col];
-                if(value > max){
-                    max = value;
+        if(!this.stasticsCache[band]){
+            let bandData = this.data[band];
+            let max = bandData[0][0];
+            let min = bandData[0][0];
+            let sum = 0;
+            for(let row = 0; row < this.rows; row++){
+                for(let col = 0; col < this.cols; col++){
+                    let value = bandData[row][col];
+                    if(value > max){
+                        max = value;
+                    }
+                    if(value < min){
+                        min = value;
+                    }
+                    sum += value;
                 }
-                if(value < min){
-                    min = value;
-                }
-                sum += value;
             }
+            let mean = sum / (this.rows * this.cols);
+            this.stasticsCache[band] = {max, min, mean};
         }
-        let mean = sum / (this.rows * this.cols);
-        return {
-            max,
-            min,
-            mean
-        };
+        return this.stasticsCache[band];
     }
 
     // Binarization a certain band of the grid; get a value, less than which is 0, greater than which is 1

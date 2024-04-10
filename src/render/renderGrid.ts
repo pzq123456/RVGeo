@@ -39,6 +39,12 @@ export function reactGrid2d(
 
 }
 
+/**
+ * 将屏幕像素坐标转化为对应的行列号
+ * @param colRow - 数据行列数
+ * @param Rect - 绘制范围
+ * @param XY - 屏幕坐标
+ */
 function XY2ColRow(
     colRow: [number, number],
     Rect: Rect, // {x, y, w, h}
@@ -50,7 +56,6 @@ function XY2ColRow(
     let row = Math.floor((XY[1] - Rect.y) / cellHeight);
     return [col, row];
 }
-
 
 export function drawGrid2d(
     canavs: HTMLCanvasElement,
@@ -64,7 +69,9 @@ export function drawGrid2d(
     // 首先分割 rect 为小格子
     let cellWidth = Rect.w / grid2D[0].length;
     let cellHeight = Rect.h / grid2D.length;
-    let ctx = canavs.getContext("2d");
+    let ctx = canavs.getContext("2d") as CanvasRenderingContext2D;
+
+
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
@@ -79,6 +86,12 @@ export function drawGrid2d(
             ctx.strokeStyle = "gray";
             ctx.lineWidth = 1;
             ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+            // 绘制文字
+            ctx.save();
+            ctx.fillStyle = "green";
+            ctx.font = "30px serif";
+            ctx.fillText(value.toString(), Rect.x + col * cellWidth, Rect.y + row * cellHeight + 30);
+            ctx.restore();
         }
     }
     // 若有 GridMBR 则绘制
@@ -88,6 +101,10 @@ export function drawGrid2d(
         ctx.lineWidth = 1;
         ctx.strokeRect(Rect.x + minX * cellWidth, Rect.y + minY * cellHeight, (maxX - minX) * cellWidth, (maxY - minY) * cellHeight);
     }
+
+
+
+    ctx.restore();
 }
 
 export function binDrawGrid2d(
@@ -100,13 +117,11 @@ export function binDrawGrid2d(
     let cellWidth = Rect.w / grid2D[0].length;
     let cellHeight = Rect.h / grid2D.length;
 
-    let ctx = canavs.getContext("2d");
+    let ctx = canavs.getContext("2d") as CanvasRenderingContext2D;
+    ctx.save();
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
-    // background gray
-    // ctx.fillStyle = "gray";
-    // ctx.fillRect(Rect.x, Rect.y, Rect.w, Rect.h);
 
     // 绘制矩形
     for(let row = 0; row < grid2D.length; row++){
@@ -117,6 +132,8 @@ export function binDrawGrid2d(
             ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
         }
     }
+
+    ctx.restore();
 }
 
 export function drawCountour(
@@ -129,7 +146,8 @@ export function drawCountour(
     let cellWidth = Rect.w / (countourCodeGrid[0].length + 1);
     let cellHeight = Rect.h / (countourCodeGrid.length + 1);
 
-    let ctx = canavs.getContext("2d");
+    let ctx = canavs.getContext("2d") as CanvasRenderingContext2D;
+    ctx.save();
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
@@ -145,12 +163,10 @@ export function drawCountour(
             };
 
             countourCase(value, rect , ctx, strokeColor);
-
-            // // draw rect
-            // ctx.strokeStyle = "red";
-            // ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
         }
     }
+
+    ctx.restore();
 }
 
 /**
@@ -466,7 +482,6 @@ export function drawSample2(
 
 }
 
-
 export function drawText(
     canvas: HTMLCanvasElement,
     rect: Rect,
@@ -481,10 +496,6 @@ export function drawText(
     ctx.font = style.font;
     ctx.fillText(text, rect.x, rect.y);
 }
-
-
-
-
 
 export function drawTrueColorGrid2d(
     canavs: HTMLCanvasElement,
