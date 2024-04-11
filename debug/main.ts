@@ -73,3 +73,17 @@ export function animationEngine(
   }
   requestAnimationFrame(animate);
 }
+
+// const graph = RVGeo.createGraph(['A', 'B', 'C','D','E','F'], [
+//   ['A', 'B'],
+//   ['B', 'C'],
+//   ['C', 'B'],
+//   ['C', 'D'],
+//   ['C', 'F'],
+//   ['D', 'C'],
+//   ['D', 'E'],
+//   ['E', 'F'],
+// ]);
+
+// RVGeo.breadthFirstSearch(graph, 'A');
+
