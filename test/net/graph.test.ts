@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createGraph } from '../../src';
+import { createGraph, createGridGraph, gridValueStrategy } from '../../src';
 
 describe('createGraph', () => {
   it('should create a graph', () => {
@@ -27,5 +27,32 @@ describe('createGraph', () => {
     expect(graph.weights!(1, 2)).toBe(10);
     expect(graph.weights!(2, 3)).toBe(20);
     expect(graph.weights!(3, 1)).toBe(30);
+  });
+
+  it('should create a graph with weights and infinity', () => {
+    const grid = [
+      [1, 1, 1, 1],
+      [1, 1, 0, 1],
+      [1, 0, 1, 1],
+      [1, 1, 0, 1],
+    ];
+
+    function strategy(from: number, to: number) {
+      // 只要 from 或 to 含有 0 的节点，权重就是 Infinity
+      if (from === 0 || to === 0) {
+        return Infinity;
+      }else{
+        return 1;
+      }
+    }
+
+    const GridGraph = createGridGraph(grid, strategy);
+    // neighbors
+    expect(GridGraph.neighbors([0, 0])).toEqual([[0, 1], [1, 0]]);
+    expect(GridGraph.neighbors([1, 1])).toEqual([[1, 2], [1, 0], [0, 1], [2, 1]]);
+    // // weights
+    expect(GridGraph.weights!([0, 0], [0, 1])).toBe(1);
+    expect(GridGraph.weights!([0, 0], [1, 0])).toBe(1);
+    expect(GridGraph.weights!([1, 1], [1, 2])).toBe(Infinity);
   });
 });

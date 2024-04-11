@@ -45,12 +45,45 @@ export function createGraph<T>(nodes: T[], edges: [T, T][] | [T, T, number][]): 
   return graph;
 }
 
+
 /**
  * 二维数组转换为图
  */
-// interface GridGraph{
-//   grid: number[][];
-//   cols: number;
-//   rows: number;
-//   neighbors: (node: number) => number[];
-// }
+interface GridGraph{
+  grid: number[][];
+  cols: number;
+  rows: number;
+  weights?: (from: [number, number], to: [number, number]) => number;
+  neighbors: (node: [number, number]) => [number, number][];
+}
+
+export type gridValueStrategy = (from: number, to: number) => number; // 从一个节点到另一个节点的权重计算策略
+
+export function createGridGraph(
+  grid: number[][],
+  strategy?: gridValueStrategy
+): GridGraph {
+  const cols = grid[0].length;
+  const rows = grid.length;
+  const graph: GridGraph = {
+    grid,
+    cols,
+    rows,
+    neighbors(node) {
+      const [x, y] = node;
+      const result: [number, number][] = [[x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1]];
+      if ((x + y) % 2 === 0) {
+        result.reverse();
+      }
+      return result.filter(([x, y]) => x >= 0 && x < cols && y >= 0 && y < rows);
+    },
+  };
+
+  if (strategy) {
+    graph.weights = (from, to) => {
+      return strategy(grid[from[1]][from[0]], grid[to[1]][to[0]]);
+    };
+  }
+
+  return graph;
+}
