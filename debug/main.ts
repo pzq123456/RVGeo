@@ -18,7 +18,7 @@ let grid = Grid.fromFillValue(0,[1,16,16]);
 // // draw grid
 let mySimpleColorBand = RVGeo.simpleColorBandFactory(RVGeo.stretchType.power);
 let rect = {x: 0, y: 0, w: 1024, h: 1024};
-drawGrid2d(canvas, grid.data[0], rect, grid.getBandStatistics(0), mySimpleColorBand);
+// drawGrid2d(canvas, grid.data[0], rect, grid.getBandStatistics(0), mySimpleColorBand);
 
 function createCanvas(
     width: number,
@@ -43,6 +43,17 @@ canvas.addEventListener('click', (e) => {
 function myCallback(col,row){
   grid.XYZValue = [col,row,0,1];
 }
+function strategy(from: number, to: number) {
+  // 只要 from 或 to 含有 0 的节点，权重就是 Infinity
+  if (from === 0 || to === 0) {
+    return Infinity;
+  }else{
+    return 1;
+  }
+}
+
+const GridGraph = RVGeo.createGridGraph(grid.data[0], strategy);
+
 
 function render(){
   // clear canvas
@@ -51,6 +62,7 @@ function render(){
   drawGrid2d(canvas, grid.data[0], rect, grid.getBandStatistics(0), mySimpleColorBand);
   reactGrid2d(canvas, [16,16], rect, XY, myCallback);
   drawCountour(canvas, grid.getCoutourCode(0,1), rect ,"red");
+  // console.log(GridGraph.weights!([0, 0], [0, 1]));
 }
 
 animationEngine(100, render);
@@ -74,16 +86,4 @@ export function animationEngine(
   requestAnimationFrame(animate);
 }
 
-// const graph = RVGeo.createGraph(['A', 'B', 'C','D','E','F'], [
-//   ['A', 'B'],
-//   ['B', 'C'],
-//   ['C', 'B'],
-//   ['C', 'D'],
-//   ['C', 'F'],
-//   ['D', 'C'],
-//   ['D', 'E'],
-//   ['E', 'F'],
-// ]);
-
-// RVGeo.breadthFirstSearch(graph, 'A');
 
