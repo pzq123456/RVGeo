@@ -49,7 +49,7 @@ export function createGraph<T>(nodes: T[], edges: [T, T][] | [T, T, number][]): 
 /**
  * 二维数组转换为图
  */
-interface GridGraph{
+export interface GridGraph{
   grid: number[][];
   cols: number;
   rows: number;

@@ -13,7 +13,6 @@ type Rect = {
     h: number
 }; // 矩形 与canvas 的定义一致 xy为左上角 w为宽 h为高
 
-
 export function reactGrid2d(
     canavs: HTMLCanvasElement,
     colRow: [number, number],
@@ -35,8 +34,6 @@ export function reactGrid2d(
         ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
         callback && callback(col, row);
     }
-
-
 }
 
 /**
@@ -62,7 +59,7 @@ export function drawGrid2d(
     grid2D: number[][],
     Rect: Rect, // {x, y, w, h}
     statistics: {max: number, min: number, mean: number},
-    colorBand: (statistics: {max: number, min: number, mean: number},value: number) => string = simpleColorBand,
+    colorBand: (statistics: {max: number, min: number, mean: number}, value: number) => string = simpleColorBand,
     GridMBR? : [number,number,number,number], // [minX index ,minY index,maxX index,maxY index]
 ){
 
@@ -70,7 +67,6 @@ export function drawGrid2d(
     let cellWidth = Rect.w / grid2D[0].length;
     let cellHeight = Rect.h / grid2D.length;
     let ctx = canavs.getContext("2d") as CanvasRenderingContext2D;
-
 
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
@@ -101,10 +97,66 @@ export function drawGrid2d(
         ctx.lineWidth = 1;
         ctx.strokeRect(Rect.x + minX * cellWidth, Rect.y + minY * cellHeight, (maxX - minX) * cellWidth, (maxY - minY) * cellHeight);
     }
-
-
-
     ctx.restore();
+}
+
+/**
+ * 绘制箭头场，默认为起点为当前格子的中心
+ */
+export function drawArrowField(
+    canavs: HTMLCanvasElement,
+    colRow: [number, number],
+    Rect: Rect, 
+    toDict: Map<[number,number], [number,number] | null>,
+    color: string = "gray",
+){
+    // 首先分割 rect 为小格子
+    let cellWidth = Rect.w / colRow[0];
+    let cellHeight = Rect.h / colRow[1];
+    let ctx = canavs.getContext("2d") as CanvasRenderingContext2D;
+
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    // 绘制箭头
+    for(let row = 0; row < colRow[0]; row++){
+        for(let col = 0; col < colRow[1]; col++){
+            // let value = grid2D[row][col];
+            let to = toDict.get([col,row]);
+            if(to){
+                drawArrow(ctx, Rect.x + col * cellWidth + cellWidth / 2, Rect.y + row * cellHeight + cellHeight / 2, to[0], to[1], color);
+            }else{
+                // 绘制中心
+                ctx.fillStyle = "green";
+                ctx.fillRect(Rect.x + col * cellWidth + cellWidth / 2 - 2, Rect.y + row * cellHeight + cellHeight / 2 - 2, 4, 4);
+            }
+        }
+    }
+}
+
+function drawArrow(
+    ctx: CanvasRenderingContext2D,
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+    color: string = "gray",
+){
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(toX, toY);
+    ctx.stroke();
+    // 绘制箭头
+    let headlen = 10;
+    let angle = Math.atan2(toY - fromY, toX - fromX);
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.stroke();
 }
 
 export function binDrawGrid2d(

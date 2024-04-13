@@ -11,6 +11,7 @@ const drawGrid2d = RVGeo.drawGrid2d;
 const Grid = RVGeo.Grid; // 栅格类
 const drawCountour = RVGeo.drawCountour; // 绘制等值线
 const reactGrid2d = RVGeo.reactGrid2d;
+const drawArrowField = RVGeo.drawArrowField;
 
 // let data = sample(size,0.05,0.05,Perlin);
 let grid = Grid.fromFillValue(0,[1,16,16]);
@@ -53,7 +54,9 @@ function strategy(from: number, to: number) {
 }
 
 const GridGraph = RVGeo.createGridGraph(grid.data[0], strategy);
-
+let field = RVGeo.gridBreadthFirstSearch(GridGraph, [0, 0]);
+console.log(field);
+// drawArrowField
 
 function render(){
   // clear canvas
@@ -62,6 +65,7 @@ function render(){
   drawGrid2d(canvas, grid.data[0], rect, grid.getBandStatistics(0), mySimpleColorBand);
   reactGrid2d(canvas, [16,16], rect, XY, myCallback);
   drawCountour(canvas, grid.getCoutourCode(0,1), rect ,"red");
+  // drawArrowField(canvas, [16,16], rect, field);
   // console.log(GridGraph.weights!([0, 0], [0, 1]));
 }
 
