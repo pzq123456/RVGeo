@@ -22,39 +22,21 @@ export function breadthFirstSearch(graph: Graph<any>, start: any): void {
   }
 }
 
-// def breadth_first_search(graph: Graph, start: Location):
-//     frontier = Queue()
-//     frontier.put(start)
-//     came_from: dict[Location, Optional[Location]] = {}
-//     came_from[start] = None
-    
-//     while not frontier.empty():
-//         current: Location = frontier.get()
-//         for next in graph.neighbors(current):
-//             if next not in came_from:
-//                 frontier.put(next)
-//                 came_from[next] = current
-    
-//     return came_from
-
-export function gridBreadthFirstSearch(graph: GridGraph, start: [number, number]): Map<[number, number], [number, number] | null> {
+export function gridBreadthFirstSearch(graph: GridGraph, start: [number, number]): Map<string, [number, number] | null> {
   const frontier = new Queue<[number, number]>();
   frontier.put(start);
-  let cameFrom = new Map<[number, number], [number, number] | null>();
-  cameFrom.set(start, null);
-  const reached: Record<string, boolean> = {};
-  reached[start.join(',')] = true;
+  let cameFrom = new Map<string, [number, number] | null>();
+  cameFrom.set(start.join(','), null);
 
   while (!frontier.isEmpty()) {
     const current = frontier.get();
     for (const next of graph.neighbors(current as [number, number])) {
-      if (!reached[next.join(',')]) {
+      if(graph.weights!(current as [number, number], next) === Infinity) continue;
+      if (!cameFrom.has(next.join(','))) {
         frontier.put(next);
-        cameFrom.set(next, current as [number, number]);
-        reached[next.join(',')] = true;
+        cameFrom.set(next.join(','), current as [number, number]);
       }
     }
-    // break;
   }
 
 

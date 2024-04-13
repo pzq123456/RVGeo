@@ -46,26 +46,30 @@ function myCallback(col,row){
 }
 function strategy(from: number, to: number) {
   // 只要 from 或 to 含有 0 的节点，权重就是 Infinity
-  if (from === 0 || to === 0) {
+  if (from === 1 || to === 1) {
     return Infinity;
   }else{
     return 1;
   }
 }
 
-const GridGraph = RVGeo.createGridGraph(grid.data[0], strategy);
-let field = RVGeo.gridBreadthFirstSearch(GridGraph, [0, 0]);
-console.log(field);
+
+// console.log(GridGraph.weights!([0, 0], [0, 1]));
+// console.log(field);
+// console.log(field.get([0, 1].join(',')));
 // drawArrowField
 
 function render(){
   // clear canvas
+
+  const GridGraph = RVGeo.createGridGraph(grid.data[0], strategy);
+  let field = RVGeo.gridBreadthFirstSearch(GridGraph, [0, 0]);
   // @ts-ignore
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   drawGrid2d(canvas, grid.data[0], rect, grid.getBandStatistics(0), mySimpleColorBand);
   reactGrid2d(canvas, [16,16], rect, XY, myCallback);
   drawCountour(canvas, grid.getCoutourCode(0,1), rect ,"red");
-  // drawArrowField(canvas, [16,16], rect, field);
+  drawArrowField(canvas, [16,16], rect, field);
   // console.log(GridGraph.weights!([0, 0], [0, 1]));
 }
 

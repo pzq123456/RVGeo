@@ -107,7 +107,7 @@ export function drawArrowField(
     canavs: HTMLCanvasElement,
     colRow: [number, number],
     Rect: Rect, 
-    toDict: Map<[number,number], [number,number] | null>,
+    toDict: Map<string, [number,number] | null>,
     color: string = "gray",
 ){
     // 首先分割 rect 为小格子
@@ -118,20 +118,22 @@ export function drawArrowField(
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
+    ctx.save();
     // 绘制箭头
     for(let row = 0; row < colRow[0]; row++){
         for(let col = 0; col < colRow[1]; col++){
             // let value = grid2D[row][col];
-            let to = toDict.get([col,row]);
+            let to = toDict.get([col,row].join(','));
             if(to){
-                drawArrow(ctx, Rect.x + col * cellWidth + cellWidth / 2, Rect.y + row * cellHeight + cellHeight / 2, to[0], to[1], color);
-            }else{
-                // 绘制中心
-                ctx.fillStyle = "green";
-                ctx.fillRect(Rect.x + col * cellWidth + cellWidth / 2 - 2, Rect.y + row * cellHeight + cellHeight / 2 - 2, 4, 4);
+                let fromX = Rect.x + col * cellWidth + cellWidth / 2;
+                let fromY = Rect.y + row * cellHeight + cellHeight / 2;
+                let toX = Rect.x + to[0] * cellWidth + cellWidth / 2;
+                let toY = Rect.y + to[1] * cellHeight + cellHeight / 2;
+                drawArrow(ctx, fromX, fromY, toX, toY, color);
             }
         }
     }
+    ctx.restore();
 }
 
 function drawArrow(
@@ -140,10 +142,10 @@ function drawArrow(
     fromY: number,
     toX: number,
     toY: number,
-    color: string = "gray",
+    color: string = "green",
 ){
     ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(fromX, fromY);
     ctx.lineTo(toX, toY);
