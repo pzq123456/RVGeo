@@ -49,6 +49,12 @@ export class Grid{
         this.MBR = MBR;
     }
 
+    getXYZValue(xy: [number, number], z: number = 0): number{
+        let x = xy[0];
+        let y = xy[1];
+        return this.data[z][y][x];
+    }
+
     set XYZValue(xyzv: [number, number, number, number]){
         let x = xyzv[0];
         let y = xyzv[1];

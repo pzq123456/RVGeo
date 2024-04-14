@@ -22,14 +22,17 @@ export function breadthFirstSearch(graph: Graph<any>, start: any): void {
   }
 }
 
-export function gridBreadthFirstSearch(graph: GridGraph, start: [number, number]): Map<string, [number, number] | null> {
+export function gridBreadthFirstSearch(graph: GridGraph, start: [number, number], goal?: [number,number]): Map<string, [number, number] | null> {
   const frontier = new Queue<[number, number]>();
   frontier.put(start);
   let cameFrom = new Map<string, [number, number] | null>();
   cameFrom.set(start.join(','), null);
 
   while (!frontier.isEmpty()) {
-    const current = frontier.get();
+    const current = frontier.get() as [number, number];
+    if(goal && current.join(',') === goal.join(',')){
+      break;
+    }
     for (const next of graph.neighbors(current as [number, number])) {
       if(graph.weights!(current as [number, number], next) === Infinity) continue;
       if (!cameFrom.has(next.join(','))) {

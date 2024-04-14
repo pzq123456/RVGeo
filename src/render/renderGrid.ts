@@ -42,7 +42,7 @@ export function reactGrid2d(
  * @param Rect - 绘制范围
  * @param XY - 屏幕坐标
  */
-function XY2ColRow(
+export function XY2ColRow(
     colRow: [number, number],
     Rect: Rect, // {x, y, w, h}
     XY: [number, number], // [x, y]
@@ -130,6 +130,10 @@ export function drawArrowField(
                 let toX = Rect.x + to[0] * cellWidth + cellWidth / 2;
                 let toY = Rect.y + to[1] * cellHeight + cellHeight / 2;
                 drawArrow(ctx, fromX, fromY, toX, toY, color);
+            }else{
+                // 绘制中心
+                ctx.fillStyle = color;
+                ctx.fillRect(Rect.x + col * cellWidth + cellWidth / 2 - 2, Rect.y + row * cellHeight + cellHeight / 2 - 2, 4, 4);
             }
         }
     }
