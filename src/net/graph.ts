@@ -61,7 +61,8 @@ export type gridValueStrategy = (from: number, to: number) => number; // 从一�
 
 export function createGridGraph(
   grid: number[][],
-  strategy?: gridValueStrategy
+  strategy?: gridValueStrategy,
+  mooreNeighborhood: boolean = false
 ): GridGraph {
   const cols = grid[0].length;
   const rows = grid.length;
@@ -71,7 +72,23 @@ export function createGridGraph(
     rows,
     neighbors(node) {
       const [x, y] = node;
-      const result: [number, number][] = [[x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1]];
+      let result = [] as [number, number][];
+      
+      if (mooreNeighborhood) {
+        result = [
+          [x - 1, y - 1],
+          [x - 1, y + 1],
+          [x + 1, y - 1],
+          [x + 1, y + 1],
+          [x + 1, y],
+          [x, y - 1],
+          [x - 1, y],
+          [x, y + 1],
+        ]; // 8个方向
+      } else {
+        result = [[x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1]]; // 4个方向
+      }
+
       if ((x + y) % 2 === 0) {
         result.reverse();
       }

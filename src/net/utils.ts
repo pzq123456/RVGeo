@@ -38,4 +38,8 @@ export class PriorityQueue<T> {
   get(): T | undefined {
     return this.elements.shift()?.[1];
   }
+
+  isEmpty(): boolean {
+    return this.elements.length === 0;
+  }
 }

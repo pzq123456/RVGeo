@@ -109,6 +109,7 @@ export function drawArrowField(
     Rect: Rect, 
     toDict: Map<string, [number,number] | null>,
     color: string = "gray",
+    path?: [number, number][]
 ){
     // 首先分割 rect 为小格子
     let cellWidth = Rect.w / colRow[0];
@@ -129,7 +130,28 @@ export function drawArrowField(
                 let fromY = Rect.y + row * cellHeight + cellHeight / 2;
                 let toX = Rect.x + to[0] * cellWidth + cellWidth / 2;
                 let toY = Rect.y + to[1] * cellHeight + cellHeight / 2;
-                drawArrow(ctx, fromX, fromY, toX, toY, color);
+                if(path && path.find(([x,y]) => x === col && y === row)){
+                    drawArrow(ctx, fromX, fromY, toX, toY, "red");
+                    // 若为路径上的点则绘制红色箭头
+                    // 若为起点则绘制绿色箭头
+                    if(to[0] === path[0][0] && to[1] === path[0][1]){
+                        // 绘制起点标志 绿色圆圈
+                        ctx.fillStyle = "green";
+                        ctx.beginPath();
+                        ctx.arc(toX, toY, 10, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+
+                    if(to[0] === path[path.length - 2][0] && to[1] === path[path.length - 2][1]){
+                        // 绘制终点标志 红色圆圈
+                        ctx.fillStyle = "blue";
+                        ctx.beginPath();
+                        ctx.arc(fromX, fromY, 10, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                }else{
+                    drawArrow(ctx, fromX, fromY, toX, toY, color);
+                }
             }else{
                 // 绘制中心
                 ctx.fillStyle = color;

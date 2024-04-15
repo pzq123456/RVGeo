@@ -5,7 +5,6 @@ const canvasSize = 1024;
 const canvas = createCanvas(canvasSize, canvasSize);
 mydiv.appendChild( canvas );
 
-
 const drawGrid2d = RVGeo.drawGrid2d;
 
 const Grid = RVGeo.Grid; // 栅格类
@@ -13,10 +12,9 @@ const drawCountour = RVGeo.drawCountour; // 绘制等值线
 const reactGrid2d = RVGeo.reactGrid2d;
 const drawArrowField = RVGeo.drawArrowField;
 
-// let data = sample(size,0.05,0.05,Perlin);
 let grid = Grid.fromFillValue(0,[1,16,16]);
 
-// // draw grid
+// draw grid
 let mySimpleColorBand = RVGeo.simpleColorBandFactory(RVGeo.stretchType.power);
 let rect = {x: 0, y: 0, w: 1024, h: 1024};
 // drawGrid2d(canvas, grid.data[0], rect, grid.getBandStatistics(0), mySimpleColorBand);
@@ -64,13 +62,19 @@ function strategy(from: number, to: number) {
 function render(){
   // clear canvas
   const GridGraph = RVGeo.createGridGraph(grid.data[0], strategy);
-  let field = RVGeo.gridBreadthFirstSearch(GridGraph, [0, 0],[10,10]);
-  // @ts-ignore
-  // canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  // const GridGraph = RVGeo.createGridGraph(grid.data[0], strategy, true);
+
+  // 1. 广度优先搜索
+  // let field = RVGeo.gridBreadthFirstSearch(GridGraph, [0, 0], [10,10]);
+  // 2. 迪杰斯特拉算法
+  // let field = RVGeo.gridDijkstra(GridGraph, [0, 0]);
+  // 3. A* 算法
+  let field = RVGeo.gridAstar(GridGraph, [0, 0], [10,10]);
+
+  let path = RVGeo.gridReconstructPath(field, [0, 0], [10,10]);
   drawGrid2d(canvas, grid.data[0], rect, grid.getBandStatistics(0), mySimpleColorBand);
   drawCountour(canvas, grid.getCoutourCode(0,1), rect ,"red");
-  drawArrowField(canvas, [16,16], rect, field);
-  // console.log(GridGraph.weights!([0, 0], [0, 1]));
+  drawArrowField(canvas, [16,16], rect, field,"gray",path);
 }
 
 // animationEngine(100, render);

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createGraph, createGridGraph, gridValueStrategy } from '../../src';
+import { createGraph, createGridGraph, breadthFirstSearch, reconstructPath } from '../../src';
 
 describe('createGraph', () => {
   it('should create a graph', () => {
@@ -54,5 +54,30 @@ describe('createGraph', () => {
     expect(GridGraph.weights!([0, 0], [0, 1])).toBe(1);
     expect(GridGraph.weights!([0, 0], [1, 0])).toBe(1);
     expect(GridGraph.weights!([1, 1], [1, 2])).toBe(Infinity);
+  });
+
+  // test bfs
+  it('should create a graph and do bfs', () => {
+    const graph = createGraph([1, 2, 3, 4, 5], [
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 5],
+    ]);
+    const cameFrom = breadthFirstSearch(graph, 1);
+    expect(cameFrom.get(5)).toBe(4);
+  });
+
+  // test reconstructPath
+  it('should create a graph and do bfs and reconstructPath', () => {
+    const graph = createGraph([1, 2, 3, 4, 5], [
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 5],
+    ]);
+    const cameFrom = breadthFirstSearch(graph, 1);
+    const path = reconstructPath(cameFrom, 1, 5);
+    expect(path).toEqual([1,2,3,4,5]);
   });
 });

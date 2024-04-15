@@ -4,24 +4,30 @@
 import { Graph, GridGraph} from './graph';
 import { Queue } from './utils';
 
-export function breadthFirstSearch(graph: Graph<any>, start: any): void {
+export function breadthFirstSearch(graph: Graph<any>, start: any): Map<any, any> {
   const frontier = new Queue<any>();
   frontier.put(start);
-  const reached: Record<string, boolean> = {};
-  reached[start] = true;
+  const cameFrom = new Map<any, any>();
+  cameFrom.set(start, null);
 
   while (!frontier.isEmpty()) {
     const current = frontier.get();
-    console.log(`  Visiting ${current}`);
     for (const next of graph.neighbors(current)) {
-      if (!reached[next]) {
+      if(graph.weights!(current, next) === Infinity) continue;
+      if (!cameFrom.has(next)) {
         frontier.put(next);
-        reached[next] = true;
+        cameFrom.set(next, current);
       }
     }
   }
+
+  return cameFrom;
 }
 
+/** 
+ * @param goal - used to stop the search when the goal is reached
+ * @note - [num,num] can not be the key of a map, so we use string instead.
+ */
 export function gridBreadthFirstSearch(graph: GridGraph, start: [number, number], goal?: [number,number]): Map<string, [number, number] | null> {
   const frontier = new Queue<[number, number]>();
   frontier.put(start);
@@ -41,7 +47,35 @@ export function gridBreadthFirstSearch(graph: GridGraph, start: [number, number]
       }
     }
   }
-
-
   return cameFrom;
+}
+
+export function reconstructPath(cameFrom: Map<any, any>, start: any, goal: any): any[] {
+  let current = goal;
+  let path = [];
+  if (!cameFrom.has(goal)) {
+    return [];
+  }
+  while (current !== start) {
+    path.push(current);
+    current = cameFrom.get(current)!;
+  }
+  path.push(start);
+  path.reverse();
+  return path;
+}
+
+export function gridReconstructPath(cameFrom: Map<string, [number, number] | null>, start: [number, number], goal: [number, number]): [number, number][] {
+  let current = goal;
+  let path: [number, number][] = [];
+  if (!cameFrom.has(goal.join(','))) {
+    return [];
+  }
+  while (current && current.join(',') !== start.join(',')) {
+    path.push(current);
+    current = cameFrom.get(current.join(','))!;
+  }
+  path.push(start);
+  path.reverse();
+  return path;
 }
