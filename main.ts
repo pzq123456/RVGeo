@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { drawCircle2BLMap, drawEdgeMap2BLMap, drawGridLines2BLMap, drawLabel, drawLineString2BLMap, drawMultiPoint2BLMap, drawPlaneMBR2BLMap, drawPlaneMPS2BLMap, drawPoint2BLMap, drawPolygon2BLMap, drawQuadTree2BLMap, drawRectangle2BLMap, drawTriangleEdge2BLMap, innerIcon, removeAllOverlay } from './src/BLDraw.ts';
+import * as BLDraw from './src/BLDraw.ts';
 import { createToolBar } from './helpers/toolBar.ts';
 import { mockPoints } from './src/Mock.ts';
 
@@ -9,6 +10,8 @@ import axios from 'axios';
 import { createEditor } from './editor.js';
 
 window.RVGeo = RVGeo;
+window.BLDraw = BLDraw;
+
 const myMBR1 = [
   -109.04885344551185,
   36.988099165319085,
@@ -70,7 +73,7 @@ const ctx = canvas.getContext('2d')!;
 // 设置变换
 ctx.fillStyle = 'white';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
-console.log('canvas', canvas.width, canvas.height);
+// console.log('canvas', canvas.width, canvas.height);
 
 declare const BMapGL: any;
 // GL版命名空间为BMapGL
@@ -78,6 +81,8 @@ declare const BMapGL: any;
 let map = new BMapGL.Map("allmap");    // 创建Map实例
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+
+window.map = map;
 
 createEditor().then((editor) => {
   function customModify(code: string){

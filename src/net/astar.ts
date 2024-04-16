@@ -1,4 +1,4 @@
-import { GridGraph, Graph } from './graph';
+import { GridGraph } from './graph';
 import { PriorityQueue } from './utils';
 
 function heuristic(a: [number, number], b: [number, number]): number {

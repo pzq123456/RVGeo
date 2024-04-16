@@ -64,16 +64,17 @@ export function drawLabel(point: Point | [lon: number, lat: number], content: st
         offset: new BMapGL.Size(5, 5)           // 设置标注的偏移量
     })
     label.setStyle({
-        // borderRadius: '50px',
+        color: 'blue',
+        // borderRadius: '5px',
         // borderColor: '#ccc',
         // padding: '10px',
-        fontSize: '10px',
-        height: '20px',
-        lineHeight: '20px',
+        // fontSize: '16px',
+        // height: '30px',
+        // lineHeight: '30px',
         fontFamily: '微软雅黑'
     });
     map.addOverlay(label);
-    return label
+    // return label
 }
 /**
  * 清除百度地图上所有的覆盖物
@@ -93,6 +94,7 @@ export function drawMultiPoint2BLMap(multiPoint: MultiPoint | Point[] | [number,
     for (let i = 0; i < points.length; i++) {
         let point = points[i];
         drawPoint2BLMap(point, map, icon);
+        drawLabel(point, i, map);
     }
 }
 
