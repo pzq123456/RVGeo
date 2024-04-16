@@ -3760,10 +3760,9 @@ function inCircle$1(p1, p2, p3, p4) {
   return sign(det);
 }
 class Grid {
-  // 波段数
   constructor(MBR2, data) {
     __publicField(this, "MBR");
-    // [minLon, minLat, maxLon, maxLat]
+    // default
     __publicField(this, "data");
     // 三维数组
     __publicField(this, "shape");
@@ -3773,6 +3772,8 @@ class Grid {
     __publicField(this, "cols");
     // 列数
     __publicField(this, "bands");
+    // 波段数
+    __publicField(this, "stasticsCache", []);
     this.MBR = MBR2;
     this.data = data;
     this.shape = [data.length, data[0].length, data[0][0].length];
@@ -3792,6 +3793,38 @@ class Grid {
   }
   get bandCount() {
     return this.bands;
+  }
+  setMBR(MBR2) {
+    this.MBR = MBR2;
+  }
+  getXYZValue(xy, z = 0) {
+    let x = xy[0];
+    let y = xy[1];
+    return this.data[z][y][x];
+  }
+  set XYZValue(xyzv) {
+    let x = xyzv[0];
+    let y = xyzv[1];
+    let z = xyzv[2];
+    let v2 = xyzv[3];
+    let oriV = this.data[z][y][x];
+    this.data[z][y][x] = v2;
+    if (this.stasticsCache[z]) {
+      let max = this.stasticsCache[z].max;
+      let min = this.stasticsCache[z].min;
+      let mean = this.stasticsCache[z].mean;
+      let value = this.data[z][y][x];
+      if (value > max) {
+        max = value;
+      }
+      if (value < min) {
+        min = value;
+      }
+      let sum2 = mean * this.rows * this.cols;
+      sum2 = sum2 - oriV + value;
+      mean = sum2 / (this.rows * this.cols);
+      this.stasticsCache[z] = { max, min, mean };
+    }
   }
   /**
    * 获取指定范围，指定波段的网格数据
@@ -3939,28 +3972,27 @@ class Grid {
    * @param band - 波段号
    */
   getBandStatistics(band) {
-    let bandData = this.data[band];
-    let max = bandData[0][0];
-    let min = bandData[0][0];
-    let sum2 = 0;
-    for (let row = 0; row < this.rows; row++) {
-      for (let col = 0; col < this.cols; col++) {
-        let value = bandData[row][col];
-        if (value > max) {
-          max = value;
+    if (!this.stasticsCache[band]) {
+      let bandData = this.data[band];
+      let max = bandData[0][0];
+      let min = bandData[0][0];
+      let sum2 = 0;
+      for (let row = 0; row < this.rows; row++) {
+        for (let col = 0; col < this.cols; col++) {
+          let value = bandData[row][col];
+          if (value > max) {
+            max = value;
+          }
+          if (value < min) {
+            min = value;
+          }
+          sum2 += value;
         }
-        if (value < min) {
-          min = value;
-        }
-        sum2 += value;
       }
+      let mean = sum2 / (this.rows * this.cols);
+      this.stasticsCache[band] = { max, min, mean };
     }
-    let mean = sum2 / (this.rows * this.cols);
-    return {
-      max,
-      min,
-      mean
-    };
+    return this.stasticsCache[band];
   }
   // Binarization a certain band of the grid; get a value, less than which is 0, greater than which is 1
   // 二值化网格数据，返回二值化后的网格数据
@@ -3987,7 +4019,10 @@ class Grid {
     }
     return binarizationData;
   }
-  getCoutourCode(band, threshold, isPadding = true) {
+  /** 
+  * the result grid size is [rows - 1, cols - 1], and the render function should move 1/2 grid size to the left and up
+  */
+  getCoutourCode(band, threshold) {
     let binarizationData = this.binarization(band, threshold);
     let contourCode = [];
     for (let row = 0; row < this.rows - 1; row++) {
@@ -4001,14 +4036,6 @@ class Grid {
         rowData.push(code);
       }
       contourCode.push(rowData);
-    }
-    if (isPadding) {
-      for (let row = 0; row < contourCode.length; row++) {
-        let rowData = contourCode[row];
-        rowData.push(rowData[rowData.length - 1]);
-      }
-      let bottom = contourCode[contourCode.length - 1];
-      contourCode.push(bottom);
     }
     return contourCode;
   }
@@ -4032,6 +4059,21 @@ class Grid {
     }
     array.sort((a, b) => a - b);
     return array;
+  }
+  static fromFillValue(fillVal = 0, shape) {
+    let data = [];
+    for (let i = 0; i < shape[0]; i++) {
+      let bandData = [];
+      for (let j = 0; j < shape[1]; j++) {
+        let rowData = [];
+        for (let k = 0; k < shape[2]; k++) {
+          rowData.push(fillVal);
+        }
+        bandData.push(rowData);
+      }
+      data.push(bandData);
+    }
+    return new Grid([0, 0, 0, 0], data);
   }
 }
 function binarization(grid, band, threshold) {
@@ -5033,72 +5075,256 @@ const EPSG3857 = extend$1({}, Earth, {
 const EPSG900913 = extend$1({}, EPSG3857, {
   code: "EPSG:900913"
 });
-class Dijkstra {
-  /**
-   * Djikstra算法
-   * @param edges - ["a", "b", 7]
-   * @param source - "a" 起点
-   */
-  constructor(edges, source) {
-    __publicField(this, "edges");
-    __publicField(this, "source");
-    /**
-     *dijstra——寻找源点至目标点的路径
-     * @param target ：number|string：目标点
-     * @returns [paths,length]——源点到目标点的路径和距离(总权重)
-     */
-    __publicField(this, "dijkstra", (target) => {
-      const Q = /* @__PURE__ */ new Set(), prev = {}, dist2 = {}, adj = {};
-      const vertex_with_min_dist = (Q2, dist22) => {
-        let min_distance = Infinity, u2 = null;
-        for (let v2 of Q2) {
-          if (dist22[v2] < min_distance) {
-            min_distance = dist22[v2];
-            u2 = v2;
-          }
-        }
-        return u2;
-      };
-      for (let i = 0; i < this.edges.length; i++) {
-        let v1 = this.edges[i][0], v2 = this.edges[i][1], len = this.edges[i][2];
-        Q.add(v1);
-        Q.add(v2);
-        dist2[v1] = Infinity;
-        dist2[v2] = Infinity;
-        if (adj[v1] === void 0)
-          adj[v1] = {};
-        if (adj[v2] === void 0)
-          adj[v2] = {};
-        adj[v1][v2] = len;
-        adj[v2][v1] = len;
-      }
-      dist2[this.source] = 0;
-      while (Q.size) {
-        let u2 = vertex_with_min_dist(Q, dist2), neighbors2 = Object.keys(adj[u2]).map((v2) => parseInt(v2)).filter((v2) => Q.has(v2));
-        Q.delete(u2);
-        if (u2 === target)
-          break;
-        for (let v2 of neighbors2) {
-          let alt = dist2[u2] + adj[u2][v2];
-          if (alt < dist2[v2]) {
-            dist2[v2] = alt;
-            prev[v2] = u2;
-          }
-        }
-      }
-      {
-        let u2 = target, paths = [u2], len = 0;
-        while (prev[u2] !== void 0) {
-          paths.unshift(prev[u2]);
-          len += adj[u2][prev[u2]];
-          u2 = prev[u2];
-        }
-        return [paths, len];
-      }
-    });
-    this.edges = edges;
-    this.source = source;
+class Queue {
+  constructor() {
+    __publicField(this, "data", []);
   }
+  push(item) {
+    this.data.push(item);
+  }
+  pop() {
+    return this.data.shift();
+  }
+  put(item) {
+    this.push(item);
+  }
+  get() {
+    return this.pop();
+  }
+  isEmpty() {
+    return this.data.length === 0;
+  }
+}
+class PriorityQueue {
+  constructor() {
+    __publicField(this, "elements", []);
+  }
+  empty() {
+    return this.elements.length === 0;
+  }
+  put(item, priority) {
+    this.elements.push([priority, item]);
+    this.elements.sort((a, b) => a[0] - b[0]);
+  }
+  get() {
+    var _a;
+    return (_a = this.elements.shift()) == null ? void 0 : _a[1];
+  }
+  isEmpty() {
+    return this.elements.length === 0;
+  }
+}
+function gridDijkstra(graph, start, goal) {
+  const frontier = new PriorityQueue();
+  frontier.put(start, 0);
+  let cameFrom = /* @__PURE__ */ new Map();
+  let costSoFar = /* @__PURE__ */ new Map();
+  cameFrom.set(start.join(","), null);
+  costSoFar.set(start.join(","), 0);
+  while (!frontier.isEmpty()) {
+    const current = frontier.get();
+    if (goal && current.join(",") === goal.join(",")) {
+      break;
+    }
+    for (const next of graph.neighbors(current)) {
+      if (graph.weights(current, next) === Infinity)
+        continue;
+      const newCost = costSoFar.get(current.join(",")) + graph.weights(current, next);
+      if (!costSoFar.has(next.join(",")) || newCost < costSoFar.get(next.join(","))) {
+        costSoFar.set(next.join(","), newCost);
+        const priority = newCost;
+        frontier.put(next, priority);
+        cameFrom.set(next.join(","), current);
+      }
+    }
+  }
+  return cameFrom;
+}
+function dijkstra(graph, start) {
+  const frontier = new PriorityQueue();
+  frontier.put(start, 0);
+  let cameFrom = /* @__PURE__ */ new Map();
+  let costSoFar = /* @__PURE__ */ new Map();
+  cameFrom.set(start, null);
+  costSoFar.set(start, 0);
+  while (!frontier.isEmpty()) {
+    const current = frontier.get();
+    for (const next of graph.neighbors(current)) {
+      if (graph.weights(current, next) === Infinity)
+        continue;
+      const newCost = costSoFar.get(current) + graph.weights(current, next);
+      if (!costSoFar.has(next) || newCost < costSoFar.get(next)) {
+        costSoFar.set(next, newCost);
+        const priority = newCost;
+        frontier.put(next, priority);
+        cameFrom.set(next, current);
+      }
+    }
+  }
+  return cameFrom;
+}
+function createGraph(nodes, edges) {
+  const graph = {
+    nodes,
+    edges: /* @__PURE__ */ new Map(),
+    neighbors(node) {
+      return graph.edges.get(node) || [];
+    }
+  };
+  for (const [from, to, weight = 1] of edges) {
+    if (!graph.edges.has(from)) {
+      graph.edges.set(from, []);
+    }
+    graph.edges.get(from).push(to);
+    if (!graph.edgesWeights) {
+      graph.edgesWeights = /* @__PURE__ */ new Map();
+    }
+    if (!graph.edgesWeights.has(from)) {
+      graph.edgesWeights.set(from, /* @__PURE__ */ new Map());
+    }
+    graph.edgesWeights.get(from).set(to, weight);
+  }
+  if (graph.edgesWeights) {
+    graph.weights = (from, to) => {
+      return graph.edgesWeights.get(from).get(to) || Infinity;
+    };
+  }
+  return graph;
+}
+function createGridGraph(grid, strategy, mooreNeighborhood = false) {
+  const cols = grid[0].length;
+  const rows = grid.length;
+  const graph = {
+    grid,
+    cols,
+    rows,
+    neighbors(node) {
+      const [x, y] = node;
+      let result = [];
+      if (mooreNeighborhood) {
+        result = [
+          [x - 1, y - 1],
+          [x - 1, y + 1],
+          [x + 1, y - 1],
+          [x + 1, y + 1],
+          [x + 1, y],
+          [x, y - 1],
+          [x - 1, y],
+          [x, y + 1]
+        ];
+      } else {
+        result = [[x + 1, y], [x - 1, y], [x, y - 1], [x, y + 1]];
+      }
+      if ((x + y) % 2 === 0) {
+        result.reverse();
+      }
+      return result.filter(([x2, y2]) => x2 >= 0 && x2 < cols && y2 >= 0 && y2 < rows);
+    }
+  };
+  if (strategy) {
+    graph.weights = (from, to) => {
+      return strategy(grid[from[1]][from[0]], grid[to[1]][to[0]]);
+    };
+  }
+  return graph;
+}
+function breadthFirstSearch(graph, start) {
+  const frontier = new Queue();
+  frontier.put(start);
+  const cameFrom = /* @__PURE__ */ new Map();
+  cameFrom.set(start, null);
+  while (!frontier.isEmpty()) {
+    const current = frontier.get();
+    for (const next of graph.neighbors(current)) {
+      if (graph.weights(current, next) === Infinity)
+        continue;
+      if (!cameFrom.has(next)) {
+        frontier.put(next);
+        cameFrom.set(next, current);
+      }
+    }
+  }
+  return cameFrom;
+}
+function gridBreadthFirstSearch(graph, start, goal) {
+  const frontier = new Queue();
+  frontier.put(start);
+  let cameFrom = /* @__PURE__ */ new Map();
+  cameFrom.set(start.join(","), null);
+  while (!frontier.isEmpty()) {
+    const current = frontier.get();
+    if (goal && current.join(",") === goal.join(",")) {
+      break;
+    }
+    for (const next of graph.neighbors(current)) {
+      if (graph.weights(current, next) === Infinity)
+        continue;
+      if (!cameFrom.has(next.join(","))) {
+        frontier.put(next);
+        cameFrom.set(next.join(","), current);
+      }
+    }
+  }
+  return cameFrom;
+}
+function reconstructPath(cameFrom, start, goal) {
+  let current = goal;
+  let path = [];
+  if (!cameFrom.has(goal)) {
+    return [];
+  }
+  while (current !== start) {
+    path.push(current);
+    current = cameFrom.get(current);
+  }
+  path.push(start);
+  path.reverse();
+  return path;
+}
+function gridReconstructPath(cameFrom, start, goal) {
+  let current = goal;
+  let path = [];
+  if (!cameFrom.has(goal.join(","))) {
+    return [];
+  }
+  while (current && current.join(",") !== start.join(",")) {
+    path.push(current);
+    current = cameFrom.get(current.join(","));
+  }
+  path.push(start);
+  path.reverse();
+  return path;
+}
+function heuristic(a, b) {
+  const [x1, y1] = a;
+  const [x2, y2] = b;
+  return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+}
+function gridAstar(graph, start, goal) {
+  const frontier = new PriorityQueue();
+  frontier.put(start, 0);
+  let cameFrom = /* @__PURE__ */ new Map();
+  let costSoFar = /* @__PURE__ */ new Map();
+  cameFrom.set(start.join(","), null);
+  costSoFar.set(start.join(","), 0);
+  while (!frontier.isEmpty()) {
+    const current = frontier.get();
+    if (current.join(",") === goal.join(",")) {
+      break;
+    }
+    for (const next of graph.neighbors(current)) {
+      if (graph.weights(current, next) === Infinity)
+        continue;
+      const newCost = costSoFar.get(current.join(",")) + graph.weights(current, next);
+      if (!costSoFar.has(next.join(",")) || newCost < costSoFar.get(next.join(","))) {
+        costSoFar.set(next.join(","), newCost);
+        const priority = newCost + heuristic(next, goal);
+        frontier.put(next, priority);
+        cameFrom.set(next.join(","), current);
+      }
+    }
+  }
+  return cameFrom;
 }
 var stretchType = /* @__PURE__ */ ((stretchType2) => {
   stretchType2[stretchType2["linear"] = 0] = "linear";
@@ -5258,6 +5484,28 @@ function hist(grid2D, stretch = 0, statistics) {
   }
   return histList;
 }
+function reactGrid2d(canavs, colRow, Rect, XY, callback) {
+  let cellWidth = Rect.w / colRow[0];
+  let cellHeight = Rect.h / colRow[1];
+  let ctx2 = canavs.getContext("2d");
+  if (ctx2 === null) {
+    throw new Error("无法获取canvas绘图上下文");
+  }
+  ctx2.strokeStyle = "red";
+  ctx2.lineWidth = 1;
+  if (XY[0] && XY[1]) {
+    let [col, row] = XY2ColRow(colRow, Rect, XY);
+    ctx2.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+    callback && callback(col, row);
+  }
+}
+function XY2ColRow(colRow, Rect, XY) {
+  let cellWidth = Rect.w / colRow[0];
+  let cellHeight = Rect.h / colRow[1];
+  let col = Math.floor((XY[0] - Rect.x) / cellWidth);
+  let row = Math.floor((XY[1] - Rect.y) / cellHeight);
+  return [col, row];
+}
 function drawGrid2d(canavs, grid2D, Rect, statistics, colorBand = simpleColorBand, GridMBR) {
   let cellWidth = Rect.w / grid2D[0].length;
   let cellHeight = Rect.h / grid2D.length;
@@ -5271,6 +5519,14 @@ function drawGrid2d(canavs, grid2D, Rect, statistics, colorBand = simpleColorBan
       let color = colorBand(statistics, value);
       ctx2.fillStyle = color;
       ctx2.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+      ctx2.strokeStyle = "gray";
+      ctx2.lineWidth = 1;
+      ctx2.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+      ctx2.save();
+      ctx2.fillStyle = "green";
+      ctx2.font = "30px serif";
+      ctx2.fillText(value.toString(), Rect.x + col * cellWidth, Rect.y + row * cellHeight + 30);
+      ctx2.restore();
     }
   }
   if (GridMBR) {
@@ -5279,11 +5535,70 @@ function drawGrid2d(canavs, grid2D, Rect, statistics, colorBand = simpleColorBan
     ctx2.lineWidth = 1;
     ctx2.strokeRect(Rect.x + minX * cellWidth, Rect.y + minY * cellHeight, (maxX - minX) * cellWidth, (maxY - minY) * cellHeight);
   }
+  ctx2.restore();
+}
+function drawArrowField(canavs, colRow, Rect, toDict, color = "gray", path) {
+  let cellWidth = Rect.w / colRow[0];
+  let cellHeight = Rect.h / colRow[1];
+  let ctx2 = canavs.getContext("2d");
+  if (ctx2 === null) {
+    throw new Error("无法获取canvas绘图上下文");
+  }
+  ctx2.save();
+  for (let row = 0; row < colRow[0]; row++) {
+    for (let col = 0; col < colRow[1]; col++) {
+      let to = toDict.get([col, row].join(","));
+      if (to) {
+        let fromX = Rect.x + col * cellWidth + cellWidth / 2;
+        let fromY = Rect.y + row * cellHeight + cellHeight / 2;
+        let toX = Rect.x + to[0] * cellWidth + cellWidth / 2;
+        let toY = Rect.y + to[1] * cellHeight + cellHeight / 2;
+        if (path && path.find(([x, y]) => x === col && y === row)) {
+          drawArrow(ctx2, fromX, fromY, toX, toY, "red");
+          if (to[0] === path[0][0] && to[1] === path[0][1]) {
+            ctx2.fillStyle = "green";
+            ctx2.beginPath();
+            ctx2.arc(toX, toY, 10, 0, 2 * Math.PI);
+            ctx2.fill();
+          }
+          if (to[0] === path[path.length - 2][0] && to[1] === path[path.length - 2][1]) {
+            ctx2.fillStyle = "blue";
+            ctx2.beginPath();
+            ctx2.arc(fromX, fromY, 10, 0, 2 * Math.PI);
+            ctx2.fill();
+          }
+        } else {
+          drawArrow(ctx2, fromX, fromY, toX, toY, color);
+        }
+      } else {
+        ctx2.fillStyle = color;
+        ctx2.fillRect(Rect.x + col * cellWidth + cellWidth / 2 - 2, Rect.y + row * cellHeight + cellHeight / 2 - 2, 4, 4);
+      }
+    }
+  }
+  ctx2.restore();
+}
+function drawArrow(ctx2, fromX, fromY, toX, toY, color = "green") {
+  ctx2.strokeStyle = color;
+  ctx2.lineWidth = 2;
+  ctx2.beginPath();
+  ctx2.moveTo(fromX, fromY);
+  ctx2.lineTo(toX, toY);
+  ctx2.stroke();
+  let headlen = 10;
+  let angle = Math.atan2(toY - fromY, toX - fromX);
+  ctx2.beginPath();
+  ctx2.moveTo(toX, toY);
+  ctx2.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+  ctx2.moveTo(toX, toY);
+  ctx2.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+  ctx2.stroke();
 }
 function binDrawGrid2d(canavs, grid2D, Rect, colorBand = binaryColorBand) {
   let cellWidth = Rect.w / grid2D[0].length;
   let cellHeight = Rect.h / grid2D.length;
   let ctx2 = canavs.getContext("2d");
+  ctx2.save();
   if (ctx2 === null) {
     throw new Error("无法获取canvas绘图上下文");
   }
@@ -5295,25 +5610,29 @@ function binDrawGrid2d(canavs, grid2D, Rect, colorBand = binaryColorBand) {
       ctx2.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
     }
   }
+  ctx2.restore();
 }
 function drawCountour(canavs, countourCodeGrid, Rect, strokeColor = "white") {
-  let cellWidth = Rect.w / countourCodeGrid[0].length;
-  let cellHeight = Rect.h / countourCodeGrid.length;
+  let cellWidth = Rect.w / (countourCodeGrid[0].length + 1);
+  let cellHeight = Rect.h / (countourCodeGrid.length + 1);
   let ctx2 = canavs.getContext("2d");
+  ctx2.save();
   if (ctx2 === null) {
     throw new Error("无法获取canvas绘图上下文");
   }
   for (let row = 0; row < countourCodeGrid.length; row++) {
     for (let col = 0; col < countourCodeGrid[0].length; col++) {
       let value = countourCodeGrid[row][col];
-      countourCase(value, {
+      let rect = {
         x: Rect.x + col * cellWidth + cellWidth / 2,
         y: Rect.y + row * cellHeight + cellHeight / 2,
         w: cellWidth,
         h: cellHeight
-      }, ctx2, strokeColor);
+      };
+      countourCase(value, rect, ctx2, strokeColor);
     }
   }
+  ctx2.restore();
 }
 function countourCase(countourCode, cell, ctx2, strokeColor = "white") {
   ctx2.strokeStyle = strokeColor;
@@ -6273,7 +6592,6 @@ const RVGeo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   CountourColorList,
   D2R,
   Delaunator,
-  Dijkstra,
   EPSG3857,
   EPSG900913,
   EPSLN,
@@ -6304,12 +6622,15 @@ const RVGeo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   PointInsidePolygon,
   PointOutsideMBR,
   Polygon,
+  PriorityQueue,
   QuadTree,
+  Queue,
   R2D,
   Sin3D,
   SphericalMercator,
   UUID: UUID$1,
   Voronoi,
+  XY2ColRow,
   acos,
   add: add$1,
   adjust_lon,
@@ -6323,6 +6644,7 @@ const RVGeo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   binDrawGrid2d,
   binarization,
   binaryColorBand,
+  breadthFirstSearch,
   calculateArrayShape,
   calculateMBR,
   cartesian,
@@ -6345,6 +6667,8 @@ const RVGeo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   containsMBR,
   convexHull,
   cos,
+  createGraph,
+  createGridGraph,
   cross,
   cutPolygonByMBR,
   dampedSin3D,
@@ -6352,8 +6676,10 @@ const RVGeo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   degToDMS,
   degreesToRadians,
   destination,
+  dijkstra,
   dmsToDeg,
   dot,
+  drawArrowField,
   drawCountour,
   drawGrid2d,
   drawProgress,
@@ -6379,6 +6705,10 @@ const RVGeo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   getAngle,
   getMBRWithAntimeridian,
   getPointsMBR,
+  gridAstar,
+  gridBreadthFirstSearch,
+  gridDijkstra,
+  gridReconstructPath,
   halfPi,
   haversin,
   haversine,
@@ -6423,6 +6753,8 @@ const RVGeo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   radiansToDegrees,
   radiansToLength,
   randomIndexArray,
+  reactGrid2d,
+  reconstructPath,
   rectangleToMBR,
   reverse,
   round,
@@ -6460,6 +6792,11 @@ const RVGeo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   zebraNoise
 }, Symbol.toStringTag, { value: "Module" }));
 const convertToWgs84 = SphericalMercator.unproject;
+function createIcon(url, size, offset) {
+  return new BMapGL.Icon(url, new BMapGL.Size(size[0], size[1]), {
+    offset: new BMapGL.Size(offset[0], offset[1])
+  });
+}
 const myicons = ["Pink.svg", "Blue.svg", "Yellow.svg", "Green.svg"];
 function innerIcon(index, icons = myicons) {
   let url = icons[index];
@@ -6488,16 +6825,16 @@ function drawLabel(point, content, map2) {
     // 设置标注的偏移量
   });
   label.setStyle({
-    // borderRadius: '50px',
+    color: "blue",
+    // borderRadius: '5px',
     // borderColor: '#ccc',
     // padding: '10px',
-    fontSize: "10px",
-    height: "20px",
-    lineHeight: "20px",
+    // fontSize: '16px',
+    // height: '30px',
+    // lineHeight: '30px',
     fontFamily: "微软雅黑"
   });
   map2.addOverlay(label);
-  return label;
 }
 function removeAllOverlay(map2) {
   map2.clearOverlays();
@@ -6507,6 +6844,7 @@ function drawMultiPoint2BLMap(multiPoint, map2, icon) {
   for (let i = 0; i < points.length; i++) {
     let point = points[i];
     drawPoint2BLMap(point, map2, icon);
+    drawLabel(point, i, map2);
   }
 }
 function drawRectangle2BLMap(rect, map2, style2 = { strokeColor: "green", strokeWeight: 2, strokeOpacity: 0.5 }) {
@@ -6533,6 +6871,13 @@ function drawLineString2BLMap(lineString, map2, style2 = { strokeColor: "blue", 
   let polyline = new BMapGL.Polyline(blPoints, style2);
   map2.addOverlay(polyline);
 }
+function drawMultiLineString2BLMap(multiLineString, map2, style2 = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 }) {
+  let lineStrings = multiLineString.coordinates;
+  for (let i = 0; i < lineStrings.length; i++) {
+    let lineString = lineStrings[i];
+    drawLineString2BLMap(lineString, map2, style2);
+  }
+}
 function drawPolygon2BLMap(polygon, map2, style2 = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 }) {
   let coordinates = Polygon.isPolygon(polygon) ? polygon.coordinates : polygon;
   let blPoints = [];
@@ -6545,6 +6890,12 @@ function drawPolygon2BLMap(polygon, map2, style2 = { strokeColor: "blue", stroke
   }
   let blPolygon = new BMapGL.Polygon(blPoints, style2);
   map2.addOverlay(blPolygon);
+}
+function drawPolygonArray2BLMap(polygonArray, map2, style2 = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 }) {
+  for (let i = 0; i < polygonArray.length; i++) {
+    let polygon = polygonArray[i];
+    drawPolygon2BLMap([polygon], map2, style2);
+  }
 }
 function drawTriangleEdge2BLMap(triangleEdge, map2, style2 = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 }) {
   for (let i = 0; i < triangleEdge.length; i++) {
@@ -6561,6 +6912,47 @@ function drawEdgeMap2BLMap(edgeMap, map2, style2 = { strokeColor: "blue", stroke
   for (let [, value] of edgeMap) {
     drawLineString2BLMap(value, map2, style2, close);
   }
+}
+function drawSimplePolygon2Map(polygon, map2, style2 = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 }) {
+  let blPoints = [];
+  for (let i = 0; i < polygon.length; i++) {
+    blPoints.push(new BMapGL.Point(polygon[i][0], polygon[i][1]));
+  }
+  let blPolygon = new BMapGL.Polygon(blPoints, style2);
+  map2.addOverlay(blPolygon);
+}
+function drawRoad2Map(nodes, edges, hightlight, map2, nodeIcon = innerIcon(0), roadStyle = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 }, hightlightStyle = { strokeColor: "yellow", strokeWeight: 5, strokeOpacity: 0.5 }) {
+  for (let i = 0; i < nodes.length; i++) {
+    if (i === hightlight[0] || i === hightlight[hightlight.length - 1])
+      continue;
+    drawPoint2BLMap(nodes[i], map2, nodeIcon);
+  }
+  for (let i = 0; i < edges.length; i++) {
+    let edge = edges[i];
+    let start = nodes[edge[0]];
+    let end = nodes[edge[1]];
+    drawLineString2BLMap([start, end], map2, roadStyle);
+  }
+  if (hightlight.length > 0) {
+    let lineStrings = fillIndexArray(hightlight, nodes);
+    drawLineString2BLMap(lineStrings, map2, hightlightStyle, false);
+    drawPoint2BLMap(lineStrings[0], map2, innerIcon(4));
+    drawPoint2BLMap(lineStrings[lineStrings.length - 1], map2, innerIcon(2));
+  }
+}
+function drawRaster2BLMap(extent, getCanvas, map2) {
+  var pStart = new BMapGL.Point(extent[0], extent[1]);
+  var pEnd = new BMapGL.Point(extent[2], extent[3]);
+  var bounds2 = new BMapGL.Bounds(
+    new BMapGL.Point(pStart.lng, pEnd.lat),
+    new BMapGL.Point(pEnd.lng, pStart.lat)
+  );
+  var imgOverlay = new BMapGL.GroundOverlay(bounds2, {
+    type: "canvas",
+    url: getCanvas(),
+    opacity: 0.8
+  });
+  map2.addOverlay(imgOverlay);
 }
 function drawGridLines2BLMap(GridMBR, rows, cols, map2, style2 = { strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5 }, IsLabel = false) {
   let minLon = GridMBR[0];
@@ -6643,6 +7035,31 @@ function drawPlaneMBR2BLMap(MBR2, map2, style2 = { strokeColor: "blue", strokeWe
   let points = plane2MBR(MBR2);
   drawRectangle2BLMap(points, map2, style2);
 }
+const BLDraw = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  createIcon,
+  drawCircle2BLMap,
+  drawEdgeMap2BLMap,
+  drawGridLines2BLMap,
+  drawLabel,
+  drawLineString2BLMap,
+  drawMultiLineString2BLMap,
+  drawMultiPoint2BLMap,
+  drawPlaneMBR2BLMap,
+  drawPlaneMPS2BLMap,
+  drawPlanePoint2BLMap,
+  drawPoint2BLMap,
+  drawPolygon2BLMap,
+  drawPolygonArray2BLMap,
+  drawQuadTree2BLMap,
+  drawRaster2BLMap,
+  drawRectangle2BLMap,
+  drawRoad2Map,
+  drawSimplePolygon2Map,
+  drawTriangleEdge2BLMap,
+  innerIcon,
+  removeAllOverlay
+}, Symbol.toStringTag, { value: "Module" }));
 function createToolBar(element, tools, outTools, runCallback) {
   const select = document.createElement("select");
   tools.forEach((tool) => {
@@ -7461,7 +7878,7 @@ function stringifySafely(rawValue, parser, encoder) {
 }
 const defaults = {
   transitional: transitionalDefaults,
-  adapter: platform.isNode ? "http" : "xhr",
+  adapter: ["xhr", "http"],
   transformRequest: [function transformRequest(data, headers) {
     const contentType = headers.getContentType() || "";
     const hasJSONContentType = contentType.indexOf("application/json") > -1;
@@ -8017,11 +8434,14 @@ const xhrAdapter = isXHRAdapterSupported && function(config) {
         config.signal.removeEventListener("abort", onCanceled);
       }
     }
+    let contentType;
     if (utils.isFormData(requestData)) {
       if (platform.isStandardBrowserEnv || platform.isStandardBrowserWebWorkerEnv) {
         requestHeaders.setContentType(false);
-      } else {
-        requestHeaders.setContentType("multipart/form-data;", false);
+      } else if (!requestHeaders.getContentType(/^\s*multipart\/form-data/)) {
+        requestHeaders.setContentType("multipart/form-data");
+      } else if (utils.isString(contentType = requestHeaders.getContentType())) {
+        requestHeaders.setContentType(contentType.replace(/^\s*(multipart\/form-data);+/, "$1"));
       }
     }
     let request = new XMLHttpRequest();
@@ -8155,31 +8575,39 @@ utils.forEach(knownAdapters, (fn, value) => {
     Object.defineProperty(fn, "adapterName", { value });
   }
 });
+const renderReason = (reason) => `- ${reason}`;
+const isResolvedHandle = (adapter) => utils.isFunction(adapter) || adapter === null || adapter === false;
 const adapters = {
   getAdapter: (adapters2) => {
     adapters2 = utils.isArray(adapters2) ? adapters2 : [adapters2];
     const { length } = adapters2;
     let nameOrAdapter;
     let adapter;
+    const rejectedReasons = {};
     for (let i = 0; i < length; i++) {
       nameOrAdapter = adapters2[i];
-      if (adapter = utils.isString(nameOrAdapter) ? knownAdapters[nameOrAdapter.toLowerCase()] : nameOrAdapter) {
+      let id;
+      adapter = nameOrAdapter;
+      if (!isResolvedHandle(nameOrAdapter)) {
+        adapter = knownAdapters[(id = String(nameOrAdapter)).toLowerCase()];
+        if (adapter === void 0) {
+          throw new AxiosError(`Unknown adapter '${id}'`);
+        }
+      }
+      if (adapter) {
         break;
       }
+      rejectedReasons[id || "#" + i] = adapter;
     }
     if (!adapter) {
-      if (adapter === false) {
-        throw new AxiosError(
-          `Adapter ${nameOrAdapter} is not supported by the environment`,
-          "ERR_NOT_SUPPORT"
-        );
-      }
-      throw new Error(
-        utils.hasOwnProp(knownAdapters, nameOrAdapter) ? `Adapter '${nameOrAdapter}' is not available in the build` : `Unknown adapter '${nameOrAdapter}'`
+      const reasons = Object.entries(rejectedReasons).map(
+        ([id, state]) => `adapter ${id} ` + (state === false ? "is not supported by the environment" : "is not available in the build")
       );
-    }
-    if (!utils.isFunction(adapter)) {
-      throw new TypeError("adapter is not a function");
+      let s = length ? reasons.length > 1 ? "since :\n" + reasons.map(renderReason).join("\n") : " " + renderReason(reasons[0]) : "as no adapter specified";
+      throw new AxiosError(
+        `There is no suitable adapter to dispatch the request ` + s,
+        "ERR_NOT_SUPPORT"
+      );
     }
     return adapter;
   },
@@ -8305,7 +8733,7 @@ function mergeConfig(config1, config2) {
   });
   return config;
 }
-const VERSION = "1.5.0";
+const VERSION = "1.5.1";
 const validators$1 = {};
 ["object", "boolean", "number", "function", "string", "symbol"].forEach((type, i) => {
   validators$1[type] = function validator2(thing) {
@@ -8700,6 +9128,7 @@ axios.HttpStatusCode = HttpStatusCode$1;
 axios.default = axios;
 const axios$1 = axios;
 window.RVGeo = RVGeo;
+window.BLDraw = BLDraw;
 const myMBR1 = [
   -109.04885344551185,
   36.988099165319085,
@@ -8742,10 +9171,10 @@ const canvas = document.getElementById("myCanvas0");
 const ctx = canvas.getContext("2d");
 ctx.fillStyle = "white";
 ctx.fillRect(0, 0, canvas.width, canvas.height);
-console.log("canvas", canvas.width, canvas.height);
 let map = new BMapGL.Map("allmap");
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329, 39.0119712026557), 8);
 map.enableScrollWheelZoom(true);
+window.map = map;
 createEditor().then((editor) => {
   function customModify(code) {
     let start = code.indexOf("{");
