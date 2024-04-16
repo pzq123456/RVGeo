@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/RVGeo/dist/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RVGeo: Base Example</title>
+    
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&&type=webgl&ak=zsuRD8fmHkCdmWzC84NDbsvwAiWBdCce">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/geotiff@2.1.3/dist-browser/geotiff.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.27.0/min/vs/editor/editor.main.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.27.0/min/vs/loader.js"></script>
+    <script type="module" crossorigin src="/RVGeo/dist/assets/index-228cd4fd.js"></script>
+    <link rel="stylesheet" href="/RVGeo/dist/assets/index-f707b18d.css">
+  </head>
+  <body>
+
+      <div class="container">
+
+        <div class="left">
+          <div class="btns">
+            <button id="run">Run</button>
+            <button id="clear">Clear</button>
+          </div>
+            <label for="js-code">JS</label>
+            <div class="codearea" id="js-code"></div>
+
+        </div>
+
+        <div class="right">
+            <div id="toolbar"></div>
+            <div class="map" id="allmap"></div>
+            <div class="column">
+              <canvas id="myCanvas0" width="1024" height="1024"
+              style="width: 512px; height: 512px; border: 1px solid black;"></canvas>
+              <div id="console-output"></div>
+            </div>
+        </div>
+    </div>
+    
+    
+
+
+  </body>
+</html>
