@@ -5519,14 +5519,6 @@ function drawGrid2d(canavs, grid2D, Rect, statistics, colorBand = simpleColorBan
       let color = colorBand(statistics, value);
       ctx2.fillStyle = color;
       ctx2.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
-      ctx2.strokeStyle = "gray";
-      ctx2.lineWidth = 1;
-      ctx2.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
-      ctx2.save();
-      ctx2.fillStyle = "green";
-      ctx2.font = "30px serif";
-      ctx2.fillText(value.toString(), Rect.x + col * cellWidth, Rect.y + row * cellHeight + 30);
-      ctx2.restore();
     }
   }
   if (GridMBR) {
