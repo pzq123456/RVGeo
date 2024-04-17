@@ -78,16 +78,16 @@ export function drawGrid2d(
             let color = colorBand(statistics, value);
             ctx.fillStyle = color;
             ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
-            // 绘制边框
-            ctx.strokeStyle = "gray";
-            ctx.lineWidth = 1;
-            ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
-            // 绘制文字
-            ctx.save();
-            ctx.fillStyle = "green";
-            ctx.font = "30px serif";
-            ctx.fillText(value.toString(), Rect.x + col * cellWidth, Rect.y + row * cellHeight + 30);
-            ctx.restore();
+            // // 绘制边框
+            // ctx.strokeStyle = "gray";
+            // ctx.lineWidth = 1;
+            // ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+            // // 绘制文字
+            // ctx.save();
+            // ctx.fillStyle = "green";
+            // ctx.font = "30px serif";
+            // ctx.fillText(value.toString(), Rect.x + col * cellWidth, Rect.y + row * cellHeight + 30);
+            // ctx.restore();
         }
     }
     // 若有 GridMBR 则绘制
