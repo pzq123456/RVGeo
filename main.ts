@@ -12,6 +12,18 @@ import { createEditor } from './editor.js';
 window.RVGeo = RVGeo;
 window.BLDraw = BLDraw;
 
+function tobd09(lon,lat){
+  let gcj02 = coordtransform.wgs84togcj02(lon,lat)
+  return coordtransform.gcj02tobd09(gcj02[0],gcj02[1])
+}
+function tobd09s(lonlats){
+  return lonlats.map((lonlat) => tobd09(lonlat[0],lonlat[1]))
+}
+
+window.tobd09 = tobd09
+window.tobd09s = tobd09s
+
+
 const myMBR1 = [
   -109.04885344551185,
   36.988099165319085,
