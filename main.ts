@@ -93,6 +93,8 @@ declare const BMapGL: any;
 let map = new BMapGL.Map("allmap");    // 创建Map实例
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329,39.0119712026557), 8);  // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+var scaleCtrl = new BMapGL.ScaleControl();  // 添加比例尺控件
+map.addControl(scaleCtrl);
 
 window.map = map;
 
