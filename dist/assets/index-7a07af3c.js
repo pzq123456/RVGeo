@@ -9175,6 +9175,8 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 let map = new BMapGL.Map("allmap");
 map.centerAndZoom(new BMapGL.Point(-105.7220660521329, 39.0119712026557), 8);
 map.enableScrollWheelZoom(true);
+var scaleCtrl = new BMapGL.ScaleControl();
+map.addControl(scaleCtrl);
 window.map = map;
 createEditor().then((editor) => {
   function customModify(code) {
