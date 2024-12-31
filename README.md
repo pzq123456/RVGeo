@@ -1,4 +1,4 @@
-# RVGeo V 2.0
+# RVGeo
 [home page](https://pzq123456.github.io/RVGeo/)
 
 [![](https://img.shields.io/npm/v/rvgeo.svg?label=NPM&logo=npm&color=CB3837)](https://www.npmjs.com/package/rvgeo)
@@ -32,74 +32,7 @@ npm install rvgeo
 import * as RVGeo from 'rvgeo'
 ```
 
-> get the test DEM data from this link: https://pzq123456.github.io/RVGeo/dist/dem.csv
-<div class="Example" 
-style="
-    background: linear-gradient(90deg, #0c5e62 0%, #08b372 100%);
-    padding: 10px;
-    border-radius: 5px;
-    border: solid 1px #ffffff;
-    margin-bottom: 10px;
-    /* 居中内部元素 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;">
-    <a href="https://pzq123456.github.io/RVGeo/dist/index.html" 
-    style="
-        color: #ffffff;
-        font-size: 20px;
-        text-decoration: none;">
-        (click) Example Page | RVGeo 示例页面 （点此访问）
-    </a>
-</div>
-<div class="tutorials" 
-style="
-    background: linear-gradient(90deg, #02101e 0%, #4d5baa 100%);
-    padding: 10px;
-    border-radius: 5px;
-    border: solid 1px #ffffff;
-    margin-bottom: 10px;
-    /* 居中内部元素 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;">
-    <a href="https://pzq123456.github.io/RVGeo/tutorials/index.html" 
-    style="
-        color: #ffffff;
-        font-size: 20px;
-        text-decoration: none;">
-        (click) Tutorials Page | RVGeo 教程页面 （点此访问）
-    </a>
-</div>
-<div class="npm" 
-        style="
-            background: linear-gradient(90deg, #f6a92d 0%, #ff5d5df9 50%,#941bd4 100%);
-            padding: 10px;
-            border-radius: 5px;
-            border: solid 1px #ffffff;
-            margin-bottom: 10px;
-            /* 居中内部元素 */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        "
-    >
-        <a href="https://www.npmjs.com/package/rvgeo"
-        style="
-        color: #ffffff;
-        font-size: 20px;
-        text-decoration: none;
-        "
-        >
-            npm Page | RVGeo npm 页面
-        </a>
-</div>
-
 > - RVGeo (V2.0.0) is now available on [npm](https://www.npmjs.com/package/rvgeo).
-> - You could get some tutorials from this [site](https://pzq123456.github.io/RVGeo/tutorials/index.html)
 > - [more information](https://pzq123456.github.io/RVGeo/)
 
 ## TODO List

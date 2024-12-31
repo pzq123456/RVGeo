@@ -1,0 +1,28 @@
+/* .vitepress/theme/custom.css */
+/* :root {
+    --vp-c-brand-1: #1b8c59;
+    --vp-c-brand-2: #19df9d;
+    --vp-c-brand-3: #30923f;
+  } */
+
+  /* https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/styles/vars.css */
+
+  :root {
+    --vp-home-hero-name-color: transparent;
+    --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #7a27c3 30%, #19aedf); /* 更新为新主题色 */
+    --vp-home-hero-image-background-image: linear-gradient(-45deg,rgba(108, 11, 219, 0.41) 50%,rgba(166, 204, 235, 0.54) 50%); /* 更新为新主题色 */
+    --vp-home-hero-image-filter: blur(50px);
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --vp-home-hero-image-filter: blur(56px);
+    }
+  }
+
+  @media (min-width: 960px) {
+    :root {
+      --vp-home-hero-image-filter: blur(68px);
+    }
+  }
+

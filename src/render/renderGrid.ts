@@ -13,21 +13,61 @@ type Rect = {
     h: number
 }; // 矩形 与canvas 的定义一致 xy为左上角 w为宽 h为高
 
+export function reactGrid2d(
+    canavs: HTMLCanvasElement,
+    colRow: [number, number],
+    Rect: Rect, // {x, y, w, h}
+    XY: [number, number] | [null,null], // [x, y]
+    callback?: (col: number, row: number) => void
+){
+    let cellWidth = Rect.w / colRow[0];
+    let cellHeight = Rect.h / colRow[1];
+    let ctx = canavs.getContext("2d");
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 1;
 
+    if(XY[0] && XY[1]){
+        let [col, row] = XY2ColRow(colRow, Rect, XY);
+        ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+        callback && callback(col, row);
+    }
+}
+
+/**
+ * 将屏幕像素坐标转化为对应的行列号
+ * @param colRow - 数据行列数
+ * @param Rect - 绘制范围
+ * @param XY - 屏幕坐标
+ */
+export function XY2ColRow(
+    colRow: [number, number],
+    Rect: Rect, // {x, y, w, h}
+    XY: [number, number], // [x, y]
+){
+    let cellWidth = Rect.w / colRow[0];
+    let cellHeight = Rect.h / colRow[1];
+    let col = Math.floor((XY[0] - Rect.x) / cellWidth);
+    let row = Math.floor((XY[1] - Rect.y) / cellHeight);
+    return [col, row];
+}
 
 export function drawGrid2d(
     canavs: HTMLCanvasElement,
     grid2D: number[][],
     Rect: Rect, // {x, y, w, h}
     statistics: {max: number, min: number, mean: number},
-    colorBand: (statistics: {max: number, min: number, mean: number},value: number) => string = simpleColorBand,
+    colorBand: (statistics: {max: number, min: number, mean: number}, value: number) => string = simpleColorBand,
     GridMBR? : [number,number,number,number], // [minX index ,minY index,maxX index,maxY index]
 ){
 
     // 首先分割 rect 为小格子
     let cellWidth = Rect.w / grid2D[0].length;
     let cellHeight = Rect.h / grid2D.length;
-    let ctx = canavs.getContext("2d");
+    let ctx = canavs.getContext("2d") as CanvasRenderingContext2D;
+
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
@@ -38,6 +78,16 @@ export function drawGrid2d(
             let color = colorBand(statistics, value);
             ctx.fillStyle = color;
             ctx.fillRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+            // // 绘制边框
+            // ctx.strokeStyle = "gray";
+            // ctx.lineWidth = 1;
+            // ctx.strokeRect(Rect.x + col * cellWidth, Rect.y + row * cellHeight, cellWidth, cellHeight);
+            // // 绘制文字
+            // ctx.save();
+            // ctx.fillStyle = "green";
+            // ctx.font = "30px serif";
+            // ctx.fillText(value.toString(), Rect.x + col * cellWidth, Rect.y + row * cellHeight + 30);
+            // ctx.restore();
         }
     }
     // 若有 GridMBR 则绘制
@@ -47,10 +97,94 @@ export function drawGrid2d(
         ctx.lineWidth = 1;
         ctx.strokeRect(Rect.x + minX * cellWidth, Rect.y + minY * cellHeight, (maxX - minX) * cellWidth, (maxY - minY) * cellHeight);
     }
+    ctx.restore();
+}
 
-    // 绘制中心
-    // ctx.fillStyle = "red";
-    // ctx.fillRect(Rect.x + Rect.w / 2 - 2, Rect.y + Rect.h / 2 - 2, 4, 4);
+/**
+ * 绘制箭头场，默认为起点为当前格子的中心
+ */
+export function drawArrowField(
+    canavs: HTMLCanvasElement,
+    colRow: [number, number],
+    Rect: Rect, 
+    toDict: Map<string, [number,number] | null>,
+    color: string = "gray",
+    path?: [number, number][]
+){
+    // 首先分割 rect 为小格子
+    let cellWidth = Rect.w / colRow[0];
+    let cellHeight = Rect.h / colRow[1];
+    let ctx = canavs.getContext("2d") as CanvasRenderingContext2D;
+
+    if(ctx === null){
+        throw new Error("无法获取canvas绘图上下文");
+    }
+    ctx.save();
+    // 绘制箭头
+    for(let row = 0; row < colRow[0]; row++){
+        for(let col = 0; col < colRow[1]; col++){
+            // let value = grid2D[row][col];
+            let to = toDict.get([col,row].join(','));
+            if(to){
+                let fromX = Rect.x + col * cellWidth + cellWidth / 2;
+                let fromY = Rect.y + row * cellHeight + cellHeight / 2;
+                let toX = Rect.x + to[0] * cellWidth + cellWidth / 2;
+                let toY = Rect.y + to[1] * cellHeight + cellHeight / 2;
+                if(path && path.find(([x,y]) => x === col && y === row)){
+                    drawArrow(ctx, fromX, fromY, toX, toY, "red");
+                    // 若为路径上的点则绘制红色箭头
+                    // 若为起点则绘制绿色箭头
+                    if(to[0] === path[0][0] && to[1] === path[0][1]){
+                        // 绘制起点标志 绿色圆圈
+                        ctx.fillStyle = "green";
+                        ctx.beginPath();
+                        ctx.arc(toX, toY, 10, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+
+                    if(to[0] === path[path.length - 2][0] && to[1] === path[path.length - 2][1]){
+                        // 绘制终点标志 红色圆圈
+                        ctx.fillStyle = "blue";
+                        ctx.beginPath();
+                        ctx.arc(fromX, fromY, 10, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                }else{
+                    drawArrow(ctx, fromX, fromY, toX, toY, color);
+                }
+            }else{
+                // 绘制中心
+                ctx.fillStyle = color;
+                ctx.fillRect(Rect.x + col * cellWidth + cellWidth / 2 - 2, Rect.y + row * cellHeight + cellHeight / 2 - 2, 4, 4);
+            }
+        }
+    }
+    ctx.restore();
+}
+
+function drawArrow(
+    ctx: CanvasRenderingContext2D,
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+    color: string = "green",
+){
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(toX, toY);
+    ctx.stroke();
+    // 绘制箭头
+    let headlen = 10;
+    let angle = Math.atan2(toY - fromY, toX - fromX);
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.stroke();
 }
 
 export function binDrawGrid2d(
@@ -63,13 +197,11 @@ export function binDrawGrid2d(
     let cellWidth = Rect.w / grid2D[0].length;
     let cellHeight = Rect.h / grid2D.length;
 
-    let ctx = canavs.getContext("2d");
+    let ctx = canavs.getContext("2d") as CanvasRenderingContext2D;
+    ctx.save();
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
-    // background gray
-    // ctx.fillStyle = "gray";
-    // ctx.fillRect(Rect.x, Rect.y, Rect.w, Rect.h);
 
     // 绘制矩形
     for(let row = 0; row < grid2D.length; row++){
@@ -81,21 +213,7 @@ export function binDrawGrid2d(
         }
     }
 
-    // // 绘制格网
-    // ctx.strokeStyle = "white";
-    // ctx.lineWidth = 1;
-    // for(let row = 0; row < grid2D.length; row++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x, Rect.y + row * cellHeight);
-    //     ctx.lineTo(Rect.x + Rect.w, Rect.y + row * cellHeight);
-    //     ctx.stroke();
-    // }
-    // for(let col = 0; col < grid2D[0].length; col++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x + col * cellWidth, Rect.y);
-    //     ctx.lineTo(Rect.x + col * cellWidth, Rect.y + Rect.h);
-    //     ctx.stroke();
-    // }
+    ctx.restore();
 }
 
 export function drawCountour(
@@ -105,10 +223,11 @@ export function drawCountour(
     strokeColor: string = "white"
 ){
     // 首先分割 rect 为小格子
-    let cellWidth = Rect.w / countourCodeGrid[0].length;
-    let cellHeight = Rect.h / countourCodeGrid.length;
+    let cellWidth = Rect.w / (countourCodeGrid[0].length + 1);
+    let cellHeight = Rect.h / (countourCodeGrid.length + 1);
 
-    let ctx = canavs.getContext("2d");
+    let ctx = canavs.getContext("2d") as CanvasRenderingContext2D;
+    ctx.save();
     if(ctx === null){
         throw new Error("无法获取canvas绘图上下文");
     }
@@ -116,26 +235,18 @@ export function drawCountour(
     for(let row = 0; row < countourCodeGrid.length; row++){
         for(let col = 0; col < countourCodeGrid[0].length; col++){
             let value = countourCodeGrid[row][col];
-            countourCase(value, {x: Rect.x + col * cellWidth, y: Rect.y + row * cellHeight, w: cellWidth, h: cellHeight}, ctx, strokeColor);
+            let rect = {
+                x: Rect.x + col * cellWidth + cellWidth / 2,
+                y: Rect.y + row * cellHeight + cellHeight / 2,
+                w: cellWidth, 
+                h: cellHeight
+            };
+
+            countourCase(value, rect , ctx, strokeColor);
         }
     }
 
-    // // 绘制格网
-    // ctx.strokeStyle = "white";
-    // ctx.lineWidth = 1;
-    // for(let row = 0; row < countourCodeGrid.length; row++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x, Rect.y + row * cellHeight);
-    //     ctx.lineTo(Rect.x + Rect.w, Rect.y + row * cellHeight);
-    //     ctx.stroke();
-    // }
-    // for(let col = 0; col < countourCodeGrid[0].length; col++){
-    //     ctx.beginPath();
-    //     ctx.moveTo(Rect.x + col * cellWidth, Rect.y);
-    //     ctx.lineTo(Rect.x + col * cellWidth, Rect.y + Rect.h);
-    //     ctx.stroke();
-    // }
-
+    ctx.restore();
 }
 
 /**
@@ -451,7 +562,6 @@ export function drawSample2(
 
 }
 
-
 export function drawText(
     canvas: HTMLCanvasElement,
     rect: Rect,
@@ -466,10 +576,6 @@ export function drawText(
     ctx.font = style.font;
     ctx.fillText(text, rect.x, rect.y);
 }
-
-
-
-
 
 export function drawTrueColorGrid2d(
     canavs: HTMLCanvasElement,

@@ -50,6 +50,7 @@ function geomifyFeatureCollection(input: GeoJSONFeatureCollection) : GeometryObj
 }
 
 function geomifyFeature(input: GeoJSONFeature) : GeometryObject {
+    // @ts-ignore
     var output = geomifyGeometry(input.geometry), key; // eslint-disable-line no-unused-vars
     if (input.id != null) output.id = input.id;
     if (input.bbox != null) output.bbox = input.bbox;

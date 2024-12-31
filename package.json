@@ -1,16 +1,17 @@
 {
-  "name": "rvgeo",
-  "version": "2.0.9",
-  "description": "RVGeo is a frontend TypeScript library for simple special data computation and rendering.",
+  "name": "rvgeo", 
+  "version": "2.0.91",
+  "description": "RVGeo is a frontend TypeScript library for simple spatial data computation and visualization.",
   "main": "./dist/rvgeo.umd.cjs",
   "module": "./dist/rvgeo.js",
   "exports": {
     ".": {
       "import": "./dist/rvgeo.js",
-      "require": "./dist/rvgeo.umd.cjs"
+      "require": "./dist/rvgeo.umd.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
-  "types": "src/index.d.ts",
+  "types": "./dist/index.d.ts",
   "type": "module",
   "keywords": [
     "Geographic",
@@ -24,28 +25,33 @@
   "homepage": "https://pzq123456.github.io/RVGeo/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pzq123456/RVGeo"
+    "url": "git+https://github.com/pzq123456/RVGeo.git"
   },
   "files": [
-    "dist",
-    "index.js"
+    "dist"
   ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "docs": "typedoc",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "typedoc": "^0.25.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.0",
-    "vitest": "^0.33.0"
+    "typedoc": "^0.27.6",
+    "typedoc-plugin-markdown": "^4.4.0",
+    "typescript": "latest",
+    "vite": "latest",
+    "vitepress": "latest",
+    "vitest": "latest"
   },
   "dependencies": {
     "axios": "^1.6.0",
     "robust-predicates": "^3.0.2",
-    "vite-plugin-dts": "^3.8.1"
+    "vite-plugin-dts": "latest"
   }
 }

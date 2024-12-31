@@ -19,10 +19,15 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     // "normalTypeScriptOptions": "here"
+    "declaration": true,
+    "declarationDir": "./types"
   },
+  
   "include": ["src"],
+
   "typedocOptions": {
-      "entryPoints": ["src/packages/index.ts"],
-      "out": "docs"
+    "plugin": ["typedoc-plugin-markdown"],
+      "entryPoints": ["src/index.ts"],
+      "out": "./docs/api/",
   }
 }

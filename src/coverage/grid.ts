@@ -11,12 +11,14 @@ import { PointOutsideMBR } from '../topology';
  * - MBR 统一使用 `WGS84` 坐标系
  */
 export class Grid{
-    MBR: MBR; // [minLon, minLat, maxLon, maxLat]
+    MBR: MBR; // default
     data: number[][][]; // 三维数组
     shape: number[]; // 三维数组的形状
     rows: number;  // 行数
     cols: number;  // 列数
     bands: number; // 波段数
+    stasticsCache: {max: number, min: number, mean: number}[] = [];
+
     constructor(MBR: MBR, data: number[][][]){
         this.MBR = MBR;
         this.data = data;
@@ -41,6 +43,44 @@ export class Grid{
 
     get bandCount(){
         return this.bands;
+    }
+
+    setMBR(MBR: MBR){
+        this.MBR = MBR;
+    }
+
+    getXYZValue(xy: [number, number], z: number = 0): number{
+        let x = xy[0];
+        let y = xy[1];
+        return this.data[z][y][x];
+    }
+
+    set XYZValue(xyzv: [number, number, number, number]){
+        let x = xyzv[0];
+        let y = xyzv[1];
+        let z = xyzv[2];
+        let v = xyzv[3];
+        let oriV = this.data[z][y][x];
+        this.data[z][y][x] = v;
+
+        if(this.stasticsCache[z]){
+            // 更新统计信息
+            let max = this.stasticsCache[z].max;
+            let min = this.stasticsCache[z].min;
+            let mean = this.stasticsCache[z].mean;
+            let value = this.data[z][y][x];
+
+            if(value > max){
+                max = value;
+            }
+            if(value < min){
+                min = value;
+            }
+            let sum = mean * this.rows * this.cols;
+            sum = sum - oriV + value;
+            mean = sum / (this.rows * this.cols);
+            this.stasticsCache[z] = {max, min, mean};
+        }
     }
 
     /**
@@ -103,8 +143,6 @@ export class Grid{
             }
         }
     }
-
-
 
     /**
      * 与 `getSubGrid` 方法类似，但返回的是一个 Grid 对象
@@ -205,28 +243,27 @@ export class Grid{
      * @param band - 波段号
      */
     getBandStatistics(band: number): {max: number, min: number, mean: number}{
-        let bandData = this.data[band];
-        let max = bandData[0][0];
-        let min = bandData[0][0];
-        let sum = 0;
-        for(let row = 0; row < this.rows; row++){
-            for(let col = 0; col < this.cols; col++){
-                let value = bandData[row][col];
-                if(value > max){
-                    max = value;
+        if(!this.stasticsCache[band]){
+            let bandData = this.data[band];
+            let max = bandData[0][0];
+            let min = bandData[0][0];
+            let sum = 0;
+            for(let row = 0; row < this.rows; row++){
+                for(let col = 0; col < this.cols; col++){
+                    let value = bandData[row][col];
+                    if(value > max){
+                        max = value;
+                    }
+                    if(value < min){
+                        min = value;
+                    }
+                    sum += value;
                 }
-                if(value < min){
-                    min = value;
-                }
-                sum += value;
             }
+            let mean = sum / (this.rows * this.cols);
+            this.stasticsCache[band] = {max, min, mean};
         }
-        let mean = sum / (this.rows * this.cols);
-        return {
-            max,
-            min,
-            mean
-        };
+        return this.stasticsCache[band];
     }
 
     // Binarization a certain band of the grid; get a value, less than which is 0, greater than which is 1
@@ -256,7 +293,10 @@ export class Grid{
         return binarizationData;
     }
 
-    getCoutourCode(band: number, threshold: number, isPadding?: boolean): number[][]{
+    /** 
+    * the result grid size is [rows - 1, cols - 1], and the render function should move 1/2 grid size to the left and up
+    */
+    getCoutourCode(band: number, threshold: number): number[][]{
         // 二值化后，依次逆时针拾取相邻四个格网的值，组成四位二进制数，转换为十进制数，即为等值线编码
         let binarizationData = this.binarization(band, threshold);
         let contourCode = [] as number[][];
@@ -272,24 +312,7 @@ export class Grid{
             }
             contourCode.push(rowData);
         }
-        // 若 padding 则 将最外侧值复制一份，四角填充 0
-        // let top = contourCode[0];
-        // top.push(0);
-        // top.unshift(0);
 
-        if(isPadding){
-            // 首先遍历每一行，首尾各添加与之相邻的值 例如：[1,2,3] => [1,1,2,3,3]
-            // 然后再将第一行复制一份，添加到第一行，最后一行复制一份，添加到最后一行
-            for(let row = 0; row < contourCode.length; row++){
-                let rowData = contourCode[row];
-                rowData.unshift(rowData[0]);
-                rowData.push(rowData[rowData.length - 1]);
-            }
-            let top = contourCode[0];
-            let bottom = contourCode[contourCode.length - 1];
-            contourCode.unshift(top);
-            contourCode.push(bottom);
-        }
         return contourCode;
     }
 
@@ -314,6 +337,26 @@ export class Grid{
         }
         array.sort((a,b) => a - b);
         return array;
+    }
+
+    static fromFillValue(
+        fillVal : number = 0,
+        shape : [number, number, number]
+    ){
+        let data = [] as number[][][];
+        for(let i = 0; i < shape[0]; i++){
+            let bandData = [] as number[][];
+            for(let j = 0; j < shape[1]; j++){
+                let rowData = [] as number[];
+                for(let k = 0; k < shape[2]; k++){
+                    rowData.push(fillVal);
+                }
+                bandData.push(rowData);
+            }
+            data.push(bandData);
+        }
+        // use default MBR
+        return new Grid([0,0,0,0], data);
     }
     
 }
