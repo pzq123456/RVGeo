@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "RVGeo",
+  base: '/RVGeo/',
   description: "Raster & Vector Geospatial",
   lastUpdated: true,
   themeConfig: {
