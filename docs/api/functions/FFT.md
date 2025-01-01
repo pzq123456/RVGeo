@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / FFT
 
-***
+# FFT()
 
-[rvgeo](../globals.md) / FFT
+```ts
+function FFT(X): Complex[]
+```
 
-# Function: FFT()
-
-> **FFT**(`X`): [`Complex`](../type-aliases/Complex.md)[]
-
-Defined in: src/math/fourier.ts:107
+Defined in: [src/math/fourier.ts:107](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/fourier.ts#L107)
 
 快速傅里叶变换 real to complex
 

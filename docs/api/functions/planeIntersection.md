@@ -1,14 +1,19 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / planeIntersection
 
-***
+# planeIntersection()
 
-[rvgeo](../globals.md) / planeIntersection
+```ts
+function planeIntersection(
+   p1, 
+   p2, 
+   p3, 
+   p4, 
+   projectionFrom, 
+   projectionTo, 
+   isInfine): [number, number] | null
+```
 
-# Function: planeIntersection()
-
-> **planeIntersection**(`p1`, `p2`, `p3`, `p4`, `projectionFrom`, `projectionTo`, `isInfine`): \[`number`, `number`\] \| `null`
-
-Defined in: src/math/measuring.ts:243
+Defined in: [src/math/measuring.ts:243](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/measuring.ts#L243)
 
 也可以使用该函数计算两条线段的交点
 - 现将经纬度坐标投影到平面坐标系下，然后计算交点，最后将交点投影回经纬度坐标系

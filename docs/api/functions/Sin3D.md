@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Sin3D
 
-***
+# Sin3D()
 
-[rvgeo](../globals.md) / Sin3D
+```ts
+function Sin3D(x, y): number
+```
 
-# Function: Sin3D()
-
-> **Sin3D**(`x`, `y`): `number`
-
-Defined in: src/coverage/Noise.ts:114
+Defined in: [src/coverage/Noise.ts:114](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/Noise.ts#L114)
 
 ## Parameters
 

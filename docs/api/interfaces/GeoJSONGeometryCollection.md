@@ -1,33 +1,35 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / GeoJSONGeometryCollection
 
-***
+# GeoJSONGeometryCollection
 
-[rvgeo](../globals.md) / GeoJSONGeometryCollection
-
-# Interface: GeoJSONGeometryCollection
-
-Defined in: src/geometry/GeoJSON.ts:48
+Defined in: [src/geometry/GeoJSON.ts:48](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L48)
 
 ## Properties
 
 ### bbox?
 
-> `optional` **bbox**: [`MBR`](../type-aliases/MBR.md)
+```ts
+optional bbox: MBR;
+```
 
-Defined in: src/geometry/GeoJSON.ts:51
+Defined in: [src/geometry/GeoJSON.ts:51](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L51)
 
 ***
 
 ### geometries
 
-> **geometries**: [`GeoJSONGeometry`](GeoJSONGeometry.md)[]
+```ts
+geometries: GeoJSONGeometry[];
+```
 
-Defined in: src/geometry/GeoJSON.ts:50
+Defined in: [src/geometry/GeoJSON.ts:50](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L50)
 
 ***
 
 ### type
 
-> **type**: `"GeometryCollection"`
+```ts
+type: "GeometryCollection";
+```
 
-Defined in: src/geometry/GeoJSON.ts:49
+Defined in: [src/geometry/GeoJSON.ts:49](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L49)

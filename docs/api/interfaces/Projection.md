@@ -1,36 +1,38 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Projection
 
-***
+# Projection
 
-[rvgeo](../globals.md) / Projection
-
-# Interface: Projection
-
-Defined in: src/geo/projection/base.ts:3
+Defined in: [src/geo/projection/base.ts:3](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/projection/base.ts#L3)
 
 ## Properties
 
 ### bounds
 
-> **bounds**: [`MBR`](../type-aliases/MBR.md)
+```ts
+bounds: MBR;
+```
 
-Defined in: src/geo/projection/base.ts:6
+Defined in: [src/geo/projection/base.ts:6](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/projection/base.ts#L6)
 
 ***
 
 ### name?
 
-> `optional` **name**: `string`
+```ts
+optional name: string;
+```
 
-Defined in: src/geo/projection/base.ts:7
+Defined in: [src/geo/projection/base.ts:7](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/projection/base.ts#L7)
 
 ## Methods
 
 ### project()
 
-> **project**(`latlng`): \[`number`, `number`\]
+```ts
+project(latlng): [number, number]
+```
 
-Defined in: src/geo/projection/base.ts:4
+Defined in: [src/geo/projection/base.ts:4](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/projection/base.ts#L4)
 
 #### Parameters
 
@@ -46,9 +48,11 @@ Defined in: src/geo/projection/base.ts:4
 
 ### unproject()
 
-> **unproject**(`point`): \[`number`, `number`\]
+```ts
+unproject(point): [number, number]
+```
 
-Defined in: src/geo/projection/base.ts:5
+Defined in: [src/geo/projection/base.ts:5](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/projection/base.ts#L5)
 
 #### Parameters
 

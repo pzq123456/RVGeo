@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / fillIndexArray
 
-***
+# fillIndexArray()
 
-[rvgeo](../globals.md) / fillIndexArray
+```ts
+function fillIndexArray(indexArray, fillArray): any
+```
 
-# Function: fillIndexArray()
-
-> **fillIndexArray**(`indexArray`, `fillArray`): `any`
-
-Defined in: src/core/utils.ts:125
+Defined in: [src/core/utils.ts:125](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/core/utils.ts#L125)
 
 - 根据 indexArray 中存储的索引 从 fillArray 中取出对应的元素并填充到 indexArray 中
 - fill indexArray with elements from fillArray according to the index stored in indexArray

@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Point
 
-***
+# Point
 
-[rvgeo](../globals.md) / Point
-
-# Class: Point
-
-Defined in: src/geometry/Point.ts:10
+Defined in: [src/geometry/Point.ts:10](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L10)
 
 Point geometry
 
@@ -18,9 +14,11 @@ Point geometry
 
 ### new Point()
 
-> **new Point**(`coordinates`, `properties`?): [`Point`](Point.md)
+```ts
+new Point(coordinates, properties?): Point
+```
 
-Defined in: src/geometry/Point.ts:19
+Defined in: [src/geometry/Point.ts:19](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L19)
 
 #### Parameters
 
@@ -44,9 +42,11 @@ Defined in: src/geometry/Point.ts:19
 
 ### bbox
 
-> **bbox**: [`MBR`](../type-aliases/MBR.md)
+```ts
+bbox: MBR;
+```
 
-Defined in: src/geometry/Geometry.ts:31
+Defined in: [src/geometry/Geometry.ts:31](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L31)
 
 #### Inherited from
 
@@ -56,9 +56,11 @@ Defined in: src/geometry/Geometry.ts:31
 
 ### coordinates
 
-> `readonly` **coordinates**: `any`
+```ts
+readonly coordinates: any;
+```
 
-Defined in: src/geometry/Geometry.ts:32
+Defined in: [src/geometry/Geometry.ts:32](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L32)
 
 #### Inherited from
 
@@ -68,9 +70,11 @@ Defined in: src/geometry/Geometry.ts:32
 
 ### projection
 
-> `readonly` **projection**: [`Projection`](../interfaces/Projection.md) = `SphericalMercator`
+```ts
+readonly projection: Projection = SphericalMercator;
+```
 
-Defined in: src/geometry/Geometry.ts:34
+Defined in: [src/geometry/Geometry.ts:34](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L34)
 
 #### Inherited from
 
@@ -80,9 +84,11 @@ Defined in: src/geometry/Geometry.ts:34
 
 ### properties
 
-> **properties**: `any`
+```ts
+properties: any;
+```
 
-Defined in: src/geometry/Geometry.ts:33
+Defined in: [src/geometry/Geometry.ts:33](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L33)
 
 #### Inherited from
 
@@ -94,9 +100,11 @@ Defined in: src/geometry/Geometry.ts:33
 
 #### Get Signature
 
-> **get** **lat**(): `number`
+```ts
+get lat(): number
+```
 
-Defined in: src/geometry/Point.ts:15
+Defined in: [src/geometry/Point.ts:15](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L15)
 
 ##### Returns
 
@@ -108,9 +116,11 @@ Defined in: src/geometry/Point.ts:15
 
 #### Get Signature
 
-> **get** **lon**(): `number`
+```ts
+get lon(): number
+```
 
-Defined in: src/geometry/Point.ts:12
+Defined in: [src/geometry/Point.ts:12](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L12)
 
 ##### Returns
 
@@ -122,9 +132,11 @@ Defined in: src/geometry/Point.ts:12
 
 #### Set Signature
 
-> **set** **Properties**(`properties`): `void`
+```ts
+set Properties(properties): void
+```
 
-Defined in: src/geometry/Geometry.ts:49
+Defined in: [src/geometry/Geometry.ts:49](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L49)
 
 ##### Parameters
 
@@ -144,9 +156,11 @@ Defined in: src/geometry/Geometry.ts:49
 
 ### clone()
 
-> **clone**(): [`Geometry`](Geometry.md)
+```ts
+clone(): Geometry
+```
 
-Defined in: src/geometry/Geometry.ts:51
+Defined in: [src/geometry/Geometry.ts:51](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L51)
 
 #### Returns
 
@@ -160,9 +174,11 @@ Defined in: src/geometry/Geometry.ts:51
 
 ### equals()
 
-> **equals**(`geometry`): `boolean`
+```ts
+equals(geometry): boolean
+```
 
-Defined in: src/geometry/Geometry.ts:58
+Defined in: [src/geometry/Geometry.ts:58](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L58)
 
 #### Parameters
 
@@ -182,9 +198,11 @@ Defined in: src/geometry/Geometry.ts:58
 
 ### toGeoJSON()
 
-> **toGeoJSON**(): [`GeoJSONFeature`](../interfaces/GeoJSONFeature.md)
+```ts
+toGeoJSON(): GeoJSONFeature
+```
 
-Defined in: src/geometry/Geometry.ts:64
+Defined in: [src/geometry/Geometry.ts:64](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L64)
 
 #### Returns
 
@@ -198,9 +216,11 @@ Defined in: src/geometry/Geometry.ts:64
 
 ### toXY()
 
-> **toXY**(): \[`number`, `number`\]
+```ts
+toXY(): [number, number]
+```
 
-Defined in: src/geometry/Point.ts:27
+Defined in: [src/geometry/Point.ts:27](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L27)
 
 #### Returns
 
@@ -214,9 +234,11 @@ Defined in: src/geometry/Point.ts:27
 
 ### updateBBox()
 
-> **updateBBox**(): `void`
+```ts
+updateBBox(): void
+```
 
-Defined in: src/geometry/Point.ts:23
+Defined in: [src/geometry/Point.ts:23](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L23)
 
 #### Returns
 
@@ -230,9 +252,11 @@ Defined in: src/geometry/Point.ts:23
 
 ### fromFeature()
 
-> `static` **fromFeature**(`feature`): [`Point`](Point.md)
+```ts
+static fromFeature(feature): Point
+```
 
-Defined in: src/geometry/Point.ts:39
+Defined in: [src/geometry/Point.ts:39](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L39)
 
 #### Parameters
 
@@ -246,15 +270,19 @@ Defined in: src/geometry/Point.ts:39
 
 #### Overrides
 
-`Geometry.fromFeature`
+```ts
+Geometry.fromFeature
+```
 
 ***
 
 ### fromGeoJSON()
 
-> `static` **fromGeoJSON**(`feature`): [`Geometry`](Geometry.md) \| [`GeometryCollection`](GeometryCollection.md)
+```ts
+static fromGeoJSON(feature): Geometry | GeometryCollection
+```
 
-Defined in: src/geometry/Geometry.ts:82
+Defined in: [src/geometry/Geometry.ts:82](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L82)
 
 #### Parameters
 
@@ -274,9 +302,11 @@ Defined in: src/geometry/Geometry.ts:82
 
 ### fromGeometry()
 
-> `static` **fromGeometry**(`geometry`): [`Point`](Point.md)
+```ts
+static fromGeometry(geometry): Point
+```
 
-Defined in: src/geometry/Point.ts:35
+Defined in: [src/geometry/Point.ts:35](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L35)
 
 #### Parameters
 
@@ -290,15 +320,19 @@ Defined in: src/geometry/Point.ts:35
 
 #### Overrides
 
-`Geometry.fromGeometry`
+```ts
+Geometry.fromGeometry
+```
 
 ***
 
 ### isPoint()
 
-> `static` **isPoint**(`geometry`): `geometry is Point`
+```ts
+static isPoint(geometry): geometry is Point
+```
 
-Defined in: src/geometry/Point.ts:31
+Defined in: [src/geometry/Point.ts:31](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L31)
 
 #### Parameters
 

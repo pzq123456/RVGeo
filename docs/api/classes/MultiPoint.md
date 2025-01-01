@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / MultiPoint
 
-***
+# MultiPoint
 
-[rvgeo](../globals.md) / MultiPoint
-
-# Class: MultiPoint
-
-Defined in: src/geometry/Point.ts:55
+Defined in: [src/geometry/Point.ts:55](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L55)
 
 ## Extends
 
@@ -16,9 +12,11 @@ Defined in: src/geometry/Point.ts:55
 
 ### new MultiPoint()
 
-> **new MultiPoint**(`geometries`, `properties`?): [`MultiPoint`](MultiPoint.md)
+```ts
+new MultiPoint(geometries, properties?): MultiPoint
+```
 
-Defined in: src/geometry/Point.ts:60
+Defined in: [src/geometry/Point.ts:60](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L60)
 
 #### Parameters
 
@@ -42,9 +40,11 @@ Defined in: src/geometry/Point.ts:60
 
 ### bbox
 
-> **bbox**: [`MBR`](../type-aliases/MBR.md)
+```ts
+bbox: MBR;
+```
 
-Defined in: src/geometry/Geometry.ts:104
+Defined in: [src/geometry/Geometry.ts:104](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L104)
 
 #### Inherited from
 
@@ -54,9 +54,11 @@ Defined in: src/geometry/Geometry.ts:104
 
 ### coordinates
 
-> `readonly` **coordinates**: \[`number`, `number`\][]
+```ts
+readonly coordinates: [number, number][];
+```
 
-Defined in: src/geometry/Point.ts:59
+Defined in: [src/geometry/Point.ts:59](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L59)
 
 #### Overrides
 
@@ -66,9 +68,11 @@ Defined in: src/geometry/Point.ts:59
 
 ### geometries
 
-> **geometries**: ([`Geometry`](Geometry.md) \| [`GeometryCollection`](GeometryCollection.md))[] = `[]`
+```ts
+geometries: (Geometry | GeometryCollection)[] = [];
+```
 
-Defined in: src/geometry/Geometry.ts:103
+Defined in: [src/geometry/Geometry.ts:103](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L103)
 
 #### Inherited from
 
@@ -78,9 +82,11 @@ Defined in: src/geometry/Geometry.ts:103
 
 ### projection
 
-> **projection**: [`Projection`](../interfaces/Projection.md) = `SphericalMercator`
+```ts
+projection: Projection = SphericalMercator;
+```
 
-Defined in: src/geometry/Geometry.ts:106
+Defined in: [src/geometry/Geometry.ts:106](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L106)
 
 #### Inherited from
 
@@ -90,9 +96,11 @@ Defined in: src/geometry/Geometry.ts:106
 
 ### properties
 
-> **properties**: `any`
+```ts
+properties: any;
+```
 
-Defined in: src/geometry/Geometry.ts:105
+Defined in: [src/geometry/Geometry.ts:105](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L105)
 
 #### Inherited from
 
@@ -102,9 +110,11 @@ Defined in: src/geometry/Geometry.ts:105
 
 ### \_update()
 
-> **\_update**(`geometry`, `index`): `void`
+```ts
+_update(geometry, index): void
+```
 
-Defined in: src/geometry/Geometry.ts:133
+Defined in: [src/geometry/Geometry.ts:133](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L133)
 
 #### Parameters
 
@@ -122,15 +132,17 @@ Defined in: src/geometry/Geometry.ts:133
 
 #### Inherited from
 
-[`GeometryCollection`](GeometryCollection.md).[`_update`](GeometryCollection.md#_update)
+[`GeometryCollection`](GeometryCollection.md).[`_update`](GeometryCollection.md#update)
 
 ***
 
 ### addGeometry()
 
-> **addGeometry**(`geometry`): `void`
+```ts
+addGeometry(geometry): void
+```
 
-Defined in: src/geometry/Point.ts:126
+Defined in: [src/geometry/Point.ts:126](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L126)
 
 将点（类型或数组）、多点类型融合到此 MultiPoint 中
 
@@ -152,9 +164,11 @@ Defined in: src/geometry/Point.ts:126
 
 ### centroid()
 
-> **centroid**(`values`?): [`Point`](Point.md)
+```ts
+centroid(values?): Point
+```
 
-Defined in: src/geometry/Point.ts:88
+Defined in: [src/geometry/Point.ts:88](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L88)
 
 - 计算多点的重心
 - calculate centroid of MultiPoint
@@ -181,9 +195,11 @@ https://en.wikipedia.org/wiki/Centroid
 
 ### getCoodinates()
 
-> **getCoodinates**(): \[`number`, `number`\][]
+```ts
+getCoodinates(): [number, number][]
+```
 
-Defined in: src/geometry/Point.ts:77
+Defined in: [src/geometry/Point.ts:77](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L77)
 
 #### Returns
 
@@ -193,9 +209,11 @@ Defined in: src/geometry/Point.ts:77
 
 ### toGeoJSON()
 
-> **toGeoJSON**(): [`GeoJSONFeature`](../interfaces/GeoJSONFeature.md)
+```ts
+toGeoJSON(): GeoJSONFeature
+```
 
-Defined in: src/geometry/Point.ts:142
+Defined in: [src/geometry/Point.ts:142](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L142)
 
 #### Returns
 
@@ -209,9 +227,11 @@ Defined in: src/geometry/Point.ts:142
 
 ### toXY()
 
-> **toXY**(): \[`number`, `number`\][]
+```ts
+toXY(): [number, number][]
+```
 
-Defined in: src/geometry/Point.ts:73
+Defined in: [src/geometry/Point.ts:73](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L73)
 
 #### Returns
 
@@ -225,9 +245,11 @@ Defined in: src/geometry/Point.ts:73
 
 ### updateBBox()
 
-> **updateBBox**(`geometry`): `void`
+```ts
+updateBBox(geometry): void
+```
 
-Defined in: src/geometry/Geometry.ts:121
+Defined in: [src/geometry/Geometry.ts:121](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L121)
 
 #### Parameters
 
@@ -247,9 +269,11 @@ Defined in: src/geometry/Geometry.ts:121
 
 ### fromFeature()
 
-> `static` **fromFeature**(`feature`): [`GeometryCollection`](GeometryCollection.md)
+```ts
+static fromFeature(feature): GeometryCollection
+```
 
-Defined in: src/geometry/Point.ts:168
+Defined in: [src/geometry/Point.ts:168](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L168)
 
 #### Parameters
 
@@ -265,9 +289,11 @@ Defined in: src/geometry/Point.ts:168
 
 ### fromGeometry()
 
-> `static` **fromGeometry**(`geometry`): [`GeometryCollection`](GeometryCollection.md)
+```ts
+static fromGeometry(geometry): GeometryCollection
+```
 
-Defined in: src/geometry/Point.ts:183
+Defined in: [src/geometry/Point.ts:183](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L183)
 
 #### Parameters
 
@@ -283,9 +309,11 @@ Defined in: src/geometry/Point.ts:183
 
 ### isMultiPoint()
 
-> `static` **isMultiPoint**(`geometry`): `geometry is MultiPoint`
+```ts
+static isMultiPoint(geometry): geometry is MultiPoint
+```
 
-Defined in: src/geometry/Point.ts:164
+Defined in: [src/geometry/Point.ts:164](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L164)
 
 #### Parameters
 

@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / squareMetersTo
 
-***
+# squareMetersTo()
 
-[rvgeo](../globals.md) / squareMetersTo
+```ts
+function squareMetersTo(area, units): number
+```
 
-# Function: squareMetersTo()
-
-> **squareMetersTo**(`area`, `units`): `number`
-
-Defined in: src/math/units.ts:154
+Defined in: [src/math/units.ts:154](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/units.ts#L154)
 
 - 将面积单位平方米转换为指定单位
 - Convert area units from square meters to specified units

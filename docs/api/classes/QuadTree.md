@@ -1,20 +1,21 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / QuadTree
 
-***
+# QuadTree
 
-[rvgeo](../globals.md) / QuadTree
-
-# Class: QuadTree
-
-Defined in: src/datastru/quadTree.ts:3
+Defined in: [src/datastru/quadTree.ts:3](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L3)
 
 ## Constructors
 
 ### new QuadTree()
 
-> **new QuadTree**(`boundary`, `capacity`, `maxDepth`): [`QuadTree`](QuadTree.md)
+```ts
+new QuadTree(
+   boundary, 
+   capacity, 
+   maxDepth): QuadTree
+```
 
-Defined in: src/datastru/quadTree.ts:15
+Defined in: [src/datastru/quadTree.ts:15](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L15)
 
 #### Parameters
 
@@ -38,57 +39,71 @@ Defined in: src/datastru/quadTree.ts:15
 
 ### boundary
 
-> **boundary**: [`MBR`](../type-aliases/MBR.md)
+```ts
+boundary: MBR;
+```
 
-Defined in: src/datastru/quadTree.ts:5
+Defined in: [src/datastru/quadTree.ts:5](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L5)
 
 ***
 
 ### depth
 
-> **depth**: `number`
+```ts
+depth: number;
+```
 
-Defined in: src/datastru/quadTree.ts:12
+Defined in: [src/datastru/quadTree.ts:12](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L12)
 
 ***
 
 ### maxDepth
 
-> **maxDepth**: `number` = `10`
+```ts
+maxDepth: number = 10;
+```
 
-Defined in: src/datastru/quadTree.ts:13
+Defined in: [src/datastru/quadTree.ts:13](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L13)
 
 ***
 
 ### northEast
 
-> **northEast**: `null` \| [`QuadTree`](QuadTree.md)
+```ts
+northEast: null | QuadTree;
+```
 
-Defined in: src/datastru/quadTree.ts:8
+Defined in: [src/datastru/quadTree.ts:8](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L8)
 
 ***
 
 ### northWest
 
-> **northWest**: `null` \| [`QuadTree`](QuadTree.md)
+```ts
+northWest: null | QuadTree;
+```
 
-Defined in: src/datastru/quadTree.ts:7
+Defined in: [src/datastru/quadTree.ts:7](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L7)
 
 ***
 
 ### southEast
 
-> **southEast**: `null` \| [`QuadTree`](QuadTree.md)
+```ts
+southEast: null | QuadTree;
+```
 
-Defined in: src/datastru/quadTree.ts:10
+Defined in: [src/datastru/quadTree.ts:10](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L10)
 
 ***
 
 ### southWest
 
-> **southWest**: `null` \| [`QuadTree`](QuadTree.md)
+```ts
+southWest: null | QuadTree;
+```
 
-Defined in: src/datastru/quadTree.ts:9
+Defined in: [src/datastru/quadTree.ts:9](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L9)
 
 ## Accessors
 
@@ -96,9 +111,11 @@ Defined in: src/datastru/quadTree.ts:9
 
 #### Get Signature
 
-> **get** **pointsList**(): `null` \| \[`number`, `number`\][]
+```ts
+get pointsList(): null | [number, number][]
+```
 
-Defined in: src/datastru/quadTree.ts:68
+Defined in: [src/datastru/quadTree.ts:68](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L68)
 
 ##### Returns
 
@@ -108,9 +125,11 @@ Defined in: src/datastru/quadTree.ts:68
 
 ### contains()
 
-> **contains**(`point`, `boundary`): `boolean`
+```ts
+contains(point, boundary): boolean
+```
 
-Defined in: src/datastru/quadTree.ts:29
+Defined in: [src/datastru/quadTree.ts:29](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L29)
 
 #### Parameters
 
@@ -130,9 +149,11 @@ Defined in: src/datastru/quadTree.ts:29
 
 ### customQuery()
 
-> **customQuery**(`range`): \[`number`, `number`\][]
+```ts
+customQuery(range): [number, number][]
+```
 
-Defined in: src/datastru/quadTree.ts:128
+Defined in: [src/datastru/quadTree.ts:128](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L128)
 
 you need a customRange object to support custom range query
 - note : this function has the SAME LOGIC as queryRange.
@@ -155,9 +176,11 @@ customRange
 
 ### insert()
 
-> **insert**(`point`): `boolean`
+```ts
+insert(point): boolean
+```
 
-Defined in: src/datastru/quadTree.ts:42
+Defined in: [src/datastru/quadTree.ts:42](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L42)
 
 插入一个点
 
@@ -179,9 +202,11 @@ Defined in: src/datastru/quadTree.ts:42
 
 ### intersects()
 
-> **intersects**(`boundary`, `range`): `boolean`
+```ts
+intersects(boundary, range): boolean
+```
 
-Defined in: src/datastru/quadTree.ts:33
+Defined in: [src/datastru/quadTree.ts:33](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L33)
 
 #### Parameters
 
@@ -201,9 +226,11 @@ Defined in: src/datastru/quadTree.ts:33
 
 ### queryRange()
 
-> **queryRange**(`range`): \[`number`, `number`\][]
+```ts
+queryRange(range): [number, number][]
+```
 
-Defined in: src/datastru/quadTree.ts:103
+Defined in: [src/datastru/quadTree.ts:103](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L103)
 
 四叉树范围查询
 - 输入一个矩形范围，返回范围内的所有点
@@ -223,9 +250,11 @@ Defined in: src/datastru/quadTree.ts:103
 
 ### subdivide()
 
-> **subdivide**(): `void`
+```ts
+subdivide(): void
+```
 
-Defined in: src/datastru/quadTree.ts:79
+Defined in: [src/datastru/quadTree.ts:79](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/datastru/quadTree.ts#L79)
 
 剖分当前节点
 

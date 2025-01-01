@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Geometry
 
-***
+# `abstract` Geometry
 
-[rvgeo](../globals.md) / Geometry
-
-# Class: `abstract` Geometry
-
-Defined in: src/geometry/Geometry.ts:30
+Defined in: [src/geometry/Geometry.ts:30](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L30)
 
 Geometry for GeoJSON independent Objects including Point, LineString, Polygon
 - no GeometryCollection
@@ -22,9 +18,11 @@ Geometry for GeoJSON independent Objects including Point, LineString, Polygon
 
 ### new Geometry()
 
-> **new Geometry**(`coordinates`, `properties`?): [`Geometry`](Geometry.md)
+```ts
+new Geometry(coordinates, properties?): Geometry
+```
 
-Defined in: src/geometry/Geometry.ts:40
+Defined in: [src/geometry/Geometry.ts:40](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L40)
 
 #### Parameters
 
@@ -44,49 +42,61 @@ Defined in: src/geometry/Geometry.ts:40
 
 ### bbox
 
-> **bbox**: [`MBR`](../type-aliases/MBR.md)
+```ts
+bbox: MBR;
+```
 
-Defined in: src/geometry/Geometry.ts:31
+Defined in: [src/geometry/Geometry.ts:31](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L31)
 
 ***
 
 ### coordinates
 
-> `readonly` **coordinates**: `any`
+```ts
+readonly coordinates: any;
+```
 
-Defined in: src/geometry/Geometry.ts:32
+Defined in: [src/geometry/Geometry.ts:32](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L32)
 
 ***
 
 ### projection
 
-> `readonly` **projection**: [`Projection`](../interfaces/Projection.md) = `SphericalMercator`
+```ts
+readonly projection: Projection = SphericalMercator;
+```
 
-Defined in: src/geometry/Geometry.ts:34
+Defined in: [src/geometry/Geometry.ts:34](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L34)
 
 ***
 
 ### properties
 
-> **properties**: `any`
+```ts
+properties: any;
+```
 
-Defined in: src/geometry/Geometry.ts:33
+Defined in: [src/geometry/Geometry.ts:33](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L33)
 
 ***
 
 ### fromFeature
 
-> `static` **fromFeature**: `any`
+```ts
+static fromFeature: any;
+```
 
-Defined in: src/geometry/Geometry.ts:37
+Defined in: [src/geometry/Geometry.ts:37](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L37)
 
 ***
 
 ### fromGeometry
 
-> `static` **fromGeometry**: `any`
+```ts
+static fromGeometry: any;
+```
 
-Defined in: src/geometry/Geometry.ts:38
+Defined in: [src/geometry/Geometry.ts:38](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L38)
 
 ## Accessors
 
@@ -94,9 +104,11 @@ Defined in: src/geometry/Geometry.ts:38
 
 #### Set Signature
 
-> **set** **Properties**(`properties`): `void`
+```ts
+set Properties(properties): void
+```
 
-Defined in: src/geometry/Geometry.ts:49
+Defined in: [src/geometry/Geometry.ts:49](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L49)
 
 ##### Parameters
 
@@ -112,9 +124,11 @@ Defined in: src/geometry/Geometry.ts:49
 
 ### clone()
 
-> **clone**(): [`Geometry`](Geometry.md)
+```ts
+clone(): Geometry
+```
 
-Defined in: src/geometry/Geometry.ts:51
+Defined in: [src/geometry/Geometry.ts:51](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L51)
 
 #### Returns
 
@@ -124,9 +138,11 @@ Defined in: src/geometry/Geometry.ts:51
 
 ### equals()
 
-> **equals**(`geometry`): `boolean`
+```ts
+equals(geometry): boolean
+```
 
-Defined in: src/geometry/Geometry.ts:58
+Defined in: [src/geometry/Geometry.ts:58](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L58)
 
 #### Parameters
 
@@ -142,9 +158,11 @@ Defined in: src/geometry/Geometry.ts:58
 
 ### toGeoJSON()
 
-> **toGeoJSON**(): [`GeoJSONFeature`](../interfaces/GeoJSONFeature.md)
+```ts
+toGeoJSON(): GeoJSONFeature
+```
 
-Defined in: src/geometry/Geometry.ts:64
+Defined in: [src/geometry/Geometry.ts:64](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L64)
 
 #### Returns
 
@@ -154,9 +172,11 @@ Defined in: src/geometry/Geometry.ts:64
 
 ### toXY()
 
-> **toXY**(): `any`
+```ts
+toXY(): any
+```
 
-Defined in: src/geometry/Geometry.ts:35
+Defined in: [src/geometry/Geometry.ts:35](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L35)
 
 #### Returns
 
@@ -166,9 +186,11 @@ Defined in: src/geometry/Geometry.ts:35
 
 ### updateBBox()
 
-> `abstract` **updateBBox**(): `void`
+```ts
+abstract updateBBox(): void
+```
 
-Defined in: src/geometry/Geometry.ts:62
+Defined in: [src/geometry/Geometry.ts:62](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L62)
 
 #### Returns
 
@@ -178,9 +200,11 @@ Defined in: src/geometry/Geometry.ts:62
 
 ### fromGeoJSON()
 
-> `static` **fromGeoJSON**(`feature`): [`Geometry`](Geometry.md) \| [`GeometryCollection`](GeometryCollection.md)
+```ts
+static fromGeoJSON(feature): Geometry | GeometryCollection
+```
 
-Defined in: src/geometry/Geometry.ts:82
+Defined in: [src/geometry/Geometry.ts:82](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L82)
 
 #### Parameters
 

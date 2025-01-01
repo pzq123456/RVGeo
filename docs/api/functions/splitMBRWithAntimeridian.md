@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / splitMBRWithAntimeridian
 
-***
+# splitMBRWithAntimeridian()
 
-[rvgeo](../globals.md) / splitMBRWithAntimeridian
+```ts
+function splitMBRWithAntimeridian(mbr): MBR[]
+```
 
-# Function: splitMBRWithAntimeridian()
-
-> **splitMBRWithAntimeridian**(`mbr`): [`MBR`](../type-aliases/MBR.md)[]
-
-Defined in: src/geometry/MBR.ts:177
+Defined in: [src/geometry/MBR.ts:177](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L177)
 
 将单个跨越了反子午线的 MBR 分割成两个简单的 MBR
 

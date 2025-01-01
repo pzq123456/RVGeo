@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / GridGraph
 
-***
+# GridGraph
 
-[rvgeo](../globals.md) / GridGraph
-
-# Interface: GridGraph
-
-Defined in: src/net/graph.ts:52
+Defined in: [src/net/graph.ts:52](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/graph.ts#L52)
 
 二维数组转换为图
 
@@ -14,25 +10,31 @@ Defined in: src/net/graph.ts:52
 
 ### cols
 
-> **cols**: `number`
+```ts
+cols: number;
+```
 
-Defined in: src/net/graph.ts:54
+Defined in: [src/net/graph.ts:54](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/graph.ts#L54)
 
 ***
 
 ### grid
 
-> **grid**: `number`[][]
+```ts
+grid: number[][];
+```
 
-Defined in: src/net/graph.ts:53
+Defined in: [src/net/graph.ts:53](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/graph.ts#L53)
 
 ***
 
 ### neighbors()
 
-> **neighbors**: (`node`) => \[`number`, `number`\][]
+```ts
+neighbors: (node) => [number, number][];
+```
 
-Defined in: src/net/graph.ts:57
+Defined in: [src/net/graph.ts:57](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/graph.ts#L57)
 
 #### Parameters
 
@@ -48,17 +50,21 @@ Defined in: src/net/graph.ts:57
 
 ### rows
 
-> **rows**: `number`
+```ts
+rows: number;
+```
 
-Defined in: src/net/graph.ts:55
+Defined in: [src/net/graph.ts:55](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/graph.ts#L55)
 
 ***
 
 ### weights()?
 
-> `optional` **weights**: (`from`, `to`) => `number`
+```ts
+optional weights: (from, to) => number;
+```
 
-Defined in: src/net/graph.ts:56
+Defined in: [src/net/graph.ts:56](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/graph.ts#L56)
 
 #### Parameters
 

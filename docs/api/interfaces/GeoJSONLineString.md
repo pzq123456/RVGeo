@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / GeoJSONLineString
 
-***
+# GeoJSONLineString
 
-[rvgeo](../globals.md) / GeoJSONLineString
-
-# Interface: GeoJSONLineString
-
-Defined in: src/geometry/GeoJSON.ts:24
+Defined in: [src/geometry/GeoJSON.ts:24](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L24)
 
 ## Extends
 
@@ -16,9 +12,11 @@ Defined in: src/geometry/GeoJSON.ts:24
 
 ### coordinates
 
-> **coordinates**: \[`number`, `number`\][]
+```ts
+coordinates: [number, number][];
+```
 
-Defined in: src/geometry/GeoJSON.ts:26
+Defined in: [src/geometry/GeoJSON.ts:26](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L26)
 
 #### Overrides
 
@@ -28,9 +26,11 @@ Defined in: src/geometry/GeoJSON.ts:26
 
 ### type
 
-> **type**: `"LineString"`
+```ts
+type: "LineString";
+```
 
-Defined in: src/geometry/GeoJSON.ts:25
+Defined in: [src/geometry/GeoJSON.ts:25](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L25)
 
 #### Overrides
 

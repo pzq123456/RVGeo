@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / MultiLineString
 
-***
+# MultiLineString
 
-[rvgeo](../globals.md) / MultiLineString
-
-# Class: MultiLineString
-
-Defined in: src/geometry/LineString.ts:69
+Defined in: [src/geometry/LineString.ts:69](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L69)
 
 ## Extends
 
@@ -16,9 +12,11 @@ Defined in: src/geometry/LineString.ts:69
 
 ### new MultiLineString()
 
-> **new MultiLineString**(`geometries`, `properties`?): [`MultiLineString`](MultiLineString.md)
+```ts
+new MultiLineString(geometries, properties?): MultiLineString
+```
 
-Defined in: src/geometry/LineString.ts:72
+Defined in: [src/geometry/LineString.ts:72](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L72)
 
 #### Parameters
 
@@ -42,9 +40,11 @@ Defined in: src/geometry/LineString.ts:72
 
 ### bbox
 
-> **bbox**: [`MBR`](../type-aliases/MBR.md)
+```ts
+bbox: MBR;
+```
 
-Defined in: src/geometry/Geometry.ts:104
+Defined in: [src/geometry/Geometry.ts:104](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L104)
 
 #### Inherited from
 
@@ -54,9 +54,11 @@ Defined in: src/geometry/Geometry.ts:104
 
 ### coordinates
 
-> **coordinates**: \[`number`, `number`\][][]
+```ts
+coordinates: [number, number][][];
+```
 
-Defined in: src/geometry/LineString.ts:70
+Defined in: [src/geometry/LineString.ts:70](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L70)
 
 #### Overrides
 
@@ -66,9 +68,11 @@ Defined in: src/geometry/LineString.ts:70
 
 ### geometries
 
-> **geometries**: ([`Geometry`](Geometry.md) \| [`GeometryCollection`](GeometryCollection.md))[] = `[]`
+```ts
+geometries: (Geometry | GeometryCollection)[] = [];
+```
 
-Defined in: src/geometry/Geometry.ts:103
+Defined in: [src/geometry/Geometry.ts:103](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L103)
 
 #### Inherited from
 
@@ -78,9 +82,11 @@ Defined in: src/geometry/Geometry.ts:103
 
 ### projection
 
-> **projection**: [`Projection`](../interfaces/Projection.md) = `SphericalMercator`
+```ts
+projection: Projection = SphericalMercator;
+```
 
-Defined in: src/geometry/Geometry.ts:106
+Defined in: [src/geometry/Geometry.ts:106](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L106)
 
 #### Inherited from
 
@@ -90,9 +96,11 @@ Defined in: src/geometry/Geometry.ts:106
 
 ### properties
 
-> **properties**: `any`
+```ts
+properties: any;
+```
 
-Defined in: src/geometry/Geometry.ts:105
+Defined in: [src/geometry/Geometry.ts:105](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L105)
 
 #### Inherited from
 
@@ -102,9 +110,11 @@ Defined in: src/geometry/Geometry.ts:105
 
 ### \_update()
 
-> **\_update**(`geometry`, `index`): `void`
+```ts
+_update(geometry, index): void
+```
 
-Defined in: src/geometry/Geometry.ts:133
+Defined in: [src/geometry/Geometry.ts:133](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L133)
 
 #### Parameters
 
@@ -122,15 +132,17 @@ Defined in: src/geometry/Geometry.ts:133
 
 #### Inherited from
 
-[`GeometryCollection`](GeometryCollection.md).[`_update`](GeometryCollection.md#_update)
+[`GeometryCollection`](GeometryCollection.md).[`_update`](GeometryCollection.md#update)
 
 ***
 
 ### addGeometry()
 
-> **addGeometry**(`geometry`): `void`
+```ts
+addGeometry(geometry): void
+```
 
-Defined in: src/geometry/LineString.ts:98
+Defined in: [src/geometry/LineString.ts:98](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L98)
 
 #### Parameters
 
@@ -150,9 +162,11 @@ Defined in: src/geometry/LineString.ts:98
 
 ### getCoodinates()
 
-> **getCoodinates**(): \[`number`, `number`\][][]
+```ts
+getCoodinates(): [number, number][][]
+```
 
-Defined in: src/geometry/LineString.ts:85
+Defined in: [src/geometry/LineString.ts:85](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L85)
 
 #### Returns
 
@@ -162,9 +176,11 @@ Defined in: src/geometry/LineString.ts:85
 
 ### toGeoJSON()
 
-> **toGeoJSON**(): [`GeoJSONFeature`](../interfaces/GeoJSONFeature.md)
+```ts
+toGeoJSON(): GeoJSONFeature
+```
 
-Defined in: src/geometry/LineString.ts:110
+Defined in: [src/geometry/LineString.ts:110](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L110)
 
 #### Returns
 
@@ -178,9 +194,11 @@ Defined in: src/geometry/LineString.ts:110
 
 ### toMultiPoint()
 
-> **toMultiPoint**(): [`MultiPoint`](MultiPoint.md)
+```ts
+toMultiPoint(): MultiPoint
+```
 
-Defined in: src/geometry/LineString.ts:89
+Defined in: [src/geometry/LineString.ts:89](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L89)
 
 #### Returns
 
@@ -190,9 +208,11 @@ Defined in: src/geometry/LineString.ts:89
 
 ### toXY()
 
-> **toXY**(): \[`number`, `number`\][][]
+```ts
+toXY(): [number, number][][]
+```
 
-Defined in: src/geometry/LineString.ts:93
+Defined in: [src/geometry/LineString.ts:93](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L93)
 
 #### Returns
 
@@ -206,9 +226,11 @@ Defined in: src/geometry/LineString.ts:93
 
 ### updateBBox()
 
-> **updateBBox**(`geometry`): `void`
+```ts
+updateBBox(geometry): void
+```
 
-Defined in: src/geometry/Geometry.ts:121
+Defined in: [src/geometry/Geometry.ts:121](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L121)
 
 #### Parameters
 
@@ -228,9 +250,11 @@ Defined in: src/geometry/Geometry.ts:121
 
 ### fromFeature()
 
-> `static` **fromFeature**(`feature`): [`GeometryCollection`](GeometryCollection.md)
+```ts
+static fromFeature(feature): GeometryCollection
+```
 
-Defined in: src/geometry/LineString.ts:128
+Defined in: [src/geometry/LineString.ts:128](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L128)
 
 #### Parameters
 
@@ -246,9 +270,11 @@ Defined in: src/geometry/LineString.ts:128
 
 ### fromGeometry()
 
-> `static` **fromGeometry**(`geometry`): [`GeometryCollection`](GeometryCollection.md)
+```ts
+static fromGeometry(geometry): GeometryCollection
+```
 
-Defined in: src/geometry/LineString.ts:138
+Defined in: [src/geometry/LineString.ts:138](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L138)
 
 #### Parameters
 

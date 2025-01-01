@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / getMBRWithAntimeridian
 
-***
+# getMBRWithAntimeridian()
 
-[rvgeo](../globals.md) / getMBRWithAntimeridian
+```ts
+function getMBRWithAntimeridian(points): MBR
+```
 
-# Function: getMBRWithAntimeridian()
-
-> **getMBRWithAntimeridian**(`points`): [`MBR`](../type-aliases/MBR.md)
-
-Defined in: src/geometry/MBR.ts:164
+Defined in: [src/geometry/MBR.ts:164](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L164)
 
 计算多点的最小外包矩形（跨越反子午线的情况）
 - 会自动计算并选择面积最小的情况

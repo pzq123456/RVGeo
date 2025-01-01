@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / subColumnInEL2DArray
 
-***
+# subColumnInEL2DArray()
 
-[rvgeo](../globals.md) / subColumnInEL2DArray
+```ts
+function subColumnInEL2DArray(array, indexArray): any[]
+```
 
-# Function: subColumnInEL2DArray()
-
-> **subColumnInEL2DArray**(`array`, `indexArray`): `any`[]
-
-Defined in: src/core/utils.ts:157
+Defined in: [src/core/utils.ts:157](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/core/utils.ts#L157)
 
 抽取二维数组的某一列（或某几列）
 

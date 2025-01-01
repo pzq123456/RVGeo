@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / calculateMBR
 
-***
+# calculateMBR()
 
-[rvgeo](../globals.md) / calculateMBR
+```ts
+function calculateMBR(clipPolygon): MBR
+```
 
-# Function: calculateMBR()
-
-> **calculateMBR**(`clipPolygon`): [`MBR`](../type-aliases/MBR.md)
-
-Defined in: src/topology/utils.ts:185
+Defined in: [src/topology/utils.ts:185](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/topology/utils.ts#L185)
 
 计算多边形的 MBR
 

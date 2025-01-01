@@ -1,14 +1,16 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / inCircle
 
-***
+# inCircle()
 
-[rvgeo](../globals.md) / inCircle
+```ts
+function inCircle(
+   p1, 
+   p2, 
+   p3, 
+   p4): 1 | -1 | 0
+```
 
-# Function: inCircle()
-
-> **inCircle**(`p1`, `p2`, `p3`, `p4`): `1` \| `-1` \| `0`
-
-Defined in: src/topology/utils.ts:396
+Defined in: [src/topology/utils.ts:396](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/topology/utils.ts#L396)
 
 快速计算最后一点与前三点组成的圆的关系 calculate the relative position of the last point to the circle formed by the first three points
 - Returns 1 if point d is outside the circle passing through a, b, and c

@@ -1,20 +1,18 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Delaunator
 
-***
+# Delaunator
 
-[rvgeo](../globals.md) / Delaunator
-
-# Class: Delaunator
-
-Defined in: src/triangulation/Delaunay.ts:16
+Defined in: [src/triangulation/Delaunay.ts:16](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L16)
 
 ## Constructors
 
 ### new Delaunator()
 
-> **new Delaunator**(`coords`): [`Delaunator`](Delaunator.md)
+```ts
+new Delaunator(coords): Delaunator
+```
 
-Defined in: src/triangulation/Delaunay.ts:30
+Defined in: [src/triangulation/Delaunay.ts:30](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L30)
 
 #### Parameters
 
@@ -30,9 +28,17 @@ Defined in: src/triangulation/Delaunay.ts:30
 
 ### \_addTriangle()
 
-> **\_addTriangle**(`i0`, `i1`, `i2`, `a`, `b`, `c`): `any`
+```ts
+_addTriangle(
+   i0, 
+   i1, 
+   i2, 
+   a, 
+   b, 
+   c): any
+```
 
-Defined in: src/triangulation/Delaunay.ts:360
+Defined in: [src/triangulation/Delaunay.ts:360](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L360)
 
 #### Parameters
 
@@ -68,9 +74,11 @@ Defined in: src/triangulation/Delaunay.ts:360
 
 ### \_hashKey()
 
-> **\_hashKey**(`x`, `y`): `number`
+```ts
+_hashKey(x, y): number
+```
 
-Defined in: src/triangulation/Delaunay.ts:265
+Defined in: [src/triangulation/Delaunay.ts:265](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L265)
 
 #### Parameters
 
@@ -90,9 +98,11 @@ Defined in: src/triangulation/Delaunay.ts:265
 
 ### \_legalize()
 
-> **\_legalize**(`a`): `number`
+```ts
+_legalize(a): number
+```
 
-Defined in: src/triangulation/Delaunay.ts:269
+Defined in: [src/triangulation/Delaunay.ts:269](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L269)
 
 #### Parameters
 
@@ -108,9 +118,11 @@ Defined in: src/triangulation/Delaunay.ts:269
 
 ### \_link()
 
-> **\_link**(`a`, `b`): `void`
+```ts
+_link(a, b): void
+```
 
-Defined in: src/triangulation/Delaunay.ts:354
+Defined in: [src/triangulation/Delaunay.ts:354](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L354)
 
 #### Parameters
 
@@ -130,9 +142,17 @@ Defined in: src/triangulation/Delaunay.ts:354
 
 ### circumcenter()
 
-> **circumcenter**(`ax`, `ay`, `bx`, `by`, `cx`, `cy`): `object`
+```ts
+circumcenter(
+   ax, 
+   ay, 
+   bx, 
+   by, 
+   cx, 
+   cy): object
+```
 
-Defined in: src/triangulation/Delaunay.ts:438
+Defined in: [src/triangulation/Delaunay.ts:438](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L438)
 
 #### Parameters
 
@@ -166,19 +186,25 @@ Defined in: src/triangulation/Delaunay.ts:438
 
 ##### x
 
-> **x**: `any`
+```ts
+x: any;
+```
 
 ##### y
 
-> **y**: `any`
+```ts
+y: any;
+```
 
 ***
 
 ### getHalfedges()
 
-> **getHalfedges**(): `any`
+```ts
+getHalfedges(): any
+```
 
-Defined in: src/triangulation/Delaunay.ts:379
+Defined in: [src/triangulation/Delaunay.ts:379](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L379)
 
 #### Returns
 
@@ -188,9 +214,11 @@ Defined in: src/triangulation/Delaunay.ts:379
 
 ### getHull()
 
-> **getHull**(): `any`
+```ts
+getHull(): any
+```
 
-Defined in: src/triangulation/Delaunay.ts:382
+Defined in: [src/triangulation/Delaunay.ts:382](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L382)
 
 #### Returns
 
@@ -200,9 +228,11 @@ Defined in: src/triangulation/Delaunay.ts:382
 
 ### getPoints()
 
-> **getPoints**(): `any`[][]
+```ts
+getPoints(): any[][]
+```
 
-Defined in: src/triangulation/Delaunay.ts:385
+Defined in: [src/triangulation/Delaunay.ts:385](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L385)
 
 #### Returns
 
@@ -212,9 +242,11 @@ Defined in: src/triangulation/Delaunay.ts:385
 
 ### getTriangleIndices()
 
-> **getTriangleIndices**(): \[`number`, `number`, `number`\][]
+```ts
+getTriangleIndices(): [number, number, number][]
+```
 
-Defined in: src/triangulation/Delaunay.ts:403
+Defined in: [src/triangulation/Delaunay.ts:403](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L403)
 
 - get the indices of triangles as array of array of 3 elements
 - 获得三角形的索引，以3个元素的数组的数组的形式
@@ -227,9 +259,11 @@ Defined in: src/triangulation/Delaunay.ts:403
 
 ### getTriangles()
 
-> **getTriangles**(): `any`
+```ts
+getTriangles(): any
+```
 
-Defined in: src/triangulation/Delaunay.ts:376
+Defined in: [src/triangulation/Delaunay.ts:376](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L376)
 
 #### Returns
 
@@ -239,9 +273,11 @@ Defined in: src/triangulation/Delaunay.ts:376
 
 ### update()
 
-> **update**(): `void`
+```ts
+update(): void
+```
 
-Defined in: src/triangulation/Delaunay.ts:55
+Defined in: [src/triangulation/Delaunay.ts:55](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L55)
 
 #### Returns
 
@@ -251,9 +287,14 @@ Defined in: src/triangulation/Delaunay.ts:55
 
 ### circumRadius()
 
-> `static` **circumRadius**(`p1`, `p2`, `p3`): `number`
+```ts
+static circumRadius(
+   p1, 
+   p2, 
+   p3): number
+```
 
-Defined in: src/triangulation/Delaunay.ts:422
+Defined in: [src/triangulation/Delaunay.ts:422](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L422)
 
 计算三点外接圆的半径
 
@@ -279,9 +320,14 @@ Defined in: src/triangulation/Delaunay.ts:422
 
 ### from()
 
-> `static` **from**(`points`, `getX`, `getY`): [`Delaunator`](Delaunator.md)
+```ts
+static from(
+   points, 
+   getX, 
+   getY): Delaunator
+```
 
-Defined in: src/triangulation/Delaunay.ts:17
+Defined in: [src/triangulation/Delaunay.ts:17](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L17)
 
 #### Parameters
 

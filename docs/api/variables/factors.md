@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / factors
 
-***
+# factors
 
-[rvgeo](../globals.md) / factors
+```ts
+const factors: Record<Units, number>;
+```
 
-# Variable: factors
-
-> `const` **factors**: `Record`\<[`Units`](../type-aliases/Units.md), `number`\>
-
-Defined in: src/math/factors.ts:55
+Defined in: [src/math/factors.ts:55](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/factors.ts#L55)
 
 - Unit of measurement factors using a spherical (non-ellipsoid) earth radius.
 

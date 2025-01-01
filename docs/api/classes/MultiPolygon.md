@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / MultiPolygon
 
-***
+# MultiPolygon
 
-[rvgeo](../globals.md) / MultiPolygon
-
-# Class: MultiPolygon
-
-Defined in: src/geometry/Polygon.ts:52
+Defined in: [src/geometry/Polygon.ts:52](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L52)
 
 ## Extends
 
@@ -16,9 +12,11 @@ Defined in: src/geometry/Polygon.ts:52
 
 ### new MultiPolygon()
 
-> **new MultiPolygon**(`geometries`, `properties`?): [`MultiPolygon`](MultiPolygon.md)
+```ts
+new MultiPolygon(geometries, properties?): MultiPolygon
+```
 
-Defined in: src/geometry/Polygon.ts:55
+Defined in: [src/geometry/Polygon.ts:55](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L55)
 
 #### Parameters
 
@@ -42,9 +40,11 @@ Defined in: src/geometry/Polygon.ts:55
 
 ### bbox
 
-> **bbox**: [`MBR`](../type-aliases/MBR.md)
+```ts
+bbox: MBR;
+```
 
-Defined in: src/geometry/Geometry.ts:104
+Defined in: [src/geometry/Geometry.ts:104](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L104)
 
 #### Inherited from
 
@@ -54,9 +54,11 @@ Defined in: src/geometry/Geometry.ts:104
 
 ### coordinates
 
-> `readonly` **coordinates**: \[`number`, `number`\][][][]
+```ts
+readonly coordinates: [number, number][][][];
+```
 
-Defined in: src/geometry/Polygon.ts:53
+Defined in: [src/geometry/Polygon.ts:53](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L53)
 
 #### Overrides
 
@@ -66,9 +68,11 @@ Defined in: src/geometry/Polygon.ts:53
 
 ### geometries
 
-> **geometries**: ([`Geometry`](Geometry.md) \| [`GeometryCollection`](GeometryCollection.md))[] = `[]`
+```ts
+geometries: (Geometry | GeometryCollection)[] = [];
+```
 
-Defined in: src/geometry/Geometry.ts:103
+Defined in: [src/geometry/Geometry.ts:103](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L103)
 
 #### Inherited from
 
@@ -78,9 +82,11 @@ Defined in: src/geometry/Geometry.ts:103
 
 ### projection
 
-> **projection**: [`Projection`](../interfaces/Projection.md) = `SphericalMercator`
+```ts
+projection: Projection = SphericalMercator;
+```
 
-Defined in: src/geometry/Geometry.ts:106
+Defined in: [src/geometry/Geometry.ts:106](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L106)
 
 #### Inherited from
 
@@ -90,9 +96,11 @@ Defined in: src/geometry/Geometry.ts:106
 
 ### properties
 
-> **properties**: `any`
+```ts
+properties: any;
+```
 
-Defined in: src/geometry/Geometry.ts:105
+Defined in: [src/geometry/Geometry.ts:105](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L105)
 
 #### Inherited from
 
@@ -102,9 +110,11 @@ Defined in: src/geometry/Geometry.ts:105
 
 ### \_update()
 
-> **\_update**(`geometry`, `index`): `void`
+```ts
+_update(geometry, index): void
+```
 
-Defined in: src/geometry/Geometry.ts:133
+Defined in: [src/geometry/Geometry.ts:133](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L133)
 
 #### Parameters
 
@@ -122,15 +132,17 @@ Defined in: src/geometry/Geometry.ts:133
 
 #### Inherited from
 
-[`GeometryCollection`](GeometryCollection.md).[`_update`](GeometryCollection.md#_update)
+[`GeometryCollection`](GeometryCollection.md).[`_update`](GeometryCollection.md#update)
 
 ***
 
 ### addGeometry()
 
-> **addGeometry**(`geometry`): `void`
+```ts
+addGeometry(geometry): void
+```
 
-Defined in: src/geometry/Polygon.ts:82
+Defined in: [src/geometry/Polygon.ts:82](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L82)
 
 #### Parameters
 
@@ -150,9 +162,11 @@ Defined in: src/geometry/Polygon.ts:82
 
 ### getCoodinates()
 
-> **getCoodinates**(): \[`number`, `number`\][][][]
+```ts
+getCoodinates(): [number, number][][][]
+```
 
-Defined in: src/geometry/Polygon.ts:68
+Defined in: [src/geometry/Polygon.ts:68](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L68)
 
 #### Returns
 
@@ -162,9 +176,11 @@ Defined in: src/geometry/Polygon.ts:68
 
 ### toGeoJSON()
 
-> **toGeoJSON**(): [`GeoJSONFeature`](../interfaces/GeoJSONFeature.md)
+```ts
+toGeoJSON(): GeoJSONFeature
+```
 
-Defined in: src/geometry/Polygon.ts:94
+Defined in: [src/geometry/Polygon.ts:94](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L94)
 
 #### Returns
 
@@ -178,9 +194,11 @@ Defined in: src/geometry/Polygon.ts:94
 
 ### toMultiPoint()
 
-> **toMultiPoint**(): [`MultiPoint`](MultiPoint.md)
+```ts
+toMultiPoint(): MultiPoint
+```
 
-Defined in: src/geometry/Polygon.ts:72
+Defined in: [src/geometry/Polygon.ts:72](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L72)
 
 #### Returns
 
@@ -190,9 +208,11 @@ Defined in: src/geometry/Polygon.ts:72
 
 ### toXY()
 
-> **toXY**(): \[`number`, `number`\][][][]
+```ts
+toXY(): [number, number][][][]
+```
 
-Defined in: src/geometry/Polygon.ts:77
+Defined in: [src/geometry/Polygon.ts:77](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L77)
 
 #### Returns
 
@@ -206,9 +226,11 @@ Defined in: src/geometry/Polygon.ts:77
 
 ### updateBBox()
 
-> **updateBBox**(`geometry`): `void`
+```ts
+updateBBox(geometry): void
+```
 
-Defined in: src/geometry/Geometry.ts:121
+Defined in: [src/geometry/Geometry.ts:121](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L121)
 
 #### Parameters
 
@@ -228,9 +250,11 @@ Defined in: src/geometry/Geometry.ts:121
 
 ### fromFeature()
 
-> `static` **fromFeature**(`feature`): [`GeometryCollection`](GeometryCollection.md)
+```ts
+static fromFeature(feature): GeometryCollection
+```
 
-Defined in: src/geometry/Polygon.ts:112
+Defined in: [src/geometry/Polygon.ts:112](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L112)
 
 #### Parameters
 
@@ -246,9 +270,11 @@ Defined in: src/geometry/Polygon.ts:112
 
 ### fromGeometry()
 
-> `static` **fromGeometry**(`geometry`): [`GeometryCollection`](GeometryCollection.md)
+```ts
+static fromGeometry(geometry): GeometryCollection
+```
 
-Defined in: src/geometry/Polygon.ts:122
+Defined in: [src/geometry/Polygon.ts:122](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Polygon.ts#L122)
 
 #### Parameters
 

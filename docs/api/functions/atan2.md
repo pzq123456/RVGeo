@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / atan2
 
-***
+# atan2()
 
-[rvgeo](../globals.md) / atan2
+```ts
+function atan2(y, x): number
+```
 
-# Function: atan2()
-
-> **atan2**(`y`, `x`): `number`
-
-Defined in: src/math/vector.ts:5
+Defined in: [src/math/vector.ts:5](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/vector.ts#L5)
 
 Returns the angle (in radians) from the X axis to a point.
 

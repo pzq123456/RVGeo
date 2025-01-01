@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / degreesToRadians
 
-***
+# degreesToRadians()
 
-[rvgeo](../globals.md) / degreesToRadians
+```ts
+function degreesToRadians(degrees): number
+```
 
-# Function: degreesToRadians()
-
-> **degreesToRadians**(`degrees`): `number`
-
-Defined in: src/math/units.ts:59
+Defined in: [src/math/units.ts:59](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/units.ts#L59)
 
 - Converts an angle in degrees to radians
 - 将角度转换为弧度

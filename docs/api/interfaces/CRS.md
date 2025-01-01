@@ -1,20 +1,18 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / CRS
 
-***
+# CRS
 
-[rvgeo](../globals.md) / CRS
-
-# Interface: CRS
-
-Defined in: src/geo/crs/base.ts:3
+Defined in: [src/geo/crs/base.ts:3](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/crs/base.ts#L3)
 
 ## Properties
 
 ### area()?
 
-> `optional` **area**: (`latlngs`) => `number`
+```ts
+optional area: (latlngs) => number;
+```
 
-Defined in: src/geo/crs/base.ts:6
+Defined in: [src/geo/crs/base.ts:6](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/crs/base.ts#L6)
 
 #### Parameters
 
@@ -30,17 +28,21 @@ Defined in: src/geo/crs/base.ts:6
 
 ### code?
 
-> `optional` **code**: `string`
+```ts
+optional code: string;
+```
 
-Defined in: src/geo/crs/base.ts:8
+Defined in: [src/geo/crs/base.ts:8](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/crs/base.ts#L8)
 
 ***
 
 ### distance()
 
-> **distance**: (`latlng1`, `latlng2`) => `number`
+```ts
+distance: (latlng1, latlng2) => number;
+```
 
-Defined in: src/geo/crs/base.ts:5
+Defined in: [src/geo/crs/base.ts:5](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/crs/base.ts#L5)
 
 #### Parameters
 
@@ -60,9 +62,11 @@ Defined in: src/geo/crs/base.ts:5
 
 ### planeArea()?
 
-> `optional` **planeArea**: (`latlngs`) => `number`
+```ts
+optional planeArea: (latlngs) => number;
+```
 
-Defined in: src/geo/crs/base.ts:7
+Defined in: [src/geo/crs/base.ts:7](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/crs/base.ts#L7)
 
 #### Parameters
 
@@ -78,30 +82,38 @@ Defined in: src/geo/crs/base.ts:7
 
 ### projection
 
-> **projection**: `null` \| [`Projection`](Projection.md)
+```ts
+projection: null | Projection;
+```
 
-Defined in: src/geo/crs/base.ts:4
+Defined in: [src/geo/crs/base.ts:4](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/crs/base.ts#L4)
 
 ***
 
 ### R
 
-> **R**: `number`
+```ts
+R: number;
+```
 
-Defined in: src/geo/crs/base.ts:9
+Defined in: [src/geo/crs/base.ts:9](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/crs/base.ts#L9)
 
 ***
 
 ### wrapLat?
 
-> `optional` **wrapLat**: \[`number`, `number`\]
+```ts
+optional wrapLat: [number, number];
+```
 
-Defined in: src/geo/crs/base.ts:11
+Defined in: [src/geo/crs/base.ts:11](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/crs/base.ts#L11)
 
 ***
 
 ### wrapLng?
 
-> `optional` **wrapLng**: \[`number`, `number`\]
+```ts
+optional wrapLng: [number, number];
+```
 
-Defined in: src/geo/crs/base.ts:10
+Defined in: [src/geo/crs/base.ts:10](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/crs/base.ts#L10)

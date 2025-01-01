@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / lengthToRadians
 
-***
+# lengthToRadians()
 
-[rvgeo](../globals.md) / lengthToRadians
+```ts
+function lengthToRadians(distance, units?): number
+```
 
-# Function: lengthToRadians()
-
-> **lengthToRadians**(`distance`, `units`?): `number`
-
-Defined in: src/math/units.ts:41
+Defined in: [src/math/units.ts:41](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/units.ts#L41)
 
 - Convert a distance measurement (assuming a spherical Earth) from a real-world unit into radians
 - 将距离测量值（假设地球是球形的）从现实世界的单位转换为弧度

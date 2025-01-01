@@ -1,14 +1,16 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / ccwRobust
 
-***
+# ccwRobust()
 
-[rvgeo](../globals.md) / ccwRobust
+```ts
+function ccwRobust(
+   p1, 
+   p2, 
+   p3, 
+   isReverse): number
+```
 
-# Function: ccwRobust()
-
-> **ccwRobust**(`p1`, `p2`, `p3`, `isReverse`): `number`
-
-Defined in: src/topology/utils.ts:333
+Defined in: [src/topology/utils.ts:333](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/topology/utils.ts#L333)
 
 robust version of ccw 封装了 robust-predicates 库的 orient2d 函数
 - `Note:` unlike J. Shewchuk's original code, `all the functions in this library assume y axis is oriented downwards ↓`, so the semantics are different.

@@ -1,14 +1,18 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / sample
 
-***
+# sample()
 
-[rvgeo](../globals.md) / sample
+```ts
+function sample(
+   f, 
+   N, 
+   a, 
+   b, 
+   freq, 
+   amp): number[]
+```
 
-# Function: sample()
-
-> **sample**(`f`, `N`, `a`, `b`, `freq`, `amp`): `number`[]
-
-Defined in: src/math/fourier.ts:11
+Defined in: [src/math/fourier.ts:11](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/fourier.ts#L11)
 
 采样函数
 

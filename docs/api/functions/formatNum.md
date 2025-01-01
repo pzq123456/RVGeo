@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / formatNum
 
-***
+# formatNum()
 
-[rvgeo](../globals.md) / formatNum
+```ts
+function formatNum(num, precision?): number
+```
 
-# Function: formatNum()
-
-> **formatNum**(`num`, `precision`?): `number`
-
-Defined in: src/math/utils.ts:9
+Defined in: [src/math/utils.ts:9](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/utils.ts#L9)
 
 这个函数的主要目的是将数字 num 四舍五入到指定的 precision 小数位。
 

@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / breadthFirstSearch
 
-***
+# breadthFirstSearch()
 
-[rvgeo](../globals.md) / breadthFirstSearch
+```ts
+function breadthFirstSearch(graph, start): Map<any, any>
+```
 
-# Function: breadthFirstSearch()
-
-> **breadthFirstSearch**(`graph`, `start`): `Map`\<`any`, `any`\>
-
-Defined in: src/net/bfs.ts:7
+Defined in: [src/net/bfs.ts:7](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/bfs.ts#L7)
 
 ## Parameters
 

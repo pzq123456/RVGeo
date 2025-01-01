@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / throttle
 
-***
+# throttle()
 
-[rvgeo](../globals.md) / throttle
+```ts
+function throttle(func, wait): (this, ...args) => void
+```
 
-# Function: throttle()
-
-> **throttle**(`func`, `wait`): (`this`, ...`args`) => `void`
-
-Defined in: src/core/utils.ts:37
+Defined in: [src/core/utils.ts:37](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/core/utils.ts#L37)
 
 节流函数
 

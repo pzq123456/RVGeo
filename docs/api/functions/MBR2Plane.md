@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / MBR2Plane
 
-***
+# MBR2Plane()
 
-[rvgeo](../globals.md) / MBR2Plane
+```ts
+function MBR2Plane(mbr, projection): MBR
+```
 
-# Function: MBR2Plane()
-
-> **MBR2Plane**(`mbr`, `projection`): [`MBR`](../type-aliases/MBR.md)
-
-Defined in: src/geometry/MBR.ts:61
+Defined in: [src/geometry/MBR.ts:61](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L61)
 
 default projection : SphericalMercator
 - you can change the projection by passing the second parameter

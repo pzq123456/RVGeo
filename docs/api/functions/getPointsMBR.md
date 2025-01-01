@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / getPointsMBR
 
-***
+# getPointsMBR()
 
-[rvgeo](../globals.md) / getPointsMBR
+```ts
+function getPointsMBR(points): MBR
+```
 
-# Function: getPointsMBR()
-
-> **getPointsMBR**(`points`): [`MBR`](../type-aliases/MBR.md)
-
-Defined in: src/geometry/MBR.ts:91
+Defined in: [src/geometry/MBR.ts:91](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L91)
 
 计算多点的最小外包矩形（默认情况）
 

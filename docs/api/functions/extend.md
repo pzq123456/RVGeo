@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / extend
 
-***
+# extend()
 
-[rvgeo](../globals.md) / extend
+```ts
+function extend(dest, ...args): any
+```
 
-# Function: extend()
-
-> **extend**(`dest`, ...`args`): `any`
-
-Defined in: src/core/utils.ts:57
+Defined in: [src/core/utils.ts:57](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/core/utils.ts#L57)
 
 Merge the properties
 

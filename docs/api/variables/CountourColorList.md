@@ -1,11 +1,9 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / CountourColorList
 
-***
+# CountourColorList
 
-[rvgeo](../globals.md) / CountourColorList
+```ts
+const CountourColorList: string[];
+```
 
-# Variable: CountourColorList
-
-> `const` **CountourColorList**: `string`[]
-
-Defined in: src/render/colors.ts:161
+Defined in: [src/render/colors.ts:161](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L161)

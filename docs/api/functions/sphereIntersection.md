@@ -1,14 +1,16 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / sphereIntersection
 
-***
+# sphereIntersection()
 
-[rvgeo](../globals.md) / sphereIntersection
+```ts
+function sphereIntersection(
+   latlng11, 
+   latlng12, 
+   latlng21, 
+   latlng22): [number, number]
+```
 
-# Function: sphereIntersection()
-
-> **sphereIntersection**(`latlng11`, `latlng12`, `latlng21`, `latlng22`): \[`number`, `number`\]
-
-Defined in: src/math/measuring.ts:159
+Defined in: [src/math/measuring.ts:159](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/measuring.ts#L159)
 
 求解两条球面线段的交点
 - Given two lines on a sphere, this will return their intersection point.

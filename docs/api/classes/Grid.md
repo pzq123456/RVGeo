@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Grid
 
-***
+# Grid
 
-[rvgeo](../globals.md) / Grid
-
-# Class: Grid
-
-Defined in: src/coverage/grid.ts:13
+Defined in: [src/coverage/grid.ts:13](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L13)
 
 网格类（本质是三维数组）:
 - 三维数组的每一层代表一个波段
@@ -17,9 +13,11 @@ Defined in: src/coverage/grid.ts:13
 
 ### new Grid()
 
-> **new Grid**(`MBR`, `data`): [`Grid`](Grid.md)
+```ts
+new Grid(MBR, data): Grid
+```
 
-Defined in: src/coverage/grid.ts:22
+Defined in: [src/coverage/grid.ts:22](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L22)
 
 #### Parameters
 
@@ -39,69 +37,89 @@ Defined in: src/coverage/grid.ts:22
 
 ### bands
 
-> **bands**: `number`
+```ts
+bands: number;
+```
 
-Defined in: src/coverage/grid.ts:19
+Defined in: [src/coverage/grid.ts:19](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L19)
 
 ***
 
 ### cols
 
-> **cols**: `number`
+```ts
+cols: number;
+```
 
-Defined in: src/coverage/grid.ts:18
+Defined in: [src/coverage/grid.ts:18](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L18)
 
 ***
 
 ### data
 
-> **data**: `number`[][][]
+```ts
+data: number[][][];
+```
 
-Defined in: src/coverage/grid.ts:15
+Defined in: [src/coverage/grid.ts:15](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L15)
 
 ***
 
 ### MBR
 
-> **MBR**: [`MBR`](../type-aliases/MBR.md)
+```ts
+MBR: MBR;
+```
 
-Defined in: src/coverage/grid.ts:14
+Defined in: [src/coverage/grid.ts:14](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L14)
 
 ***
 
 ### rows
 
-> **rows**: `number`
+```ts
+rows: number;
+```
 
-Defined in: src/coverage/grid.ts:17
+Defined in: [src/coverage/grid.ts:17](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L17)
 
 ***
 
 ### shape
 
-> **shape**: `number`[]
+```ts
+shape: number[];
+```
 
-Defined in: src/coverage/grid.ts:16
+Defined in: [src/coverage/grid.ts:16](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L16)
 
 ***
 
 ### stasticsCache
 
-> **stasticsCache**: `object`[] = `[]`
+```ts
+stasticsCache: object[] = [];
+```
 
-Defined in: src/coverage/grid.ts:20
+Defined in: [src/coverage/grid.ts:20](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L20)
 
 #### max
 
-> **max**: `number`
+```ts
+max: number;
+```
 
 #### mean
 
-> **mean**: `number`
+```ts
+mean: number;
+```
 
 #### min
 
-> **min**: `number`
+```ts
+min: number;
+```
 
 ## Accessors
 
@@ -109,9 +127,11 @@ Defined in: src/coverage/grid.ts:20
 
 #### Get Signature
 
-> **get** **bandCount**(): `number`
+```ts
+get bandCount(): number
+```
 
-Defined in: src/coverage/grid.ts:44
+Defined in: [src/coverage/grid.ts:44](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L44)
 
 ##### Returns
 
@@ -123,9 +143,11 @@ Defined in: src/coverage/grid.ts:44
 
 #### Get Signature
 
-> **get** **height**(): `number`
+```ts
+get height(): number
+```
 
-Defined in: src/coverage/grid.ts:40
+Defined in: [src/coverage/grid.ts:40](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L40)
 
 ##### Returns
 
@@ -137,9 +159,11 @@ Defined in: src/coverage/grid.ts:40
 
 #### Get Signature
 
-> **get** **width**(): `number`
+```ts
+get width(): number
+```
 
-Defined in: src/coverage/grid.ts:36
+Defined in: [src/coverage/grid.ts:36](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L36)
 
 ##### Returns
 
@@ -151,9 +175,11 @@ Defined in: src/coverage/grid.ts:36
 
 #### Set Signature
 
-> **set** **XYZValue**(`xyzv`): `void`
+```ts
+set XYZValue(xyzv): void
+```
 
-Defined in: src/coverage/grid.ts:58
+Defined in: [src/coverage/grid.ts:58](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L58)
 
 ##### Parameters
 
@@ -169,9 +195,11 @@ Defined in: src/coverage/grid.ts:58
 
 ### binarization()
 
-> **binarization**(`band`, `threshold`): `number`[][]
+```ts
+binarization(band, threshold): number[][]
+```
 
-Defined in: src/coverage/grid.ts:278
+Defined in: [src/coverage/grid.ts:278](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L278)
 
 二值化网格数据，返回二值化后的网格数据
 
@@ -197,9 +225,11 @@ Defined in: src/coverage/grid.ts:278
 
 ### ConvertToGridMBR()
 
-> **ConvertToGridMBR**(`MBR`): `null` \| [`MBR`](../type-aliases/MBR.md)
+```ts
+ConvertToGridMBR(MBR): null | MBR
+```
 
-Defined in: src/coverage/grid.ts:180
+Defined in: [src/coverage/grid.ts:180](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L180)
 
 由外部经纬度坐标获取网格范围，行列号索引表示（只有全部在栅格范围内才会正常得到结果）
 - 若外部坐标不全部在网格范围内，则返回 null
@@ -220,9 +250,11 @@ Defined in: src/coverage/grid.ts:180
 
 ### fillInvalidValue()
 
-> **fillInvalidValue**(`band`): `void`
+```ts
+fillInvalidValue(band): void
+```
 
-Defined in: src/coverage/grid.ts:121
+Defined in: [src/coverage/grid.ts:121](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L121)
 
 在内部修改网格数据 使用均值替换0等无效值
 
@@ -242,9 +274,11 @@ Defined in: src/coverage/grid.ts:121
 
 ### getBand()
 
-> **getBand**(`band`): `number`[][]
+```ts
+getBand(band): number[][]
+```
 
-Defined in: src/coverage/grid.ts:32
+Defined in: [src/coverage/grid.ts:32](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L32)
 
 #### Parameters
 
@@ -260,9 +294,11 @@ Defined in: src/coverage/grid.ts:32
 
 ### getBandStatistics()
 
-> **getBandStatistics**(`band`): `object`
+```ts
+getBandStatistics(band): object
+```
 
-Defined in: src/coverage/grid.ts:245
+Defined in: [src/coverage/grid.ts:245](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L245)
 
 获取指定波段的最大值、最小值、平均值
 
@@ -280,23 +316,31 @@ Defined in: src/coverage/grid.ts:245
 
 ##### max
 
-> **max**: `number`
+```ts
+max: number;
+```
 
 ##### mean
 
-> **mean**: `number`
+```ts
+mean: number;
+```
 
 ##### min
 
-> **min**: `number`
+```ts
+min: number;
+```
 
 ***
 
 ### getCoordByGridCoord()
 
-> **getCoordByGridCoord**(`GridCoord`): \[`number`, `number`\]
+```ts
+getCoordByGridCoord(GridCoord): [number, number]
+```
 
-Defined in: src/coverage/grid.ts:229
+Defined in: [src/coverage/grid.ts:229](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L229)
 
 由行列号反算经纬度坐标（栅格中心点）
 
@@ -318,9 +362,11 @@ Defined in: src/coverage/grid.ts:229
 
 ### getCoutourCode()
 
-> **getCoutourCode**(`band`, `threshold`): `number`[][]
+```ts
+getCoutourCode(band, threshold): number[][]
+```
 
-Defined in: src/coverage/grid.ts:299
+Defined in: [src/coverage/grid.ts:299](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L299)
 
 the result grid size is [rows - 1, cols - 1], and the render function should move 1/2 grid size to the left and up
 
@@ -342,9 +388,11 @@ the result grid size is [rows - 1, cols - 1], and the render function should mov
 
 ### getGridCoord()
 
-> **getGridCoord**(`Point`): `null` \| \[`number`, `number`\]
+```ts
+getGridCoord(Point): null | [number, number]
+```
 
-Defined in: src/coverage/grid.ts:206
+Defined in: [src/coverage/grid.ts:206](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L206)
 
 计算输入点的网格坐标（整数行列号坐标）
 
@@ -366,9 +414,11 @@ Defined in: src/coverage/grid.ts:206
 
 ### getMean()
 
-> **getMean**(`band`): `number`
+```ts
+getMean(band): number
+```
 
-Defined in: src/coverage/grid.ts:319
+Defined in: [src/coverage/grid.ts:319](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L319)
 
 #### Parameters
 
@@ -384,9 +434,11 @@ Defined in: src/coverage/grid.ts:319
 
 ### getShape()
 
-> **getShape**(): `number`[]
+```ts
+getShape(): number[]
+```
 
-Defined in: src/coverage/grid.ts:28
+Defined in: [src/coverage/grid.ts:28](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L28)
 
 #### Returns
 
@@ -396,9 +448,11 @@ Defined in: src/coverage/grid.ts:28
 
 ### getSorted1DArray()
 
-> **getSorted1DArray**(`band`): `number`[]
+```ts
+getSorted1DArray(band): number[]
+```
 
-Defined in: src/coverage/grid.ts:330
+Defined in: [src/coverage/grid.ts:330](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L330)
 
 #### Parameters
 
@@ -414,9 +468,11 @@ Defined in: src/coverage/grid.ts:330
 
 ### getSubGrid()
 
-> **getSubGrid**(`GridMBR`, `band`): `number`[][][]
+```ts
+getSubGrid(GridMBR, band): number[][][]
+```
 
-Defined in: src/coverage/grid.ts:93
+Defined in: [src/coverage/grid.ts:93](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L93)
 
 获取指定范围，指定波段的网格数据
 - 建议：先使用 `ConvertToGridMBR` 方法获取网格范围，再使用本方法获取网格数据（为简化代码，没有将这两个方法合并）
@@ -445,9 +501,11 @@ Defined in: src/coverage/grid.ts:93
 
 ### getSubGridObj()
 
-> **getSubGridObj**(`GridMBR`, `band`): [`Grid`](Grid.md)
+```ts
+getSubGridObj(GridMBR, band): Grid
+```
 
-Defined in: src/coverage/grid.ts:153
+Defined in: [src/coverage/grid.ts:153](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L153)
 
 与 `getSubGrid` 方法类似，但返回的是一个 Grid 对象
 
@@ -475,9 +533,11 @@ Defined in: src/coverage/grid.ts:153
 
 ### getXYZValue()
 
-> **getXYZValue**(`xy`, `z`): `number`
+```ts
+getXYZValue(xy, z): number
+```
 
-Defined in: src/coverage/grid.ts:52
+Defined in: [src/coverage/grid.ts:52](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L52)
 
 #### Parameters
 
@@ -497,9 +557,11 @@ Defined in: src/coverage/grid.ts:52
 
 ### setMBR()
 
-> **setMBR**(`MBR`): `void`
+```ts
+setMBR(MBR): void
+```
 
-Defined in: src/coverage/grid.ts:48
+Defined in: [src/coverage/grid.ts:48](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L48)
 
 #### Parameters
 
@@ -515,9 +577,11 @@ Defined in: src/coverage/grid.ts:48
 
 ### fromFillValue()
 
-> `static` **fromFillValue**(`fillVal`, `shape`): [`Grid`](Grid.md)
+```ts
+static fromFillValue(fillVal, shape): Grid
+```
 
-Defined in: src/coverage/grid.ts:342
+Defined in: [src/coverage/grid.ts:342](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L342)
 
 #### Parameters
 

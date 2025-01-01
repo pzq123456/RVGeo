@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / meshArcs
 
-***
+# meshArcs()
 
-[rvgeo](../globals.md) / meshArcs
+```ts
+function meshArcs(
+   topology, 
+   object, 
+   filter): object
+```
 
-# Function: meshArcs()
-
-> **meshArcs**(`topology`, `object`, `filter`): `object`
-
-Defined in: src/topology/client/mesh.ts:17
+Defined in: [src/topology/client/mesh.ts:17](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/topology/client/mesh.ts#L17)
 
 ## Parameters
 
@@ -30,8 +31,12 @@ Defined in: src/topology/client/mesh.ts:17
 
 ### arcs
 
-> **arcs**: `number`[][]
+```ts
+arcs: number[][];
+```
 
 ### type
 
-> **type**: `string` = `"MultiLineString"`
+```ts
+type: string = "MultiLineString";
+```

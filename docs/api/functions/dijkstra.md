@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / dijkstra
 
-***
+# dijkstra()
 
-[rvgeo](../globals.md) / dijkstra
+```ts
+function dijkstra(graph, start): Map<any, any>
+```
 
-# Function: dijkstra()
-
-> **dijkstra**(`graph`, `start`): `Map`\<`any`, `any`\>
-
-Defined in: src/net/Dijkstra.ts:33
+Defined in: [src/net/Dijkstra.ts:33](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/Dijkstra.ts#L33)
 
 ## Parameters
 

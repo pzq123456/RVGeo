@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / trueColorBand
 
-***
+# trueColorBand()
 
-[rvgeo](../globals.md) / trueColorBand
+```ts
+function trueColorBand(
+   statistics, 
+   value, 
+   strachFunc): string
+```
 
-# Function: trueColorBand()
-
-> **trueColorBand**(`statistics`, `value`, `strachFunc`): `string`
-
-Defined in: src/render/colors.ts:131
+Defined in: [src/render/colors.ts:131](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L131)
 
 真彩色带渲染
 

@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / radiansToLength
 
-***
+# radiansToLength()
 
-[rvgeo](../globals.md) / radiansToLength
+```ts
+function radiansToLength(radians, units?): number
+```
 
-# Function: radiansToLength()
-
-> **radiansToLength**(`radians`, `units`?): `number`
-
-Defined in: src/math/units.ts:19
+Defined in: [src/math/units.ts:19](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/units.ts#L19)
 
 - Convert a distance measurement (assuming a spherical Earth) from radians to a more friendly unit.
 - 将距离测量值（假设地球是球形的）从弧度转换为更友好的单位。

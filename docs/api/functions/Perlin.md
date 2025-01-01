@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Perlin
 
-***
+# Perlin()
 
-[rvgeo](../globals.md) / Perlin
+```ts
+function Perlin(X, Y): number
+```
 
-# Function: Perlin()
-
-> **Perlin**(`X`, `Y`): `number`
-
-Defined in: src/coverage/Noise.ts:78
+Defined in: [src/coverage/Noise.ts:78](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/Noise.ts#L78)
 
 2D [Perlin](https://en.wikipedia.org/wiki/Perlin_noise) 噪声
 

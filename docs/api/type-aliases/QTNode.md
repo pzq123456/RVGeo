@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / QTNode
 
-***
+# QTNode
 
-[rvgeo](../globals.md) / QTNode
+```ts
+type QTNode = object;
+```
 
-# Type Alias: QTNode
-
-> **QTNode**: `object`
-
-Defined in: src/coverage/grid.ts:466
+Defined in: [src/coverage/grid.ts:466](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L466)
 
 由网格数据生成四叉树(节点)
 
@@ -16,24 +14,36 @@ Defined in: src/coverage/grid.ts:466
 
 ### boundary
 
-> **boundary**: [`MBR`](MBR.md)
+```ts
+boundary: MBR;
+```
 
 ### children
 
-> **children**: [`QTNode`](QTNode.md)[]
+```ts
+children: QTNode[];
+```
 
 ### depth
 
-> **depth**: `number`
+```ts
+depth: number;
+```
 
 ### isDivided
 
-> **isDivided**: `boolean`
+```ts
+isDivided: boolean;
+```
 
 ### isLeaf
 
-> **isLeaf**: `boolean`
+```ts
+isLeaf: boolean;
+```
 
 ### maxDepth
 
-> **maxDepth**: `number`
+```ts
+maxDepth: number;
+```

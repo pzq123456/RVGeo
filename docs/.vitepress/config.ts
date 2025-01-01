@@ -1,4 +1,5 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from 'vitepress';
+import typedocSidebar from "../api/typedoc-sidebar.json";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -11,16 +12,15 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Docs', link: '/documents' },
-      { text: 'API', link: '/api/globals' }
+      { text: 'API', link: '/api' }
     ],
 
     sidebar: [
+
+      { text: 'Docs', link: '/documents' },
       {
-        text: 'Examples',
-        items: [
-          { text: 'Docs', link: '/documents' },
-          { text: 'API', link: '/api/globals' }
-        ]
+        text: 'API',
+        items: typedocSidebar,
       }
     ],
 
@@ -33,5 +33,8 @@ export default defineConfig({
     footer: {
       copyright: `Released under the MIT License. Copyright © 2022-present <a href="https://github.com/pzq123456"> pzq123456 </a> `
     },
+  },
+  markdown: {
+    math: true
   }
 })

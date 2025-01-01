@@ -1,14 +1,16 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / K\_means
 
-***
+# K\_means()
 
-[rvgeo](../globals.md) / K\_means
+```ts
+function K_means(
+   k, 
+   thresh, 
+   maxtime, 
+   points): undefined | [number, number][][]
+```
 
-# Function: K\_means()
-
-> **K\_means**(`k`, `thresh`, `maxtime`, `points`): `undefined` \| \[`number`, `number`\][][]
-
-Defined in: src/cluster/kmeans.ts:37
+Defined in: [src/cluster/kmeans.ts:37](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/cluster/kmeans.ts#L37)
 
 k均值聚类
 

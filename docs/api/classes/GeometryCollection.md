@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / GeometryCollection
 
-***
+# GeometryCollection
 
-[rvgeo](../globals.md) / GeometryCollection
-
-# Class: GeometryCollection
-
-Defined in: src/geometry/Geometry.ts:101
+Defined in: [src/geometry/Geometry.ts:101](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L101)
 
 ## Extended by
 
@@ -18,9 +14,11 @@ Defined in: src/geometry/Geometry.ts:101
 
 ### new GeometryCollection()
 
-> **new GeometryCollection**(`geometries`, `properties`?): [`GeometryCollection`](GeometryCollection.md)
+```ts
+new GeometryCollection(geometries, properties?): GeometryCollection
+```
 
-Defined in: src/geometry/Geometry.ts:108
+Defined in: [src/geometry/Geometry.ts:108](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L108)
 
 #### Parameters
 
@@ -40,49 +38,61 @@ Defined in: src/geometry/Geometry.ts:108
 
 ### bbox
 
-> **bbox**: [`MBR`](../type-aliases/MBR.md)
+```ts
+bbox: MBR;
+```
 
-Defined in: src/geometry/Geometry.ts:104
+Defined in: [src/geometry/Geometry.ts:104](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L104)
 
 ***
 
 ### coordinates
 
-> **coordinates**: `any`
+```ts
+coordinates: any;
+```
 
-Defined in: src/geometry/Geometry.ts:102
+Defined in: [src/geometry/Geometry.ts:102](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L102)
 
 ***
 
 ### geometries
 
-> **geometries**: ([`Geometry`](Geometry.md) \| [`GeometryCollection`](GeometryCollection.md))[] = `[]`
+```ts
+geometries: (Geometry | GeometryCollection)[] = [];
+```
 
-Defined in: src/geometry/Geometry.ts:103
+Defined in: [src/geometry/Geometry.ts:103](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L103)
 
 ***
 
 ### projection
 
-> **projection**: [`Projection`](../interfaces/Projection.md) = `SphericalMercator`
+```ts
+projection: Projection = SphericalMercator;
+```
 
-Defined in: src/geometry/Geometry.ts:106
+Defined in: [src/geometry/Geometry.ts:106](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L106)
 
 ***
 
 ### properties
 
-> **properties**: `any`
+```ts
+properties: any;
+```
 
-Defined in: src/geometry/Geometry.ts:105
+Defined in: [src/geometry/Geometry.ts:105](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L105)
 
 ## Methods
 
 ### \_update()
 
-> **\_update**(`geometry`, `index`): `void`
+```ts
+_update(geometry, index): void
+```
 
-Defined in: src/geometry/Geometry.ts:133
+Defined in: [src/geometry/Geometry.ts:133](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L133)
 
 #### Parameters
 
@@ -102,9 +112,11 @@ Defined in: src/geometry/Geometry.ts:133
 
 ### addGeometry()
 
-> **addGeometry**(`geometry`): `void`
+```ts
+addGeometry(geometry): void
+```
 
-Defined in: src/geometry/Geometry.ts:128
+Defined in: [src/geometry/Geometry.ts:128](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L128)
 
 #### Parameters
 
@@ -120,9 +132,11 @@ Defined in: src/geometry/Geometry.ts:128
 
 ### toGeoJSON()
 
-> **toGeoJSON**(): [`GeoJSONFeature`](../interfaces/GeoJSONFeature.md)
+```ts
+toGeoJSON(): GeoJSONFeature
+```
 
-Defined in: src/geometry/Geometry.ts:138
+Defined in: [src/geometry/Geometry.ts:138](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L138)
 
 #### Returns
 
@@ -132,9 +146,11 @@ Defined in: src/geometry/Geometry.ts:138
 
 ### toXY()
 
-> **toXY**(): `any`
+```ts
+toXY(): any
+```
 
-Defined in: src/geometry/Geometry.ts:119
+Defined in: [src/geometry/Geometry.ts:119](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L119)
 
 #### Returns
 
@@ -144,9 +160,11 @@ Defined in: src/geometry/Geometry.ts:119
 
 ### updateBBox()
 
-> **updateBBox**(`geometry`): `void`
+```ts
+updateBBox(geometry): void
+```
 
-Defined in: src/geometry/Geometry.ts:121
+Defined in: [src/geometry/Geometry.ts:121](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Geometry.ts#L121)
 
 #### Parameters
 

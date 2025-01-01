@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / mergeMBR
 
-***
+# mergeMBR()
 
-[rvgeo](../globals.md) / mergeMBR
+```ts
+function mergeMBR(mbr1, mbr2): MBR
+```
 
-# Function: mergeMBR()
-
-> **mergeMBR**(`mbr1`, `mbr2`): [`MBR`](../type-aliases/MBR.md)
-
-Defined in: src/geometry/MBR.ts:50
+Defined in: [src/geometry/MBR.ts:50](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L50)
 
 ## Parameters
 

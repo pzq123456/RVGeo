@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / deMaxMin
 
-***
+# deMaxMin()
 
-[rvgeo](../globals.md) / deMaxMin
+```ts
+function deMaxMin(fft): void
+```
 
-# Function: deMaxMin()
-
-> **deMaxMin**(`fft`): `void`
-
-Defined in: src/coverage/grid.ts:495
+Defined in: [src/coverage/grid.ts:495](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/grid.ts#L495)
 
 去除最大最小值
 

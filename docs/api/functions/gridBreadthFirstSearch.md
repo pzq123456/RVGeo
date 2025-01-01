@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / gridBreadthFirstSearch
 
-***
+# gridBreadthFirstSearch()
 
-[rvgeo](../globals.md) / gridBreadthFirstSearch
+```ts
+function gridBreadthFirstSearch(
+   graph, 
+   start, 
+goal?): Map<string, [number, number] | null>
+```
 
-# Function: gridBreadthFirstSearch()
-
-> **gridBreadthFirstSearch**(`graph`, `start`, `goal`?): `Map`\<`string`, \[`number`, `number`\] \| `null`\>
-
-Defined in: src/net/bfs.ts:31
+Defined in: [src/net/bfs.ts:31](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/bfs.ts#L31)
 
 ## Parameters
 

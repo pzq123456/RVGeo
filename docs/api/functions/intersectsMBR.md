@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / intersectsMBR
 
-***
+# intersectsMBR()
 
-[rvgeo](../globals.md) / intersectsMBR
+```ts
+function intersectsMBR(mbr1, mbr2): boolean
+```
 
-# Function: intersectsMBR()
-
-> **intersectsMBR**(`mbr1`, `mbr2`): `boolean`
-
-Defined in: src/geometry/MBR.ts:120
+Defined in: [src/geometry/MBR.ts:120](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L120)
 
 ## Parameters
 

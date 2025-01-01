@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Queue
 
-***
+# Queue\<T\>
 
-[rvgeo](../globals.md) / Queue
-
-# Class: Queue\<T\>
-
-Defined in: src/net/utils.ts:2
+Defined in: [src/net/utils.ts:2](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/utils.ts#L2)
 
 ## Type Parameters
 
@@ -16,7 +12,9 @@ Defined in: src/net/utils.ts:2
 
 ### new Queue()
 
-> **new Queue**\<`T`\>(): [`Queue`](Queue.md)\<`T`\>
+```ts
+new Queue<T>(): Queue<T>
+```
 
 #### Returns
 
@@ -26,9 +24,11 @@ Defined in: src/net/utils.ts:2
 
 ### get()
 
-> **get**(): `undefined` \| `T`
+```ts
+get(): undefined | T
+```
 
-Defined in: src/net/utils.ts:17
+Defined in: [src/net/utils.ts:17](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/utils.ts#L17)
 
 #### Returns
 
@@ -38,9 +38,11 @@ Defined in: src/net/utils.ts:17
 
 ### isEmpty()
 
-> **isEmpty**(): `boolean`
+```ts
+isEmpty(): boolean
+```
 
-Defined in: src/net/utils.ts:21
+Defined in: [src/net/utils.ts:21](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/utils.ts#L21)
 
 #### Returns
 
@@ -50,9 +52,11 @@ Defined in: src/net/utils.ts:21
 
 ### pop()
 
-> **pop**(): `undefined` \| `T`
+```ts
+pop(): undefined | T
+```
 
-Defined in: src/net/utils.ts:9
+Defined in: [src/net/utils.ts:9](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/utils.ts#L9)
 
 #### Returns
 
@@ -62,9 +66,11 @@ Defined in: src/net/utils.ts:9
 
 ### push()
 
-> **push**(`item`): `void`
+```ts
+push(item): void
+```
 
-Defined in: src/net/utils.ts:5
+Defined in: [src/net/utils.ts:5](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/utils.ts#L5)
 
 #### Parameters
 
@@ -80,9 +86,11 @@ Defined in: src/net/utils.ts:5
 
 ### put()
 
-> **put**(`item`): `void`
+```ts
+put(item): void
+```
 
-Defined in: src/net/utils.ts:13
+Defined in: [src/net/utils.ts:13](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/utils.ts#L13)
 
 #### Parameters
 

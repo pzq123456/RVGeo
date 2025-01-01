@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / alphaComplex
 
-***
+# alphaComplex()
 
-[rvgeo](../globals.md) / alphaComplex
+```ts
+function alphaComplex(points, alpha): [number, number, number][]
+```
 
-# Function: alphaComplex()
-
-> **alphaComplex**(`points`, `alpha`): \[`number`, `number`, `number`\][]
-
-Defined in: src/triangulation/Shell.ts:97
+Defined in: [src/triangulation/Shell.ts:97](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Shell.ts#L97)
 
 Alpha Complex 算法
 - Alpha shapes are a generalization of Delaunay triangulations. 

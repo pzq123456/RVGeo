@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / toLineString
 
-***
+# toLineString()
 
-[rvgeo](../globals.md) / toLineString
+```ts
+function toLineString(points): LineString
+```
 
-# Function: toLineString()
-
-> **toLineString**(`points`): [`LineString`](../classes/LineString.md)
-
-Defined in: src/geometry/LineString.ts:143
+Defined in: [src/geometry/LineString.ts:143](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/LineString.ts#L143)
 
 ## Parameters
 

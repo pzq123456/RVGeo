@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / radiansToDegrees
 
-***
+# radiansToDegrees()
 
-[rvgeo](../globals.md) / radiansToDegrees
+```ts
+function radiansToDegrees(radians): number
+```
 
-# Function: radiansToDegrees()
-
-> **radiansToDegrees**(`radians`): `number`
-
-Defined in: src/math/units.ts:74
+Defined in: [src/math/units.ts:74](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/units.ts#L74)
 
 - Converts an angle in radians to degrees
 

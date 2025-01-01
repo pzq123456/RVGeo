@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / trueColorBandFactory
 
-***
+# trueColorBandFactory()
 
-[rvgeo](../globals.md) / trueColorBandFactory
+```ts
+function trueColorBandFactory(type, isReverse?): (statistics, value) => string
+```
 
-# Function: trueColorBandFactory()
-
-> **trueColorBandFactory**(`type`, `isReverse`?): (`statistics`, `value`) => `string`
-
-Defined in: src/render/colors.ts:149
+Defined in: [src/render/colors.ts:149](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L149)
 
 真彩色带渲染工厂函数
 

@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / cartesian
 
-***
+# cartesian()
 
-[rvgeo](../globals.md) / cartesian
+```ts
+function cartesian(spherical, toRadians): [number, number, number]
+```
 
-# Function: cartesian()
-
-> **cartesian**(`spherical`, `toRadians`): \[`number`, `number`, `number`\]
-
-Defined in: src/math/vector.ts:65
+Defined in: [src/math/vector.ts:65](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/vector.ts#L65)
 
 将球坐标系下的向量 [longitude, latitude]（弧度制）转换为三维笛卡尔坐标系下的向量 [x, y, z]。
 - This function takes spherical coordinates [longitude, latitude] and converts them to a 3D Cartesian vector [x, y, z].

@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / unitToUnit
 
-***
+# unitToUnit()
 
-[rvgeo](../globals.md) / unitToUnit
+```ts
+function unitToUnit(
+   distance, 
+   from, 
+   to): number
+```
 
-# Function: unitToUnit()
-
-> **unitToUnit**(`distance`, `from`, `to`): `number`
-
-Defined in: src/math/units.ts:117
+Defined in: [src/math/units.ts:117](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/units.ts#L117)
 
 - 距离单位内互相转换
 - Convert distance units to each other

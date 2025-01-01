@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Complex
 
-***
+# Complex
 
-[rvgeo](../globals.md) / Complex
+```ts
+type Complex = object;
+```
 
-# Type Alias: Complex
-
-> **Complex**: `object`
-
-Defined in: src/math/fourier.ts:25
+Defined in: [src/math/fourier.ts:25](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/fourier.ts#L25)
 
 复数类型
 
@@ -16,8 +14,12 @@ Defined in: src/math/fourier.ts:25
 
 ### imag
 
-> **imag**: `number`
+```ts
+imag: number;
+```
 
 ### real
 
-> **real**: `number`
+```ts
+real: number;
+```

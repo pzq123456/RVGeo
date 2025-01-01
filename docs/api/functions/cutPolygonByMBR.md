@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / cutPolygonByMBR
 
-***
+# cutPolygonByMBR()
 
-[rvgeo](../globals.md) / cutPolygonByMBR
+```ts
+function cutPolygonByMBR(polygon, mbr): [number, number][] | null
+```
 
-# Function: cutPolygonByMBR()
-
-> **cutPolygonByMBR**(`polygon`, `mbr`): \[`number`, `number`\][] \| `null`
-
-Defined in: src/topology/utils.ts:117
+Defined in: [src/topology/utils.ts:117](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/topology/utils.ts#L117)
 
 使用 MBR 裁剪多边形
 

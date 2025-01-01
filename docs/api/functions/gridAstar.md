@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / gridAstar
 
-***
+# gridAstar()
 
-[rvgeo](../globals.md) / gridAstar
+```ts
+function gridAstar(
+   graph, 
+   start, 
+goal): Map<string, [number, number] | null>
+```
 
-# Function: gridAstar()
-
-> **gridAstar**(`graph`, `start`, `goal`): `Map`\<`string`, \[`number`, `number`\] \| `null`\>
-
-Defined in: src/net/astar.ts:10
+Defined in: [src/net/astar.ts:10](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/net/astar.ts#L10)
 
 ## Parameters
 

@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / PointOutsideMBR
 
-***
+# PointOutsideMBR()
 
-[rvgeo](../globals.md) / PointOutsideMBR
+```ts
+function PointOutsideMBR(
+   point, 
+   mbr, 
+   isPlane): boolean
+```
 
-# Function: PointOutsideMBR()
-
-> **PointOutsideMBR**(`point`, `mbr`, `isPlane`): `boolean`
-
-Defined in: src/topology/utils.ts:82
+Defined in: [src/topology/utils.ts:82](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/topology/utils.ts#L82)
 
 判断点是否在 MBR 外（平面与经纬度坐标通用，多边形边界算作在内）
 determine if a point is outside of a MBR (polygon boundary is considered inside)

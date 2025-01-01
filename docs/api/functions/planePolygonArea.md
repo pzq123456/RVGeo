@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / planePolygonArea
 
-***
+# planePolygonArea()
 
-[rvgeo](../globals.md) / planePolygonArea
+```ts
+function planePolygonArea(points, radius): number
+```
 
-# Function: planePolygonArea()
-
-> **planePolygonArea**(`points`, `radius`): `number`
-
-Defined in: src/math/measuring.ts:40
+Defined in: [src/math/measuring.ts:40](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/measuring.ts#L40)
 
 - 使用 Shoelace Theorem 求多边形面积
 - calculate the area of a polygon using the Shoelace Theorem

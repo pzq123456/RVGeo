@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / simpleColorBandFactory
 
-***
+# simpleColorBandFactory()
 
-[rvgeo](../globals.md) / simpleColorBandFactory
+```ts
+function simpleColorBandFactory(type, isReverse?): (statistics, value) => string
+```
 
-# Function: simpleColorBandFactory()
-
-> **simpleColorBandFactory**(`type`, `isReverse`?): (`statistics`, `value`) => `string`
-
-Defined in: src/render/colors.ts:154
+Defined in: [src/render/colors.ts:154](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L154)
 
 ## Parameters
 

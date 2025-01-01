@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / equalsMBR
 
-***
+# equalsMBR()
 
-[rvgeo](../globals.md) / equalsMBR
+```ts
+function equalsMBR(mbr1, mbr2): boolean
+```
 
-# Function: equalsMBR()
-
-> **equalsMBR**(`mbr1`, `mbr2`): `boolean`
-
-Defined in: src/geometry/MBR.ts:128
+Defined in: [src/geometry/MBR.ts:128](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L128)
 
 ## Parameters
 

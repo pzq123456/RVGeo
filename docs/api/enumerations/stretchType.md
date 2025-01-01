@@ -1,49 +1,55 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / stretchType
 
-***
+# stretchType
 
-[rvgeo](../globals.md) / stretchType
-
-# Enumeration: stretchType
-
-Defined in: src/render/colors.ts:1
+Defined in: [src/render/colors.ts:1](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L1)
 
 ## Enumeration Members
 
 ### groupStretch
 
-> **groupStretch**: `4`
+```ts
+groupStretch: 4;
+```
 
-Defined in: src/render/colors.ts:6
+Defined in: [src/render/colors.ts:6](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L6)
 
 ***
 
 ### linear
 
-> **linear**: `0`
+```ts
+linear: 0;
+```
 
-Defined in: src/render/colors.ts:2
+Defined in: [src/render/colors.ts:2](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L2)
 
 ***
 
 ### log
 
-> **log**: `2`
+```ts
+log: 2;
+```
 
-Defined in: src/render/colors.ts:4
+Defined in: [src/render/colors.ts:4](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L4)
 
 ***
 
 ### power
 
-> **power**: `3`
+```ts
+power: 3;
+```
 
-Defined in: src/render/colors.ts:5
+Defined in: [src/render/colors.ts:5](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L5)
 
 ***
 
 ### square
 
-> **square**: `1`
+```ts
+square: 1;
+```
 
-Defined in: src/render/colors.ts:3
+Defined in: [src/render/colors.ts:3](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L3)

@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / conj
 
-***
+# conj()
 
-[rvgeo](../globals.md) / conj
+```ts
+function conj(a): object
+```
 
-# Function: conj()
-
-> **conj**(`a`): `object`
-
-Defined in: src/math/fourier.ts:68
+Defined in: [src/math/fourier.ts:68](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/fourier.ts#L68)
 
 复数共轭
 - complex conjugate
@@ -35,8 +33,12 @@ Defined in: src/math/fourier.ts:68
 
 ### imag
 
-> **imag**: `number`
+```ts
+imag: number;
+```
 
 ### real
 
-> **real**: `number`
+```ts
+real: number;
+```

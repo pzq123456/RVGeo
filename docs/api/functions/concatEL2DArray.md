@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / concatEL2DArray
 
-***
+# concatEL2DArray()
 
-[rvgeo](../globals.md) / concatEL2DArray
+```ts
+function concatEL2DArray(array1, array2): any[]
+```
 
-# Function: concatEL2DArray()
-
-> **concatEL2DArray**(`array1`, `array2`): `any`[]
-
-Defined in: src/core/utils.ts:145
+Defined in: [src/core/utils.ts:145](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/core/utils.ts#L145)
 
 拼接等长二维数组
 

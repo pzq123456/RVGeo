@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / degToDMS
 
-***
+# degToDMS()
 
-[rvgeo](../globals.md) / degToDMS
+```ts
+function degToDMS(deg): [number, number, number, string]
+```
 
-# Function: degToDMS()
-
-> **degToDMS**(`deg`): \[`number`, `number`, `number`, `string`\]
-
-Defined in: src/math/units.ts:191
+Defined in: [src/math/units.ts:191](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/units.ts#L191)
 
 ## Parameters
 

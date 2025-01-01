@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / convexHull
 
-***
+# convexHull()
 
-[rvgeo](../globals.md) / convexHull
+```ts
+function convexHull(points): Point[]
+```
 
-# Function: convexHull()
-
-> **convexHull**(`points`): [`Point`](../classes/Point.md)[]
-
-Defined in: src/triangulation/Shell.ts:13
+Defined in: [src/triangulation/Shell.ts:13](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Shell.ts#L13)
 
 凸包算法
 

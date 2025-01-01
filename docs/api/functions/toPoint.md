@@ -1,16 +1,17 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / toPoint
 
-***
-
-[rvgeo](../globals.md) / toPoint
-
-# Function: toPoint()
+# toPoint()
 
 ## Call Signature
 
-> **toPoint**(`Lon`, `Lat`, `properties`?): [`Point`](../classes/Point.md)
+```ts
+function toPoint(
+   Lon, 
+   Lat, 
+   properties?): Point
+```
 
-Defined in: src/geometry/Point.ts:203
+Defined in: [src/geometry/Point.ts:203](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L203)
 
 the factory function to create a Point(the following ways are equivalent)
 
@@ -47,9 +48,11 @@ let point = toPoint({lon: 120, lat: 30}, { name: 'test' });
 
 ## Call Signature
 
-> **toPoint**(`coordinates`, `properties`?): [`Point`](../classes/Point.md)
+```ts
+function toPoint(coordinates, properties?): Point
+```
 
-Defined in: src/geometry/Point.ts:204
+Defined in: [src/geometry/Point.ts:204](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L204)
 
 the factory function to create a Point(the following ways are equivalent)
 
@@ -82,9 +85,11 @@ let point = toPoint({lon: 120, lat: 30}, { name: 'test' });
 
 ## Call Signature
 
-> **toPoint**(`obj`, `properties`?): [`Point`](../classes/Point.md)
+```ts
+function toPoint(obj, properties?): Point
+```
 
-Defined in: src/geometry/Point.ts:205
+Defined in: [src/geometry/Point.ts:205](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/Point.ts#L205)
 
 the factory function to create a Point(the following ways are equivalent)
 
@@ -92,7 +97,16 @@ the factory function to create a Point(the following ways are equivalent)
 
 #### obj
 
-\{ `lat`: `number`; `lon`: `number`; \} | \{ `x`: `number`; `y`: `number`; \} | \{ `lat`: `number`; `lng`: `number`; \}
+\{
+`lat`: `number`;
+`lon`: `number`;
+\} | \{
+`x`: `number`;
+`y`: `number`;
+\} | \{
+`lat`: `number`;
+`lng`: `number`;
+\}
 
 #### properties?
 

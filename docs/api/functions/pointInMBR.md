@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / pointInMBR
 
-***
+# pointInMBR()
 
-[rvgeo](../globals.md) / pointInMBR
+```ts
+function pointInMBR(point, mbr): boolean
+```
 
-# Function: pointInMBR()
-
-> **pointInMBR**(`point`, `mbr`): `boolean`
-
-Defined in: src/geometry/MBR.ts:110
+Defined in: [src/geometry/MBR.ts:110](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L110)
 
 判断点是否在 MBR 内（默认情况）
 

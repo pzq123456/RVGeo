@@ -1,11 +1,9 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / SphericalMercator
 
-***
+# SphericalMercator
 
-[rvgeo](../globals.md) / SphericalMercator
+```ts
+const SphericalMercator: Projection;
+```
 
-# Variable: SphericalMercator
-
-> `const` **SphericalMercator**: [`Projection`](../interfaces/Projection.md)
-
-Defined in: src/geo/projection/SphericalMercator.ts:12
+Defined in: [src/geo/projection/SphericalMercator.ts:12](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geo/projection/SphericalMercator.ts#L12)

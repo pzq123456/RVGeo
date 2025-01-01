@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / FFTReal2
 
-***
+# FFTReal2()
 
-[rvgeo](../globals.md) / FFTReal2
+```ts
+function FFTReal2(fftResult, mode): number[][]
+```
 
-# Function: FFTReal2()
-
-> **FFTReal2**(`fftResult`, `mode`): `number`[][]
-
-Defined in: src/math/fourier.ts:395
+Defined in: [src/math/fourier.ts:395](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/fourier.ts#L395)
 
 ## Parameters
 

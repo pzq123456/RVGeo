@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / rectangleToMBR
 
-***
+# rectangleToMBR()
 
-[rvgeo](../globals.md) / rectangleToMBR
+```ts
+function rectangleToMBR(rectangle): MBR
+```
 
-# Function: rectangleToMBR()
-
-> **rectangleToMBR**(`rectangle`): [`MBR`](../type-aliases/MBR.md)
-
-Defined in: src/geometry/MBR.ts:208
+Defined in: [src/geometry/MBR.ts:208](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L208)
 
 Rectangle 转换为 MBR
 

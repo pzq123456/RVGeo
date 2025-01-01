@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / mergeArcs
 
-***
+# mergeArcs()
 
-[rvgeo](../globals.md) / mergeArcs
+```ts
+function mergeArcs(topology, objects): object
+```
 
-# Function: mergeArcs()
-
-> **mergeArcs**(`topology`, `objects`): `object`
-
-Defined in: src/topology/client/merge.ts:21
+Defined in: [src/topology/client/merge.ts:21](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/topology/client/merge.ts#L21)
 
 ## Parameters
 
@@ -26,8 +24,12 @@ Defined in: src/topology/client/merge.ts:21
 
 ### arcs
 
-> **arcs**: `number`[][][]
+```ts
+arcs: number[][][];
+```
 
 ### type
 
-> **type**: `string` = `"MultiPolygon"`
+```ts
+type: string = "MultiPolygon";
+```

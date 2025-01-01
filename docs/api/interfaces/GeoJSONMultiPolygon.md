@@ -1,12 +1,8 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / GeoJSONMultiPolygon
 
-***
+# GeoJSONMultiPolygon
 
-[rvgeo](../globals.md) / GeoJSONMultiPolygon
-
-# Interface: GeoJSONMultiPolygon
-
-Defined in: src/geometry/GeoJSON.ts:42
+Defined in: [src/geometry/GeoJSON.ts:42](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L42)
 
 ## Extends
 
@@ -16,9 +12,11 @@ Defined in: src/geometry/GeoJSON.ts:42
 
 ### coordinates
 
-> **coordinates**: \[`number`, `number`\][][][]
+```ts
+coordinates: [number, number][][][];
+```
 
-Defined in: src/geometry/GeoJSON.ts:44
+Defined in: [src/geometry/GeoJSON.ts:44](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L44)
 
 #### Overrides
 
@@ -28,9 +26,11 @@ Defined in: src/geometry/GeoJSON.ts:44
 
 ### type
 
-> **type**: `"MultiPolygon"`
+```ts
+type: "MultiPolygon";
+```
 
-Defined in: src/geometry/GeoJSON.ts:43
+Defined in: [src/geometry/GeoJSON.ts:43](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/GeoJSON.ts#L43)
 
 #### Overrides
 

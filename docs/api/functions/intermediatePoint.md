@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / intermediatePoint
 
-***
+# intermediatePoint()
 
-[rvgeo](../globals.md) / intermediatePoint
+```ts
+function intermediatePoint(
+   latlng1, 
+   latlng2, 
+   fraction): [number, number]
+```
 
-# Function: intermediatePoint()
-
-> **intermediatePoint**(`latlng1`, `latlng2`, `fraction`): \[`number`, `number`\]
-
-Defined in: src/math/measuring.ts:129
+Defined in: [src/math/measuring.ts:129](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/measuring.ts#L129)
 
 An intermediate point at any fraction along the great circle path between two points
 

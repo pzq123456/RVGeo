@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / Rectangle
 
-***
+# Rectangle
 
-[rvgeo](../globals.md) / Rectangle
+```ts
+type Rectangle = object;
+```
 
-# Type Alias: Rectangle
-
-> **Rectangle**: `object`
-
-Defined in: src/geometry/MBR.ts:48
+Defined in: [src/geometry/MBR.ts:48](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/geometry/MBR.ts#L48)
 
 - Rectangle is a rectangle that bounds a set of points.
 
@@ -16,16 +14,24 @@ Defined in: src/geometry/MBR.ts:48
 
 ### h
 
-> **h**: `number`
+```ts
+h: number;
+```
 
 ### w
 
-> **w**: `number`
+```ts
+w: number;
+```
 
 ### x
 
-> **x**: `number`
+```ts
+x: number;
+```
 
 ### y
 
-> **y**: `number`
+```ts
+y: number;
+```

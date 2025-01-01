@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / metersTo
 
-***
+# metersTo()
 
-[rvgeo](../globals.md) / metersTo
+```ts
+function metersTo(distance, units): number
+```
 
-# Function: metersTo()
-
-> **metersTo**(`distance`, `units`): `number`
-
-Defined in: src/math/units.ts:101
+Defined in: [src/math/units.ts:101](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/units.ts#L101)
 
 - 将距离单位米转换为指定单位
 - Convert distance units from meters to specified units

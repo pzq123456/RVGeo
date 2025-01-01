@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / equals
 
-***
+# equals()
 
-[rvgeo](../globals.md) / equals
+```ts
+function equals(
+   a, 
+   b, 
+   tolerance): boolean
+```
 
-# Function: equals()
-
-> **equals**(`a`, `b`, `tolerance`): `boolean`
-
-Defined in: src/math/vector.ts:18
+Defined in: [src/math/vector.ts:18](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/math/vector.ts#L18)
 
 deep compare two arrays(1D)
 

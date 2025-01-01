@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / pseudoColorBandFactory
 
-***
+# pseudoColorBandFactory()
 
-[rvgeo](../globals.md) / pseudoColorBandFactory
+```ts
+function pseudoColorBandFactory(
+   type, 
+   level?, 
+   colorList?): (statistics, value) => string
+```
 
-# Function: pseudoColorBandFactory()
-
-> **pseudoColorBandFactory**(`type`, `level`?, `colorList`?): (`statistics`, `value`) => `string`
-
-Defined in: src/render/colors.ts:206
+Defined in: [src/render/colors.ts:206](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/render/colors.ts#L206)
 
 伪彩色带渲染工厂函数
 

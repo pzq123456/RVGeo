@@ -1,14 +1,12 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / complateMap
 
-***
+# complateMap()
 
-[rvgeo](../globals.md) / complateMap
+```ts
+function complateMap(allMap, cutMap): Map<any, any>
+```
 
-# Function: complateMap()
-
-> **complateMap**(`allMap`, `cutMap`): `Map`\<`any`, `any`\>
-
-Defined in: src/triangulation/Delaunay.ts:736
+Defined in: [src/triangulation/Delaunay.ts:736](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/triangulation/Delaunay.ts#L736)
 
 ## Parameters
 

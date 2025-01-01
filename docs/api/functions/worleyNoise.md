@@ -1,14 +1,15 @@
-[**rvgeo**](../README.md)
+[rvgeo](../index.md) / worleyNoise
 
-***
+# worleyNoise()
 
-[rvgeo](../globals.md) / worleyNoise
+```ts
+function worleyNoise(
+   row, 
+   col, 
+   n): number[][]
+```
 
-# Function: worleyNoise()
-
-> **worleyNoise**(`row`, `col`, `n`): `number`[][]
-
-Defined in: src/coverage/Noise.ts:128
+Defined in: [src/coverage/Noise.ts:128](https://github.com/pzq123456/RVGeo/blob/e727f6f6e310621d656b74948bed9956ff45a613/src/coverage/Noise.ts#L128)
 
 生成 Worley 噪声距离场
 

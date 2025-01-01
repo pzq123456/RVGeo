@@ -26,8 +26,20 @@
   "include": ["src"],
 
   "typedocOptions": {
-    "plugin": ["typedoc-plugin-markdown"],
-      "entryPoints": ["src/index.ts"],
-      "out": "./docs/api/",
+    "entryPoints": ["src/index.ts"],
+
+    "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+    "githubPages": false,
+    "readme": "none",
+    "indexFormat": "table",
+    "useCodeBlocks": true,
+    // "disableSources": true,
+    "textContentMappings": {
+      "title.indexPage": "API Reference",
+      "title.memberPage": "{name}"
+    },
+
+    "out": "./docs/api/",
+    "docsRoot": "./docs"
   }
 }

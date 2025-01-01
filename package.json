@@ -1,5 +1,5 @@
 {
-  "name": "rvgeo", 
+  "name": "rvgeo",
   "version": "2.0.91",
   "description": "RVGeo is a frontend TypeScript library for simple spatial data computation and visualization.",
   "main": "./dist/rvgeo.umd.cjs",
@@ -42,8 +42,10 @@
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
+    "markdown-it-mathjax3": "^4.3.2",
     "typedoc": "^0.27.6",
     "typedoc-plugin-markdown": "^4.4.0",
+    "typedoc-vitepress-theme": "^1.1.1",
     "typescript": "latest",
     "vite": "latest",
     "vitepress": "latest",
