@@ -6,14 +6,14 @@ hero:
   name: "RVGeo"
   text: "Raster & Vector Geospatial"
   tagline: RVGeo is a frontend TypeScript library for simple spatial data computation and visualization
-  image: ./assets/logo.svg
+  image: ./logo.svg
   actions:
     - theme: brand
       text: start
       link: /documents
     - theme: alt
       text: API Examples
-      link: /api/globals
+      link: /api
 
 features:
   - title: "Raster & Vector"
