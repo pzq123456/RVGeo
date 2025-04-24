@@ -1,11 +1,17 @@
 import { Geometry, GeometryCollection } from "./Geometry";
-import { GeoJSONFeature, GeoJSONPolygon, GeoJSONMultiPolygon } from "./GeoJSON";
-import { MultiPoint } from ".";
+import { GeoJSONFeature, GeoJSONPolygon, GeoJSONMultiPolygon, GeoJSONLineString } from "./GeoJSON";
+import { MultiPoint, Point } from "./Point";
 
 export class Polygon extends Geometry {
+    readonly coordinates: GeoJSONPolygon["coordinates"];
 
     constructor(coordinates: GeoJSONPolygon["coordinates"] , properties?: any) {
         super(coordinates, properties);
+        this.coordinates = coordinates;
+    }
+
+    getCoordinates(): GeoJSONPolygon["coordinates"] {
+        return this.coordinates;
     }
 
     toXY(): GeoJSONPolygon["coordinates"] {
@@ -30,6 +36,24 @@ export class Polygon extends Geometry {
         this.bbox = [minX, minY, maxX, maxY];
     }
 
+    toGeoJSON(): GeoJSONFeature{
+        let feature: GeoJSONFeature = {
+            type: "Feature",
+            geometry: {
+                type: this.constructor.name,
+                coordinates: this.coordinates
+            },
+            // properties: this.properties,
+        } as GeoJSONFeature;
+        if (this.properties) {
+            feature.properties = this.properties;
+        }
+        if (this.bbox) {
+            feature.bbox = this.bbox;
+        }
+        return feature;
+    }
+
     static isPolygon(geometry: any): geometry is Polygon {
         return geometry instanceof Polygon;
     }
@@ -47,6 +71,19 @@ export class Polygon extends Geometry {
         return new Polygon(pointGeometry.coordinates, properties);
     }
 
+}
+
+export function toPolygon(
+    points: Point[] | GeoJSONLineString["coordinates"],
+    properties?: any
+): Polygon {
+    // 默认为外环
+    const coordinates: GeoJSONPolygon["coordinates"] = [
+        points.map(point => 
+            Array.isArray(point) ? point : point.coordinates
+        )
+    ];
+    return new Polygon(coordinates, properties);
 }
 
 export class MultiPolygon extends GeometryCollection{
@@ -75,8 +112,7 @@ export class MultiPolygon extends GeometryCollection{
     }
 
     toXY() : GeoJSONMultiPolygon["coordinates"] {
-        return (this.geometries as Polygon[])
-            .map(polygon => polygon.toXY());
+        return (this.geometries as Polygon[]).map(polygon => polygon.toXY());
     }
 
     addGeometry(geometry: Polygon | GeoJSONPolygon["coordinates"]): void {
@@ -122,4 +158,11 @@ export class MultiPolygon extends GeometryCollection{
     static fromGeometry(geometry: GeoJSONMultiPolygon): GeometryCollection{
         return new MultiPolygon(geometry.coordinates);
     }
+}
+
+export function toMultiPolygon(
+    polygons: Polygon[] | GeoJSONMultiPolygon["coordinates"],
+    properties?: any
+): MultiPolygon {
+    return new MultiPolygon(polygons, properties);
 }

@@ -119,45 +119,58 @@ export function cutPolygonByMBR(polygon: [number,number][], mbr: MBR): [number,n
     return intersectionPolygon(polygon, mbrToPolygon(mbr));
 }
 
-// TODO: 实现 Sutherland-Hodgman 算法计算多边形与多边形的交集
 /**
  * 使用 Sutherland-Hodgman 算法计算多边形与多边形的交集
- * @param clipPolygon 
- * @param subjectPolygon 
+ * @param clipPolygon - 裁剪多边形
+ * @param subjectPolygon - 被裁剪多边形
+ * @returns 两个多边形的交集
  */
-export function intersectionPolygon(clipPolygon: [number,number][], subjectPolygon: [number,number][]): [number,number][] {
-    let cp1 = clipPolygon[clipPolygon.length - 1]; // clipPolygon 的最后一个点
-    let cp2 : [number, number]; // clipPolygon 的当前点
-    let s : [number, number]; // subjectPolygon 的当前点
-    let e : [number, number]; // subjectPolygon 的下一个点
-    let outputList = subjectPolygon; // 输出多边形
+export function intersectionPolygon(
+    clipPolygon: [number, number][],
+    subjectPolygon: [number, number][]
+): [number, number][] {
+    if (clipPolygon.length < 3 || subjectPolygon.length < 3) {
+        return []; // 无法构成多边形
+    }
 
-    for(let i in clipPolygon) {
-        cp2 = clipPolygon[i];
-        let inputList = outputList;
+    let cp1 = clipPolygon[clipPolygon.length - 1]; // 裁剪多边形的最后一个点
+    let outputList = [...subjectPolygon]; // 深拷贝被裁剪多边形，避免修改原始数据
+
+    for (let i = 0; i < clipPolygon.length; i++) { // 改用 for 循环
+        const cp2 = clipPolygon[i]; // 裁剪多边形的当前点
+        const inputList = outputList;
         outputList = [];
-        s = inputList[inputList.length - 1]; // subjectPolygon 的最后一个点
-        for(let j in inputList) {
-            e = inputList[j];
-            if(pointInEdge(e, cp1, cp2)) {
-                if(!pointInEdge(s, cp1, cp2)) {
-                    let tmp  = intersection(s, e, cp1, cp2,
-                        convertToMercator,convertToWgs84,true) as [number,number];
-                    // 声明 
-                    outputList.push(tmp);
+        let s = inputList[inputList.length - 1]; // 被裁剪多边形的最后一个点
+
+        for (let j = 0; j < inputList.length; j++) { // 改用 for 循环
+            const e = inputList[j]; // 被裁剪多边形的当前点
+
+            if (pointInEdge(e, cp1, cp2)) {
+                if (!pointInEdge(s, cp1, cp2)) {
+                    const intersectionPoint = intersection(
+                        s, e, cp1, cp2,
+                        convertToMercator, convertToWgs84, true
+                    );
+                    if (intersectionPoint) {
+                        outputList.push(intersectionPoint as [number, number]);
+                    }
                 }
                 outputList.push(e);
-            } else if(pointInEdge(s, cp1, cp2)) {
-                let tmp  = intersection(s, e, cp1, cp2,
-                    convertToMercator,convertToWgs84,true) as [number,number];
-                // 声明
-                outputList.push(tmp);
+            } else if (pointInEdge(s, cp1, cp2)) {
+                const intersectionPoint = intersection(
+                    s, e, cp1, cp2,
+                    convertToMercator, convertToWgs84, true
+                );
+                if (intersectionPoint) {
+                    outputList.push(intersectionPoint as [number, number]);
+                }
             }
             s = e;
         }
         cp1 = cp2;
     }
-    return outputList;
+
+    return outputList.length >= 3 ? outputList : []; // 确保返回的多边形至少 3 个点
 }
 
 /**

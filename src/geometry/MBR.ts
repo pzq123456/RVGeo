@@ -231,6 +231,23 @@ export function mbrToPolygon(mbr:MBR): [number,number][] {
     ];
 }
 
+/**
+ * 将 逆时针方向的（无孔）多边形数组 转化为 MBR 
+ * @param polygon
+ */
+export function polygonToMBR(polygon: [number, number][]): MBR {
+    let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;
+    for(let i = 0; i < polygon.length; i++){
+        let lon = polygon[i][0];
+        let lat = polygon[i][1];
+        minLon = Math.min(minLon, lon);
+        minLat = Math.min(minLat, lat);
+        maxLon = Math.max(maxLon, lon);
+        maxLat = Math.max(maxLat, lat);
+    }
+    return [minLon, minLat, maxLon, maxLat];
+}
+
 /*===========P=R=I=V=A=T=E============ */
 
 function changeLon(lon: number): number {

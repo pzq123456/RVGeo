@@ -3,6 +3,7 @@ const isPotentialGeoObject = core.isPotentialGeoObject; // 判断一个 object �
 
 import { Geometry, GeometryCollection } from "./Geometry";
 import { GeoJSONFeature, GeoJSONPoint, GeoJSONMultiPoint } from "./GeoJSON";
+import { mbrToPolygon } from "./MBR";
 
 /**
  * Point geometry
@@ -70,12 +71,21 @@ export class MultiPoint extends GeometryCollection{
         }
     }
 
-    toXY(): GeoJSONMultiPoint["coordinates"] {
-        return this.geometries.map(geometry => (geometry as Point).toXY());
+    toXY(isCountMBR?: boolean): GeoJSONMultiPoint["coordinates"] {
+        const xypoints = this.geometries.map(geometry => (geometry as Point).toXY());
+        if(!isCountMBR){
+            return xypoints;
+        }else{
+            return [...xypoints, ...toMultiPoint(mbrToPolygon(this.bbox).slice(0,4)).toXY()]
+        }
     }
 
-    getCoodinates(): GeoJSONMultiPoint["coordinates"]{
-        return this.coordinates;
+    getCoodinates(isCountMBR?: boolean): GeoJSONMultiPoint["coordinates"]{
+        if(!isCountMBR){
+            return this.coordinates;
+        }else{
+            return [...this.coordinates, ...mbrToPolygon(this.bbox).slice(0,4)]
+        }
     }
 
     /**
@@ -208,7 +218,10 @@ export function toPoint(...args: any[]): Point {
         if(!isPotentialGeoObject(args[0]) && args[0].length === 2) {
             return new Point(args[0]);
         } else if (isPotentialGeoObject(args[0])) {
-            return new Point([args[0].lon || args[0].lng || args[0].x, args[0].lat || args[0].y], args[1]);
+            return new Point(
+                [args[0].lon || args[0].lng || args[0].x, args[0].lat || args[0].y],
+                (({ lon, lng, x, lat, y, ...rest }) => rest)(args[0])
+            );
         }else{
             throw new Error("Invalid input");
         }

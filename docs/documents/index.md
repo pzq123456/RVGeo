@@ -326,6 +326,24 @@ function example9() {
 }
 ```
 
+## Notes / Frequently Asked Questions
+> - Special notes for some tricky cases.
+> - As you know, this library is still in development, and some functions may not work as expected. If you encounter any issues, please feel free to open an issue on the GitHub repository.
+
+### 0. For maximum compatibility, it is recommended to use TypeScript for development.
+- Keep an eye on the types of the parameters. 
+- `toXY` means "get the coordinates in Plane". You need to know the coordinates are not in the original sphere coordinates any more.
+- **Do not trust** the factory methods for `Polygon`, `MultiPolygon`, `LineString`, `MultiLineString`. Because I only inplemented the factory methods for singal circle polygon without holes. So many edge cases are not supported.
+
+### 1. You can get Convex Hull in two ways:
+- Using `RVGeo.convexHull` function.
+- Using `RVGeo.Delaunator` and `RVGeo.fillIndexArray` functions.
+- In most cases, the results are the same. If you find any differences, please use the second method. Because the second method is from the mapbox team, and it is more reliable.
+
+### 2. Why my area is not correct?
+
+
 ## More concepts
 1. [changeLog](./changelog.md)
 2. [core](./core.md)
+3. [deckgl](./deckgl.md) : 与 declgl 集成

@@ -685,22 +685,25 @@ export class Voronoi{
 
     /**
      * 使用 MBR 对 Voronoi 图进行裁剪（由于精度问题，极端情况下不可靠）
-     * @param MBR 
-     * @returns 
+     * @param MBR - 最小边界矩形 [minX, minY, maxX, maxY]
+     * @returns 裁剪后的 Voronoi 图（Map<点索引, 多边形>）
      */
-    cutVoronoiByMBR(MBR: [number, number, number, number]){
-        const {points,delaunay} = this;
-        const voronoi = new Map();
-        forEachVoronoiCell(points, delaunay, (p, v) => {
-            if(!this.isInsideMBR(v, MBR)){
-                console.log(v);
-                v = cutPolygonByMBR(v, MBR);
-                voronoi.set(p, v);
-            }else{
-                voronoi.set(p, v);
+    cutVoronoiByMBR(MBR: [number, number, number, number]) {
+        const { points, delaunay } = this;
+        const voronoi = new Map<number, [number, number][]>();
+
+        forEachVoronoiCell(points, delaunay, (pointIndex, polygon) => {
+            // 如果多边形不完全在 MBR 内，则裁剪
+            if (!this.isInsideMBR(polygon, MBR)) {
+                polygon = cutPolygonByMBR(polygon, MBR);
+            }
+
+            // 仅保留闭合的多边形（点数 >= 3）
+            if (polygon && polygon.length >= 3) {
+                voronoi.set(pointIndex, polygon);
             }
         });
-        // 后处理
+
         return voronoi;
     }
 

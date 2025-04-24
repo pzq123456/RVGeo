@@ -84,6 +84,9 @@ export function convexHull(points: Point[]): Point[] {
         let index = stack[i][2];
         res.push(points[index]);
     }
+
+    // 成环 将第一个点放到最后
+    res.push(res[0]);
     return res;
 }
 
