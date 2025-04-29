@@ -10,28 +10,33 @@
 
       <span class="name"> Layer Control </span>
       <el-tooltip content="Expand Layer List" placement="top">
-        <el-icon @click="toggleLayerList" :class="{ 'expanded' : !isLayerListVisible }"><ArrowUpBold /></el-icon>
+        <el-icon @click="toggleLayerList" :class="{ 'expanded': !isLayerListVisible }">
+          <ArrowUpBold />
+        </el-icon>
       </el-tooltip>
     </div>
 
-    
-      <div class="layer-container" ref="el" v-show="isLayerListVisible">
-      <div
-        v-for="item in layerGroup.layers"
-        :key="item.id"
-        class="layer-item"
+    <div class="layer-container" ref="el" v-show="isLayerListVisible">
+      <div v-for="item in layerGroup.layers" :key="item.id" class="layer-item"
         :class="{ 'hidden-layer': !item.visible }"
-        :style="{ border: item.visible ? '1px solid var(--vp-c-brand-2)' : '1px solid var(--vp-c-default-3)' }"
-      >
+        :style="{ border: item.visible ? '1px solid var(--vp-c-brand-2)' : '1px solid var(--vp-c-default-3)' }">
+
         <!-- 图层ID和箭头按钮 -->
         <div class="layer-header" @click="toggleExpand(item.id)">
-          <el-icon><Rank /></el-icon>
+          <el-icon>
+            <Rank />
+          </el-icon>
           <!-- View 按钮 -->
           <el-icon @click.stop="toggleVisibility(item)">
             <component :is="item.visible ? 'View' : 'Hide'" />
           </el-icon>
           <span class="layer-id">{{ item.id }}</span>
-          <el-icon :class="{ 'expanded': item.isExpanded }"><ArrowDownBold /></el-icon>
+          <div class="leftBtn">
+            <el-icon :class="{ 'expanded': item.isExpanded }">
+              <ArrowDownBold />
+            </el-icon>
+          </div>
+
         </div>
 
         <Transition>
@@ -40,22 +45,15 @@
             <span class="layer-opacity">Opacity: {{ item.opacity }}</span>
             <!-- <el-slider v-model="item.opacity" :min="0" :max="1" :step="0.1" :show-tooltip="false"/> -->
             <!-- 若 visible 为假 则将其设置为disable -->
-            <el-slider v-model="item.opacity" :min="0" :max="1" :step="0.1" :show-tooltip="false" :disabled="!item.visible"/>
-            <span class="layer-visibility">{{ item.visible ? 'Visible' : 'Hidden' }} <el-checkbox v-model="item.visible" /></span>
+            <el-slider v-model="item.opacity" :min="0" :max="1" :step="0.1" :show-tooltip="false"
+              :disabled="!item.visible" />
+            <span class="layer-visibility">{{ item.visible ? 'Visible' : 'Hidden' }} <el-checkbox
+                v-model="item.visible" /></span>
           </div>
         </Transition>
 
-
       </div>
     </div>
-
-
-    <!-- for debug -->
-    <!-- <div class="layer-list" v-show="isLayerListVisible">
-      <div v-for="item in layerGroup.layers" :key="item.id" class="layer-list-item">
-        {{ item.id }}
-      </div>
-    </div> -->
   </div>
 
 </template>
@@ -70,22 +68,14 @@ import pkg from 'lodash';
 const { throttle } = pkg;
 
 const props = defineProps({
-  layerGroup: { 
+  layerGroup: {
     type: LayerGroup,
     required: true,
   },
-  onUpdated: { 
+  onUpdated: {
     type: Function,
-    default: () => {},
+    default: () => { },
   },
-  // width: {
-  //   type: String,
-  //   default: '300px',
-  // },
-  // height: {
-  //   type: String,
-  //   default: 'auto',
-  // },
 });
 
 const { layerGroup, onUpdated } = props;
@@ -144,8 +134,7 @@ const draggable = useDraggable(el, layerGroup.layers, {
 
 
 <style scoped>
-
-.name{  
+.name {
   font-size: 1rem;
   color: var(--vp-c-text-3);
 }
@@ -254,5 +243,12 @@ const draggable = useDraggable(el, layerGroup.layers, {
 
 .ghost {
   opacity: 0.2;
+}
+
+.leftBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
 }
 </style>

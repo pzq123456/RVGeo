@@ -67,11 +67,17 @@ export class LayerGroup {
 
   // 根据图层类型和属性生成 DeckGL 图层
   getLayers() {
-    return this.layers.filter(layer => layer.visible).reverse().map(layer => {
+    const visibleLayers = this.layers.filter(layer => layer.visible).reverse();
+    
+    return visibleLayers.map((layer, index) => {
       const LayerType = layer.type;
+      // 只有最上层图层（数组的第一个元素）也就是倒数第一个元素的 pickable 为 true
+      const pickable = index === visibleLayers.length - 1;
+      
       return new LayerType({
         id: layer.id,
         opacity: layer.opacity,
+        pickable,
         ...layer.props,
       });
     });

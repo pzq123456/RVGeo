@@ -8,17 +8,33 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppDrawer: typeof import('./src/components/AppDrawer.vue')['default']
+    AppFooter: typeof import('./src/components/AppFooter.vue')['default']
+    AppSidebar: typeof import('./src/components/AppSidebar.vue')['default']
+    ContextMenu: typeof import('./src/components/ContextMenu.vue')['default']
+    copy: typeof import('./src/components/DataRelation copy.vue')['default']
+    DataEntityList: typeof import('./src/components/DataEntityList.vue')['default']
+    DataRelation: typeof import('./src/components/DataRelation.vue')['default']
+    DataTree: typeof import('./src/components/dataTree/DataTree.vue')['default']
+    Dragger: typeof import('./src/components/Dragger.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
+    ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDrawer: typeof import('element-plus/es')['ElDrawer']
+    ElFooter: typeof import('element-plus/es')['ElFooter']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElMain: typeof import('element-plus/es')['ElMain']
+    ElProgress: typeof import('element-plus/es')['ElProgress']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElSlider: typeof import('element-plus/es')['ElSlider']
+    ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    EntityList: typeof import('./src/components/EntityList.vue')['default']
     Layers: typeof import('./src/components/layers.vue')['default']
     Map: typeof import('./src/components/map.vue')['default']
     SidebarControls: typeof import('./src/components/SidebarControls.vue')['default']
+    SidebarToggleButton: typeof import('./src/components/SidebarToggleButton.vue')['default']
+    TreeNode: typeof import('./src/components/dataTree/TreeNode.vue')['default']
   }
 }

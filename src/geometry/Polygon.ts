@@ -1,5 +1,5 @@
 import { Geometry, GeometryCollection } from "./Geometry";
-import { GeoJSONFeature, GeoJSONPolygon, GeoJSONMultiPolygon, GeoJSONLineString } from "./GeoJSON";
+import { GeoJSONFeature, GeoJSONPolygon, GeoJSONMultiPolygon, GeoJSONLineString, GeoJSONFeatureCollection } from "./GeoJSON";
 import { MultiPoint, Point } from "./Point";
 
 export class Polygon extends Geometry {
@@ -7,6 +7,11 @@ export class Polygon extends Geometry {
 
     constructor(coordinates: GeoJSONPolygon["coordinates"] , properties?: any) {
         super(coordinates, properties);
+        // 增加自动闭合操作，若果第一个点和最后一个点不相同，则将第一个点添加到最后
+        if (coordinates[0][0][0] !== coordinates[0][coordinates[0].length - 1][0] ||
+            coordinates[0][0][1] !== coordinates[0][coordinates[0].length - 1][1]) {
+            coordinates[0].push(coordinates[0][0]);
+        }
         this.coordinates = coordinates;
     }
 
@@ -143,6 +148,13 @@ export class MultiPolygon extends GeometryCollection{
             feature.bbox = this.bbox;
         };
         return feature;
+    }
+
+    toFeatureCollection(): GeoJSONFeatureCollection {
+        return {
+            type: "FeatureCollection",
+            features: this.geometries.map(geometry => geometry.toGeoJSON())
+        };
     }
 
     static fromFeature(feature: GeoJSONFeature): GeometryCollection{
