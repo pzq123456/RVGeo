@@ -146,29 +146,44 @@ function formatDate(dateString) {
   return date.toLocaleString('zh-CN', options);
 }
 
+const seed = 1992;
+
 let colorMap = new Map();
 
-function getTagStyle(typeStringg){
-  // 为每一个独一的type 生成一个随机颜色
-  // 字符串会有很多，但是要确保每一个type都有一个颜色
+function seededRandom(seed) {
+  let x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+}
 
-  function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
+function getRandomColor(seed) {
+  // Define a palette of colors that work well on both black and white backgrounds
+  const colorPalette = [
+    '#FF5733', // Vibrant orange
+    '#33FF57', // Bright green
+    '#3357FF', // Strong blue
+    '#FF33A1', // Pink
+    '#FFD700', // Gold
+    '#40E0D0', // Turquoise
+    '#8A2BE2', // Blue violet
+    '#FF4500', // Orange red
+    '#2E8B57', // Sea green
+    '#1E90FF', // Dodger blue
+  ];
 
-  // map 用于存储类型和颜色的键值对 首先检查颜色是否已经存在 否则随机生成一个新的
-  if (!colorMap.has(typeStringg)) {
-    let color = getRandomColor();
-    colorMap.set(typeStringg, color);
+  // Use the seeded random to pick a color from the palette
+  const index = Math.floor(seededRandom(seed) * colorPalette.length);
+  return colorPalette[index];
+}
+
+function getTagStyle(typeString) {
+  // Ensure each unique type has a consistent color
+  if (!colorMap.has(typeString)) {
+    let color = getRandomColor(seed + typeString.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0));
+    colorMap.set(typeString, color);
   }
 
   return {
-    color: colorMap.get(typeStringg),
+    color: colorMap.get(typeString),
   };
 }
 

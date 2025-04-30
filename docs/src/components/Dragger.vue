@@ -3,11 +3,12 @@
         class="draggable" 
         :class="{ minimized, dragging }" 
         :style="draggableStyle" 
-        @mousedown="startDrag" 
+        @mousedown="startDrag"
+        @touchstart.passive="startDragTouch"
         ref="draggableElement"
     >
         <div class="header">
-            <div class="handle" @mousedown.stop="startDrag">
+            <div class="handle" @mousedown.stop="startDrag" @touchstart.stop="startDragTouch">
                 <el-icon>
                     <Rank />
                 </el-icon>
@@ -15,22 +16,20 @@
             </div>
 
             <div class="controls">
-                <el-icon @click.stop="toggleMinimize">
+                <el-icon @click.stop="toggleMinimize" @touchstart.stop="toggleMinimize">
                     <component :is="minimized ? 'Plus' : 'Minus'" />
                 </el-icon>
-                <el-icon @click.stop="$emit('close')" v-if="showClose">
+                <el-icon @click.stop="$emit('close')" @touchstart.stop="$emit('close')" v-if="showClose">
                     <Close />
                 </el-icon>
             </div>
         </div>
 
         <div v-show="!minimized" class="content" ref="contentElement">
-            <!-- 使用v-if而不是v-show来完全移除DOM -->
             <template v-if="!contentFrozen">
                 <slot />
             </template>
             <div v-else class="frozen-placeholder">
-                <!-- 拖动时显示的占位内容 -->
                 Content is frozen during drag
             </div>
         </div>
@@ -38,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onBeforeUnmount } from 'vue';
+import { ref, reactive, computed, onBeforeUnmount, onMounted } from 'vue';
 import { Rank, Plus, Minus, Close } from '@element-plus/icons-vue';
 
 const props = defineProps({
@@ -52,7 +51,7 @@ const props = defineProps({
     },
     initialX: {
         type: Number,
-        default: 20
+        default: null // 默认为null，将在mounted中计算
     },
     initialY: {
         type: Number,
@@ -81,7 +80,8 @@ const position = reactive({
 const offset = reactive({ x: 0, y: 0 });
 const dragging = ref(false);
 const minimized = ref(false);
-const contentFrozen = ref(false); // 新增：内容冻结状态
+const contentFrozen = ref(false);
+const isTouchDevice = ref('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
 // 计算属性
 const draggableStyle = computed(() => ({
@@ -91,31 +91,56 @@ const draggableStyle = computed(() => ({
     cursor: dragging.value ? 'grabbing' : 'move'
 }));
 
-// 拖拽相关函数
+// 设置默认位置到右上角
+const setDefaultPosition = () => {
+    if (props.initialX === null) {
+        const viewportWidth = window.innerWidth;
+        position.x = viewportWidth - props.width - 20; // 20px from right edge
+    }
+};
+
+// 鼠标拖拽相关函数
 const startDrag = (event) => {
     dragging.value = true;
     offset.x = event.clientX - position.x;
     offset.y = event.clientY - position.y;
-    
-    // 开始拖动时冻结内容
     contentFrozen.value = true;
     
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('mouseup', stopDrag);
 };
 
+// 触摸拖拽相关函数
+const startDragTouch = (event) => {
+    if (!event.touches || event.touches.length === 0) return;
+    
+    const touch = event.touches[0];
+    dragging.value = true;
+    offset.x = touch.clientX - position.x;
+    offset.y = touch.clientY - position.y;
+    contentFrozen.value = true;
+    
+    document.addEventListener('touchmove', onDragTouch, { passive: false });
+    document.addEventListener('touchend', stopDragTouch);
+};
+
 const onDrag = (event) => {
     if (!dragging.value) return;
-
+    event.preventDefault();
     position.x = event.clientX - offset.x;
     position.y = event.clientY - offset.y;
 };
 
+const onDragTouch = (event) => {
+    if (!dragging.value || !event.touches || event.touches.length === 0) return;
+    event.preventDefault();
+    const touch = event.touches[0];
+    position.x = touch.clientX - offset.x;
+    position.y = touch.clientY - offset.y;
+};
+
 const stopDrag = () => {
     dragging.value = false;
-    
-    // 拖动结束后解冻内容
-    // 使用setTimeout确保在下一个tick解冻，避免可能的渲染问题
     setTimeout(() => {
         contentFrozen.value = false;
     }, 0);
@@ -124,15 +149,33 @@ const stopDrag = () => {
     document.removeEventListener('mouseup', stopDrag);
 };
 
+const stopDragTouch = () => {
+    dragging.value = false;
+    setTimeout(() => {
+        contentFrozen.value = false;
+    }, 0);
+    
+    document.removeEventListener('touchmove', onDragTouch);
+    document.removeEventListener('touchend', stopDragTouch);
+};
+
 // 最小化/展开相关函数
 const toggleMinimize = () => {
     minimized.value = !minimized.value;
 };
 
 // 生命周期钩子
+onMounted(() => {
+    setDefaultPosition();
+    window.addEventListener('resize', setDefaultPosition);
+});
+
 onBeforeUnmount(() => {
     document.removeEventListener('mousemove', onDrag);
     document.removeEventListener('mouseup', stopDrag);
+    document.removeEventListener('touchmove', onDragTouch);
+    document.removeEventListener('touchend', stopDragTouch);
+    window.removeEventListener('resize', setDefaultPosition);
 });
 </script>
 
@@ -150,6 +193,7 @@ onBeforeUnmount(() => {
     flex-direction: column;
     box-shadow: var(--vp-shadow-2);
     transition: transform 0.1s ease-out;
+    touch-action: none; /* 禁用浏览器默认触摸行为 */
 }
 
 .draggable:active {
@@ -161,99 +205,9 @@ onBeforeUnmount(() => {
 }
 
 .draggable.dragging {
-    /* 拖动时的额外样式 */
     opacity: 0.95;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    background-color: var(--vp-c-bg-soft);
-    border-bottom: 1px solid var(--vp-c-divider);
-    cursor: move;
-    user-select: none;
-}
-
-.handle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: inherit;
-    color: var(--vp-c-text-1);
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 180px;
-}
-
-.controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.controls .el-icon {
-    padding: 4px;
-    border-radius: 4px;
-    color: var(--vp-c-text-1);
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.controls .el-icon:hover {
-    background-color: var(--vp-c-default-soft);
-}
-
-.content {
-    padding: 5px;
-    overflow-y: auto;
-    flex-grow: 1;
-    background-color: var(--vp-c-bg);
-    max-height: 60vh;
-}
-
-.frozen-placeholder {
-    padding: 20px;
-    text-align: center;
-    color: var(--vp-c-text-2);
-    font-size: 0.9em;
-    background-color: var(--vp-c-bg-soft);
-}
-</style>
-
-<style scoped>
-.draggable {
-    position: fixed;
-    top: 0;
-    left: 0;
-    border: 1px solid var(--vp-c-border);
-    background: var(--vp-c-bg-elv);
-    border-radius: 8px;
-    z-index: 1000;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: var(--vp-shadow-2);
-    will-change: transform; /* 提示浏览器优化transform变化 */
-    transition: transform 0.1s ease-out;
-}
-
-.draggable.dragging {
-    transition: none; /* 拖动时禁用过渡效果 */
-    z-index: 1001; /* 确保拖动时在最上层 */
-}
-
-.draggable.minimized {
-    height: auto !important;
+    transition: none;
+    z-index: 1001;
 }
 
 .header {
@@ -310,5 +264,13 @@ onBeforeUnmount(() => {
     flex-grow: 1;
     background-color: var(--vp-c-bg);
     max-height: 60vh;
+}
+
+.frozen-placeholder {
+    padding: 20px;
+    text-align: center;
+    color: var(--vp-c-text-2);
+    font-size: 0.9em;
+    background-color: var(--vp-c-bg-soft);
 }
 </style>

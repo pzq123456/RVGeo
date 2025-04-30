@@ -55,6 +55,7 @@ let voi = vor.cutVoronoiByMBR(HK_MBR)
 voi = Array.from(voi, ([key, value]) => RVGeo.toPolygon(value, { centeridx: key }))
 voi = RVGeo.toMultiPolygon(voi)
 
+
 const voronoiEntity = new DataEntity('voronoi', 'polygon', voi)
 addEntity(voronoiEntity)
 addRelation('delaunay', 'voronoi')
@@ -132,7 +133,10 @@ const voronoiLayer = new Layer('Voronoi-Layer', 0.4, true, GeoJsonLayer, {
 })
 
 // toD3DAG
-console.log('DAG:', toD3DAG())
+// console.log('DAG:', toD3DAG())
+
+console.log('fix-Voronoi:', getEntityById('voronoi').props.toFeatureCollection())
+
 
 // 最终图层组合
 const layerGroup = new LayerGroup([
