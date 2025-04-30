@@ -1,12 +1,8 @@
-import { DataEntity, useDataGroup } from '@/composables/useDataGroup'
+import { DataGroup, DataEntity } from '@/composables/useDataGroup'
 import * as RVGeo from '../../../src/index.ts'
 import { data } from '@/loaders/cs_gdf.data.js'
 
-// 初始化数据管理器
-const {
-  addEntity,
-  addRelation,
-} = useDataGroup()
+const dataGroup = new DataGroup()
 
 // 构建基础数据
 const builtData = data.filter(d => d.built)
@@ -20,19 +16,15 @@ const builtEntity = new DataEntity('built', 'scatter', builtData)
 const notBuiltEntity = new DataEntity('notBuilt', 'scatter', notBuiltData)
 const borderEntity = new DataEntity('border', 'polygon', borderData)
 
-const dataGroup = addEntity(builtEntity);
-addEntity(notBuiltEntity)
-addEntity(borderEntity)
+dataGroup.addEntity(builtEntity)
+dataGroup.addEntity(notBuiltEntity)
+dataGroup.addEntity(borderEntity)
 
-
-// 创建 builtMultiPoints -> 中心点、多边形分析等
+// 创建 builtMultiPoints
 const builtMultiPoints = RVGeo.toMultiPoint(builtData.map(d => RVGeo.toPoint(d)))
 const builtPointsEntity = new DataEntity('builtPoints', 'multipoint', builtMultiPoints)
-addEntity(builtPointsEntity)
-addRelation('built', 'builtPoints')
-
-// 凸包（面积计算略）可添加为需要时的衍生物
-const convexHull = RVGeo.toPolygon(RVGeo.convexHull(builtMultiPoints.geometries))
+dataGroup.addEntity(builtPointsEntity)
+dataGroup.addRelation('built', 'builtPoints')
 
 // 三角网
 const HK_MBR = RVGeo.polygonToMBR(borderData)
@@ -42,10 +34,10 @@ let del = RVGeo.Delaunator.from([...builtMultiPoints.toXY(), ...MBRPoints.toXY()
 let trs = RVGeo.fillIndexArray(del.getTriangleIndices(), [...builtMultiPoints.coordinates, ...MBRPoints.coordinates])
 trs = RVGeo.toMultiPolygon(trs.map(x => RVGeo.toPolygon(x)))
 
-const delaunayEntity = new DataEntity('delaunay', 'polygon', trs)
-addEntity(delaunayEntity)
-addRelation('builtPoints', 'delaunay')
-addRelation('border', 'delaunay')
+const delaunayEntity = new DataEntity('delaunay', 'polygon', trs.toGeoJSON())
+dataGroup.addEntity(delaunayEntity)
+dataGroup.addRelation('builtPoints', 'delaunay')
+dataGroup.addRelation('border', 'delaunay')
 
 // Voronoi
 let vor = new RVGeo.Voronoi(del)
@@ -53,8 +45,10 @@ let voi = vor.cutVoronoiByMBR(HK_MBR)
 voi = Array.from(voi, ([key, value]) => RVGeo.toPolygon(value, { centeridx: key }))
 voi = RVGeo.toMultiPolygon(voi)
 
-const voronoiEntity = new DataEntity('voronoi', 'polygon', voi)
-addEntity(voronoiEntity)
-addRelation('delaunay', 'voronoi')
+const voronoiEntity = new DataEntity('voronoi', 'polygon', voi.toFeatureCollection())
+dataGroup.addEntity(voronoiEntity)
+dataGroup.addRelation('delaunay', 'voronoi')
 
-export { dataGroup };
+console.log("DAG", dataGroup.toD3DAG())
+
+export { dataGroup }

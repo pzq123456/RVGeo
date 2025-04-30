@@ -47,7 +47,7 @@ export const RelationType = {
 /**
  * 数据关系组类：管理实体及其依赖关系
  */
-class DataGroup {
+export class DataGroup {
   constructor(initialEntities = []) {
     this._state = shallowRef({
       entities: initialEntities,

@@ -42,7 +42,6 @@ const { D3DAGData, width, height, nodeRadius, zoomable } = toRefs(props)
 
 const container = ref(null)
 const svg = ref(null)
-const simulation = ref(null)
 const resizeObserver = ref(null)
 
 // 计算实际宽度和高度
@@ -63,25 +62,98 @@ const colorScale = d3.scaleOrdinal()
   .domain(['derived', 'composed', 'referenced'])
   .range(['#66c2a5', '#fc8d62', '#8da0cb'])
 
+// 将数据转换为层次结构
+const convertToHierarchy = (data) => {
+  // 首先找到根节点（没有父节点的节点）
+  const nodes = data.nodes.map(node => ({ ...node }));
+  const links = data.links.map(link => ({ ...link }));
+  
+  // 创建一个id到节点的映射
+  const nodeMap = new Map();
+  nodes.forEach(node => nodeMap.set(node.id, node));
+  
+  // 为每个节点添加children属性
+  nodes.forEach(node => {
+    node.children = [];
+  });
+  
+  // 根据links建立父子关系
+  links.forEach(link => {
+    const source = typeof link.source === 'object' ? link.source.id : link.source;
+    const target = typeof link.target === 'object' ? target.id : link.target;
+    
+    const parent = nodeMap.get(source);
+    const child = nodeMap.get(target);
+    
+    if (parent && child) {
+      parent.children.push(child);
+    }
+  });
+  
+  // 找到根节点（没有父节点的节点）
+  const rootNodes = nodes.filter(node => {
+    // 检查是否有任何link指向这个节点
+    return !links.some(link => {
+      const target = typeof link.target === 'object' ? link.target.id : link.target;
+      return target === node.id;
+    });
+  });
+  
+  // 如果有多个根节点，创建一个虚拟根节点
+  if (rootNodes.length > 1) {
+    return {
+      id: "root",
+      name: "root",
+      children: rootNodes
+    };
+  } else if (rootNodes.length === 1) {
+    return rootNodes[0];
+  }
+  
+  return null;
+}
+
 // 初始化图表
 const initChart = () => {
   if (!svg.value || !D3DAGData.value) return
 
-  // 清除现有模拟和内容
-  if (simulation.value) {
-    simulation.value.stop()
-    simulation.value = null
-  }
+  // 清除现有内容
   d3.select(svg.value).selectAll('*').remove()
 
-  const { nodes, links } = D3DAGData.value
+  // 转换数据为层次结构
+  const hierarchyData = convertToHierarchy(D3DAGData.value)
+  if (!hierarchyData) return
 
-  // 设置 SVG 尺寸
-  svg.value.setAttribute('width', computedWidth.value)
-  svg.value.setAttribute('height', computedHeight.value)
+  const root = d3.hierarchy(hierarchyData)
+  
+  // 计算树的高度，使SVG高度能根据树的宽度调整
+  const dx = 20
+  const dy = computedWidth.value / (root.height + 1)
+
+  // 创建集群布局
+  const tree = d3.cluster().nodeSize([dx, dy])
+
+  // 对树进行排序并应用布局
+  root.sort((a, b) => d3.ascending(a.data.id, b.data.id))
+  tree(root)
+
+  // 计算树的边界
+  let x0 = Infinity
+  let x1 = -x0
+  root.each(d => {
+    if (d.x > x1) x1 = d.x
+    if (d.x < x0) x0 = d.x
+  })
+
+  // 计算调整后的树高度
+  const treeHeight = x1 - x0 + dx * 2
+
+  // 设置SVG高度
+  svg.value.setAttribute('height', Math.max(computedHeight.value, treeHeight))
 
   // 创建主分组
   const g = d3.select(svg.value).append('g')
+    .attr('transform', `translate(${dy / 3},${dx - x0})`)
 
   // 添加缩放行为
   if (zoomable.value) {
@@ -94,105 +166,65 @@ const initChart = () => {
     d3.select(svg.value).call(zoom)
   }
 
-  // 创建力导向图模拟
-  simulation.value = d3.forceSimulation(nodes)
-    .force('link', d3.forceLink(links).id(d => d.id).distance(100))
-    .force('charge', d3.forceManyBody().strength(-300))
-    .force('center', d3.forceCenter(computedWidth.value / 2, computedHeight.value / 2))
-    .force('collision', d3.forceCollide().radius(nodeRadius.value * 1.5))
+  // 添加连线
+  g.append('g')
+    .attr('fill', 'none')
+    .attr('stroke', isDark.value ? '#ccc' : '#555')
+    .attr('stroke-opacity', 0.6)
+    .attr('stroke-width', 1.5)
+    .selectAll('path')
+    .data(root.links())
+    .join('path')
+      .attr('d', d3.linkHorizontal()
+        .x(d => d.y)
+        .y(d => d.x))
 
-  // 创建箭头标记
-  g.append('defs').selectAll('marker')
-    .data(links)
-    .enter().append('marker')
-    .attr('id', d => `arrow-${d.source.id}-${d.target.id}`)
-    .attr('viewBox', '0 -5 10 10')
-    .attr('refX', nodeRadius.value + 5)
-    .attr('refY', 0)
-    .attr('markerWidth', 6)
-    .attr('markerHeight', 6)
-    .attr('orient', 'auto')
-    .append('path')
-    .attr('d', 'M0,-5L10,0L0,5')
-    .attr('fill', d => colorScale(d.type))
-
-  // 创建连线
-  const link = g.append('g')
-    .selectAll('line')
-    .data(links)
-    .enter().append('line')
-    .attr('stroke', d => colorScale(d.type))
-    .attr('stroke-width', 2)
-    .attr('marker-end', d => `url(#arrow-${d.source.id}-${d.target.id})`)
-
-  // 创建节点组
+  // 添加节点
   const node = g.append('g')
     .selectAll('g')
-    .data(nodes)
-    .enter().append('g')
-    .call(d3.drag()
-      .on('start', dragstarted)
-      .on('drag', dragged)
-      .on('end', dragended))
+    .data(root.descendants())
+    .join('g')
+      .attr('transform', d => `translate(${d.y},${d.x})`)
 
   // 添加节点圆形
   node.append('circle')
     .attr('r', nodeRadius.value)
-    .attr('fill', d => d3.schemeCategory10[d.type ? d.type.charCodeAt(0) % 10 : 0])
-    .attr('stroke', '#fff')
+    .attr('fill', d => d.data.type ? colorScale(d.data.type) : '#999')
+    .attr('stroke', isDark.value ? '#333' : '#fff')
     .attr('stroke-width', 2)
 
-  // 添加节点文本 - 根据暗夜模式调整颜色
+  // 添加节点文本
   node.append('text')
-    .attr('dy', nodeRadius.value + 15)
-    .attr('text-anchor', 'middle')
-    .text(d => d.id)
+    .attr('dy', '0.31em')
+    .attr('x', d => d.children ? -nodeRadius.value - 4 : nodeRadius.value + 4)
+    .attr('text-anchor', d => d.children ? 'end' : 'start')
+    .text(d => d.data.id)
     .attr('fill', isDark.value ? '#fff' : '#333')
     .attr('font-size', '12px')
-
-  // 添加模拟更新
-  simulation.value.on('tick', () => {
-    link
-      .attr('x1', d => d.source.x)
-      .attr('y1', d => d.source.y)
-      .attr('x2', d => d.target.x)
-      .attr('y2', d => d.target.y)
-
-    node.attr('transform', d => `translate(${d.x},${d.y})`)
-  })
-
-  // 拖拽函数
-  function dragstarted(event, d) {
-    if (!event.active) simulation.value.alphaTarget(0.3).restart()
-    d.fx = d.x
-    d.fy = d.y
-  }
-
-  function dragged(event, d) {
-    d.fx = event.x
-    d.fy = event.y
-  }
-
-  function dragended(event, d) {
-    if (!event.active) simulation.value.alphaTarget(0)
-    d.fx = null
-    d.fy = null
-  }
+    .attr('stroke', isDark.value ? '#333' : '#fff')
+    .attr('paint-order', 'stroke')
 }
 
 // 响应式更新
-watch([D3DAGData, nodeRadius, isDark], () => {
+watch([D3DAGData, isDark], () => {
   initChart()
 }, { deep: true })
 
 onMounted(() => {
   initChart()
+  
+  // 添加响应式调整大小
+  if (container.value && width.value === '100%') {
+    resizeObserver.value = new ResizeObserver(() => {
+      initChart()
+    })
+    resizeObserver.value.observe(container.value)
+  }
 })
 
 onBeforeUnmount(() => {
-  // 清理模拟
-  if (simulation.value) {
-    simulation.value.stop()
+  if (resizeObserver.value) {
+    resizeObserver.value.disconnect()
   }
 })
 </script>

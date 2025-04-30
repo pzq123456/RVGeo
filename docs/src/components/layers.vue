@@ -18,8 +18,7 @@
 
     <div class="layer-container" ref="el" v-show="isLayerListVisible">
       <div v-for="item in layerGroup.layers" :key="item.id" class="layer-item"
-        :class="{ 'hidden-layer': !item.visible }"
-        :style="{ border: item.visible ? '1px solid var(--vp-c-brand-2)' : '1px solid var(--vp-c-default-3)' }">
+        :class="{ 'hidden-layer': !item.visible, 'active': item.visible }">
 
         <!-- 图层ID和箭头按钮 -->
         <div class="layer-header" @click="toggleExpand(item.id)">
@@ -40,11 +39,8 @@
         </div>
 
         <Transition>
-          <!-- 具体内容，根据isExpanded控制是否显示 -->
           <div v-show="item.isExpanded" class="layer-details">
             <span class="layer-opacity">Opacity: {{ item.opacity }}</span>
-            <!-- <el-slider v-model="item.opacity" :min="0" :max="1" :step="0.1" :show-tooltip="false"/> -->
-            <!-- 若 visible 为假 则将其设置为disable -->
             <el-slider v-model="item.opacity" :min="0" :max="1" :step="0.1" :show-tooltip="false"
               :disabled="!item.visible" />
             <span class="layer-visibility">{{ item.visible ? 'Visible' : 'Hidden' }} <el-checkbox
@@ -62,7 +58,6 @@
 import { ref, reactive, watch } from 'vue';
 import { useDraggable } from 'vue-draggable-plus';
 import { LayerGroup, Layer } from '@/composables/useLayerGroup.js';
-// import { throttle } from 'lodash';
 
 import pkg from 'lodash';
 const { throttle } = pkg;
@@ -194,6 +189,12 @@ const draggable = useDraggable(el, layerGroup.layers, {
   background-color: var(--vp-c-bg-soft);
   border-radius: 4px;
   cursor: move;
+  border: 1px solid var(--vp-c-default-3);
+  transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.layer-item.active {
+  border-left: 3px solid var(--vp-c-brand-2);
 }
 
 .layer-item.hidden-layer {

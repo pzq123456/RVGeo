@@ -151,11 +151,10 @@ export class MultiPolygon extends GeometryCollection{
     }
 
     toFeatureCollection(): GeoJSONFeatureCollection {
-        const fc: GeoJSONFeatureCollection = {
-            type: "FeatureCollection" as const,  // 使用 const 断言
+        return Object.freeze({
+            type: "FeatureCollection",
             features: this.geometries.map(geometry => geometry.toGeoJSON())
-        };
-        return fc;
+        });
     }
 
     static fromFeature(feature: GeoJSONFeature): GeometryCollection{

@@ -25,9 +25,7 @@
   </el-container>
 
   <Dragger>
-    <div class="DAGcontainer">
-      <DataRelation :D3DAGData="dataGroup.toD3DAG()" />
-    </div>
+    <DataRelation :D3DAGData="dataGroup.toD3DAG()" />
   </Dragger>
 
   <AppDrawer v-model="visible" />
@@ -44,7 +42,9 @@ import SidebarControls from '@/components/SidebarControls.vue'
 import SidebarToggleButton from '@/components/SidebarToggleButton.vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import AppDrawer from '@/components/AppDrawer.vue'
-import { layerGroup, dataGroup } from "@/layouts/layers.js"
+
+import { dataGroup } from "@/layouts/data.js"
+import { layerGroup } from "@/layouts/layer.js"
 import { tooltipConfig } from "@/layouts/tooltip.js"
 
 import Dragger from '@/components/Dragger.vue'
@@ -93,10 +93,3 @@ const updateDeckLayers = () => {
   }
 }
 </script>
-
-<style scoped>
-.DAGcontainer{
-  width: 100%;
-  height: 100%;
-}
-</style>

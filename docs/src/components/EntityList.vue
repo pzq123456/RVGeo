@@ -7,7 +7,7 @@
         </el-icon>
       </el-tooltip>
 
-      <span class="name">Entity Dependency List</span>
+      <span class="name">Entity List</span>
 
       <el-tooltip content="Toggle List" placement="top">
         <el-icon @click="toggleListVisibility" :class="{ expanded: !isListVisible }">
@@ -17,25 +17,20 @@
     </div>
 
     <div class="layer-container" v-show="isListVisible">
-      <div 
-        v-for="node in sortedNodes" 
-        :key="node.id" 
-        class="layer-item"
-        :class="{ 
-          'hidden-layer': !activeStates[node.id],
-          'has-dependencies': hasDependencies(node.id)
-        }"
-      >
-        
+      <div v-for="node in sortedNodes" :key="node.id" class="layer-item" :class="{
+        'hidden-layer': !activeStates[node.id],
+        'has-dependencies': hasDependencies(node.id)
+      }">
+
 
         <div class="layer-header" @click="toggleExpand(node.id)">
           <el-tag class="tag" :style="getTagStyle(node.type)">{{ node.type }}</el-tag>
           <!-- <el-icon @click.stop="toggleActive(node.id)">
             <component :is="activeStates[node.id] ? 'View' : 'Hide'" />
           </el-icon> -->
-          
+
           <span class="layer-id">{{ node.id }}</span>
-            
+
 
 
           <div class="leftBtn">
@@ -53,29 +48,28 @@
             </div>
 
             <span class="layer-visibility">
-            Dependencies: {{ getDependencyCount(node.id) }}
-            <span v-if="getIncomingDependencyCount(node.id) > 0" class="incoming-count">
-              (←{{ getIncomingDependencyCount(node.id) }})
+              Dependencies: {{ getDependencyCount(node.id) }}
+              <span v-if="getIncomingDependencyCount(node.id) > 0" class="incoming-count">
+                (←{{ getIncomingDependencyCount(node.id) }})
+              </span>
             </span>
-          </span>
-            
+
             <div class="detail-row">
               <span class="detail-label">Created:</span>
               <span class="detail-value">{{ formatDate(node.createdAt) }}</span>
             </div>
-            
+
             <div v-if="hasDependencies(node.id)" class="dependencies-section">
               <div class="dependencies-header">Dependencies:</div>
-              <div 
-                v-for="dep in getDependencies(node.id)" 
-                :key="dep.target"
-                class="dependency-item"
-                @click.stop="selectNode(dep.target)"
-              >
-                <el-icon><Connection /></el-icon>
+              <div v-for="dep in getDependencies(node.id)" :key="dep.target" class="dependency-item"
+                @click.stop="selectNode(dep.target)">
+                <el-icon>
+                  <Connection />
+                </el-icon>
                 <span>{{ dep.target }}</span>
                 <!-- 找到 对应 link 并提取 link  的type-->
-                <span class="detail-value">Type: {{ props.links.find(link => link.source === node.id && link.target === dep.target)?.type }}</span>
+                <span class="detail-value">Type: {{props.links.find(link => link.source === node.id && link.target ===
+                  dep.target)?.type }}</span>
               </div>
             </div>
           </div>
@@ -168,6 +162,15 @@ function getRandomColor(seed) {
     '#FF4500', // Orange red
     '#2E8B57', // Sea green
     '#1E90FF', // Dodger blue
+    '#FF69B4', // Hot pink
+    '#FF8C00', // Dark orange
+    '#ADFF2F', // Green yellow
+    '#FF1493', // Deep pink
+    '#00CED1', // Dark turquoise
+    '#FF6347', // Tomato
+    '#7B68EE', // Medium slate blue
+    '#FFDAB9', // Peach puff
+    '#FFB6C1', // Light pink
   ];
 
   // Use the seeded random to pick a color from the palette
@@ -190,6 +193,16 @@ function getTagStyle(typeString) {
 </script>
 
 <style scoped>
+.name {
+  font-size: 1rem;
+  color: var(--vp-c-text-3);
+}
+
+.name:hover {
+  color: var(--vp-c-text-1);
+  transition: color 0.3s ease;
+}
+
 .container {
   margin: 1px;
   display: flex;
@@ -325,7 +338,7 @@ function getTagStyle(typeString) {
   transform: rotate(180deg);
 }
 
-.tag{
+.tag {
   background-color: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-border);
   color: var(--vp-c-text-2);
