@@ -25,7 +25,7 @@ const props = defineProps({
   },
   height: {
     type: [Number, String],
-    default: '500px'
+    default: '100px'
   },
   nodeRadius: {
     type: Number,

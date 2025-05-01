@@ -25,10 +25,13 @@
   </el-container>
 
   <Dragger>
-    <DataRelation :D3DAGData="dataGroup.toD3DAG()" />
+    <!-- <DataRelation :D3DAGData="dataGroup.toD3DAG()" /> -->
+      <ColorBand/>
   </Dragger>
 
   <AppDrawer v-model="visible" />
+
+
 </template>
 
 <script setup>
@@ -42,6 +45,8 @@ import SidebarControls from '@/components/SidebarControls.vue'
 import SidebarToggleButton from '@/components/SidebarToggleButton.vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import AppDrawer from '@/components/AppDrawer.vue'
+
+import ColorBand from '@/dev/dev.vue'
 
 import { dataGroup } from "@/layouts/data.js"
 import { layerGroup } from "@/layouts/layer.js"
