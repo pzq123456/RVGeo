@@ -45,10 +45,11 @@ let voi = vor.cutVoronoiByMBR(HK_MBR)
 voi = Array.from(voi, ([key, value]) => RVGeo.toPolygon(value, { centeridx: key }))
 voi = RVGeo.toMultiPolygon(voi)
 
-const voronoiEntity = new DataEntity('voronoi', 'polygon', voi.toFeatureCollection())
+const voronoiEntity = new DataEntity('voronoi', 'multipolygon', voi.toFeatureCollection())
 dataGroup.addEntity(voronoiEntity)
 dataGroup.addRelation('delaunay', 'voronoi')
 
 console.log("DAG", dataGroup.toD3DAG())
+console.log("Voronoi", voronoiEntity)
 
 export { dataGroup }
