@@ -45,7 +45,7 @@ export class Polygon extends Geometry {
         let feature: GeoJSONFeature = {
             type: "Feature",
             geometry: {
-                type: this.constructor.name,
+                type: "Polygon",
                 coordinates: this.coordinates
             },
             // properties: this.properties,
@@ -151,10 +151,10 @@ export class MultiPolygon extends GeometryCollection{
     }
 
     toFeatureCollection(): GeoJSONFeatureCollection {
-        return Object.freeze({
+        return {
             type: "FeatureCollection",
             features: this.geometries.map(geometry => geometry.toGeoJSON())
-        });
+        };
     }
 
     static fromFeature(feature: GeoJSONFeature): GeometryCollection{

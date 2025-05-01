@@ -49,7 +49,4 @@ const voronoiEntity = new DataEntity('voronoi', 'multipolygon', voi.toFeatureCol
 dataGroup.addEntity(voronoiEntity)
 dataGroup.addRelation('delaunay', 'voronoi')
 
-console.log("DAG", dataGroup.toD3DAG())
-console.log("Voronoi", voronoiEntity)
-
 export { dataGroup }
