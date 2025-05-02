@@ -81,7 +81,7 @@ const panelStyle = computed(() => ({
   width: 400px;
   min-width: v-bind('props.minWidth + "px"');
   border: 1px solid var(--vp-c-border);
-  background: var(--vp-c-bg-elv);
+  background: var(--vp-c-bg-soft);
   border-radius: 8px;
   z-index: 30;
   overflow: hidden;

@@ -52,66 +52,13 @@ export function createColorBand({
   }
 
 /**
- * 创建离散颜色比例尺
- */
-function createOrdinalScale(scheme, domain) {
-  // 处理预定义色板或自定义颜色数组
-  const range = typeof scheme === 'string' 
-    ? getPredefinedOrdinalScheme(scheme)
-    : scheme;
-
-  const scale = scaleOrdinal()
-    .range(range);
-
-  if (domain) {
-    scale.domain(domain);
-  }
-
-  return scale;
-}
-
-/**
- * 创建连续颜色比例尺
- */
-function createSequentialScale(scheme, domain) {
-  // 获取插值器函数
-  const interpolator = typeof scheme === 'string'
-    ? getPredefinedInterpolator(scheme)
-    : d3.interpolateRgbBasis(scheme);
-
-  const scale = scaleSequential()
-    .interpolator(interpolator);
-
-  if (domain) {
-    scale.domain(domain);
-  }
-
-  return scale;
-}
-
-/**
- * 创建发散颜色比例尺
- */
-function createDivergingScale(scheme, domain) {
-  // 获取插值器函数
-  const interpolator = typeof scheme === 'string'
-    ? getPredefinedInterpolator(scheme)
-    : d3.interpolateRgbBasis(scheme);
-
-  const scale = scaleDiverging()
-    .interpolator(interpolator);
-
-  if (domain) {
-    scale.domain(domain);
-  }
-
-  return scale;
-}
-
-/**
  * 获取预定义的离散色板
  */
 export function getPredefinedOrdinalScheme(schemeName) {
+  if (typeof schemeName !== 'string') {
+    return d3.schemeCategory10;
+  }
+
   const schemeMap = {
     'category10': d3.schemeCategory10,
     'accent': d3.schemeAccent,
@@ -132,6 +79,10 @@ export function getPredefinedOrdinalScheme(schemeName) {
  * 获取预定义的连续/发散插值器
  */
 export function getPredefinedInterpolator(schemeName) {
+  if (typeof schemeName !== 'string') {
+    return d3.interpolateViridis;
+  }
+
   const interpolatorMap = {
     // 连续色板
     'viridis': d3.interpolateViridis,
@@ -155,22 +106,32 @@ export function getPredefinedInterpolator(schemeName) {
 }
 
 /**
- * 反转色带
+ * 反转色带方案
+ * @param {string|Array} scheme 色带名称或自定义颜色数组
+ * @param {string} type 色带类型 ('ordinal'|'sequential'|'diverging')
+ * @returns {Array|Function} 反转后的色带
  */
-function reverseScheme(scheme, type) {
+export function reverseScheme(scheme, type) {
   if (typeof scheme !== 'string') {
     // 自定义颜色数组直接反转
     return [...scheme].reverse();
   }
 
-  // 为预定义色板添加 reversed 后缀
-  return `${scheme}-reversed`;
+  // 处理预定义色板的反转
+  if (type === 'ordinal') {
+    // 对于离散色带，获取颜色数组后反转
+    const colors = getPredefinedOrdinalScheme(scheme);
+    return [...colors].reverse(); // 确保返回新数组
+  } else {
+    // 对于连续/发散色带，使用原始插值器但反转参数
+    return scheme; // 返回原始名称，在createColorBand中处理反转
+  }
 }
 
 // 色带分组配置
 export const colorSchemes = [
     {
-      label: '连续色带',
+      label: 'continuous', // continuous
       options: [
         { value: 'viridis', label: 'Viridis', type: 'sequential' },
         { value: 'plasma', label: 'Plasma', type: 'sequential' },
@@ -181,7 +142,7 @@ export const colorSchemes = [
       ]
     },
     {
-      label: '发散色带',
+      label: 'diverging', // diverging
       options: [
         { value: 'spectral', label: 'Spectral', type: 'diverging' },
         { value: 'rdbu', label: 'Red-Blue', type: 'diverging' },
@@ -190,15 +151,15 @@ export const colorSchemes = [
         { value: 'piyg', label: 'Pink-Yellow-Green', type: 'diverging' }
       ]
     },
-    // {
-    //   label: '分类色带',
-    //   options: [
-    //     { value: 'category10', label: 'Category10', type: 'ordinal' },
-    //     { value: 'accent', label: 'Accent', type: 'ordinal' },
-    //     { value: 'set1', label: 'Set1', type: 'ordinal' },
-    //     { value: 'set2', label: 'Set2', type: 'ordinal' },
-    //     { value: 'set3', label: 'Set3', type: 'ordinal' },
-    //     { value: 'pastel1', label: 'Pastel1', type: 'ordinal' }
-    //   ]
-    // }
+    {
+      label: 'discrete', // discrete
+      options: [
+        { value: 'category10', label: 'Category10', type: 'ordinal' },
+        { value: 'accent', label: 'Accent', type: 'ordinal' },
+        { value: 'set1', label: 'Set1', type: 'ordinal' },
+        { value: 'set2', label: 'Set2', type: 'ordinal' },
+        { value: 'set3', label: 'Set3', type: 'ordinal' },
+        { value: 'pastel1', label: 'Pastel1', type: 'ordinal' }
+      ]
+    }
   ];

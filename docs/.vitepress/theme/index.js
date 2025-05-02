@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 /** @type {import('vitepress').Theme} */
 
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import 'element-plus/theme-chalk/dark/css-vars.css'
 
 export default {
   extends: DefaultTheme,

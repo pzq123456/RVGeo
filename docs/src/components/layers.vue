@@ -45,6 +45,9 @@
               :disabled="!item.visible" />
             <span class="layer-visibility">{{ item.visible ? 'Visible' : 'Hidden' }} <el-checkbox
                 v-model="item.visible" /></span>
+                
+                <ColorBandSelector
+                 :disabled="!item.visible"/>
           </div>
         </Transition>
 
@@ -58,6 +61,8 @@
 import { ref, reactive, watch } from 'vue';
 import { useDraggable } from 'vue-draggable-plus';
 import { LayerGroup, Layer } from '@/composables/useLayerGroup.js';
+
+import ColorBandSelector from '@/components/ColorBand.vue';
 
 import pkg from 'lodash';
 const { throttle } = pkg;

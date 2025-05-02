@@ -72,9 +72,10 @@
   <style scoped>
   .color-band-container {
     padding: 15px;
-    border: 1px solid #eee;
+    border: 1px solid var(--vp-c-divider);
     border-radius: 8px;
     max-width: 500px;
+    background-color: var(--vp-c-bg-soft);
   }
   
   .color-band-display {
@@ -84,12 +85,13 @@
   .color-band-test {
     margin-top: 15px;
     padding: 10px;
-    background: #f9f9f9;
+    background: var(--vp-c-bg-soft-down);
     border-radius: 4px;
+    border: 1px solid var(--vp-c-divider);
   }
   
   .color-band-sample {
     border-radius: 4px;
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+    box-shadow: 0 0 0 1px var(--vp-c-divider);
   }
   </style>
