@@ -38,7 +38,7 @@
 import { ref } from 'vue'
 import MapComponent from '@/components/map.vue'
 import { useDeckOverlay } from '@/composables/useDeckOverlay.js'
-import layers from '@/components/layers.vue'
+import layers from '@/components/layer/Layers.vue'
 import EntityList from '@/components/EntityList.vue'
 
 import SidebarControls from '@/components/SidebarControls.vue'

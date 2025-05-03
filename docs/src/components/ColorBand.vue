@@ -26,11 +26,11 @@
       <div class="color-band-controls" v-if="showControls">
         <el-checkbox v-model="isReverse" @change="updateColorBand"
         :disabled="isDisabled">
-          反转色带
+          reverse
         </el-checkbox>
         <el-button size="small" type="primary" plain @click="emitColorBand" style="margin-left: 10px"
         :disabled="isDisabled">
-          应用
+          Apply
         </el-button>
       </div>
     </div>
@@ -179,20 +179,24 @@ onMounted(() => {
 .color-band-selector {
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--vp-c-divider);
+  color: var(--vp-c-text-1);
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .color-band-controls {
-  margin-top: 10px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
 .selected-preview {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
-  display: inline-block;
-  vertical-align: middle;
   width: 100px;
   height: 20px;
+  border-radius: 4px;
+  margin-right: 10px;
 }
 
 /* 优化下拉选项样式 */

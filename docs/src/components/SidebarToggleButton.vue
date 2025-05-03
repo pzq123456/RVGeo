@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar-collapse-button" @click="toggleSidebar">
-      <el-icon :size="20">
-        <Expand />
+      <el-icon :size="18">
+        <ArrowRight />
       </el-icon>
     </div>
   </template>
@@ -22,7 +22,7 @@
     top: 50%;
     transform: translateY(-50%);
     width: 24px;
-    height: 48px;
+    height: 34px;
     background-color: var(--vp-c-bg);
     border: 1px solid var(--vp-c-border);
     border-left: none;
@@ -31,11 +31,10 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 1000;
-    transition: all 0.3s ease;
+    z-index: 4;
   }
   
   .sidebar-collapse-button:hover {
-    background-color: var(--vp-c-bg-alt);
+    background-color: var(--vp-c-bg-soft);
   }
   </style>

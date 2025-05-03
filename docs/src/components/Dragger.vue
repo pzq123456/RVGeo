@@ -93,7 +93,7 @@ const panelStyle = computed(() => ({
 }
 
 .draggable-panel:active {
-  transform: scale(1.01);
+  border: 1px solid var(--vp-c-brand-2);
 }
 
 .draggable-panel.is-minimized {
