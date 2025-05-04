@@ -12,6 +12,7 @@ declare module 'vue' {
     AppFooter: typeof import('./src/components/AppFooter.vue')['default']
     AppSidebar: typeof import('./src/components/AppSidebar.vue')['default']
     ColorBand: typeof import('./src/components/ColorBand.vue')['default']
+    ColorLayer: typeof import('./src/components/layer/ColorLayer.vue')['default']
     ContextMenu: typeof import('./src/components/ContextMenu.vue')['default']
     copy: typeof import('./src/components/DataRelation copy.vue')['default']
     DataEntityList: typeof import('./src/components/DataEntityList.vue')['default']

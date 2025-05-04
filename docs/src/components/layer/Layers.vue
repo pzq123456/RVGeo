@@ -4,8 +4,16 @@
       @toggle-all-details="toggleAllDetails" @toggle-layer-list="toggleLayerList" />
 
     <div class="layer-container" ref="el" v-show="isLayerListVisible">
-      <LayerCard v-for="item in layerGroup.layers" :key="item.id" :layer="item" @toggle-expand="toggleExpand"
-        @toggle-visibility="toggleVisibility" />
+      <!-- <LayerCard v-for="item in layerGroup.layers" :key="item.id" :layer="item" @toggle-expand="toggleExpand"
+        @toggle-visibility="toggleVisibility" /> -->
+        <component 
+        :is="getCardVomponents({ typeName: layer.typeName })"
+        v-for="layer in layerGroup.layers"
+        :key="layer.id"
+        :layer="layer"
+        @toggle-expand="toggleExpand"
+        @toggle-visibility="toggleVisibility"
+      />
     </div>
   </div>
 </template>
@@ -18,7 +26,19 @@ import pkg from 'lodash';
 const { throttle } = pkg;
 
 import LayerHeader from './LayerHeader.vue';
-import LayerCard from './LayerCard.vue';
+import BasicLayerCard from './LayerCard.vue'; // or LayerCard.vue
+import ColorLayer from './ColorLayer.vue'; // or LayerCard.vue
+
+function getCardVomponents(params) {
+  const { typeName } = params;
+  console.log('typeName', typeName);
+  if (typeName === 'color') {
+    return ColorLayer;
+  } else if (typeName === 'filter') {
+    return FilterLayer;
+  }
+  return BasicLayerCard; // 默认返回
+}
 
 const props = defineProps({
   layerGroup: {

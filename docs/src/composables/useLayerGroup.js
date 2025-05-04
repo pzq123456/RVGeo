@@ -6,6 +6,7 @@ export class Layer {
     this.state = reactive({ opacity, visible });
     this.type = type;
     this.props = props;
+    this.typeName = type.name;
   }
 
   get opacity() {

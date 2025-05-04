@@ -27,7 +27,8 @@
         <span class="layer-visibility">{{ layer.visible ? 'Visible' : 'Hidden' }} <el-checkbox
             v-model="layer.visible" /></span>
             
-        <ColorBandSelector :disabled="!layer.visible" />
+        <!-- 插槽用于扩展内容 -->
+        <slot name="custom-controls"></slot>
       </div>
     </Transition>
   </div>
@@ -35,7 +36,6 @@
 
 <script setup>
 import { defineProps, defineEmits } from 'vue';
-import ColorBandSelector from '@/components/ColorBand.vue';
 
 const props = defineProps({
   layer: {
