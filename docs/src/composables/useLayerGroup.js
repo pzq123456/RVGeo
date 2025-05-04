@@ -1,14 +1,36 @@
-import { reactive } from 'vue';
+import { reactive, markRaw } from 'vue';
 
 export class Layer {
-  constructor(id, opacity = 1, visible = true, type, props = {}) {
+  constructor(id, type, options = {}) {
+    // 固定属性
     this.id = id;
-    this.state = reactive({ opacity, visible });
-    this.type = type;
-    this.props = props;
-    this.typeName = type.name;
+    this.type = markRaw(type); // 类型不需要响应式
+    
+    // 响应式状态管理
+    this.state = reactive({
+      // 默认属性
+      opacity: options.opacity ?? 1,
+      visible: options.visible ?? true,
+      
+      // 其他动态属性
+      ...options.props
+    });
+    
+    // 大块非响应式数据
+    this.data = options.data ? markRaw(options.data) : null;
   }
 
+  // 通用属性访问器
+  get(prop) {
+    return this.state[prop];
+  }
+
+  // 通用属性设置器
+  set(prop, value) {
+    this.state[prop] = value;
+  }
+
+  // 保留原有的opacity和visible访问器以保持兼容性
   get opacity() {
     return this.state.opacity;
   }
@@ -24,44 +46,46 @@ export class Layer {
   set visible(value) {
     this.state.visible = value;
   }
-
-  toJSON() {
-    return {
-      id: this.id,
-      opacity: this.state.opacity,
-      visible: this.state.visible,
-      type: this.type,
-      props: this.props
-    };
-  }
 }
-
 
 export class LayerGroup {
   constructor(layers = []) {
-    // 使 layers 数组本身响应式
     this.layers = reactive(layers);
   }
 
-  // 更新图层的不透明度
-  setOpacity(layerId, opacity) {
-    const layer = this.layers.find(l => l.id === layerId);
-    if (layer) {
-      layer.opacity = opacity;
+  // 添加新图层
+  addLayer(layer) {
+    this.layers.push(layer);
+  }
+
+  // 移除图层
+  removeLayer(layerId) {
+    const index = this.layers.findIndex(l => l.id === layerId);
+    if (index !== -1) {
+      this.layers.splice(index, 1);
     }
   }
 
-  // 更新图层的可见性
-  setVisibility(layerId, visible) {
+  // 通用属性更新方法
+  updateLayerProperty(layerId, prop, value) {
     const layer = this.layers.find(l => l.id === layerId);
     if (layer) {
-      layer.visible = visible;
+      layer.set(prop, value);
     }
+  }
+
+  // 更新图层的不透明度（保持兼容性）
+  setOpacity(layerId, opacity) {
+    this.updateLayerProperty(layerId, 'opacity', opacity);
+  }
+
+  // 更新图层的可见性（保持兼容性）
+  setVisibility(layerId, visible) {
+    this.updateLayerProperty(layerId, 'visible', visible);
   }
 
   // 设置图层顺序（支持拖拽）
   setLayerOrder(newOrder) {
-    // Vue 会检测到 this.layers 的变化，并更新视图
     this.layers.length = 0;
     this.layers.push(...newOrder);
   }
@@ -75,12 +99,15 @@ export class LayerGroup {
       // 只有最上层图层（数组的第一个元素）也就是倒数第一个元素的 pickable 为 true
       const pickable = index === visibleLayers.length - 1;
       
-      return new LayerType({
+      // 收集所有状态属性
+      const layerProps = {
         id: layer.id,
-        opacity: layer.opacity,
         pickable,
-        ...layer.props,
-      });
+        ...layer.state, // 展开所有响应式属性
+        data: layer.data ? layer.data.get() : null // 处理数据
+      };
+      
+      return new LayerType(layerProps);
     });
   }
 }

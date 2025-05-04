@@ -21,6 +21,7 @@ declare module 'vue' {
     DataTree: typeof import('./src/components/dataTree/DataTree.vue')['default']
     Dragger: typeof import('./src/components/Dragger.vue')['default']
     Dragger2: typeof import('./src/components/Dragger2.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']

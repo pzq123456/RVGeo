@@ -7,7 +7,7 @@
       <!-- <LayerCard v-for="item in layerGroup.layers" :key="item.id" :layer="item" @toggle-expand="toggleExpand"
         @toggle-visibility="toggleVisibility" /> -->
         <component 
-        :is="getCardVomponents({ typeName: layer.typeName })"
+        :is="getCardVomponents(layer.type)"
         v-for="layer in layerGroup.layers"
         :key="layer.id"
         :layer="layer"
@@ -30,13 +30,8 @@ import BasicLayerCard from './LayerCard.vue'; // or LayerCard.vue
 import ColorLayer from './ColorLayer.vue'; // or LayerCard.vue
 
 function getCardVomponents(params) {
-  const { typeName } = params;
-  console.log('typeName', typeName);
-  if (typeName === 'color') {
-    return ColorLayer;
-  } else if (typeName === 'filter') {
-    return FilterLayer;
-  }
+  console.log(params.name);
+
   return BasicLayerCard; // 默认返回
 }
 

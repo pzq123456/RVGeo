@@ -1,5 +1,10 @@
 <template>
+  <el-alert type="warning">
+    {{ getWarningTime() }} <strong> 🚧 Warning! </strong> The website is under development, and some features may be incomplete or have bugs. Please be patient for updates.
+  </el-alert>
+
   <el-container>
+    
     <!-- 侧边栏折叠按钮 -->
     <SidebarToggleButton v-if="isSidebarCollapsed" :toggle-sidebar="toggleSidebar" />
 
@@ -96,5 +101,18 @@ const updateDeckLayers = () => {
       layers: layerGroup.getLayers(),
     })
   }
+}
+
+// 获取警告生成的时间 精确到秒
+const getWarningTime = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 </script>
