@@ -1,4 +1,10 @@
-import { GeoJSONFeature, GeoJSONFeatureCollection, GeoJSONGeometry, GeoJSONGeometryCollection, GeoJSONLineString, GeoJSONMultiLineString, GeoJSONMultiPoint, GeoJSONMultiPolygon, GeoJSONPoint, GeoJSONPolygon } from "./GeoJSON";
+import { 
+    GeoJSONFeature, GeoJSONFeatureCollection, 
+    GeoJSONGeometry, GeoJSONGeometryCollection,
+    GeoJSONPoint, GeoJSONMultiPoint,
+    GeoJSONLineString, GeoJSONMultiLineString,
+    GeoJSONPolygon, GeoJSONMultiPolygon
+} from "./GeoJSON";
 
 import { 
     Geometry, GeometryCollection, 
@@ -8,13 +14,17 @@ import {
 
 /**
  * Factory function for creating geometry objects from GeoJSON Geometry objects
- * - about Geometry objects @see GeoJSONGeometry
- * @param geometry 
- * @returns 
+ * @param geometry GeoJSON Geometry object
+ * @returns Geometry instance
+ * @throws Error if geometry is invalid or type is unknown
  */
 export function fromGeometryObj(
     geometry: GeoJSONGeometry | GeoJSONGeometryCollection
 ): Geometry | GeometryCollection {
+    if (!geometry || !geometry.type) {
+        throw new Error("Invalid geometry object");
+    }
+
     switch (geometry.type) {
         case "Point":
             return Point.fromGeometry(geometry as GeoJSONPoint);
@@ -31,82 +41,73 @@ export function fromGeometryObj(
         case "GeometryCollection":
             return collectionFromGeometry(geometry as GeoJSONGeometryCollection);
         default:
-            throw new Error("Unknown geometry type: " + geometry.type + " in fromGeometryObj");
+            throw new Error(`Unknown geometry type: ${(geometry as any).type} in fromGeometryObj`);
     }
 }
 
 /**
  * Factory function for creating geometry objects from GeoJSON Feature objects
- * - you can use this function to create inner geometry from Features
- * - about Feature objects @see GeoJSONFeature
- * @param geometry 
- * @returns 
+ * @param feature GeoJSON Feature or FeatureCollection
+ * @returns Geometry or GeometryCollection instance
+ * @throws Error if feature is invalid or type is unknown
  */
 export function fromFeatureObj(feature: GeoJSONFeature | GeoJSONFeatureCollection): Geometry | GeometryCollection {
-    if(feature.type === "Feature"){
-        const geometry = feature.geometry;
-        switch (geometry.type) {
-            case "Point":
-                return Point.fromFeature(feature);
-            case "LineString":
-                return LineString.fromFeature(feature);
-            case "Polygon":
-                return Polygon.fromFeature(feature);
-            case "MultiPoint":
-                return MultiPoint.fromFeature(feature);
-            case "MultiLineString":
-                return MultiLineString.fromFeature(feature);
-            case "MultiPolygon":
-                return MultiPolygon.fromFeature(feature);
-            case "GeometryCollection":
-                return collectionFromFeature(feature);
-            default:
-                throw new Error("Unknown geometry type: " + geometry.type + " in fromGeometryObj");
+    if (!feature || !feature.type) {
+        throw new Error("Invalid feature object");
+    }
+
+    if (feature.type === "Feature") {
+        if (!feature.geometry) {
+            throw new Error("Feature geometry is missing");
         }
-    }else if(feature.type === "FeatureCollection"){
+        return fromGeometryObj(feature.geometry);
+    }
+    
+    if (feature.type === "FeatureCollection") {
         return collectionFromFeature(feature);
-    }else{
-        throw new Error("Unknown GeoJSON type");
     }
+    
+    throw new Error(`Unknown GeoJSON type: ${(feature as any).type}`);
 }
 
 /**
- * Factory function for creating geometryCollection objects from GeoJSON Feature objects
- * @param feature 
- * @returns 
+ * Creates GeometryCollection from GeoJSON Feature objects
+ * @param feature Feature with GeometryCollection or FeatureCollection
+ * @returns GeometryCollection instance
+ * @throws Error if input is invalid
  */
-export function collectionFromFeature(feature: GeoJSONFeature | GeoJSONFeatureCollection): GeometryCollection{
-    // from feature
-    // 1. 带有 GeometryCollection 的 feature
-    // 2. FeatureCollection
-    if(feature.type === "Feature"){
-        const geometry = feature.geometry;
-        if(geometry.type === "GeometryCollection"){
-            const geometries = (geometry as GeoJSONGeometryCollection).geometries.map(geo => fromGeometryObj(geo));
+export function collectionFromFeature(feature: GeoJSONFeature | GeoJSONFeatureCollection): GeometryCollection {
+    if (!feature || !feature.type) {
+        throw new Error("Invalid feature object");
+    }
+
+    if (feature.type === "Feature") {
+        if (feature.geometry?.type === "GeometryCollection") {
+            const geometries = feature.geometry.geometries.map(geo => fromGeometryObj(geo));
             return new GeometryCollection(geometries, feature.properties);
-        }else{
-            throw new Error("The input feature is not a GeometryCollection: " + geometry.type);
         }
-    }else if(feature.type === "FeatureCollection"){
-        // 递归调用 fromGeometry
-        const geometries = (feature as GeoJSONFeatureCollection).features.map(f => fromFeatureObj(f));
-        return new GeometryCollection(geometries);
-    } else{
-        throw new Error("Unknown GeoJSON type");
+        throw new Error(`The input feature is not a GeometryCollection: ${feature.geometry?.type}`);
     }
+    
+    if (feature.type === "FeatureCollection") {
+        const geometries = feature.features.map(f => fromFeatureObj(f));
+        return new GeometryCollection(geometries);
+    }
+    
+    throw new Error(`Unknown GeoJSON type: ${(feature as any).type}`);
 }
 
 /**
- * Factory function for creating geometryCollection objects from GeoJSON Geometry objects
- * @param geometry 
- * @returns 
+ * Creates GeometryCollection from GeoJSON Geometry objects
+ * @param geometry GeometryCollection object
+ * @returns GeometryCollection instance
+ * @throws Error if input is not a GeometryCollection
  */
-export function collectionFromGeometry(geometry: GeoJSONGeometryCollection | GeoJSONGeometry): GeometryCollection{
-    // 1. GeometryCollection
-    if(geometry.type === "GeometryCollection"){
-        const geometries = (geometry as GeoJSONGeometryCollection).geometries.map(geo => fromGeometryObj(geo));
-        return new GeometryCollection(geometries);
-    }else{
-        throw new Error("The input geometry is not a GeometryCollection: " + geometry.type);
+export function collectionFromGeometry(geometry: GeoJSONGeometryCollection): GeometryCollection {
+    if (!geometry || geometry.type !== "GeometryCollection") {
+        throw new Error("The input geometry is not a GeometryCollection");
     }
+
+    const geometries = geometry.geometries.map(geo => fromGeometryObj(geo));
+    return new GeometryCollection(geometries);
 }

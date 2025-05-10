@@ -41,12 +41,19 @@ dataGroup.addRelation('border', 'delaunay')
 
 // Voronoi
 let vor = new RVGeo.Voronoi(del)
-let voi = vor.cutVoronoiByMBR(HK_MBR)
+let voi = vor.cutVoronoiByMBR(HK_MBR) 
 voi = Array.from(voi, ([key, value]) => RVGeo.toPolygon(value, { centeridx: key }))
-voi = RVGeo.toMultiPolygon(voi)
 
+voi = RVGeo.toMultiPolygon(voi)
+voi.assignAreas()
+
+// RVGeo.Column();
+const Column = new RVGeo.Column(voi.area)
+// console.log(Column.mapValue(1233333333))
+
+console.log(voi.toFeatureCollection())
 const voronoiEntity = new DataEntity('voronoi', 'multipolygon', voi.toFeatureCollection())
 dataGroup.addEntity(voronoiEntity)
 dataGroup.addRelation('delaunay', 'voronoi')
 
-export { dataGroup }
+export { dataGroup, Column }

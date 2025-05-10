@@ -1,6 +1,6 @@
 import { Layer, LayerGroup } from '@/composables/useLayerGroup.js'
 import { ScatterplotLayer, GeoJsonLayer } from '@deck.gl/layers'
-import { dataGroup } from './data.js'
+import { dataGroup, Column } from './data.js'
 
 const BLUE = [23, 184, 190, 200]
 const GRAY = [158, 158, 158, 200]
@@ -84,11 +84,16 @@ const voronoiLayer = new Layer('Voronoi-Layer', GeoJsonLayer, {
   opacity: 0.4,
   visible: true,
   props: {
-    getLineColor: [255, 0, 0],
-    getFillColor: [255, 0, 0, 100],
-    lineWidthMinPixels: 2,
-    filled: true,
-    stroked: true
+    getLineColor: [255, 244, 255],
+    lineWidthMinPixels: 1,
+    // 随机色填充
+    getFillColor: 
+      d => {
+        const R = 255 * Column.mapValue(d.properties.area);
+        const G = 255 * (1 - Column.mapValue(d.properties.area));
+        const B = 0;
+        return [R, G, B]
+      }
   },
   data: {
     get() { return dataGroup.getEntityById('voronoi').props }

@@ -9,4 +9,5 @@ export * from './net';
 export * from './render';
 export * from './topology';
 export * from './triangulation';
-// export * from './workers';
+
+export * from './statistics';

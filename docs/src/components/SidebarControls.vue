@@ -7,19 +7,10 @@
       </el-icon>
     </el-tooltip>
 
-
       <el-icon @click="toggleDrawer" class="control-icon">
         <Upload v-if="!isDrawerVisible" />
         <Download v-else />
       </el-icon>
-
-    
-    <!-- <el-tooltip :content="isCollapsed ? 'Expand' : 'Collapse'" placement="top">
-      <el-icon @click="toggleCollapse" class="control-icon">
-        <Fold v-if="!isCollapsed" />
-        <Expand v-else />
-      </el-icon>
-    </el-tooltip> -->
 
   </div>
 </template>

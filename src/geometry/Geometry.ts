@@ -30,7 +30,7 @@ import { SphericalMercator } from "..";
 export abstract class Geometry {
     bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
     readonly coordinates: any;
-    properties: any;
+    properties: undefined | any;
     readonly projection: Projection = SphericalMercator;
     toXY(): any {}
     
@@ -47,6 +47,34 @@ export abstract class Geometry {
     }
 
     set Properties(properties: any) { this.properties = properties; }
+    get Properties(): any { return this.properties; }
+
+    // 追加属性
+    addProperties(properties: any): void {
+        if (!properties || typeof properties !== 'object') {
+            throw new Error("Invalid properties: must be a non-null object");
+        }
+
+        if (this.properties) {
+            for (const key in properties) {
+                if (Object.prototype.hasOwnProperty.call(this.properties, key)) {
+                    console.warn(`Property "${key}" already exists and will be overwritten.`);
+                }
+            }
+            this.properties = { ...this.properties, ...properties };
+        } else {
+            this.properties = { ...properties };
+        }
+    }
+    // 删除属性
+    removeProperties(properties: any): void {
+        if (this.properties) {
+            for (const key of Object.keys(properties)) {
+                delete this.properties[key];
+            }
+        }
+    }
+
     
     clone(): Geometry{
         const coordinates = this.coordinates.slice(); // Deep copy of coordinates
@@ -104,6 +132,9 @@ export class GeometryCollection{
     bbox: MBR = [Infinity, Infinity, -Infinity, -Infinity];
     properties: any;
     projection: Projection = SphericalMercator;
+
+    set Properties(properties: any) { this.properties = properties; }
+    get Properties(): any { return this.properties; }
 
     constructor(geometries: (Geometry | GeometryCollection)[], properties?: any) {
         if (properties) {

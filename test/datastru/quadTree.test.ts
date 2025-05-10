@@ -1,4 +1,4 @@
-import { MBR, QuadTree } from '../../src'
+import { MBR, QuadTree } from '../../src2'
 import { describe, it, expect } from 'vitest';
 
 describe('QuadTree', () => {

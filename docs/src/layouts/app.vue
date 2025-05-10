@@ -29,8 +29,8 @@
 
   </el-container>
 
-  <Dragger>
-    <!-- <DataRelation :D3DAGData="dataGroup.toD3DAG()" /> -->
+  <Dragger :onClose="handleClose" v-if="isShowDragger">
+    <DataRelation :D3DAGData="dataGroup.toD3DAG()" />
       <ColorBand/>
   </Dragger>
 
@@ -62,6 +62,12 @@ import Dragger from '@/components/Dragger.vue'
 // docs/src/components/DataRelation.vue
 import DataRelation from '@/components/DataRelation.vue'
 
+const isShowDragger = ref(true)
+
+const handleClose = () => {
+  isShowDragger.value = false
+}
+
 // 常量定义
 const INITIAL_VIEW_STATE = {
   longitude: 114.173355,
@@ -79,10 +85,18 @@ let deckMap = null
 // 方法
 const toggleSidebar = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value
+  // // 若侧边栏打开则打开 dragger
+  // if (!isSidebarCollapsed.value) {
+  //   isShowDragger.value = true
+  // } else {
+  //   isShowDragger.value = false
+  // }
 }
 
 const toggleFullScreen = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value
+  // 这里可以添加全屏逻辑
+  // handleClose()
 }
 
 const toggleDrawer = () => {

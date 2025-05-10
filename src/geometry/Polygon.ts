@@ -2,6 +2,8 @@ import { Geometry, GeometryCollection } from "./Geometry";
 import { GeoJSONFeature, GeoJSONPolygon, GeoJSONMultiPolygon, GeoJSONLineString, GeoJSONFeatureCollection } from "./GeoJSON";
 import { MultiPoint, Point } from "./Point";
 
+import { EPSG3857 } from "../geo/crs";
+
 export class Polygon extends Geometry {
     readonly coordinates: GeoJSONPolygon["coordinates"];
 
@@ -13,6 +15,20 @@ export class Polygon extends Geometry {
             coordinates[0].push(coordinates[0][0]);
         }
         this.coordinates = coordinates;
+    }
+
+    get area(): number {
+        // 计算外环面积
+        if (!EPSG3857.planeArea) {
+            throw new Error("EPSG3857.planeArea is undefined");
+        }
+
+        let area = EPSG3857.planeArea(this.coordinates[0]);
+        // 计算内环面积
+        for (let i = 1; i < this.coordinates.length; i++) {
+            area -= EPSG3857.planeArea(this.coordinates[i]);
+        }
+        return area;
     }
 
     getCoordinates(): GeoJSONPolygon["coordinates"] {
@@ -106,6 +122,23 @@ export class MultiPolygon extends GeometryCollection{
             this.coordinates = geometries as GeoJSONMultiPolygon["coordinates"];
         }
     }
+
+    // 计算每一个子多边形的面积 并返回面积列表
+    get area(): number[] {
+        return (this.geometries as Polygon[]).map((geometry) => geometry.area);
+    }
+
+    assignAreas( columnName: string = "area"): void {
+        for (let i = 0; i < this.geometries.length; i++) {
+            const geometry = this.geometries[i] as Polygon;
+            const area = geometry.area;
+
+            geometry.addProperties({
+                [columnName]: area
+            });
+        }
+    }
+
     
     getCoodinates(): GeoJSONMultiPolygon["coordinates"]{
         return this.coordinates;
@@ -171,6 +204,8 @@ export class MultiPolygon extends GeometryCollection{
         return new MultiPolygon(geometry.coordinates);
     }
 }
+
+
 
 export function toMultiPolygon(
     polygons: Polygon[] | GeoJSONMultiPolygon["coordinates"],

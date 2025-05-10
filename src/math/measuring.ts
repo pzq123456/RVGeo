@@ -1,4 +1,4 @@
-import { LineString, Point } from "..";
+import { LineString, Point } from "../geometry";
 import { D2R } from "./factors";
 import { cartesian, spherical, cartesianCross,cartesianNormalize, cartesianScale, cartesianAngle, cross } from "./vector";
 
